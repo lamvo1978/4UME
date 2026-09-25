@@ -1,0 +1,1220 @@
+transport	bus	noun	A1	xe buýt	The bus stops here.	Xe buýt dừng ở đây.
+transport	car	noun	A1	xe hơi	She has a small car.	Cô ấy có một chiếc xe hơi nhỏ.
+transport	taxi	noun	A1	xe taxi	We took a taxi.	Chúng tôi đi taxi.
+transport	train	noun	A1	tàu hỏa	The train is fast.	Tàu hỏa chạy nhanh.
+transport	plane	noun	A1	máy bay	The plane is big.	Máy bay rất lớn.
+transport	airplane	noun	A1	máy bay	The airplane left the airport.	Máy bay đã rời sân bay.
+transport	boat	noun	A1	thuyền	The boat is on the river.	Thuyền đang ở trên sông.
+transport	bike	noun	A1	xe đạp	He rides a bike.	Anh ấy đi xe đạp.
+transport	bicycle	noun	A1	xe đạp	My bicycle is new.	Xe đạp của tôi còn mới.
+transport	ticket	noun	A1	vé	I need a bus ticket.	Tôi cần một vé xe buýt.
+transport	road	noun	A1	đường	This road is long.	Con đường này dài.
+transport	street	noun	A1	đường phố	The street is quiet.	Đường phố yên tĩnh.
+transport	station	noun	A1	nhà ga	The station is near.	Nhà ga ở gần đây.
+transport	airport	noun	A1	sân bay	We are at the airport.	Chúng tôi đang ở sân bay.
+transport	driver	noun	A1	tài xế	The driver is careful.	Tài xế rất cẩn thận.
+transport	traffic	noun	A1	giao thông	Traffic is bad today.	Giao thông hôm nay rất tệ.
+transport	drive	verb	A1	lái xe	I drive to work.	Tôi lái xe đi làm.
+transport	ride	verb	A1	đi bằng xe	Children ride the bus.	Bọn trẻ đi xe buýt.
+transport	walk	verb	A1	đi bộ	We walk to school.	Chúng tôi đi bộ đến trường.
+transport	fly	verb	A1	bay	They fly to Hanoi.	Họ bay đến Hà Nội.
+transport	stop	verb	A1	dừng	Please stop the car.	Xin hãy dừng xe.
+transport	turn	verb	A1	rẽ	Turn left here.	Rẽ trái ở đây.
+transport	fast	adjective	A1	nhanh	This train is fast.	Tàu này chạy nhanh.
+transport	slow	adjective	A1	chậm	The bus is slow.	Xe buýt chạy chậm.
+transport	left	adverb	A1	sang trái	Turn left at the station.	Rẽ trái ở nhà ga.
+transport	right	adverb	A1	sang phải	Turn right at the corner.	Rẽ phải ở góc phố.
+transport	passenger	noun	A2	hành khách	The passenger has a ticket.	Hành khách có vé.
+transport	truck	noun	A2	xe tải	The truck carries boxes.	Xe tải chở các thùng hàng.
+transport	motorcycle	noun	A2	xe máy	She rides a motorcycle.	Cô ấy đi xe máy.
+transport	ship	noun	A2	tàu thủy	The ship left the port.	Tàu thủy đã rời cảng.
+transport	subway	noun	A2	tàu điện ngầm	Take the subway downtown.	Hãy đi tàu điện ngầm vào trung tâm.
+transport	tram	noun	A2	tàu điện	The tram stops here.	Tàu điện dừng ở đây.
+transport	wheel	noun	A2	bánh xe	The front wheel is new.	Bánh trước còn mới.
+transport	helmet	noun	A2	mũ bảo hiểm	Wear a helmet on the bike.	Hãy đội mũ bảo hiểm khi đi xe đạp.
+transport	seat	noun	A2	ghế	This seat is free.	Ghế này còn trống.
+transport	bridge	noun	A2	cầu	We crossed the bridge.	Chúng tôi đã qua cầu.
+transport	corner	noun	A2	góc phố	The shop is on the corner.	Cửa hàng ở góc phố.
+transport	highway	noun	A2	đường cao tốc	The highway is busy.	Đường cao tốc rất đông.
+transport	sidewalk	noun	A2	vỉa hè	Walk on the sidewalk.	Hãy đi trên vỉa hè.
+transport	parking	noun	A2	chỗ đỗ xe	Parking is full today.	Hôm nay chỗ đỗ xe đã đầy.
+transport	garage	noun	A2	gara	The car is in the garage.	Xe đang ở trong gara.
+transport	engine	noun	A2	động cơ	The engine is loud.	Động cơ kêu rất to.
+transport	tire	noun	A2	lốp xe	The tire looks worn.	Lốp xe trông đã mòn.
+transport	brake	noun	A2	phanh	Press the brake slowly.	Hãy nhấn phanh từ từ.
+transport	fuel	noun	A2	nhiên liệu	The car needs fuel.	Xe cần nhiên liệu.
+transport	gas	noun	A2	xăng	Gas is expensive today.	Xăng hôm nay đắt.
+transport	license	noun	A2	giấy phép lái xe	Show your license please.	Xin hãy xuất trình giấy phép lái xe.
+transport	speed	noun	A2	tốc độ	Reduce your speed here.	Hãy giảm tốc độ ở đây.
+transport	accident	noun	A2	tai nạn	There was an accident.	Đã có một vụ tai nạn.
+transport	sign	noun	A2	biển báo	Follow that sign.	Hãy theo biển báo đó.
+transport	direction	noun	A2	hướng	Which direction is the airport?	Sân bay ở hướng nào?
+transport	journey	noun	A2	hành trình	The journey takes two hours.	Hành trình mất hai giờ.
+transport	flight	noun	A2	chuyến bay	Our flight is late.	Chuyến bay của chúng tôi bị trễ.
+transport	platform	noun	A2	sân ga	Wait on this platform.	Hãy đợi ở sân ga này.
+transport	fare	noun	A2	giá vé	The fare is cheap.	Giá vé rẻ.
+transport	schedule	noun	A2	lịch trình	Check the schedule.	Hãy xem lịch trình.
+transport	delay	noun	A2	sự chậm trễ	The delay was long.	Sự chậm trễ kéo dài khá lâu.
+transport	route	noun	A2	tuyến đường	This route is shorter.	Tuyến đường này ngắn hơn.
+transport	crosswalk	noun	A2	vạch sang đường	Use the crosswalk.	Hãy đi trên vạch sang đường.
+transport	lane	noun	A2	làn đường	Stay in this lane.	Hãy đi đúng làn này.
+transport	park	verb	A2	đỗ xe	Park the car here.	Hãy đỗ xe ở đây.
+transport	cross	verb	A2	băng qua	Cross the street carefully.	Hãy băng qua đường cẩn thận.
+transport	arrive	verb	A2	đến nơi	We arrive at noon.	Chúng tôi đến vào buổi trưa.
+transport	leave	verb	A2	rời đi	The train will leave soon.	Tàu sẽ sớm rời đi.
+transport	miss	verb	A2	lỡ	Do not miss the bus.	Đừng lỡ xe buýt.
+transport	catch	verb	A2	kịp	We can catch the train.	Chúng tôi có thể kịp tàu.
+transport	board	verb	A2	lên xe	Passengers board the plane now.	Hành khách lên máy bay bây giờ.
+transport	commute	verb	A2	đi làm hàng ngày	I commute by train.	Tôi đi làm bằng tàu hỏa.
+transport	late	adjective	A2	muộn	The bus is late.	Xe buýt bị muộn.
+transport	early	adjective	A2	sớm	We took an early train.	Chúng tôi đi chuyến tàu sớm.
+transport	crowded	adjective	A2	đông đúc	The train is crowded.	Tàu rất đông.
+transport	safe	adjective	A2	an toàn	This road is safe.	Con đường này an toàn.
+transport	dangerous	adjective	A2	nguy hiểm	That corner is dangerous.	Góc phố đó nguy hiểm.
+transport	transportation	noun	A2	phương tiện đi lại	Public transportation is cheap.	Phương tiện công cộng rẻ.
+transport	direct	adjective	A2	thẳng	There is a direct flight.	Có một chuyến bay thẳng.
+transport	cab	noun	A2	taxi	We called a cab.	Chúng tôi gọi một chiếc taxi.
+transport	stop	noun	A2	điểm dừng	Wait at the bus stop.	Hãy đợi ở điểm dừng xe buýt.
+transport	light	noun	A2	đèn giao thông	The light is red.	Đèn đang đỏ.
+transport	public	adjective	A2	công cộng	Public transportation is useful.	Phương tiện công cộng rất hữu ích.
+transport	metro	noun	A2	tàu điện ngầm	The metro is quick.	Tàu điện ngầm đi rất nhanh.
+transport	vehicle	noun	B1	phương tiện	This vehicle is quiet.	Phương tiện này chạy rất êm.
+transport	helicopter	noun	B1	trực thăng	A helicopter landed nearby.	Một chiếc trực thăng đã hạ cánh gần đây.
+transport	ferry	noun	B1	phà	The ferry crosses the river.	Phà chở khách qua sông.
+transport	van	noun	B1	xe tải nhỏ	The van delivers packages.	Xe tải nhỏ giao các gói hàng.
+transport	scooter	noun	B1	xe tay ga	She rides a scooter.	Cô ấy đi xe tay ga.
+transport	cyclist	noun	B1	người đi xe đạp	The cyclist wore a helmet.	Người đi xe đạp đội mũ bảo hiểm.
+transport	pedestrian	noun	B1	người đi bộ	A pedestrian waited at the light.	Một người đi bộ đợi ở đèn đỏ.
+transport	pilot	noun	B1	phi công	The pilot greeted us.	Phi công chào chúng tôi.
+transport	crew	noun	B1	phi hành đoàn	The crew is ready.	Phi hành đoàn đã sẵn sàng.
+transport	terminal	noun	B1	nhà ga hành khách	The terminal is crowded.	Nhà ga rất đông.
+transport	gate	noun	B1	cổng	Our gate is number five.	Cổng của chúng tôi là số năm.
+transport	runway	noun	B1	đường băng	The plane is on the runway.	Máy bay đang ở trên đường băng.
+transport	departure	noun	B1	sự khởi hành	Departure is at six.	Giờ khởi hành là sáu giờ.
+transport	arrival	noun	B1	sự đến	The arrival time is six.	Giờ đến là sáu giờ.
+transport	destination	noun	B1	điểm đến	What is your destination?	Điểm đến của bạn là đâu?
+transport	toll	noun	B1	phí cầu đường	Drivers pay a toll here.	Tài xế trả phí cầu đường ở đây.
+transport	fine	noun	B1	tiền phạt	He paid a parking fine.	Anh ấy đã nộp tiền phạt đỗ xe.
+transport	intersection	noun	B1	ngã tư	Stop at the intersection.	Hãy dừng ở ngã tư.
+transport	roundabout	noun	B1	bùng binh	Slow down at the roundabout.	Hãy chạy chậm ở bùng binh.
+transport	seatbelt	noun	B1	dây an toàn	Fasten your seatbelt.	Hãy thắt dây an toàn.
+transport	windshield	noun	B1	kính chắn gió	The windshield is dirty.	Kính chắn gió bị bẩn.
+transport	trunk	noun	B1	cốp xe	Put the bag in the trunk.	Hãy để túi vào cốp xe.
+transport	headlight	noun	B1	đèn pha	One headlight is broken.	Một đèn pha bị hỏng.
+transport	horn	noun	B1	còi xe	Do not use the horn.	Đừng bấm còi.
+transport	brake	verb	B1	phanh	Brake before the corner.	Hãy phanh trước góc phố.
+transport	steer	verb	B1	lái	Steer the car slowly.	Hãy lái xe từ từ.
+transport	overtake	verb	B1	vượt xe	Overtake only when it is safe.	Chỉ vượt xe khi an toàn.
+transport	reverse	verb	B1	lùi xe	Please reverse slowly.	Xin hãy lùi xe từ từ.
+transport	tow	verb	B1	kéo xe	They tow the broken car.	Họ kéo chiếc xe hỏng đi.
+transport	navigate	verb	B1	dẫn đường	Please navigate to the station.	Hãy dẫn đường đến nhà ga.
+transport	merge	verb	B1	nhập làn	Merge when traffic is light.	Hãy nhập làn khi đường vắng.
+transport	delay	verb	B1	làm trễ	Fog can delay the flight.	Sương mù có thể làm trễ chuyến bay.
+transport	depart	verb	B1	khởi hành	The ferry will depart soon.	Phà sẽ sớm khởi hành.
+transport	land	verb	B1	hạ cánh	The plane will land soon.	Máy bay sắp hạ cánh.
+transport	electric	adjective	B1	chạy điện	This bus is electric.	Xe buýt này chạy bằng điện.
+transport	automatic	adjective	B1	số tự động	This car is automatic.	Xe này là số tự động.
+transport	manual	adjective	B1	số sàn	He drives a manual car.	Anh ấy lái xe số sàn.
+transport	freeway	noun	B1	đường cao tốc	The freeway is crowded.	Đường cao tốc rất đông.
+transport	exit	noun	B1	lối ra	Take the next exit.	Hãy đi lối ra tiếp theo.
+transport	entrance	noun	A2	lối vào	The entrance is on the left.	Lối vào ở bên trái.
+transport	commute	noun	B1	quãng đi làm	My commute takes an hour.	Quãng đi làm của tôi mất một giờ.
+transport	crash	noun	B1	vụ đâm	A crash blocked the road.	Một vụ đâm đã chặn đường.
+transport	takeoff	noun	B1	sự cất cánh	Takeoff was smooth.	Việc cất cánh rất êm.
+transport	landing	noun	B1	sự hạ cánh	The landing was smooth.	Việc hạ cánh rất êm.
+transport	tunnel	noun	B1	đường hầm	The tunnel goes under the river.	Đường hầm chạy dưới sông.
+transport	railroad	noun	B1	đường sắt	The railroad links two cities.	Đường sắt nối hai thành phố.
+transport	commuter	noun	B2	người đi làm	The commuter takes an early train.	Người đi làm đi chuyến tàu sớm.
+transport	turbulence	noun	B2	nhiễu động	Turbulence shook the plane.	Nhiễu động làm máy bay rung.
+transport	detour	noun	B2	đường vòng	Follow the detour signs.	Hãy đi theo biển đường vòng.
+transport	collision	noun	B2	vụ va chạm	The collision blocked traffic.	Vụ va chạm làm tắc đường.
+transport	cargo	noun	B2	hàng hóa	The ship carries cargo.	Tàu chở hàng hóa.
+transport	harbor	noun	B2	cảng	The harbor is busy today.	Hôm nay cảng rất nhộn nhịp.
+transport	shuttle	noun	B2	xe đưa đón	A shuttle goes to the airport.	Có xe đưa đón ra sân bay.
+transport	congested	adjective	B2	tắc nghẽn	The highway is congested.	Đường cao tốc bị tắc nghẽn.
+transport	express	adjective	B2	tốc hành	Take the express train.	Hãy đi tàu tốc hành.
+transport	yield	verb	B2	nhường đường	Yield at this sign.	Hãy nhường đường ở biển báo này.
+transport	carpool	verb	B2	đi chung xe	We carpool to save gas.	Chúng tôi đi chung xe để tiết kiệm xăng.
+transport	airbag	noun	B2	túi khí	The airbag opened at once.	Túi khí bung ra ngay.
+transport	motorist	noun	B2	người lái ô tô	Every motorist must stop.	Mọi người lái ô tô đều phải dừng.
+transport	evacuate	verb	B2	sơ tán	Evacuate the bus calmly.	Hãy sơ tán khỏi xe buýt một cách bình tĩnh.
+transport	overpass	noun	B2	cầu vượt	Walk across the overpass.	Hãy đi bộ qua cầu vượt.
+transport	curb	noun	B1	mép vỉa hè	Park close to the curb.	Hãy đỗ sát mép vỉa hè.
+transport	mileage	noun	B2	số dặm đã đi	Check the mileage before you buy.	Hãy xem số dặm đã đi trước khi mua.
+transport	pedestrian	adjective	B2	dành cho người đi bộ	This is a pedestrian zone.	Đây là khu vực dành cho người đi bộ.
+transport	reckless	adjective	B1	liều lĩnh	Reckless driving causes crashes.	Lái xe liều lĩnh gây ra tai nạn.
+transport	transport	verb	B1	vận chuyển	Trucks transport fresh food.	Xe tải vận chuyển thực phẩm tươi.
+transport	honk	verb	B1	bấm còi	Do not honk at night.	Đừng bấm còi vào ban đêm.
+transport	refuel	verb	B1	đổ nhiên liệu	We refuel before the trip.	Chúng tôi đổ nhiên liệu trước chuyến đi.
+transport	fasten	verb	B1	thắt chặt	Fasten your seatbelt now.	Hãy thắt dây an toàn ngay.
+transport	aisle	noun	B1	lối đi	I prefer an aisle seat.	Tôi thích ghế cạnh lối đi.
+transport	baggage	noun	B1	hành lý	Claim your baggage here.	Hãy nhận hành lý của bạn ở đây.
+shopping-money	shop	noun	A1	cửa hàng	The shop opens at nine.	Cửa hàng mở cửa lúc chín giờ.
+shopping-money	store	noun	A1	cửa hàng	This store sells shoes.	Cửa hàng này bán giày.
+shopping-money	market	noun	A1	chợ	We buy fruit at the market.	Chúng tôi mua trái cây ở chợ.
+shopping-money	supermarket	noun	A1	siêu thị	The supermarket is busy.	Siêu thị rất đông.
+shopping-money	mall	noun	A1	trung tâm thương mại	The mall is near the station.	Trung tâm thương mại ở gần nhà ga.
+shopping-money	money	noun	A1	tiền	I do not have enough money.	Tôi không có đủ tiền.
+shopping-money	cash	noun	A1	tiền mặt	I will pay in cash.	Tôi sẽ trả bằng tiền mặt.
+shopping-money	coin	noun	A1	đồng xu	This coin is one cent.	Đồng xu này là một xu.
+shopping-money	price	noun	A1	giá	The price is low.	Giá thấp.
+shopping-money	cheap	adjective	A1	rẻ	This bag is cheap.	Túi này rẻ.
+shopping-money	expensive	adjective	A1	đắt	That watch is expensive.	Chiếc đồng hồ đó đắt.
+shopping-money	buy	verb	A1	mua	I want to buy a gift.	Tôi muốn mua một món quà.
+shopping-money	sell	verb	A1	bán	They sell fresh bread.	Họ bán bánh mì tươi.
+shopping-money	pay	verb	A1	trả tiền	I will pay at the desk.	Tôi sẽ trả tiền ở quầy.
+shopping-money	dollar	noun	A1	đô la	This book costs one dollar.	Cuốn sách này có giá một đô la.
+shopping-money	cent	noun	A1	xu	A cent is a small coin.	Một xu là một đồng tiền nhỏ.
+shopping-money	receipt	noun	A1	hóa đơn	Keep the receipt.	Hãy giữ hóa đơn.
+shopping-money	size	noun	A1	cỡ	What size do you wear?	Bạn mặc cỡ nào?
+shopping-money	customer	noun	A1	khách hàng	The customer is waiting.	Khách hàng đang đợi.
+shopping-money	wallet	noun	A1	ví	My wallet is in my bag.	Ví của tôi ở trong túi.
+shopping-money	card	noun	A1	thẻ	You can pay by card.	Bạn có thể trả bằng thẻ.
+shopping-money	bag	noun	A1	túi	She put the shoes in a bag.	Cô ấy bỏ giày vào một cái túi.
+shopping-money	sale	noun	A1	đợt giảm giá	The store has a sale.	Cửa hàng đang giảm giá.
+shopping-money	shop	verb	A1	mua sắm	We shop on Saturday.	Chúng tôi đi mua sắm vào thứ Bảy.
+shopping-money	cost	verb	A1	có giá	The ticket costs five dollars.	Vé có giá năm đô la.
+shopping-money	discount	noun	A2	mức giảm giá	Students get a discount.	Học sinh được giảm giá.
+shopping-money	bill	noun	A2	hóa đơn	The bill is twenty dollars.	Hóa đơn là hai mươi đô la.
+shopping-money	change	noun	A2	tiền thối	Here is your change.	Đây là tiền thối của bạn.
+shopping-money	total	noun	A2	tổng tiền	The total is fifteen dollars.	Tổng tiền là mười lăm đô la.
+shopping-money	cashier	noun	A2	thu ngân	Pay the cashier.	Hãy trả tiền cho thu ngân.
+shopping-money	basket	noun	A2	giỏ	Put the apples in the basket.	Hãy bỏ táo vào giỏ.
+shopping-money	cart	noun	A2	xe đẩy	The cart is full.	Xe đẩy đã đầy.
+shopping-money	shelf	noun	A2	kệ	The rice is on that shelf.	Gạo ở trên kệ đó.
+shopping-money	product	noun	A2	sản phẩm	This product is popular.	Sản phẩm này được ưa chuộng.
+shopping-money	item	noun	A2	món hàng	Each item has a price.	Mỗi món hàng đều có giá.
+shopping-money	quality	noun	A2	chất lượng	The quality is good.	Chất lượng tốt.
+shopping-money	brand	noun	A2	nhãn hiệu	What brand is this?	Đây là nhãn hiệu nào?
+shopping-money	order	noun	A2	đơn hàng	Your order is ready.	Đơn hàng của bạn đã sẵn sàng.
+shopping-money	credit	noun	A2	tín dụng	She bought the sofa on credit.	Cô ấy mua ghế sofa theo hình thức tín dụng.
+shopping-money	bank	noun	A2	ngân hàng	The bank closes at four.	Ngân hàng đóng cửa lúc bốn giờ.
+shopping-money	account	noun	A2	tài khoản	I opened a bank account.	Tôi đã mở một tài khoản ngân hàng.
+shopping-money	tip	noun	A2	tiền boa	Leave a tip for the server.	Hãy để tiền boa cho người phục vụ.
+shopping-money	tax	noun	A2	thuế	The price includes tax.	Giá đã gồm thuế.
+shopping-money	fee	noun	A2	phí	There is a small fee.	Có một khoản phí nhỏ.
+shopping-money	budget	noun	A2	ngân sách	We have a small budget.	Chúng tôi có một ngân sách nhỏ.
+shopping-money	checkout	noun	A2	quầy thanh toán	The checkout has a long line.	Quầy thanh toán có một hàng chờ rất dài.
+shopping-money	coupon	noun	A2	phiếu giảm giá	I have a coupon.	Tôi có một phiếu giảm giá.
+shopping-money	purse	noun	A2	túi xách	Her purse is on the counter.	Túi xách của cô ấy ở trên quầy.
+shopping-money	cost	noun	A2	chi phí	The cost is too high.	Chi phí quá cao.
+shopping-money	spend	verb	A2	tiêu	Do not spend all your money.	Đừng tiêu hết tiền.
+shopping-money	save	verb	A2	tiết kiệm	I save money every month.	Tôi tiết kiệm tiền mỗi tháng.
+shopping-money	exchange	verb	A2	đổi	Can I exchange this shirt?	Tôi đổi chiếc áo này được không?
+shopping-money	return	verb	A2	trả lại	You can return the item.	Bạn có thể trả lại món hàng.
+shopping-money	deliver	verb	A2	giao hàng	They deliver on Friday.	Họ giao hàng vào thứ Sáu.
+shopping-money	choose	verb	A2	chọn	Choose the blue one.	Hãy chọn cái màu xanh.
+shopping-money	borrow	verb	A2	vay	I need to borrow money.	Tôi cần vay tiền.
+shopping-money	lend	verb	A2	cho vay	The bank will lend money.	Ngân hàng sẽ cho vay tiền.
+shopping-money	owe	verb	A2	nợ	I owe him ten dollars.	Tôi nợ anh ấy mười đô la.
+shopping-money	charge	verb	A2	tính tiền	They charge extra for bags.	Họ tính thêm tiền túi.
+shopping-money	afford	verb	A2	có đủ khả năng chi	I cannot afford that car.	Tôi không đủ tiền mua chiếc xe đó.
+shopping-money	shopping	noun	A2	việc mua sắm	Shopping takes an hour.	Việc mua sắm mất một giờ.
+shopping-money	open	adjective	A2	đang mở cửa	The shop is open.	Cửa hàng đang mở cửa.
+shopping-money	closed	adjective	A2	đóng cửa	The bank is closed.	Ngân hàng đã đóng cửa.
+shopping-money	free	adjective	A2	miễn phí	Delivery is free today.	Hôm nay giao hàng miễn phí.
+shopping-money	online	adjective	A2	trực tuyến	I like online shopping.	Tôi thích mua sắm trực tuyến.
+shopping-money	gift	noun	A2	quà	This gift is for you.	Món quà này dành cho bạn.
+shopping-money	line	noun	A2	hàng chờ	The line is very long.	Hàng chờ rất dài.
+shopping-money	percent	noun	A2	phần trăm	The discount is ten percent.	Mức giảm giá là mười phần trăm.
+shopping-money	counter	noun	A2	quầy	Pay at the counter.	Hãy trả tiền ở quầy.
+shopping-money	bargain	noun	B1	món hời	This coat is a bargain.	Chiếc áo khoác này là một món hời.
+shopping-money	warranty	noun	B1	bảo hành	The warranty lasts one year.	Bảo hành kéo dài một năm.
+shopping-money	invoice	noun	B1	hóa đơn thanh toán	Please send the invoice.	Xin hãy gửi hóa đơn thanh toán.
+shopping-money	consumer	noun	B1	người tiêu dùng	The consumer wants a low price.	Người tiêu dùng muốn giá thấp.
+shopping-money	vendor	noun	B1	người bán	Ask the vendor about the price.	Hãy hỏi người bán về giá.
+shopping-money	retail	noun	B1	bán lẻ	She works in retail.	Cô ấy làm trong ngành bán lẻ.
+shopping-money	currency	noun	B1	tiền tệ	The local currency is the dollar.	Tiền tệ ở đây là đô la.
+shopping-money	loan	noun	B1	khoản vay	They took a bank loan.	Họ vay một khoản ở ngân hàng.
+shopping-money	debt	noun	B1	nợ	He is paying off a debt.	Anh ấy đang trả một món nợ.
+shopping-money	interest	noun	B1	lãi suất	The loan interest is high.	Lãi suất khoản vay cao.
+shopping-money	expense	noun	B1	khoản chi	Rent is my biggest expense.	Tiền thuê nhà là khoản chi lớn nhất của tôi.
+shopping-money	income	noun	B1	thu nhập	Their income is steady.	Thu nhập của họ ổn định.
+shopping-money	profit	noun	B1	lợi nhuận	The shop made a profit.	Cửa hàng đã có lợi nhuận.
+shopping-money	loss	noun	B1	khoản lỗ	The store reported a loss.	Cửa hàng báo một khoản lỗ.
+shopping-money	label	noun	B1	nhãn	Read the label first.	Hãy đọc nhãn trước.
+shopping-money	stock	noun	B1	hàng tồn	The stock is low.	Hàng tồn còn ít.
+shopping-money	supply	noun	B1	nguồn cung	Supply is limited today.	Hôm nay nguồn cung có hạn.
+shopping-money	demand	noun	B1	nhu cầu	Demand is high this week.	Nhu cầu tuần này cao.
+shopping-money	balance	noun	B1	số dư	Check your account balance.	Hãy kiểm tra số dư tài khoản.
+shopping-money	deposit	noun	B1	tiền đặt cọc	The deposit is fifty dollars.	Tiền đặt cọc là năm mươi đô la.
+shopping-money	statement	noun	B1	sao kê	I read my bank statement.	Tôi đã xem sao kê ngân hàng.
+shopping-money	installment	noun	B1	khoản trả góp	I pay one installment each month.	Mỗi tháng tôi trả một khoản trả góp.
+shopping-money	mortgage	noun	B1	khoản vay mua nhà	They have a mortgage.	Họ có một khoản vay mua nhà.
+shopping-money	advertisement	noun	B1	quảng cáo	I saw an advertisement.	Tôi đã thấy một quảng cáo.
+shopping-money	membership	noun	B1	tư cách thành viên	Membership is free.	Tư cách thành viên là miễn phí.
+shopping-money	insurance	noun	B1	bảo hiểm	Car insurance is required.	Bảo hiểm xe là bắt buộc.
+shopping-money	premium	noun	B1	phí bảo hiểm	The premium went up.	Phí bảo hiểm đã tăng.
+shopping-money	claim	noun	B1	hồ sơ bồi thường	She filed a claim.	Cô ấy đã nộp hồ sơ bồi thường.
+shopping-money	refund	noun	B1	tiền hoàn lại	I asked for a refund.	Tôi đã yêu cầu hoàn tiền.
+shopping-money	valuable	adjective	B1	có giá trị	This ring is valuable.	Chiếc nhẫn này có giá trị.
+shopping-money	affordable	adjective	B1	giá phải chăng	The phone is affordable.	Chiếc điện thoại có giá phải chăng.
+shopping-money	available	adjective	B1	còn hàng	This size is available.	Cỡ này còn hàng.
+shopping-money	faulty	adjective	B1	bị lỗi	The lamp is faulty.	Cái đèn bị lỗi.
+shopping-money	secondhand	adjective	B1	đã qua sử dụng	I bought a secondhand bike.	Tôi đã mua một chiếc xe đạp đã qua sử dụng.
+shopping-money	luxury	adjective	B1	xa xỉ	They stayed in a luxury hotel.	Họ ở một khách sạn xa xỉ.
+shopping-money	withdraw	verb	B1	rút tiền	I need to withdraw cash.	Tôi cần rút tiền mặt.
+shopping-money	transfer	verb	B1	chuyển khoản	I will transfer the money.	Tôi sẽ chuyển khoản.
+shopping-money	import	verb	B1	nhập khẩu	They import coffee.	Họ nhập khẩu cà phê.
+shopping-money	export	verb	B1	xuất khẩu	The country exports rice.	Nước này xuất khẩu gạo.
+shopping-money	advertise	verb	B1	quảng cáo	They advertise on television.	Họ quảng cáo trên truyền hình.
+shopping-money	purchase	verb	B1	mua	Customers can purchase online.	Khách hàng có thể mua trực tuyến.
+shopping-money	refund	verb	B1	hoàn tiền	The store will refund you.	Cửa hàng sẽ hoàn tiền cho bạn.
+shopping-money	weigh	verb	B1	cân	Please weigh the fruit.	Xin hãy cân trái cây.
+shopping-money	fit	verb	A2	vừa	These shoes fit well.	Đôi giày này vừa.
+shopping-money	wrap	verb	A2	gói	Can you wrap this gift?	Bạn gói món quà này được không?
+shopping-money	order	verb	A2	đặt hàng	I want to order a cake.	Tôi muốn đặt một cái bánh.
+shopping-money	deposit	verb	B1	gửi tiền	I deposit money every week.	Mỗi tuần tôi gửi tiền.
+shopping-money	insure	verb	B1	mua bảo hiểm	You should insure the car.	Bạn nên mua bảo hiểm cho xe.
+shopping-money	wholesale	noun	B1	bán sỉ	He buys fruit at wholesale.	Anh ấy mua trái cây theo giá sỉ.
+shopping-money	voucher	noun	B1	phiếu mua hàng	This voucher is for ten dollars.	Phiếu này có giá trị mười đô la.
+shopping-money	barcode	noun	B1	mã vạch	Scan the barcode.	Hãy quét mã vạch.
+shopping-money	fund	noun	B1	quỹ	The fund helps students.	Quỹ này hỗ trợ học sinh.
+shopping-money	check	noun	A2	séc	I paid by check.	Tôi trả bằng séc.
+shopping-money	broke	adjective	B1	hết tiền	I am broke after the trip.	Tôi hết tiền sau chuyến đi.
+shopping-money	inflation	noun	B2	lạm phát	Inflation raises prices.	Lạm phát làm giá tăng.
+shopping-money	investment	noun	B2	khoản đầu tư	The investment grew.	Khoản đầu tư đã tăng.
+shopping-money	investor	noun	B2	nhà đầu tư	The investor owns the shop.	Nhà đầu tư sở hữu cửa hàng.
+shopping-money	revenue	noun	B2	doanh thu	Revenue rose this year.	Doanh thu năm nay tăng.
+shopping-money	inventory	noun	B2	hàng tồn kho	They counted the inventory.	Họ đã kiểm kê hàng tồn kho.
+shopping-money	accountant	noun	B2	kế toán	The accountant checked the books.	Kế toán đã kiểm tra sổ sách.
+shopping-money	transaction	noun	B2	giao dịch	The transaction is complete.	Giao dịch đã hoàn tất.
+shopping-money	overdraft	noun	B2	thấu chi	He has an overdraft at the bank.	Anh ấy đang thấu chi ở ngân hàng.
+shopping-money	debit	noun	B2	ghi nợ	I used my debit card.	Tôi đã dùng thẻ ghi nợ.
+shopping-money	expenditure	noun	B2	chi tiêu	Track every expenditure.	Hãy theo dõi mọi khoản chi tiêu.
+shopping-money	bankrupt	adjective	B2	phá sản	The company went bankrupt.	Công ty đã phá sản.
+shopping-money	overpriced	adjective	B2	quá đắt	That jacket is overpriced.	Chiếc áo khoác đó quá đắt.
+shopping-money	economical	adjective	B2	tiết kiệm	This car is economical.	Chiếc xe này tiết kiệm.
+shopping-money	thrifty	adjective	B2	tằn tiện	She is thrifty with money.	Cô ấy rất tằn tiện với tiền.
+shopping-money	cashless	adjective	B2	không dùng tiền mặt	The cafe is cashless.	Quán này không nhận tiền mặt.
+shopping-money	haggle	verb	B2	mặc cả	People haggle at the market.	Người ta mặc cả ở chợ.
+shopping-money	reimburse	verb	B2	hoàn lại tiền	The company will reimburse you.	Công ty sẽ hoàn lại tiền cho bạn.
+shopping-money	budget	verb	B2	lập ngân sách	We budget for food each week.	Mỗi tuần chúng tôi lập ngân sách cho đồ ăn.
+shopping-money	audit	noun	B2	cuộc kiểm toán	The audit found an error.	Cuộc kiểm toán phát hiện một lỗi.
+shopping-money	tariff	noun	B2	thuế quan	The tariff increased the price.	Thuế quan làm giá tăng.
+shopping-money	subsidy	noun	B2	khoản trợ cấp	Farmers receive a subsidy.	Nông dân nhận một khoản trợ cấp.
+shopping-money	merchandise	noun	B2	hàng hóa	The merchandise is on sale.	Hàng hóa đang được giảm giá.
+shopping-money	pricey	adjective	B2	đắt đỏ	The hotel is pricey.	Khách sạn đắt đỏ.
+shopping-money	worthless	adjective	B2	vô giá trị	The broken phone is worthless.	Chiếc điện thoại hỏng chẳng còn giá trị.
+shopping-money	priceless	adjective	B2	vô giá	That painting is priceless.	Bức tranh đó vô giá.
+shopping-money	retail	adjective	B2	bán lẻ	The retail price is higher.	Giá bán lẻ cao hơn.
+shopping-money	wholesale	adjective	B2	bán sỉ	They offer a wholesale price.	Họ đưa ra giá bán sỉ.
+health	health	noun	A1	sức khỏe	Good health matters.	Sức khỏe tốt rất quan trọng.
+health	healthy	adjective	A1	khỏe mạnh	She is healthy.	Cô ấy khỏe mạnh.
+health	sick	adjective	A1	ốm	The child is sick today.	Hôm nay đứa trẻ bị ốm.
+health	ill	adjective	A1	bệnh	He is too ill to work.	Anh ấy bệnh quá nặng nên không đi làm được.
+health	doctor	noun	A1	bác sĩ	The doctor is kind.	Bác sĩ rất tử tế.
+health	nurse	noun	A1	y tá	The nurse took my temperature.	Y tá đã đo nhiệt độ cho tôi.
+health	hospital	noun	A1	bệnh viện	The hospital is open all night.	Bệnh viện mở cửa suốt đêm.
+health	medicine	noun	A1	thuốc	Take this medicine after lunch.	Hãy uống thuốc này sau bữa trưa.
+health	pill	noun	A1	viên thuốc	Take one pill with water.	Hãy uống một viên với nước.
+health	pain	noun	A1	cơn đau	I have a pain in my back.	Tôi bị đau ở lưng.
+health	fever	noun	A1	sốt	The child has a fever.	Đứa trẻ đang sốt.
+health	cough	noun	A1	cơn ho	He has a bad cough.	Anh ấy bị ho nặng.
+health	headache	noun	A1	đau đầu	I have a headache.	Tôi bị đau đầu.
+health	hurt	verb	A1	làm đau	Does your knee hurt?	Đầu gối của bạn có đau không?
+health	dentist	noun	A1	nha sĩ	I visit the dentist twice a year.	Tôi đi nha sĩ hai lần một năm.
+health	pharmacy	noun	A1	nhà thuốc	The pharmacy is on this street.	Nhà thuốc ở trên phố này.
+health	cold	noun	A1	cảm lạnh	I caught a cold.	Tôi bị cảm lạnh.
+health	rest	noun	A1	sự nghỉ ngơi	You need rest.	Bạn cần nghỉ ngơi.
+health	tired	adjective	A1	mệt	I feel tired.	Tôi cảm thấy mệt.
+health	ambulance	noun	A1	xe cứu thương	Call an ambulance.	Hãy gọi xe cứu thương.
+health	clinic	noun	A2	phòng khám	The clinic opens at eight.	Phòng khám mở cửa lúc tám giờ.
+health	patient	noun	A2	bệnh nhân	The patient is waiting.	Bệnh nhân đang đợi.
+health	appointment	noun	A2	cuộc hẹn	I have an appointment at ten.	Tôi có cuộc hẹn lúc mười giờ.
+health	emergency	noun	A2	tình huống cấp cứu	This is an emergency.	Đây là tình huống cấp cứu.
+health	bandage	noun	A2	băng gạc	Put a bandage on the cut.	Hãy băng vết đứt.
+health	illness	noun	A2	ốm đau	The illness lasted a week.	Cơn ốm kéo dài một tuần.
+health	flu	noun	A2	bệnh cúm	She has the flu.	Cô ấy bị cúm.
+health	toothache	noun	A2	đau răng	A toothache kept him awake.	Đau răng làm anh ấy không ngủ được.
+health	stomachache	noun	A2	đau bụng	I have a stomachache.	Tôi bị đau bụng.
+health	sore	adjective	A2	đau	My throat is sore.	Họng tôi đang đau.
+health	throat	noun	A2	họng	My throat hurts.	Họng tôi đau.
+health	thermometer	noun	A2	nhiệt kế	Use a thermometer.	Hãy dùng nhiệt kế.
+health	exercise	noun	A2	bài tập thể dục	Exercise is good for you.	Tập thể dục tốt cho bạn.
+health	diet	noun	A2	chế độ ăn	She is on a healthy diet.	Cô ấy đang ăn theo chế độ lành mạnh.
+health	weak	adjective	A2	yếu	He feels weak after the flu.	Anh ấy thấy yếu sau khi bị cúm.
+health	strong	adjective	A2	khỏe	She feels strong again.	Cô ấy cảm thấy khỏe lại.
+health	well	adjective	A2	khỏe	I am well now.	Bây giờ tôi đã khỏe.
+health	ache	verb	A2	đau nhức	My legs ache after the walk.	Chân tôi đau nhức sau khi đi bộ.
+health	ache	noun	A2	cơn đau nhức	The ache is gone.	Cơn đau nhức đã hết.
+health	blood	noun	A2	máu	The nurse took some blood.	Y tá đã lấy một ít máu.
+health	heart	noun	A2	tim	Your heart is strong.	Tim của bạn khỏe.
+health	stomach	noun	A2	dạ dày	My stomach hurts.	Dạ dày tôi đau.
+health	tooth	noun	A2	răng	This tooth is sensitive.	Chiếc răng này bị ê.
+health	bone	noun	A2	xương	The bone is broken.	Xương bị gãy.
+health	skin	noun	A2	da	Use cream on dry skin.	Hãy bôi kem lên da khô.
+health	muscle	noun	A2	cơ	The muscle is sore.	Cơ đang đau.
+health	cough	verb	A2	ho	Cover your mouth when you cough.	Hãy che miệng khi bạn ho.
+health	sneeze	verb	A2	hắt hơi	I sneeze a lot in spring.	Tôi hay hắt hơi vào mùa xuân.
+health	bleed	verb	A2	chảy máu	Your finger may bleed.	Ngón tay bạn có thể chảy máu.
+health	recover	verb	A2	hồi phục	He will recover soon.	Anh ấy sẽ sớm hồi phục.
+health	tablet	noun	A2	viên thuốc	Take one tablet at night.	Hãy uống một viên vào buổi tối.
+health	mask	noun	A2	khẩu trang	Wear a mask at the clinic.	Hãy đeo khẩu trang ở phòng khám.
+health	vitamin	noun	A2	vitamin	This fruit has vitamin C.	Trái cây này có vitamin C.
+health	stress	noun	A2	căng thẳng	Stress can cause headaches.	Căng thẳng có thể gây đau đầu.
+health	painful	adjective	A2	đau đớn	The cut is painful.	Vết đứt rất đau.
+health	dizzy	adjective	A2	chóng mặt	I feel dizzy.	Tôi thấy chóng mặt.
+health	medical	adjective	A2	y tế	She needs medical help.	Cô ấy cần trợ giúp y tế.
+health	symptom	noun	B1	triệu chứng	A fever is a common symptom.	Sốt là một triệu chứng thường gặp.
+health	disease	noun	B1	bệnh tật	The disease spreads quickly.	Bệnh tật lây rất nhanh.
+health	virus	noun	B1	vi rút	A virus caused the illness.	Một loại vi rút đã gây ra bệnh.
+health	infection	noun	B1	nhiễm trùng	The infection is mild.	Chỗ nhiễm trùng ở mức nhẹ.
+health	allergy	noun	B1	dị ứng	She has an allergy to dust.	Cô ấy bị dị ứng bụi.
+health	vaccine	noun	B1	vắc xin	The vaccine protects children.	Vắc xin bảo vệ trẻ em.
+health	prescription	noun	B1	đơn thuốc	The doctor wrote a prescription.	Bác sĩ đã viết một đơn thuốc.
+health	treatment	noun	B1	cách điều trị	The treatment takes two weeks.	Việc điều trị mất hai tuần.
+health	surgery	noun	B1	phẫu thuật	He needs surgery.	Anh ấy cần phẫu thuật.
+health	injury	noun	B1	chấn thương	The injury is not serious.	Chấn thương không nghiêm trọng.
+health	wound	noun	B1	vết thương	Clean the wound gently.	Hãy rửa vết thương nhẹ nhàng.
+health	lung	noun	B1	phổi	Fresh air helps the lung.	Không khí trong lành tốt cho phổi.
+health	brain	noun	B1	não	The brain needs oxygen.	Não cần oxy.
+health	chest	noun	B1	ngực	She has pain in her chest.	Cô ấy bị đau ở ngực.
+health	painkiller	noun	B1	thuốc giảm đau	A painkiller can help.	Thuốc giảm đau có thể giúp ích.
+health	capsule	noun	B1	viên nang	Swallow the capsule with water.	Hãy nuốt viên nang với nước.
+health	injection	noun	B1	mũi tiêm	The injection was quick.	Mũi tiêm rất nhanh.
+health	asthma	noun	B1	hen suyễn	Asthma makes breathing hard.	Hen suyễn làm việc thở trở nên khó.
+health	diabetes	noun	B1	bệnh tiểu đường	He controls his diabetes.	Anh ấy kiểm soát bệnh tiểu đường.
+health	cancer	noun	B1	ung thư	They found the cancer early.	Họ phát hiện ung thư sớm.
+health	glasses	noun	A2	kính mắt	She wears glasses.	Cô ấy đeo kính.
+health	wheelchair	noun	B1	xe lăn	He uses a wheelchair.	Anh ấy đi xe lăn.
+health	crutch	noun	B1	nạng	She walks with a crutch.	Cô ấy đi bằng nạng.
+health	pregnancy	noun	B1	thai kỳ	The pregnancy is going well.	Thai kỳ đang tiến triển tốt.
+health	hygiene	noun	B1	vệ sinh	Good hygiene prevents illness.	Vệ sinh tốt giúp phòng bệnh.
+health	toothbrush	noun	A2	bàn chải đánh răng	I need a new toothbrush.	Tôi cần một bàn chải đánh răng mới.
+health	toothpaste	noun	A2	kem đánh răng	This toothpaste is mild.	Kem đánh răng này dịu nhẹ.
+health	cavity	noun	B1	lỗ sâu răng	The dentist found a cavity.	Nha sĩ phát hiện một lỗ sâu răng.
+health	nausea	noun	B1	buồn nôn	The medicine can cause nausea.	Thuốc có thể gây buồn nôn.
+health	diarrhea	noun	B1	tiêu chảy	Diarrhea can cause weakness.	Tiêu chảy có thể làm cơ thể yếu.
+health	rash	noun	B1	phát ban	The rash itches.	Chỗ phát ban bị ngứa.
+health	bruise	noun	B1	vết bầm	He has a bruise on his arm.	Anh ấy có một vết bầm trên cánh tay.
+health	fracture	noun	B1	chỗ gãy xương	The fracture will heal.	Chỗ gãy xương sẽ lành.
+health	burn	noun	B1	vết bỏng	Cool the burn with water.	Hãy làm mát vết bỏng bằng nước.
+health	pulse	noun	B1	mạch	The nurse checked my pulse.	Y tá đã kiểm tra mạch của tôi.
+health	stroke	noun	B1	đột quỵ	A stroke needs fast help.	Đột quỵ cần được trợ giúp nhanh.
+health	therapy	noun	B1	liệu pháp	Therapy helps him walk.	Liệu pháp giúp anh ấy đi lại.
+health	anxiety	noun	B1	lo âu	Anxiety keeps her awake.	Lo âu làm cô ấy khó ngủ.
+health	depression	noun	B1	trầm cảm	Depression needs treatment.	Trầm cảm cần được điều trị.
+health	antibiotic	noun	B1	thuốc kháng sinh	The antibiotic fights infection.	Thuốc kháng sinh chống nhiễm trùng.
+health	dose	noun	B1	liều	Do not miss a dose.	Đừng bỏ một liều nào.
+health	surgeon	noun	B1	bác sĩ phẫu thuật	The surgeon explained the risk.	Bác sĩ phẫu thuật đã giải thích rủi ro.
+health	specialist	noun	B1	bác sĩ chuyên khoa	See a specialist if the pain continues.	Hãy gặp bác sĩ chuyên khoa nếu cơn đau còn kéo dài.
+health	germ	noun	B1	vi trùng	A germ can cause a fever.	Vi trùng có thể gây sốt.
+health	bacteria	noun	B1	vi khuẩn	Some bacteria cause disease.	Một số vi khuẩn gây bệnh.
+health	recovery	noun	B1	sự hồi phục	Recovery takes time.	Sự hồi phục cần thời gian.
+health	disability	noun	B1	khuyết tật	The ramp helps a person with a disability.	Đường dốc giúp người khuyết tật.
+health	vision	noun	B1	thị lực	Her vision is poor.	Thị lực của cô ấy kém.
+health	hearing	noun	B1	thính giác	Loud noise harms hearing.	Tiếng ồn lớn hại thính giác.
+health	calorie	noun	B1	calo	Count every calorie.	Hãy đếm từng calo.
+health	nutrition	noun	B1	dinh dưỡng	Good nutrition builds strength.	Dinh dưỡng tốt giúp cơ thể khỏe.
+health	poison	noun	B1	chất độc	Keep poison away from children.	Hãy để chất độc xa tầm trẻ em.
+health	scar	noun	B1	sẹo	The scar is small.	Vết sẹo nhỏ.
+health	addiction	noun	B1	sự nghiện	Addiction is hard to break.	Cai nghiện rất khó.
+health	cigarette	noun	A2	điếu thuốc lá	That cigarette smells bad.	Điếu thuốc đó có mùi khó chịu.
+health	alcohol	noun	B1	rượu	Too much alcohol is harmful.	Uống quá nhiều rượu có hại.
+health	checkup	noun	B1	buổi khám sức khỏe	I have a checkup tomorrow.	Ngày mai tôi đi khám sức khỏe.
+health	needle	noun	B1	kim tiêm	The needle is sterile.	Kim tiêm đã được tiệt trùng.
+health	ointment	noun	B1	thuốc mỡ	Put ointment on the rash.	Hãy bôi thuốc mỡ lên chỗ phát ban.
+health	syrup	noun	A2	siro	This syrup soothes a cough.	Siro này làm dịu cơn ho.
+health	operation	noun	B1	ca mổ	The operation was successful.	Ca mổ đã thành công.
+health	diagnosis	noun	B1	chẩn đoán	The diagnosis came quickly.	Chẩn đoán được đưa ra rất nhanh.
+health	effect	noun	B1	tác dụng	The effect starts in one hour.	Tác dụng bắt đầu sau một giờ.
+health	weight	noun	A2	cân nặng	Watch your weight.	Hãy chú ý cân nặng của bạn.
+health	breath	noun	A2	hơi thở	Take a deep breath.	Hãy hít một hơi thật sâu.
+health	counselor	noun	B1	chuyên viên tham vấn	The counselor listens carefully.	Chuyên viên tham vấn lắng nghe rất chăm chú.
+health	paramedic	noun	B1	nhân viên cấp cứu	A paramedic arrived quickly.	Nhân viên cấp cứu đến rất nhanh.
+health	ward	noun	B1	phòng bệnh	She is in a quiet ward.	Cô ấy ở một phòng bệnh yên tĩnh.
+health	cast	noun	B1	bột bó	His arm is in a cast.	Tay anh ấy đang được bó bột.
+health	sling	noun	B1	đai treo tay	Her arm is in a sling.	Tay cô ấy đang được đai treo.
+health	blister	noun	B1	nốt phồng rộp	The new shoe caused a blister.	Đôi giày mới làm phồng rộp chân.
+health	cholesterol	noun	B2	mỡ trong máu	His cholesterol is high.	Lượng mỡ trong máu của anh ấy cao.
+health	obesity	noun	B2	béo phì	Obesity raises health risks.	Béo phì làm tăng nguy cơ sức khỏe.
+health	protein	noun	B1	chất đạm	Eggs contain protein.	Trứng có chất đạm.
+health	pressure	noun	B1	huyết áp	The nurse checked his pressure.	Y tá đã kiểm tra huyết áp của anh ấy.
+health	heal	verb	B1	lành	The wound will heal.	Vết thương sẽ lành.
+health	cure	verb	B1	chữa khỏi	This medicine can cure the infection.	Thuốc này có thể chữa khỏi nhiễm trùng.
+health	prevent	verb	B1	phòng ngừa	Wash your hands to prevent illness.	Hãy rửa tay để phòng bệnh.
+health	examine	verb	B1	khám	The doctor will examine you.	Bác sĩ sẽ khám cho bạn.
+health	prescribe	verb	B1	kê đơn	The doctor may prescribe rest.	Bác sĩ có thể kê đơn nghỉ ngơi.
+health	diagnose	verb	B1	chẩn đoán	They diagnose the problem early.	Họ chẩn đoán vấn đề từ sớm.
+health	vaccinate	verb	B1	tiêm chủng	Doctors vaccinate children.	Bác sĩ tiêm chủng cho trẻ em.
+health	stretch	verb	A2	giãn cơ	Stretch before you run.	Hãy giãn cơ trước khi chạy.
+health	smoke	verb	A2	hút thuốc	Do not smoke in the hospital.	Đừng hút thuốc trong bệnh viện.
+health	injure	verb	B1	làm bị thương	A fall can injure your ankle.	Một cú ngã có thể làm cổ chân bị thương.
+health	swell	verb	B1	sưng	The ankle may swell.	Cổ chân có thể sưng.
+health	itch	verb	B1	ngứa	The rash may itch.	Chỗ phát ban có thể ngứa.
+health	treat	verb	B1	điều trị	They treat the infection with medicine.	Họ điều trị nhiễm trùng bằng thuốc.
+health	operate	verb	B1	mổ	The surgeon will operate tomorrow.	Bác sĩ phẫu thuật sẽ mổ vào ngày mai.
+health	disinfect	verb	B1	khử trùng	Disinfect the cut first.	Hãy khử trùng vết đứt trước.
+health	choke	verb	B1	bị nghẹn	Chew well so you do not choke.	Hãy nhai kỹ để khỏi bị nghẹn.
+health	faint	verb	B1	ngất	She might faint in the heat.	Cô ấy có thể ngất vì nóng.
+health	vomit	verb	B1	nôn	The child may vomit.	Đứa trẻ có thể nôn.
+health	rest	verb	A2	nghỉ ngơi	Rest for a few days.	Hãy nghỉ ngơi vài ngày.
+health	exercise	verb	A2	tập thể dục	I exercise every morning.	Tôi tập thể dục mỗi sáng.
+health	pregnant	adjective	B1	mang thai	She is pregnant.	Cô ấy đang mang thai.
+health	blind	adjective	B1	mù	The dog helps a blind man.	Con chó giúp một người mù.
+health	deaf	adjective	B1	điếc	She is deaf in one ear.	Cô ấy bị điếc một tai.
+health	disabled	adjective	B1	khuyết tật	The entrance is easy for disabled visitors.	Lối vào thuận tiện cho khách khuyết tật.
+health	mental	adjective	B1	thuộc tinh thần	Mental health matters too.	Sức khỏe tinh thần cũng quan trọng.
+health	allergic	adjective	B1	bị dị ứng	He is allergic to peanuts.	Anh ấy bị dị ứng đậu phộng.
+health	feverish	adjective	B1	đang sốt	The baby feels feverish.	Em bé có vẻ đang sốt.
+health	unconscious	adjective	B1	bất tỉnh	The driver was unconscious.	Tài xế bất tỉnh.
+health	conscious	adjective	B1	còn tỉnh	The patient is conscious.	Bệnh nhân vẫn còn tỉnh.
+health	obese	adjective	B2	béo phì	The doctor said he is obese.	Bác sĩ nói anh ấy bị béo phì.
+health	overweight	adjective	B1	thừa cân	She is slightly overweight.	Cô ấy hơi thừa cân.
+health	fit	adjective	A2	khỏe khoắn	He stays fit by walking.	Anh ấy giữ dáng khỏe bằng cách đi bộ.
+health	serious	adjective	B1	nghiêm trọng	The injury is serious.	Chấn thương này nghiêm trọng.
+health	minor	adjective	B1	nhẹ	It is a minor cut.	Đó chỉ là một vết đứt nhẹ.
+health	contagious	adjective	B1	lây	The flu is contagious.	Bệnh cúm có thể lây.
+health	infectious	adjective	B2	truyền nhiễm	The disease is infectious.	Bệnh này truyền nhiễm.
+health	chronic	adjective	B1	mãn tính	Asthma can be chronic.	Hen suyễn có thể là bệnh mãn tính.
+health	acute	adjective	B2	cấp tính	The pain is acute.	Cơn đau ở mức cấp tính.
+health	hygienic	adjective	B1	hợp vệ sinh	The kitchen is hygienic.	Nhà bếp hợp vệ sinh.
+health	injured	adjective	B1	bị thương	The injured man needs help.	Người bị thương cần được giúp đỡ.
+health	fatal	adjective	B2	gây chết người	The crash was fatal.	Vụ đâm đã gây chết người.
+health	nauseous	adjective	B1	buồn nôn	I feel nauseous.	Tôi cảm thấy buồn nôn.
+health	swollen	adjective	B1	sưng	Her ankle is swollen.	Cổ chân cô ấy bị sưng.
+health	dental	adjective	B1	thuộc nha khoa	I have a dental appointment.	Tôi có lịch hẹn nha khoa.
+health	quarantine	noun	B2	cách ly	Quarantine slowed the outbreak.	Cách ly đã làm chậm đợt bùng phát.
+health	epidemic	noun	B2	dịch bệnh	The epidemic spread fast.	Dịch bệnh lây lan rất nhanh.
+health	outbreak	noun	B2	đợt bùng phát	The outbreak started in the city.	Đợt bùng phát bắt đầu ở thành phố.
+health	immune	adjective	B2	miễn dịch	The vaccine makes you immune.	Vắc xin giúp bạn miễn dịch.
+health	immunity	noun	B2	miễn dịch	Good sleep supports immunity.	Ngủ đủ giấc hỗ trợ miễn dịch.
+health	sanitize	verb	B2	khử khuẩn	Sanitize your hands often.	Hãy khử khuẩn tay thường xuyên.
+health	check	verb	A2	kiểm tra	The nurse will check your pulse.	Y tá sẽ kiểm tra mạch của bạn.
+health	breathe	verb	A2	thở	Please breathe slowly.	Hãy thở chậm lại.
+health	swallow	verb	A2	nuốt	Swallow the pill with water.	Hãy nuốt viên thuốc với nước.
+health	cure	noun	B1	cách chữa khỏi	There is no quick cure.	Không có cách chữa khỏi nhanh.
+health	addict	noun	B2	người nghiện	An addict needs support.	Người nghiện cần được hỗ trợ.
+health	rehabilitation	noun	B2	phục hồi chức năng	Rehabilitation takes months.	Phục hồi chức năng mất nhiều tháng.
+work-study	work	noun	A1	công việc	Work starts at eight.	Giờ làm bắt đầu lúc tám giờ.
+work-study	work	verb	A1	làm việc	I work in an office.	Tôi làm việc ở văn phòng.
+work-study	job	noun	A1	việc làm	She found a job.	Cô ấy đã tìm được việc.
+work-study	office	noun	A1	văn phòng	The office is downtown.	Văn phòng ở trung tâm.
+work-study	boss	noun	A1	sếp	My boss is fair.	Sếp của tôi công bằng.
+work-study	teacher	noun	A1	giáo viên	The teacher is kind.	Giáo viên rất tử tế.
+work-study	student	noun	A1	học sinh	The student is polite.	Học sinh rất lễ phép.
+work-study	school	noun	A1	trường học	The school is big.	Trường học rất lớn.
+work-study	class	noun	A1	lớp học	Class starts at eight.	Lớp học bắt đầu lúc tám giờ.
+work-study	book	noun	A1	sách	This book is new.	Cuốn sách này còn mới.
+work-study	pen	noun	A1	bút mực	This pen is blue.	Bút này màu xanh.
+work-study	pencil	noun	A1	bút chì	I need a pencil.	Tôi cần một cây bút chì.
+work-study	paper	noun	A1	giấy	I need some paper.	Tôi cần ít giấy.
+work-study	desk	noun	A1	bàn làm việc	The desk is clean.	Bàn làm việc sạch.
+work-study	read	verb	A1	đọc	Read the question.	Hãy đọc câu hỏi.
+work-study	write	verb	A1	viết	Write your name.	Hãy viết tên của bạn.
+work-study	learn	verb	A1	học	Children learn quickly.	Trẻ em học rất nhanh.
+work-study	study	verb	A1	học bài	I study at night.	Tôi học bài vào buổi tối.
+work-study	teach	verb	A1	dạy	She can teach math.	Cô ấy dạy toán được.
+work-study	question	noun	A1	câu hỏi	Ask a question.	Hãy đặt một câu hỏi.
+work-study	answer	noun	A1	câu trả lời	Write the answer.	Hãy viết câu trả lời.
+work-study	answer	verb	A1	trả lời	Please answer the question.	Hãy trả lời câu hỏi.
+work-study	test	noun	A1	bài kiểm tra	We have a test today.	Hôm nay chúng tôi có bài kiểm tra.
+work-study	homework	noun	A1	bài tập về nhà	I do homework after school.	Tôi làm bài tập về nhà sau giờ học.
+work-study	lesson	noun	A1	bài học	The lesson is easy.	Bài học này dễ.
+work-study	english	noun	A1	tiếng Anh	She speaks English.	Cô ấy nói tiếng Anh.
+work-study	meeting	noun	A2	cuộc họp	The meeting starts at nine.	Cuộc họp bắt đầu lúc chín giờ.
+work-study	colleague	noun	A2	đồng nghiệp	A colleague helped me.	Một đồng nghiệp đã giúp tôi.
+work-study	email	noun	A2	thư điện tử	Send me an email.	Hãy gửi cho tôi một thư điện tử.
+work-study	computer	noun	A2	máy tính	The computer is on.	Máy tính đang bật.
+work-study	notebook	noun	A2	vở	Write it in your notebook.	Hãy viết vào vở của bạn.
+work-study	classroom	noun	A2	phòng học	The classroom is clean.	Phòng học sạch.
+work-study	university	noun	A2	đại học	The university is famous.	Trường đại học rất nổi tiếng.
+work-study	college	noun	A2	trường cao đẳng	He goes to college.	Anh ấy học cao đẳng.
+work-study	exam	noun	A2	kỳ thi	The exam is tomorrow.	Kỳ thi vào ngày mai.
+work-study	grade	noun	A2	điểm số	Her grade is high.	Điểm của cô ấy cao.
+work-study	subject	noun	A2	môn học	History is my favorite subject.	Lịch sử là môn tôi thích nhất.
+work-study	course	noun	A2	khóa học	The course lasts ten weeks.	Khóa học kéo dài mười tuần.
+work-study	library	noun	A2	thư viện	The library is quiet.	Thư viện rất yên tĩnh.
+work-study	dictionary	noun	A2	từ điển	Look in the dictionary.	Hãy tra trong từ điển.
+work-study	project	noun	A2	dự án	The project is due soon.	Dự án sắp đến hạn nộp.
+work-study	report	noun	A2	báo cáo	Write a short report.	Hãy viết một báo cáo ngắn.
+work-study	skill	noun	A2	kỹ năng	Typing is a useful skill.	Đánh máy là một kỹ năng hữu ích.
+work-study	company	noun	A2	công ty	The company is large.	Công ty rất lớn.
+work-study	manager	noun	A2	quản lý	The manager approved the plan.	Người quản lý đã duyệt kế hoạch.
+work-study	employee	noun	A2	nhân viên	Every employee has a desk.	Mỗi nhân viên có một bàn làm việc.
+work-study	task	noun	A2	nhiệm vụ	This task is urgent.	Nhiệm vụ này rất gấp.
+work-study	salary	noun	A2	lương	The salary is paid monthly.	Lương được trả theo tháng.
+work-study	interview	noun	A2	buổi phỏng vấn	The interview is at two.	Buổi phỏng vấn lúc hai giờ.
+work-study	uniform	noun	A2	đồng phục	Students wear a uniform.	Học sinh mặc đồng phục.
+work-study	note	noun	A2	ghi chú	Take a note in class.	Hãy ghi chú trong lớp.
+work-study	mistake	noun	A2	lỗi	I made a mistake.	Tôi đã mắc một lỗi.
+work-study	correct	adjective	A2	đúng	Your answer is correct.	Câu trả lời của bạn đúng.
+work-study	practice	verb	A2	luyện tập	Practice this word.	Hãy luyện tập từ này.
+work-study	practice	noun	A2	sự luyện tập	Practice helps you improve.	Luyện tập giúp bạn tiến bộ.
+work-study	remember	verb	A2	nhớ	I remember the answer.	Tôi nhớ câu trả lời.
+work-study	understand	verb	A2	hiểu	Do you understand the lesson?	Bạn có hiểu bài không?
+work-study	forget	verb	A2	quên	Do not forget the homework.	Đừng quên bài tập về nhà.
+work-study	listen	verb	A2	nghe	Listen to the teacher.	Hãy nghe giáo viên.
+work-study	speak	verb	A2	nói	Speak clearly in class.	Hãy nói rõ trong lớp.
+work-study	classmate	noun	A2	bạn cùng lớp	My classmate sits near me.	Bạn cùng lớp ngồi gần tôi.
+work-study	principal	noun	A2	hiệu trưởng	The principal visited our class.	Hiệu trưởng đã đến thăm lớp chúng tôi.
+work-study	campus	noun	A2	khuôn viên trường	The campus is large.	Khuôn viên trường rất rộng.
+work-study	semester	noun	A2	học kỳ	The semester ends in May.	Học kỳ kết thúc vào tháng Năm.
+work-study	math	noun	A2	môn toán	Math is hard for me.	Môn toán khó với tôi.
+work-study	science	noun	A2	khoa học	Science class is interesting.	Tiết khoa học rất thú vị.
+work-study	history	noun	A2	lịch sử	History tells us about the past.	Lịch sử kể cho chúng ta về quá khứ.
+work-study	grammar	noun	A2	ngữ pháp	Grammar helps you write.	Ngữ pháp giúp bạn viết.
+work-study	vocabulary	noun	A2	từ vựng	This lesson teaches vocabulary.	Bài học này dạy từ vựng.
+work-study	spelling	noun	A2	chính tả	Check your spelling.	Hãy kiểm tra chính tả.
+work-study	sentence	noun	A2	câu	Write a full sentence.	Hãy viết một câu hoàn chỉnh.
+work-study	essay	noun	A2	bài luận	I must write an essay.	Tôi phải viết một bài luận.
+work-study	certificate	noun	A2	chứng chỉ	He received a certificate.	Anh ấy đã nhận một chứng chỉ.
+work-study	diploma	noun	B1	bằng tốt nghiệp	She earned a diploma.	Cô ấy đã lấy được bằng tốt nghiệp.
+work-study	degree	noun	B1	bằng cấp	She earned a degree.	Cô ấy đã lấy được một bằng cấp.
+work-study	scholarship	noun	B1	học bổng	She won a scholarship.	Cô ấy giành được học bổng.
+work-study	tuition	noun	B1	học phí	Tuition is expensive.	Học phí rất đắt.
+work-study	lecture	noun	B1	bài giảng	The lecture was long.	Bài giảng rất dài.
+work-study	assignment	noun	B1	bài được giao	The assignment is due tomorrow.	Bài được giao phải nộp vào ngày mai.
+work-study	research	noun	B1	nghiên cứu	The research is new.	Nghiên cứu này còn mới.
+work-study	goal	noun	A2	mục tiêu	My goal is to pass.	Mục tiêu của tôi là đỗ.
+work-study	career	noun	B1	sự nghiệp	She wants a career in science.	Cô ấy muốn theo đuổi sự nghiệp khoa học.
+work-study	profession	noun	B1	nghề nghiệp	Teaching is her profession.	Dạy học là nghề của cô ấy.
+work-study	experience	noun	B1	kinh nghiệm	She has work experience.	Cô ấy có kinh nghiệm làm việc.
+work-study	factory	noun	A2	nhà máy	The factory makes cars.	Nhà máy sản xuất ô tô.
+work-study	shift	noun	B1	ca làm	I work the night shift.	Tôi làm ca đêm.
+work-study	break	noun	A2	giờ giải lao	We take a break at noon.	Chúng tôi nghỉ giải lao vào buổi trưa.
+work-study	duty	noun	B1	nhiệm vụ	Safety is our duty.	An toàn là nhiệm vụ của chúng tôi.
+work-study	deadline	noun	B1	hạn chót	The deadline is Monday.	Hạn chót là thứ Hai.
+work-study	presentation	noun	B1	bài thuyết trình	Her presentation was clear.	Bài thuyết trình của cô ấy rất rõ.
+work-study	application	noun	B1	đơn xin	Send your application today.	Hãy gửi đơn xin trong hôm nay.
+work-study	wage	noun	B1	tiền công	The wage is fair.	Tiền công công bằng.
+work-study	overtime	noun	B1	giờ làm thêm	He works overtime this week.	Tuần này anh ấy làm thêm giờ.
+work-study	business	noun	A2	công việc kinh doanh	She runs a small business.	Cô ấy điều hành một cơ sở kinh doanh nhỏ.
+work-study	printer	noun	A2	máy in	The printer needs paper.	Máy in cần giấy.
+work-study	keyboard	noun	A2	bàn phím	The keyboard is new.	Bàn phím còn mới.
+work-study	laptop	noun	A2	máy tính xách tay	I bring a laptop to class.	Tôi mang máy tính xách tay đến lớp.
+work-study	eraser	noun	A1	cục tẩy	May I use your eraser?	Tôi dùng cục tẩy của bạn được không?
+work-study	ruler	noun	A1	thước kẻ	Use a ruler.	Hãy dùng thước kẻ.
+work-study	textbook	noun	A2	sách giáo khoa	Open your textbook.	Hãy mở sách giáo khoa.
+work-study	calculator	noun	A2	máy tính bỏ túi	Use a calculator in math.	Hãy dùng máy tính bỏ túi trong giờ toán.
+work-study	quiz	noun	A2	bài kiểm tra ngắn	We have a quiz today.	Hôm nay chúng tôi có bài kiểm tra ngắn.
+work-study	score	noun	A2	điểm	His score is high.	Điểm của anh ấy cao.
+work-study	error	noun	A2	lỗi sai	There is an error in the report.	Có một lỗi sai trong báo cáo.
+work-study	professor	noun	B1	giáo sư	The professor gave a lecture.	Giáo sư đã giảng bài.
+work-study	tutor	noun	B1	gia sư	A tutor helps after class.	Gia sư giúp đỡ sau giờ học.
+work-study	coworker	noun	A2	đồng nghiệp	My coworker shares this desk.	Đồng nghiệp của tôi dùng chung bàn này.
+work-study	workplace	noun	B1	nơi làm việc	The workplace is safe.	Nơi làm việc an toàn.
+work-study	training	noun	B1	khóa đào tạo	Training starts next week.	Khóa đào tạo bắt đầu vào tuần sau.
+work-study	contract	noun	B1	hợp đồng	Read the contract carefully.	Hãy đọc hợp đồng cẩn thận.
+work-study	resume	noun	B1	sơ yếu lý lịch	Bring your resume.	Hãy mang sơ yếu lý lịch theo.
+work-study	copy	noun	A2	bản sao	I need a copy of the form.	Tôi cần một bản sao của mẫu đơn.
+work-study	file	noun	A2	hồ sơ	Put the file on the desk.	Hãy để hồ sơ lên bàn.
+work-study	folder	noun	A2	bìa hồ sơ	The folder is blue.	Bìa hồ sơ màu xanh.
+work-study	document	noun	B1	tài liệu	Sign the document.	Hãy ký vào tài liệu.
+work-study	agenda	noun	B1	chương trình họp	The agenda has five items.	Chương trình họp có năm mục.
+work-study	conference	noun	B1	hội nghị	The conference is in June.	Hội nghị vào tháng Sáu.
+work-study	intern	noun	B1	thực tập sinh	The intern takes notes.	Thực tập sinh ghi chép.
+work-study	department	noun	B1	phòng ban	She works in this department.	Cô ấy làm ở phòng ban này.
+work-study	major	noun	B1	chuyên ngành	Her major is biology.	Chuyên ngành của cô ấy là sinh học.
+work-study	minor	noun	B1	chuyên ngành phụ	His minor is history.	Chuyên ngành phụ của anh ấy là lịch sử.
+work-study	faculty	noun	B1	khoa	The faculty meets today.	Khoa họp hôm nay.
+work-study	attendance	noun	B1	sự chuyên cần	Attendance is required.	Đi học đầy đủ là bắt buộc.
+work-study	graduation	noun	B1	lễ tốt nghiệp	Graduation is in June.	Lễ tốt nghiệp vào tháng Sáu.
+work-study	result	noun	A2	kết quả	The result is good.	Kết quả tốt.
+work-study	method	noun	B1	phương pháp	This method works well.	Phương pháp này hiệu quả.
+work-study	summary	noun	B1	bản tóm tắt	Write a short summary.	Hãy viết một bản tóm tắt ngắn.
+work-study	paragraph	noun	A2	đoạn văn	Read the first paragraph.	Hãy đọc đoạn văn đầu.
+work-study	pronunciation	noun	B1	cách phát âm	Her pronunciation is clear.	Cách phát âm của cô ấy rõ.
+work-study	meaning	noun	A2	nghĩa	What is the meaning of this word?	Nghĩa của từ này là gì?
+work-study	laboratory	noun	B1	phòng thí nghiệm	The laboratory is closed today.	Hôm nay phòng thí nghiệm đóng cửa.
+work-study	experiment	noun	B1	thí nghiệm	The experiment was successful.	Thí nghiệm đã thành công.
+work-study	data	noun	B1	dữ liệu	The data is useful.	Dữ liệu này hữu ích.
+work-study	language	noun	A1	ngôn ngữ	English is a useful language.	Tiếng Anh là một ngôn ngữ hữu ích.
+work-study	geography	noun	A2	địa lý	We have geography today.	Hôm nay chúng tôi có tiết địa lý.
+work-study	biology	noun	B1	sinh học	Biology studies life.	Sinh học nghiên cứu sự sống.
+work-study	chemistry	noun	B1	hóa học	Chemistry class is in the laboratory.	Tiết hóa học ở phòng thí nghiệm.
+work-study	physics	noun	B1	vật lý	Physics explains motion.	Vật lý giải thích sự chuyển động.
+work-study	literature	noun	B1	văn học	She enjoys literature.	Cô ấy thích văn học.
+work-study	economics	noun	B1	kinh tế học	Economics looks at money and work.	Kinh tế học xem xét tiền bạc và công việc.
+work-study	engineering	noun	B1	kỹ thuật	He studies engineering.	Anh ấy học ngành kỹ thuật.
+work-study	art	noun	A2	mỹ thuật	Art class is on Friday.	Tiết mỹ thuật vào thứ Sáu.
+work-study	music	noun	A2	âm nhạc	Music class is fun.	Tiết âm nhạc rất vui.
+work-study	employer	noun	B1	người sử dụng lao động	The employer pays on Friday.	Người sử dụng lao động trả lương vào thứ Sáu.
+work-study	staff	noun	A2	nhân viên	The staff meet on Monday.	Nhân viên họp vào thứ Hai.
+work-study	kindergarten	noun	A2	trường mẫu giáo	The child is in kindergarten.	Đứa trẻ đang học mẫu giáo.
+work-study	term	noun	A2	học kỳ	The term ends in December.	Học kỳ kết thúc vào tháng Mười Hai.
+work-study	password	noun	A2	mật khẩu	Change your password often.	Hãy đổi mật khẩu thường xuyên.
+work-study	labor	noun	B1	lao động	Farm labor is hard.	Lao động nông nghiệp vất vả.
+work-study	study	noun	A2	việc học	Study takes time.	Việc học cần thời gian.
+work-study	classwork	noun	A2	bài làm trên lớp	Finish the classwork now.	Hãy hoàn thành bài làm trên lớp ngay.
+work-study	highlighter	noun	A2	bút đánh dấu	Use a highlighter.	Hãy dùng bút đánh dấu.
+work-study	marker	noun	A2	bút dạ	The marker is black.	Bút dạ màu đen.
+work-study	stapler	noun	A2	cái dập ghim	The stapler is empty.	Cái dập ghim hết ghim.
+work-study	succeed	verb	B1	thành công	Work hard and you can succeed.	Chăm chỉ thì bạn có thể thành công.
+work-study	fail	verb	A2	trượt	He might fail the test.	Anh ấy có thể trượt bài kiểm tra.
+work-study	pass	verb	A2	đỗ	She will pass the exam.	Cô ấy sẽ đỗ kỳ thi.
+work-study	attend	verb	B1	tham dự	Please attend the meeting.	Hãy tham dự cuộc họp.
+work-study	apply	verb	B1	nộp đơn	Apply before Friday.	Hãy nộp đơn trước thứ Sáu.
+work-study	hire	verb	B1	tuyển dụng	They hire new staff each year.	Mỗi năm họ tuyển nhân viên mới.
+work-study	fire	verb	B1	sa thải	The company had to fire him.	Công ty phải sa thải anh ấy.
+work-study	resign	verb	B1	từ chức	She will resign in June.	Cô ấy sẽ từ chức vào tháng Sáu.
+work-study	retire	verb	B1	nghỉ hưu	He will retire next year.	Anh ấy sẽ nghỉ hưu vào năm sau.
+work-study	promote	verb	B1	thăng chức	They promote skilled workers.	Họ thăng chức cho người có tay nghề.
+work-study	train	verb	B1	đào tạo	They train new employees.	Họ đào tạo nhân viên mới.
+work-study	organize	verb	B1	sắp xếp	Please organize the files.	Hãy sắp xếp các hồ sơ.
+work-study	review	verb	B1	ôn tập	Review your notes tonight.	Hãy ôn lại ghi chú tối nay.
+work-study	revise	verb	B1	sửa lại	Revise the essay.	Hãy sửa lại bài luận.
+work-study	translate	verb	B1	dịch	Translate this sentence.	Hãy dịch câu này.
+work-study	define	verb	B1	định nghĩa	Define the new word.	Hãy định nghĩa từ mới.
+work-study	explain	verb	A2	giải thích	Please explain the rule.	Hãy giải thích quy tắc.
+work-study	discuss	verb	B1	thảo luận	We discuss the project in class.	Chúng tôi thảo luận dự án trong lớp.
+work-study	solve	verb	A2	giải	Solve the math problem.	Hãy giải bài toán.
+work-study	calculate	verb	B1	tính	Calculate the total.	Hãy tính tổng.
+work-study	measure	verb	A2	đo	Measure the desk.	Hãy đo cái bàn.
+work-study	graduate	verb	B1	tốt nghiệp	She will graduate in May.	Cô ấy sẽ tốt nghiệp vào tháng Năm.
+work-study	graduate	noun	B1	người tốt nghiệp	The graduate found a job.	Người tốt nghiệp đã tìm được việc.
+work-study	research	verb	B1	nghiên cứu	Research the topic first.	Hãy nghiên cứu chủ đề trước.
+work-study	test	verb	A2	kiểm tra	The teacher will test the class.	Giáo viên sẽ kiểm tra lớp.
+work-study	grade	verb	B1	chấm điểm	Teachers grade the tests.	Giáo viên chấm các bài kiểm tra.
+work-study	correct	verb	A2	sửa	Please correct the error.	Hãy sửa lỗi sai.
+work-study	type	verb	A2	đánh máy	Type your name here.	Hãy đánh máy tên bạn vào đây.
+work-study	print	verb	A2	in	Print the report.	Hãy in báo cáo.
+work-study	copy	verb	A2	sao chép	Copy this sentence.	Hãy chép câu này.
+work-study	search	verb	A2	tra cứu	Search the library catalog.	Hãy tra trong mục lục thư viện.
+work-study	enroll	verb	B1	ghi danh	I will enroll in the course.	Tôi sẽ ghi danh vào khóa học.
+work-study	submit	verb	B1	nộp	Submit the essay today.	Hãy nộp bài luận hôm nay.
+work-study	qualify	verb	B1	đủ điều kiện	You qualify for this job.	Bạn đủ điều kiện cho công việc này.
+work-study	collaborate	verb	B1	hợp tác	We collaborate on projects.	Chúng tôi hợp tác làm dự án.
+work-study	summarize	verb	B1	tóm tắt	Summarize the lesson.	Hãy tóm tắt bài học.
+work-study	compare	verb	B1	so sánh	Compare the two answers.	Hãy so sánh hai câu trả lời.
+work-study	analyze	verb	B1	phân tích	Analyze the data.	Hãy phân tích dữ liệu.
+work-study	evaluate	verb	B1	đánh giá	Evaluate the results.	Hãy đánh giá kết quả.
+work-study	introduce	verb	A2	giới thiệu	Introduce yourself to the class.	Hãy tự giới thiệu với lớp.
+work-study	conclude	verb	B1	kết luận	Conclude the report clearly.	Hãy kết luận báo cáo cho rõ.
+work-study	memorize	verb	B1	học thuộc	Memorize these words.	Hãy học thuộc các từ này.
+work-study	spell	verb	A2	đánh vần	Spell your last name.	Hãy đánh vần họ của bạn.
+work-study	pronounce	verb	A2	phát âm	Pronounce the word slowly.	Hãy phát âm từ này chậm.
+work-study	interview	verb	B1	phỏng vấn	They will interview three people.	Họ sẽ phỏng vấn ba người.
+work-study	report	verb	B1	báo cáo	Report the problem to your boss.	Hãy báo cáo vấn đề với sếp.
+work-study	note	verb	B1	ghi lại	Note the date of the exam.	Hãy ghi lại ngày thi.
+work-study	review	noun	B1	bài ôn	The review is tomorrow.	Bài ôn vào ngày mai.
+work-study	present	adjective	A2	có mặt	All students are present.	Tất cả học sinh đều có mặt.
+work-study	absent	adjective	A2	vắng mặt	Two students are absent.	Hai học sinh vắng mặt.
+work-study	punctual	adjective	B1	đúng giờ	Please be punctual for class.	Hãy đến lớp đúng giờ.
+work-study	due	adjective	B1	đến hạn	The essay is due on Friday.	Bài luận đến hạn vào thứ Sáu.
+work-study	professional	adjective	B1	chuyên nghiệp	Please be professional at work.	Hãy chuyên nghiệp khi làm việc.
+work-study	temporary	adjective	B1	tạm thời	This job is temporary.	Công việc này chỉ là tạm thời.
+work-study	permanent	adjective	B1	lâu dài	She wants a permanent job.	Cô ấy muốn một công việc lâu dài.
+work-study	skillful	adjective	B1	khéo léo	She is skillful with numbers.	Cô ấy rất khéo với các con số.
+work-study	competent	adjective	B1	có năng lực	He is a competent manager.	Anh ấy là một quản lý có năng lực.
+work-study	efficient	adjective	B2	hiệu quả	An efficient plan saves time.	Một kế hoạch hiệu quả tiết kiệm thời gian.
+work-study	academic	adjective	B1	học thuật	The academic year starts soon.	Năm học sắp bắt đầu.
+work-study	qualified	adjective	B1	đủ trình độ	She is qualified for the job.	Cô ấy đủ trình độ cho công việc này.
+work-study	experienced	adjective	B1	có kinh nghiệm	He is an experienced teacher.	Anh ấy là một giáo viên có kinh nghiệm.
+work-study	elementary	adjective	A2	tiểu học	He attends elementary school.	Cậu ấy học trường tiểu học.
+work-study	workload	noun	B2	khối lượng công việc	The workload is heavy.	Khối lượng công việc rất nặng.
+work-study	performance	noun	B2	hiệu suất làm việc	Her performance improved.	Hiệu suất làm việc của cô ấy đã tốt hơn.
+work-study	productivity	noun	B2	năng suất	Productivity increased this month.	Năng suất tháng này đã tăng.
+work-study	qualification	noun	B2	bằng cấp chuyên môn	The job asks for a qualification.	Công việc này yêu cầu một bằng cấp chuyên môn.
+work-study	reference	noun	B2	thư giới thiệu	Ask a teacher for a reference.	Hãy nhờ giáo viên viết thư giới thiệu.
+work-study	recommendation	noun	B2	thư tiến cử	The recommendation helped her.	Thư tiến cử đã giúp cô ấy.
+work-study	portfolio	noun	B2	hồ sơ năng lực	Bring your portfolio.	Hãy mang hồ sơ năng lực theo.
+work-study	applicant	noun	B2	ứng viên	The applicant arrived early.	Ứng viên đến sớm.
+work-study	candidate	noun	B2	ứng viên	The candidate answered well.	Ứng viên trả lời tốt.
+work-study	vacancy	noun	B2	vị trí còn trống	There is a vacancy in the office.	Văn phòng còn một vị trí trống.
+work-study	layoff	noun	B2	đợt sa thải	The layoff surprised the staff.	Đợt sa thải làm nhân viên bất ngờ.
+work-study	promotion	noun	B2	sự thăng chức	The promotion includes higher pay.	Sự thăng chức đi kèm mức lương cao hơn.
+work-study	appraisal	noun	B2	kỳ đánh giá	The appraisal is in June.	Kỳ đánh giá vào tháng Sáu.
+work-study	internship	noun	B2	kỳ thực tập	The internship lasts three months.	Kỳ thực tập kéo dài ba tháng.
+work-study	undergraduate	noun	B2	sinh viên đại học	He is an undergraduate.	Anh ấy là sinh viên đại học.
+work-study	postgraduate	noun	B2	học viên sau đại học	She is a postgraduate.	Cô ấy là học viên sau đại học.
+work-study	plagiarism	noun	B2	đạo văn	Plagiarism is not allowed.	Đạo văn không được phép.
+work-study	citation	noun	B2	trích dẫn	Add a citation.	Hãy thêm một trích dẫn.
+work-study	thesis	noun	B2	luận văn	She is writing a thesis.	Cô ấy đang viết luận văn.
+work-study	syllabus	noun	B2	đề cương môn học	Read the syllabus tonight.	Hãy đọc đề cương môn học tối nay.
+work-study	curriculum	noun	B2	chương trình học	The curriculum includes science.	Chương trình học có môn khoa học.
+work-study	seminar	noun	B2	buổi hội thảo	The seminar starts at noon.	Buổi hội thảo bắt đầu vào buổi trưa.
+work-study	workshop	noun	B2	buổi tập huấn	The workshop is practical.	Buổi tập huấn mang tính thực hành.
+work-study	dean	noun	B2	trưởng khoa	The dean approved the course.	Trưởng khoa đã duyệt khóa học.
+work-study	negotiate	verb	B2	đàm phán	They negotiate the salary.	Họ đàm phán mức lương.
+work-study	recruit	verb	B2	tuyển dụng	The company will recruit in May.	Công ty sẽ tuyển dụng vào tháng Năm.
+work-study	multitask	verb	B2	làm nhiều việc cùng lúc	Do not multitask in class.	Đừng làm nhiều việc cùng lúc trong lớp.
+work-study	procrastinate	verb	B2	trì hoãn	Do not procrastinate before a test.	Đừng trì hoãn trước kỳ kiểm tra.
+work-study	cooperate	verb	B1	hợp tác	Please cooperate with your team.	Hãy hợp tác với nhóm của bạn.
+work-study	concentrate	verb	B1	tập trung	Concentrate on the lesson.	Hãy tập trung vào bài học.
+work-study	repeat	verb	A2	nhắc lại	Please repeat the word.	Hãy nhắc lại từ đó.
+work-study	underline	verb	A2	gạch chân	Underline the new words.	Hãy gạch chân các từ mới.
+work-study	highlight	verb	A2	tô sáng	Highlight the main idea.	Hãy tô sáng ý chính.
+work-study	register	verb	B1	đăng ký	Register for the course online.	Hãy đăng ký khóa học trực tuyến.
+work-study	dropout	noun	B2	người bỏ học	A dropout can return later.	Người bỏ học có thể quay lại sau.
+work-study	lecture	verb	B2	giảng bài	She will lecture at noon.	Cô ấy sẽ giảng bài vào buổi trưa.
+work-study	tutor	verb	B1	kèm cặp	He can tutor you in math.	Anh ấy có thể kèm toán cho bạn.
+weather-nature	weather	noun	A1	thời tiết	The weather is nice today.	Thời tiết hôm nay đẹp.
+weather-nature	sun	noun	A1	mặt trời	The sun is bright.	Mặt trời rất sáng.
+weather-nature	rain	noun	A1	mưa	The rain is heavy.	Mưa rất to.
+weather-nature	cloud	noun	A1	mây	A cloud covered the sun.	Một đám mây che mặt trời.
+weather-nature	wind	noun	A1	gió	The wind is strong.	Gió rất mạnh.
+weather-nature	snow	noun	A1	tuyết	The snow is deep.	Tuyết dày.
+weather-nature	storm	noun	A1	cơn bão	A storm is coming.	Một cơn bão đang đến.
+weather-nature	sky	noun	A1	bầu trời	The sky is blue.	Bầu trời màu xanh.
+weather-nature	star	noun	A1	ngôi sao	That star is bright.	Ngôi sao đó sáng.
+weather-nature	moon	noun	A1	mặt trăng	The moon is full tonight.	Đêm nay trăng tròn.
+weather-nature	tree	noun	A1	cây	The tree is tall.	Cây này cao.
+weather-nature	flower	noun	A1	hoa	The flower smells sweet.	Bông hoa thơm.
+weather-nature	grass	noun	A1	cỏ	The grass is wet.	Cỏ đang ướt.
+weather-nature	river	noun	A1	sông	The river is wide.	Con sông rộng.
+weather-nature	lake	noun	A1	hồ	The lake is calm.	Mặt hồ yên ắng.
+weather-nature	sea	noun	A1	biển	The sea is blue.	Biển màu xanh.
+weather-nature	mountain	noun	A1	núi	The mountain is high.	Ngọn núi cao.
+weather-nature	beach	noun	A1	bãi biển	The beach is sandy.	Bãi biển nhiều cát.
+weather-nature	hot	adjective	A1	nóng	The sand is hot.	Cát nóng.
+weather-nature	cold	adjective	A1	lạnh	The water is cold.	Nước lạnh.
+weather-nature	warm	adjective	A1	ấm	The day is warm.	Trời ấm.
+weather-nature	cool	adjective	A1	mát	The evening is cool.	Buổi tối mát.
+weather-nature	sunny	adjective	A1	có nắng	It is sunny today.	Hôm nay trời nắng.
+weather-nature	rainy	adjective	A1	có mưa	It is a rainy day.	Hôm nay là một ngày mưa.
+weather-nature	spring	noun	A1	mùa xuân	Spring is warm here.	Mùa xuân ở đây ấm.
+weather-nature	summer	noun	A1	mùa hè	Summer is hot.	Mùa hè nóng.
+weather-nature	fall	noun	A1	mùa thu	Fall is my favorite season.	Mùa thu là mùa tôi thích nhất.
+weather-nature	winter	noun	A1	mùa đông	Winter is cold.	Mùa đông lạnh.
+weather-nature	nature	noun	A1	thiên nhiên	We enjoy nature.	Chúng tôi thích thiên nhiên.
+weather-nature	plant	noun	A1	cây trồng	Water the plant.	Hãy tưới cây.
+weather-nature	leaf	noun	A1	lá	This leaf is green.	Chiếc lá này màu xanh.
+weather-nature	hill	noun	A1	đồi	We walked up the hill.	Chúng tôi đi bộ lên đồi.
+weather-nature	island	noun	A2	hòn đảo	The island is small.	Hòn đảo nhỏ.
+weather-nature	forest	noun	A2	rừng	The forest is quiet.	Rừng yên tĩnh.
+weather-nature	desert	noun	A2	sa mạc	The desert is dry.	Sa mạc khô.
+weather-nature	rock	noun	A2	tảng đá	The rock is heavy.	Tảng đá nặng.
+weather-nature	sand	noun	A2	cát	The sand is warm.	Cát ấm.
+weather-nature	field	noun	A2	cánh đồng	The field is green.	Cánh đồng xanh.
+weather-nature	farm	noun	A2	trang trại	The farm grows rice.	Trang trại trồng lúa.
+weather-nature	ocean	noun	A2	đại dương	The ocean is deep.	Đại dương sâu.
+weather-nature	ice	noun	A2	băng	The ice is thin.	Lớp băng mỏng.
+weather-nature	fog	noun	A2	sương mù	Fog covers the road.	Sương mù phủ kín đường.
+weather-nature	season	noun	A2	mùa	This season is rainy.	Mùa này hay mưa.
+weather-nature	temperature	noun	A2	nhiệt độ	The temperature is high.	Nhiệt độ cao.
+weather-nature	air	noun	A2	không khí	The air is fresh.	Không khí trong lành.
+weather-nature	heat	noun	A2	sức nóng	The heat is strong today.	Hôm nay sức nóng rất gắt.
+weather-nature	dry	adjective	A1	khô	The towel is dry.	Chiếc khăn đã khô.
+weather-nature	wet	adjective	A1	ướt	My shoes are wet.	Giày của tôi bị ướt.
+weather-nature	windy	adjective	A2	có gió	It is windy on the coast.	Trên bờ biển trời có gió.
+weather-nature	cloudy	adjective	A2	nhiều mây	The sky is cloudy.	Trời nhiều mây.
+weather-nature	snowy	adjective	A2	có tuyết	The mountain is snowy.	Núi phủ tuyết.
+weather-nature	rain	verb	A1	mưa	It will rain tonight.	Tối nay trời sẽ mưa.
+weather-nature	snow	verb	A2	có tuyết rơi	It may snow tomorrow.	Ngày mai có thể có tuyết.
+weather-nature	forecast	noun	A2	bản tin dự báo	The forecast says rain.	Bản tin dự báo nói trời sẽ mưa.
+weather-nature	thunder	noun	A2	sấm	Thunder woke the child.	Tiếng sấm làm đứa trẻ thức giấc.
+weather-nature	lightning	noun	A2	sét	Lightning struck the tree.	Sét đánh trúng cây.
+weather-nature	rainbow	noun	A2	cầu vồng	A rainbow appeared after the rain.	Cầu vồng xuất hiện sau cơn mưa.
+weather-nature	shade	noun	A2	bóng râm	Sit in the shade.	Hãy ngồi trong bóng râm.
+weather-nature	shadow	noun	A2	cái bóng	The tree casts a shadow.	Cây đổ bóng xuống đất.
+weather-nature	sunrise	noun	A2	bình minh	Sunrise is at six.	Mặt trời mọc lúc sáu giờ.
+weather-nature	sunset	noun	A2	hoàng hôn	Sunset is beautiful here.	Hoàng hôn ở đây đẹp.
+weather-nature	flood	noun	A2	lũ	The flood closed the road.	Lũ làm đường bị đóng.
+weather-nature	mud	noun	A2	bùn	The path is full of mud.	Lối đi đầy bùn.
+weather-nature	puddle	noun	A2	vũng nước	The child stepped in a puddle.	Đứa trẻ giẫm vào vũng nước.
+weather-nature	north	noun	A2	hướng bắc	Snow is common in the north.	Tuyết thường có ở miền bắc.
+weather-nature	south	noun	A2	hướng nam	It is warmer in the south.	Miền nam ấm hơn.
+weather-nature	east	noun	A2	hướng đông	The sun rises in the east.	Mặt trời mọc ở hướng đông.
+weather-nature	west	noun	A2	hướng tây	The sun sets in the west.	Mặt trời lặn ở hướng tây.
+weather-nature	climate	noun	B1	khí hậu	The climate is hot and wet.	Khí hậu nóng và ẩm.
+weather-nature	pollution	noun	B1	ô nhiễm	Pollution harms the river.	Ô nhiễm làm hại dòng sông.
+weather-nature	environment	noun	B1	môi trường	Protect the environment.	Hãy bảo vệ môi trường.
+weather-nature	drought	noun	B1	hạn hán	The drought hurt the farm.	Hạn hán làm hại trang trại.
+weather-nature	earthquake	noun	B1	động đất	The earthquake was strong.	Trận động đất rất mạnh.
+weather-nature	volcano	noun	B1	núi lửa	The volcano is quiet now.	Núi lửa hiện đang yên.
+weather-nature	hurricane	noun	B1	bão nhiệt đới	The hurricane moved north.	Bão nhiệt đới di chuyển lên phía bắc.
+weather-nature	tornado	noun	B1	lốc xoáy	A tornado crossed the field.	Một cơn lốc xoáy đi qua cánh đồng.
+weather-nature	breeze	noun	B1	gió nhẹ	A cool breeze helped us.	Một làn gió mát giúp chúng tôi dễ chịu.
+weather-nature	frost	noun	B1	sương giá	Frost covered the grass.	Sương giá phủ trên cỏ.
+weather-nature	hail	noun	B1	mưa đá	Hail damaged the roof.	Mưa đá làm hỏng mái nhà.
+weather-nature	mist	noun	B1	sương mù mỏng	Mist hid the hill.	Sương mù che khuất đồi.
+weather-nature	dawn	noun	B1	rạng đông	We left at dawn.	Chúng tôi đi lúc rạng đông.
+weather-nature	dusk	noun	B1	chạng vạng	The sky turns pink at dusk.	Bầu trời chuyển hồng lúc chạng vạng.
+weather-nature	soil	noun	B1	đất trồng	The soil is rich.	Đất trồng màu mỡ.
+weather-nature	seed	noun	A2	hạt giống	Plant a seed in the pot.	Hãy gieo hạt vào chậu.
+weather-nature	root	noun	B1	rễ	The root grows deep.	Rễ ăn sâu xuống đất.
+weather-nature	branch	noun	A2	cành cây	A branch fell in the storm.	Một cành cây gãy trong bão.
+weather-nature	waterfall	noun	A2	thác nước	The waterfall is loud.	Thác nước chảy rất ồn.
+weather-nature	stream	noun	A2	suối	The stream is clear.	Nước suối trong.
+weather-nature	pond	noun	A2	ao	The pond is small.	Cái ao nhỏ.
+weather-nature	jungle	noun	B1	rừng nhiệt đới	The jungle is thick.	Rừng nhiệt đới rậm rạp.
+weather-nature	valley	noun	B1	thung lũng	The valley is green.	Thung lũng xanh tươi.
+weather-nature	cave	noun	A2	hang động	The cave is dark.	Hang động tối.
+weather-nature	cliff	noun	B1	vách đá	Do not stand near the cliff.	Đừng đứng gần vách đá.
+weather-nature	coast	noun	A2	bờ biển	The coast is beautiful.	Bờ biển đẹp.
+weather-nature	wave	noun	A2	con sóng	A big wave hit the rocks.	Một con sóng lớn đập vào đá.
+weather-nature	tide	noun	B1	thủy triều	The tide is high.	Thủy triều đang lên.
+weather-nature	path	noun	A2	lối đi	Follow this path.	Hãy đi theo lối này.
+weather-nature	trail	noun	B1	đường mòn	The trail leads to the lake.	Đường mòn dẫn ra hồ.
+weather-nature	wildlife	noun	B1	động vật hoang dã	Wildlife needs clean water.	Động vật hoang dã cần nước sạch.
+weather-nature	planet	noun	A2	hành tinh	Earth is our planet.	Trái đất là hành tinh của chúng ta.
+weather-nature	continent	noun	B1	lục địa	Asia is a continent.	Châu Á là một lục địa.
+weather-nature	oxygen	noun	B1	khí oxy	Trees produce oxygen.	Cây tạo ra khí oxy.
+weather-nature	energy	noun	B1	năng lượng	The sun gives us energy.	Mặt trời cho chúng ta năng lượng.
+weather-nature	landscape	noun	B1	phong cảnh	The landscape is green.	Phong cảnh xanh tươi.
+weather-nature	countryside	noun	A2	vùng nông thôn	The countryside is quiet.	Vùng nông thôn yên tĩnh.
+weather-nature	woods	noun	A2	khu rừng	We walked in the woods.	Chúng tôi đi dạo trong khu rừng.
+weather-nature	sunshine	noun	A2	ánh nắng	Sunshine filled the room.	Ánh nắng tràn vào phòng.
+weather-nature	rainfall	noun	B1	lượng mưa	Rainfall is low this year.	Lượng mưa năm nay thấp.
+weather-nature	thunderstorm	noun	B1	cơn dông	The thunderstorm lasted an hour.	Cơn dông kéo dài một giờ.
+weather-nature	land	noun	A2	vùng đất	The land is dry here.	Vùng đất ở đây khô.
+weather-nature	shore	noun	B1	bờ	We walked along the shore.	Chúng tôi đi dọc bờ.
+weather-nature	peak	noun	B1	đỉnh núi	The peak is white with snow.	Đỉnh núi trắng vì tuyết.
+weather-nature	slope	noun	B1	sườn dốc	The slope is steep.	Sườn dốc rất dốc.
+weather-nature	meadow	noun	B1	đồng cỏ	Flowers fill the meadow.	Hoa phủ kín đồng cỏ.
+weather-nature	bush	noun	A2	bụi cây	A bird hid in the bush.	Một con chim núp trong bụi cây.
+weather-nature	weed	noun	A2	cỏ dại	Pull the weed out.	Hãy nhổ cỏ dại.
+weather-nature	petal	noun	B1	cánh hoa	The petal is soft.	Cánh hoa mềm.
+weather-nature	bark	noun	B1	vỏ cây	The bark is rough.	Vỏ cây xù xì.
+weather-nature	log	noun	A2	khúc gỗ	The log is heavy.	Khúc gỗ nặng.
+weather-nature	smoke	noun	A2	khói	Smoke rose from the hill.	Khói bốc lên từ đồi.
+weather-nature	current	noun	B1	dòng chảy	The river current is fast.	Dòng chảy của sông rất nhanh.
+weather-nature	resource	noun	B1	tài nguyên	Water is a precious resource.	Nước là tài nguyên quý.
+weather-nature	pollen	noun	B1	phấn hoa	There is a lot of pollen in spring.	Vào mùa xuân có nhiều phấn hoa.
+weather-nature	humidity	noun	B2	độ ẩm	Humidity is high today.	Độ ẩm hôm nay cao.
+weather-nature	blizzard	noun	B2	bão tuyết	The blizzard closed the airport.	Bão tuyết làm sân bay phải đóng cửa.
+weather-nature	tsunami	noun	B2	sóng thần	A tsunami can flood the coast.	Sóng thần có thể làm ngập bờ biển.
+weather-nature	landslide	noun	B2	sạt lở	The landslide blocked the road.	Vụ sạt lở đã chặn đường.
+weather-nature	wildfire	noun	B2	cháy rừng	The wildfire spread quickly.	Đám cháy rừng lan rất nhanh.
+weather-nature	smog	noun	B2	khói bụi	Smog covered the city.	Khói bụi bao phủ thành phố.
+weather-nature	downpour	noun	B2	trận mưa lớn	The downpour flooded the street.	Trận mưa lớn làm ngập đường phố.
+weather-nature	gale	noun	B2	cơn gió mạnh	The gale shook the trees.	Cơn gió mạnh làm cây lay động.
+weather-nature	equator	noun	B2	xích đạo	It is hot near the equator.	Gần xích đạo rất nóng.
+weather-nature	glacier	noun	B2	sông băng	The glacier is getting smaller.	Sông băng đang nhỏ dần.
+weather-nature	reef	noun	B2	rạn san hô	The reef needs protection.	Rạn san hô cần được bảo vệ.
+weather-nature	erosion	noun	B2	xói mòn	Erosion damages the coast.	Xói mòn làm hại bờ biển.
+weather-nature	conservation	noun	B2	sự bảo tồn	Conservation protects forests.	Bảo tồn giúp giữ rừng.
+weather-nature	recycling	noun	B1	việc tái chế	Recycling saves resources.	Tái chế giúp tiết kiệm tài nguyên.
+weather-nature	forecast	verb	B1	dự báo	They forecast rain tomorrow.	Họ dự báo ngày mai có mưa.
+weather-nature	flood	verb	B1	làm ngập	Heavy rain can flood the street.	Mưa lớn có thể làm ngập đường.
+weather-nature	protect	verb	A2	bảo vệ	We should protect the forest.	Chúng ta nên bảo vệ rừng.
+weather-nature	conserve	verb	B2	bảo tồn	Conserve water during a drought.	Hãy tiết kiệm nước khi hạn hán.
+weather-nature	pollute	verb	B1	gây ô nhiễm	Do not pollute the river.	Đừng làm ô nhiễm sông.
+weather-nature	freeze	verb	B1	đóng băng	The lake may freeze tonight.	Hồ có thể đóng băng đêm nay.
+weather-nature	melt	verb	A2	tan	The snow will melt.	Tuyết sẽ tan.
+weather-nature	shine	verb	A2	chiếu sáng	The sun will shine tomorrow.	Ngày mai mặt trời sẽ chiếu sáng.
+weather-nature	blow	verb	A2	thổi	The wind can blow hard.	Gió có thể thổi rất mạnh.
+weather-nature	pour	verb	B1	mưa như trút	It may pour this afternoon.	Chiều nay trời có thể mưa như trút.
+weather-nature	bloom	verb	B1	nở hoa	These flowers bloom in spring.	Những bông hoa này nở vào mùa xuân.
+weather-nature	grow	verb	A1	mọc	Plants grow in good soil.	Cây mọc trên đất tốt.
+weather-nature	drizzle	verb	B1	mưa phùn	It may drizzle tonight.	Tối nay có thể mưa phùn.
+weather-nature	recycle	verb	A2	tái chế	Please recycle the paper.	Hãy tái chế giấy.
+weather-nature	worsen	verb	B2	xấu đi	The weather may worsen.	Thời tiết có thể xấu đi.
+weather-nature	clear	adjective	A2	quang đãng	The sky is clear.	Bầu trời quang đãng.
+weather-nature	calm	adjective	A2	yên ả	The sea is calm.	Biển đang yên ả.
+weather-nature	stormy	adjective	B1	có bão	The night was stormy.	Đêm qua có bão.
+weather-nature	foggy	adjective	A2	có sương mù	The morning is foggy.	Buổi sáng có sương mù.
+weather-nature	icy	adjective	B1	đóng băng	The road is icy.	Đường đóng băng.
+weather-nature	chilly	adjective	B1	se lạnh	The evening is chilly.	Buổi tối se lạnh.
+weather-nature	freezing	adjective	A2	lạnh cóng	It is freezing outside.	Bên ngoài lạnh cóng.
+weather-nature	muddy	adjective	A2	lầy lội	The trail is muddy.	Đường mòn lầy lội.
+weather-nature	humid	adjective	B1	ẩm	The air feels humid.	Không khí có cảm giác ẩm.
+weather-nature	mild	adjective	B1	ôn hòa	The winter is mild.	Mùa đông năm nay ôn hòa.
+weather-nature	severe	adjective	B1	dữ dội	The storm was severe.	Cơn bão rất dữ dội.
+weather-nature	tropical	adjective	B1	nhiệt đới	The island has a tropical climate.	Hòn đảo có khí hậu nhiệt đới.
+weather-nature	coastal	adjective	B1	ven biển	Coastal towns get strong wind.	Các thị trấn ven biển có gió mạnh.
+weather-nature	fertile	adjective	B1	màu mỡ	The valley is fertile.	Thung lũng màu mỡ.
+weather-nature	natural	adjective	A2	tự nhiên	This lake is natural.	Hồ này là hồ tự nhiên.
+weather-nature	wild	adjective	A2	hoang dã	Wild flowers grow here.	Hoa dại mọc ở đây.
+weather-nature	rural	adjective	B1	thuộc nông thôn	Rural life is quiet.	Cuộc sống nông thôn yên tĩnh.
+weather-nature	outdoor	adjective	A2	ngoài trời	I prefer outdoor walks.	Tôi thích đi bộ ngoài trời.
+weather-nature	indoor	adjective	A2	trong nhà	Indoor plants need light.	Cây trong nhà cần ánh sáng.
+weather-nature	solar	adjective	B1	thuộc mặt trời	Solar energy is clean.	Năng lượng mặt trời sạch.
+weather-nature	renewable	adjective	B2	có thể tái tạo	Wind is a renewable resource.	Gió là nguồn tài nguyên có thể tái tạo.
+weather-nature	endangered	adjective	B2	có nguy cơ tuyệt chủng	Endangered animals need help.	Động vật có nguy cơ tuyệt chủng cần được giúp đỡ.
+weather-nature	extinct	adjective	B2	tuyệt chủng	That plant is not extinct.	Loài cây đó chưa tuyệt chủng.
+weather-nature	gray	adjective	A2	xám	The sky is gray.	Bầu trời màu xám.
+weather-nature	dusty	adjective	A2	đầy bụi	The path is dusty.	Lối đi đầy bụi.
+weather-nature	frozen	adjective	B1	bị đóng băng	The pond is frozen.	Ao đã đóng băng.
+weather-nature	arid	adjective	B2	khô cằn	The region is arid.	Vùng này khô cằn.
+weather-nature	polar	adjective	B2	vùng cực	Polar ice is melting.	Băng ở vùng cực đang tan.
+weather-nature	steep	adjective	B1	dốc	This hill is steep.	Đồi này rất dốc.
+weather-nature	rocky	adjective	B1	nhiều đá	The coast is rocky.	Bờ biển nhiều đá.
+weather-nature	shady	adjective	B1	râm mát	This spot is shady.	Chỗ này râm mát.
+weather-nature	bright	adjective	A2	sáng	The morning is bright.	Buổi sáng trời sáng.
+weather-nature	fresh	adjective	A2	trong lành	The morning air is fresh.	Không khí buổi sáng trong lành.
+society-services	police	noun	A1	cảnh sát	Call the police.	Hãy gọi cảnh sát.
+society-services	letter	noun	A1	lá thư	I wrote a letter.	Tôi đã viết một lá thư.
+society-services	stamp	noun	A1	tem	Put a stamp on the letter.	Hãy dán tem lên thư.
+society-services	church	noun	A1	nhà thờ	The church is old.	Nhà thờ này cũ.
+society-services	news	noun	A1	tin tức	The news starts at six.	Bản tin bắt đầu lúc sáu giờ.
+society-services	newspaper	noun	A1	báo	I read the newspaper.	Tôi đọc báo.
+society-services	law	noun	A2	luật	The law protects people.	Luật bảo vệ mọi người.
+society-services	rule	noun	A2	quy tắc	Follow this rule.	Hãy tuân theo quy tắc này.
+society-services	crime	noun	A2	tội phạm	Crime fell this year.	Tội phạm năm nay đã giảm.
+society-services	prison	noun	A2	nhà tù	The prison is outside the city.	Nhà tù ở ngoài thành phố.
+society-services	court	noun	A2	tòa án	The court is downtown.	Tòa án ở trung tâm.
+society-services	judge	noun	A2	thẩm phán	The judge listened carefully.	Thẩm phán lắng nghe rất chăm chú.
+society-services	lawyer	noun	A2	luật sư	The lawyer explained the law.	Luật sư đã giải thích luật.
+society-services	government	noun	A2	chính phủ	The government built a new school.	Chính phủ đã xây một trường mới.
+society-services	president	noun	A2	tổng thống	The president visited the town.	Tổng thống đã đến thăm thị trấn.
+society-services	citizen	noun	A2	công dân	A citizen can vote.	Công dân có thể bỏ phiếu.
+society-services	community	noun	A2	cộng đồng	The community is friendly.	Cộng đồng rất thân thiện.
+society-services	society	noun	B1	xã hội	A fair society helps everyone.	Một xã hội công bằng giúp mọi người.
+society-services	service	noun	A2	dịch vụ	The postal service is reliable.	Dịch vụ bưu chính đáng tin cậy.
+society-services	election	noun	B1	cuộc bầu cử	The election is in November.	Cuộc bầu cử vào tháng Mười Một.
+society-services	vote	noun	A2	phiếu bầu	Every vote matters.	Mỗi phiếu bầu đều quan trọng.
+society-services	vote	verb	A2	bỏ phiếu	Citizens vote in November.	Công dân bỏ phiếu vào tháng Mười Một.
+society-services	neighbor	noun	A1	hàng xóm	Our neighbor is kind.	Hàng xóm của chúng tôi rất tử tế.
+society-services	neighborhood	noun	A2	khu phố	This neighborhood is quiet.	Khu phố này yên tĩnh.
+society-services	mail	noun	A1	thư từ	The mail arrived late.	Thư đến muộn.
+society-services	mail	verb	A2	gửi thư	Please mail this letter.	Hãy gửi lá thư này.
+society-services	package	noun	A2	bưu kiện	The package is heavy.	Bưu kiện nặng.
+society-services	envelope	noun	A2	phong bì	Put the letter in an envelope.	Hãy bỏ thư vào phong bì.
+society-services	address	noun	A1	địa chỉ	Write the address clearly.	Hãy viết địa chỉ cho rõ.
+society-services	post	noun	A2	bưu điện	Send the letter by post.	Hãy gửi thư bằng bưu điện.
+society-services	firefighter	noun	A2	lính cứu hỏa	The firefighter put out the fire.	Lính cứu hỏa đã dập lửa.
+society-services	fire	noun	A1	đám cháy	The fire started in the kitchen.	Đám cháy bắt đầu từ nhà bếp.
+society-services	soldier	noun	A2	người lính	The soldier came home.	Người lính đã về nhà.
+society-services	army	noun	A2	quân đội	The army helped after the flood.	Quân đội đã giúp đỡ sau trận lũ.
+society-services	war	noun	A2	chiến tranh	War hurts many families.	Chiến tranh làm hại nhiều gia đình.
+society-services	peace	noun	A2	hòa bình	The country is at peace.	Đất nước đang hòa bình.
+society-services	mayor	noun	A2	thị trưởng	The mayor visited the school.	Thị trưởng đã đến thăm trường.
+society-services	culture	noun	A2	văn hóa	I want to learn about this culture.	Tôi muốn tìm hiểu văn hóa này.
+society-services	tradition	noun	A2	truyền thống	This tradition is very old.	Truyền thống này đã có từ rất lâu.
+society-services	custom	noun	B1	phong tục	This custom welcomes guests.	Phong tục này dùng để chào đón khách.
+society-services	religion	noun	A2	tôn giáo	People practice religion freely.	Mọi người tự do thực hành tôn giáo.
+society-services	temple	noun	A2	đền	The temple is on the hill.	Ngôi đền ở trên đồi.
+society-services	volunteer	noun	A2	tình nguyện viên	The volunteer helps at the library.	Tình nguyện viên giúp việc ở thư viện.
+society-services	charity	noun	B1	tổ chức từ thiện	The charity helps children.	Tổ chức từ thiện giúp trẻ em.
+society-services	member	noun	A2	thành viên	She is a member of the club.	Cô ấy là thành viên của câu lạc bộ.
+society-services	club	noun	A1	câu lạc bộ	The club meets on Friday.	Câu lạc bộ họp vào thứ Sáu.
+society-services	officer	noun	A2	viên cảnh sát	The officer directed traffic.	Viên cảnh sát điều khiển giao thông.
+society-services	detective	noun	B1	thám tử	The detective asked many questions.	Thám tử đã hỏi rất nhiều câu hỏi.
+society-services	thief	noun	A2	kẻ trộm	The thief took the bag.	Kẻ trộm đã lấy cái túi.
+society-services	victim	noun	B1	nạn nhân	The victim called the police.	Nạn nhân đã gọi cảnh sát.
+society-services	witness	noun	B1	nhân chứng	The witness told the truth.	Nhân chứng đã nói sự thật.
+society-services	evidence	noun	B1	bằng chứng	The evidence is clear.	Bằng chứng rõ ràng.
+society-services	trial	noun	B1	phiên tòa	The trial starts on Monday.	Phiên tòa bắt đầu vào thứ Hai.
+society-services	jail	noun	A2	nhà giam	He spent one night in jail.	Anh ấy ở nhà giam một đêm.
+society-services	security	noun	B1	an ninh	Security checked every bag.	An ninh đã kiểm tra từng túi.
+society-services	guard	noun	A2	bảo vệ	The guard locked the gate.	Bảo vệ đã khóa cổng.
+society-services	alarm	noun	A2	chuông báo động	The alarm was very loud.	Chuông báo động kêu rất to.
+society-services	lock	noun	A2	ổ khóa	The lock is broken.	Ổ khóa bị hỏng.
+society-services	lock	verb	A2	khóa	Please lock the door.	Hãy khóa cửa.
+society-services	key	noun	A1	chìa khóa	I lost the key.	Tôi làm mất chìa khóa.
+society-services	safe	noun	B1	két sắt	The money is in the safe.	Tiền được để trong két sắt.
+society-services	trash	noun	A1	rác	Please take out the trash.	Hãy đem rác ra ngoài.
+society-services	garbage	noun	A1	rác thải	The garbage smells bad.	Rác thải có mùi khó chịu.
+society-services	electricity	noun	A2	điện	The electricity is off.	Điện bị mất.
+society-services	power	noun	A2	nguồn điện	The power came back at noon.	Nguồn điện có lại vào buổi trưa.
+society-services	plumber	noun	A2	thợ sửa ống nước	Call a plumber.	Hãy gọi thợ sửa ống nước.
+society-services	electrician	noun	B1	thợ điện	The electrician fixed the lights.	Thợ điện đã sửa đèn.
+society-services	mechanic	noun	A2	thợ máy	The mechanic repaired the engine.	Thợ máy đã sửa động cơ.
+society-services	guilty	adjective	B1	có tội	The court found him guilty.	Tòa án kết luận anh ấy có tội.
+society-services	innocent	adjective	B1	vô tội	She is innocent.	Cô ấy vô tội.
+society-services	legal	adjective	B1	hợp pháp	This contract is legal.	Hợp đồng này hợp pháp.
+society-services	illegal	adjective	B1	bất hợp pháp	Littering is illegal here.	Xả rác ở đây là bất hợp pháp.
+society-services	arrest	verb	B1	bắt giữ	Police can arrest a thief.	Cảnh sát có thể bắt kẻ trộm.
+society-services	steal	verb	A2	trộm	Do not steal.	Đừng trộm cắp.
+society-services	rob	verb	B1	cướp	They tried to rob the store.	Họ đã cố cướp cửa hàng.
+society-services	punish	verb	B1	trừng phạt	The law can punish crime.	Luật có thể trừng phạt tội phạm.
+society-services	obey	verb	A2	tuân theo	Obey the law.	Hãy tuân theo luật.
+society-services	governor	noun	B1	thống đốc	The governor visited the city.	Thống đốc đã đến thăm thành phố.
+society-services	minister	noun	B1	bộ trưởng	The minister spoke about schools.	Bộ trưởng đã nói về trường học.
+society-services	voter	noun	B1	cử tri	The voter arrived early.	Cử tri đến sớm.
+society-services	politics	noun	B1	chính trị	She studies politics.	Cô ấy học chính trị.
+society-services	politician	noun	B1	chính trị gia	The politician met local people.	Chính trị gia đã gặp người dân địa phương.
+society-services	policy	noun	B1	chính sách	The new policy helps workers.	Chính sách mới giúp người lao động.
+society-services	democracy	noun	B1	nền dân chủ	Democracy needs fair elections.	Nền dân chủ cần những cuộc bầu cử công bằng.
+society-services	freedom	noun	B1	tự do	Freedom of speech matters.	Tự do ngôn luận rất quan trọng.
+society-services	equality	noun	B1	sự bình đẳng	They work for equality.	Họ đấu tranh vì sự bình đẳng.
+society-services	justice	noun	B1	công lý	People want justice.	Mọi người muốn công lý.
+society-services	right	noun	B1	quyền	Every citizen has this right.	Mọi công dân đều có quyền này.
+society-services	protest	noun	B1	cuộc biểu tình	The protest was peaceful.	Cuộc biểu tình diễn ra ôn hòa.
+society-services	protest	verb	B1	biểu tình	People protest the new rule.	Người dân biểu tình về quy tắc mới.
+society-services	strike	noun	B1	cuộc đình công	The workers are on strike.	Công nhân đang đình công.
+society-services	union	noun	B1	công đoàn	The union asked for safer work.	Công đoàn yêu cầu công việc an toàn hơn.
+society-services	welfare	noun	B2	phúc lợi xã hội	Welfare helps people in need.	Phúc lợi xã hội giúp người khó khăn.
+society-services	pension	noun	B1	lương hưu	He receives a pension.	Anh ấy nhận lương hưu.
+society-services	unemployment	noun	B2	thất nghiệp	Unemployment fell last year.	Thất nghiệp đã giảm năm ngoái.
+society-services	poverty	noun	B1	nghèo đói	The program reduces poverty.	Chương trình này làm giảm nghèo đói.
+society-services	homeless	adjective	B1	vô gia cư	The shelter helps homeless people.	Nơi trú ẩn giúp người vô gia cư.
+society-services	shelter	noun	B1	nơi trú ẩn	The shelter is open all night.	Nơi trú ẩn mở cửa suốt đêm.
+society-services	refugee	noun	B2	người tị nạn	The refugee needs a safe home.	Người tị nạn cần một nơi ở an toàn.
+society-services	immigrant	noun	B1	người nhập cư	The immigrant learned English.	Người nhập cư đã học tiếng Anh.
+society-services	nationality	noun	B1	quốc tịch	Write your nationality on the form.	Hãy ghi quốc tịch vào mẫu đơn.
+society-services	organization	noun	B1	tổ chức	The organization helps families.	Tổ chức này giúp các gia đình.
+society-services	donation	noun	B1	khoản quyên góp	The donation bought food.	Khoản quyên góp đã mua thức ăn.
+society-services	belief	noun	B1	niềm tin	Respect every belief.	Hãy tôn trọng mọi niềm tin.
+society-services	mosque	noun	A2	nhà thờ Hồi giáo	The mosque is near the square.	Nhà thờ Hồi giáo ở gần quảng trường.
+society-services	form	noun	A2	mẫu đơn	Please fill out this form.	Xin hãy điền vào mẫu đơn này.
+society-services	permit	noun	B1	giấy phép	You need a permit to build.	Bạn cần giấy phép để xây dựng.
+society-services	clerk	noun	A2	nhân viên hành chính	The clerk checked the form.	Nhân viên đã kiểm tra mẫu đơn.
+society-services	official	noun	B1	viên chức	The official signed the paper.	Viên chức đã ký giấy tờ.
+society-services	council	noun	B1	hội đồng	The council meets tonight.	Hội đồng họp tối nay.
+society-services	journalist	noun	B1	nhà báo	The journalist asked a question.	Nhà báo đã đặt một câu hỏi.
+society-services	article	noun	B1	bài báo	She wrote an article.	Cô ấy đã viết một bài báo.
+society-services	headline	noun	B1	tiêu đề	The headline is about the election.	Tiêu đề nói về cuộc bầu cử.
+society-services	population	noun	B1	dân số	The population is growing.	Dân số đang tăng.
+society-services	majority	noun	B1	đa số	The majority voted yes.	Đa số đã bỏ phiếu thuận.
+society-services	minority	noun	B1	thiểu số	A minority disagreed.	Một nhóm thiểu số không đồng ý.
+society-services	generation	noun	B1	thế hệ	Each generation learns this custom.	Mỗi thế hệ đều học phong tục này.
+society-services	behavior	noun	B1	hành vi	The law guides public behavior.	Luật định hướng hành vi nơi công cộng.
+society-services	offense	noun	B2	tội	Theft is a serious offense.	Trộm cắp là một tội nghiêm trọng.
+society-services	defense	noun	B2	sự bào chữa	The lawyer prepared a defense.	Luật sư đã chuẩn bị phần bào chữa.
+society-services	jury	noun	B2	đoàn bồi thẩm	The jury reached a decision.	Đoàn bồi thẩm đã đi đến quyết định.
+society-services	verdict	noun	B2	phán quyết	The verdict was fair.	Phán quyết công bằng.
+society-services	punishment	noun	B1	hình phạt	The punishment was fair.	Hình phạt công bằng.
+society-services	robbery	noun	B1	vụ cướp	The robbery happened at night.	Vụ cướp xảy ra vào ban đêm.
+society-services	theft	noun	B1	vụ trộm	Theft is a crime.	Trộm cắp là một tội.
+society-services	burglar	noun	B1	kẻ đột nhập	The burglar broke a window.	Kẻ đột nhập đã đập vỡ cửa sổ.
+society-services	criminal	noun	B1	tội phạm	The criminal was arrested.	Tên tội phạm đã bị bắt.
+society-services	siren	noun	A2	còi hú	We heard a siren.	Chúng tôi nghe thấy còi hú.
+society-services	rescue	noun	B1	cuộc giải cứu	The rescue was quick.	Cuộc giải cứu diễn ra rất nhanh.
+society-services	rescue	verb	B1	giải cứu	Firefighters rescue people.	Lính cứu hỏa giải cứu mọi người.
+society-services	volunteer	verb	B1	làm tình nguyện	I volunteer on Saturday.	Tôi làm tình nguyện vào thứ Bảy.
+society-services	elect	verb	B1	bầu	Voters elect a president.	Cử tri bầu tổng thống.
+society-services	govern	verb	B1	cai quản	They govern the city fairly.	Họ cai quản thành phố một cách công bằng.
+society-services	ban	verb	B1	cấm	The park may ban fires.	Công viên có thể cấm đốt lửa.
+society-services	ban	noun	B1	lệnh cấm	There is a ban on smoking.	Có lệnh cấm hút thuốc.
+society-services	complain	verb	A2	phàn nàn	Customers may complain.	Khách hàng có thể phàn nàn.
+society-services	complaint	noun	B1	lời khiếu nại	She filed a complaint.	Cô ấy đã nộp một lời khiếu nại.
+society-services	litter	noun	A2	rác xả bừa	Pick up the litter.	Hãy nhặt rác xả bừa.
+society-services	litter	verb	B1	xả rác	Do not litter the street.	Đừng xả rác ra đường.
+society-services	dump	noun	B1	bãi rác	The dump is outside town.	Bãi rác ở ngoài thị trấn.
+society-services	utility	noun	B2	dịch vụ tiện ích	This utility provides water.	Dịch vụ tiện ích này cung cấp nước.
+society-services	outage	noun	B2	mất điện	The outage lasted two hours.	Việc mất điện kéo dài hai giờ.
+society-services	courier	noun	B1	người giao hàng	The courier brought the package.	Người giao hàng đã mang bưu kiện đến.
+society-services	program	noun	A2	chương trình	The program helps workers.	Chương trình này giúp người lao động.
+society-services	responsibility	noun	B1	trách nhiệm	Safety is a shared responsibility.	An toàn là trách nhiệm chung.
+society-services	congress	noun	B2	quốc hội	Congress passed the law.	Quốc hội đã thông qua luật.
+society-services	senate	noun	B2	thượng viện	The Senate voted today.	Thượng viện đã bỏ phiếu hôm nay.
+society-services	constitution	noun	B2	hiến pháp	The constitution protects rights.	Hiến pháp bảo vệ các quyền.
+society-services	penalty	noun	B1	hình phạt	The penalty is a warning.	Hình phạt là một lời cảnh cáo.
+society-services	navy	noun	B1	hải quân	Her brother is in the navy.	Anh trai cô ấy phục vụ trong hải quân.
+society-services	military	adjective	B1	thuộc quân đội	He wore a military uniform.	Anh ấy mặc quân phục.
+society-services	official	adjective	B1	chính thức	This is an official letter.	Đây là một lá thư chính thức.
+society-services	criminal	adjective	B1	thuộc hình sự	He studies criminal law.	Anh ấy học luật hình sự.
+society-services	social	adjective	B1	thuộc xã hội	Social services help families.	Dịch vụ xã hội giúp các gia đình.
+society-services	civil	adjective	B1	dân sự	Civil rights matter.	Quyền dân sự rất quan trọng.
+society-services	peaceful	adjective	B1	hòa bình	They want a peaceful solution.	Họ muốn một giải pháp hòa bình.
+society-services	violent	adjective	B1	bạo lực	Violent crime fell.	Tội phạm bạo lực đã giảm.
+society-services	democratic	adjective	B2	dân chủ	The vote was democratic.	Cuộc bỏ phiếu mang tính dân chủ.
+society-services	national	adjective	B1	toàn quốc	Monday is a national holiday.	Thứ Hai là một ngày lễ toàn quốc.
+society-services	fair	adjective	A2	công bằng	The rule should be fair.	Quy tắc nên công bằng.
+society-services	unfair	adjective	B1	bất công	That rule feels unfair.	Quy tắc đó có vẻ bất công.
+society-services	postal	adjective	B1	thuộc bưu điện	Postal workers deliver mail.	Nhân viên bưu điện phát thư.
+society-services	nonprofit	adjective	B2	phi lợi nhuận	It is a nonprofit charity.	Đó là một tổ chức từ thiện phi lợi nhuận.
+society-services	civic	adjective	B2	thuộc công dân	Voting is a civic duty.	Bỏ phiếu là một nghĩa vụ công dân.
+society-services	forbid	verb	B1	cấm	The rules forbid smoking.	Nội quy cấm hút thuốc.
+society-services	allow	verb	A2	cho phép	The rules allow photos.	Nội quy cho phép chụp ảnh.
+society-services	donate	verb	B1	quyên góp	People donate clothes.	Mọi người quyên góp quần áo.
+travel-city	city	noun	A1	thành phố	The city is large.	Thành phố rất lớn.
+travel-city	town	noun	A1	thị trấn	The town is small.	Thị trấn nhỏ.
+travel-city	village	noun	A1	làng	The village is quiet.	Ngôi làng yên tĩnh.
+travel-city	country	noun	A1	đất nước	This country is beautiful.	Đất nước này đẹp.
+travel-city	capital	noun	A2	thủ đô	The capital is busy.	Thủ đô rất nhộn nhịp.
+travel-city	map	noun	A1	bản đồ	Look at the map.	Hãy xem bản đồ.
+travel-city	hotel	noun	A1	khách sạn	The hotel is clean.	Khách sạn sạch.
+travel-city	room	noun	A1	phòng	The room is quiet.	Căn phòng yên tĩnh.
+travel-city	tourist	noun	A1	khách du lịch	The tourist took a photo.	Khách du lịch đã chụp một bức ảnh.
+travel-city	photo	noun	A1	bức ảnh	This photo shows the tower.	Bức ảnh này chụp cái tháp.
+travel-city	camera	noun	A1	máy ảnh	My camera is new.	Máy ảnh của tôi còn mới.
+travel-city	park	noun	A1	công viên	The park is green.	Công viên xanh.
+travel-city	garden	noun	A1	vườn	The garden is full of flowers.	Vườn đầy hoa.
+travel-city	museum	noun	A1	bảo tàng	The museum is free today.	Hôm nay bảo tàng vào cửa miễn phí.
+travel-city	trip	noun	A1	chuyến đi	The trip was fun.	Chuyến đi rất vui.
+travel-city	travel	verb	A1	đi du lịch	We travel every summer.	Chúng tôi đi du lịch mỗi mùa hè.
+travel-city	visit	verb	A1	thăm	Visit the museum.	Hãy thăm bảo tàng.
+travel-city	stay	verb	A1	ở	Stay at this hotel.	Hãy ở khách sạn này.
+travel-city	passport	noun	A2	hộ chiếu	Show your passport.	Hãy xuất trình hộ chiếu.
+travel-city	visa	noun	A2	thị thực	I need a visa.	Tôi cần thị thực.
+travel-city	luggage	noun	A2	hành lý	The luggage is heavy.	Hành lý nặng.
+travel-city	suitcase	noun	A2	va li	This suitcase has wheels.	Va li này có bánh xe.
+travel-city	backpack	noun	A2	ba lô	Put a map in your backpack.	Hãy để bản đồ vào ba lô.
+travel-city	vacation	noun	A2	kỳ nghỉ	We are on vacation.	Chúng tôi đang đi nghỉ.
+travel-city	guest	noun	A2	khách	The guest arrived late.	Vị khách đến muộn.
+travel-city	souvenir	noun	A2	quà lưu niệm	I bought a souvenir.	Tôi đã mua một món quà lưu niệm.
+travel-city	postcard	noun	A2	bưu thiếp	Send a postcard home.	Hãy gửi một bưu thiếp về nhà.
+travel-city	tour	noun	A2	chuyến tham quan	The tour starts at nine.	Chuyến tham quan bắt đầu lúc chín giờ.
+travel-city	guide	noun	A2	hướng dẫn viên	The guide speaks English.	Hướng dẫn viên nói tiếng Anh.
+travel-city	center	noun	A2	trung tâm	The hotel is in the center.	Khách sạn ở trung tâm.
+travel-city	downtown	adverb	A2	ở trung tâm	We ate downtown.	Chúng tôi ăn ở trung tâm.
+travel-city	suburb	noun	A2	ngoại ô	They live in a suburb.	Họ sống ở ngoại ô.
+travel-city	building	noun	A1	tòa nhà	That building is new.	Tòa nhà đó mới.
+travel-city	square	noun	A2	quảng trường	Meet me in the square.	Gặp tôi ở quảng trường.
+travel-city	tower	noun	A2	tháp	The tower is tall.	Cái tháp cao.
+travel-city	castle	noun	A2	lâu đài	The castle is old.	Lâu đài cũ.
+travel-city	palace	noun	A2	cung điện	The palace is open today.	Hôm nay cung điện mở cửa.
+travel-city	statue	noun	A2	bức tượng	The statue is in the square.	Bức tượng ở trong quảng trường.
+travel-city	fountain	noun	A2	đài phun nước	The fountain is lit at night.	Đài phun nước được thắp sáng vào ban đêm.
+travel-city	zoo	noun	A1	sở thú	The zoo opens at nine.	Sở thú mở cửa lúc chín giờ.
+travel-city	theater	noun	A2	nhà hát	The theater is downtown.	Nhà hát ở trung tâm.
+travel-city	cinema	noun	A2	rạp chiếu phim	The cinema is full.	Rạp chiếu phim đông kín.
+travel-city	famous	adjective	A2	nổi tiếng	The tower is famous.	Cái tháp này nổi tiếng.
+travel-city	popular	adjective	A2	được ưa chuộng	This hotel is popular.	Khách sạn này rất được ưa chuộng.
+travel-city	modern	adjective	A2	hiện đại	The hotel is modern.	Khách sạn hiện đại.
+travel-city	lost	adjective	A2	bị lạc	We got lost downtown.	Chúng tôi bị lạc ở trung tâm.
+travel-city	local	adjective	A2	địa phương	Try the local food.	Hãy thử món ăn địa phương.
+travel-city	foreign	adjective	A2	nước ngoài	She likes foreign cities.	Cô ấy thích các thành phố nước ngoài.
+travel-city	abroad	adverb	A2	ở nước ngoài	They travel abroad.	Họ đi du lịch nước ngoài.
+travel-city	book	verb	A2	đặt chỗ	Book a room early.	Hãy đặt phòng sớm.
+travel-city	pack	verb	A2	xếp đồ	Pack your suitcase tonight.	Hãy xếp đồ vào va li tối nay.
+travel-city	hostel	noun	A2	nhà nghỉ thanh niên	The hostel is cheap.	Nhà nghỉ thanh niên giá rẻ.
+travel-city	motel	noun	A2	nhà nghỉ ven đường	The motel is near the freeway.	Nhà nghỉ ở gần đường cao tốc.
+travel-city	resort	noun	B1	khu nghỉ dưỡng	The resort has a pool.	Khu nghỉ dưỡng có hồ bơi.
+travel-city	reservation	noun	B1	đặt phòng	The reservation is for two nights.	Phòng được đặt trong hai đêm.
+travel-city	booking	noun	B1	đặt chỗ	The booking is confirmed.	Việc đặt chỗ đã được xác nhận.
+travel-city	receptionist	noun	A2	lễ tân	The receptionist was helpful.	Nhân viên lễ tân rất hay giúp khách.
+travel-city	lobby	noun	B1	sảnh	Wait in the lobby.	Hãy đợi ở sảnh.
+travel-city	elevator	noun	A2	thang máy	Take the elevator to floor three.	Hãy đi thang máy lên tầng ba.
+travel-city	stairs	noun	A1	cầu thang	The stairs are on the left.	Cầu thang ở bên trái.
+travel-city	tourism	noun	B1	ngành du lịch	Tourism helps the town.	Ngành du lịch giúp thị trấn.
+travel-city	traveler	noun	A2	người du lịch	The traveler needs a map.	Người du lịch cần một bản đồ.
+travel-city	guidebook	noun	B1	sách hướng dẫn	This guidebook is useful.	Cuốn sách hướng dẫn này hữu ích.
+travel-city	brochure	noun	B1	tờ giới thiệu	Take a brochure.	Hãy lấy một tờ giới thiệu.
+travel-city	sightseeing	noun	B1	việc tham quan	Sightseeing takes all day.	Đi tham quan mất cả ngày.
+travel-city	attraction	noun	B1	điểm tham quan	The beach is a popular attraction.	Bãi biển là một điểm tham quan được ưa thích.
+travel-city	landmark	noun	B1	địa danh	The tower is a landmark.	Ngọn tháp này là một địa danh.
+travel-city	monument	noun	B1	đài tưởng niệm	The monument is in the square.	Đài tưởng niệm ở trong quảng trường.
+travel-city	gallery	noun	B1	phòng trưng bày	The gallery shows new art.	Phòng trưng bày giới thiệu nghệ thuật mới.
+travel-city	stadium	noun	A2	sân vận động	The stadium is huge.	Sân vận động rất lớn.
+travel-city	cathedral	noun	B1	nhà thờ lớn	The cathedral is in the center.	Nhà thờ lớn ở trung tâm.
+travel-city	skyscraper	noun	B1	nhà chọc trời	The skyscraper is very tall.	Nhà chọc trời rất cao.
+travel-city	avenue	noun	B1	đại lộ	The avenue is wide.	Đại lộ rộng.
+travel-city	boulevard	noun	B1	đại lộ có cây	Trees line the boulevard.	Cây được trồng dọc đại lộ.
+travel-city	alley	noun	B1	hẻm	The alley is narrow.	Con hẻm hẹp.
+travel-city	block	noun	A2	dãy phố	This block has many shops.	Dãy phố này có nhiều cửa hàng.
+travel-city	district	noun	B1	khu phố	This district is historic.	Khu phố này có giá trị lịch sử.
+travel-city	outskirts	noun	B1	vùng ven	The airport is on the outskirts.	Sân bay nằm ở vùng ven.
+travel-city	skyline	noun	B2	đường chân trời	The skyline is famous.	Đường chân trời của thành phố rất nổi tiếng.
+travel-city	plaza	noun	B1	quảng trường	The plaza is busy at noon.	Quảng trường đông người vào buổi trưa.
+travel-city	aquarium	noun	A2	thủy cung	The aquarium opens at ten.	Thủy cung mở cửa lúc mười giờ.
+travel-city	scenery	noun	B1	phong cảnh	The scenery is beautiful.	Phong cảnh đẹp.
+travel-city	view	noun	A2	tầm nhìn	The view from the room is great.	Tầm nhìn từ phòng rất đẹp.
+travel-city	border	noun	B1	biên giới	We crossed the border at noon.	Chúng tôi qua biên giới vào buổi trưa.
+travel-city	embassy	noun	B1	đại sứ quán	The embassy is closed today.	Hôm nay đại sứ quán đóng cửa.
+travel-city	consulate	noun	B2	lãnh sự quán	The consulate can issue a visa.	Lãnh sự quán có thể cấp thị thực.
+travel-city	customs	noun	B1	hải quan	Customs checked the bags.	Hải quan đã kiểm tra hành lý.
+travel-city	immigration	noun	B1	xuất nhập cảnh	Immigration checked the passport.	Xuất nhập cảnh đã kiểm tra hộ chiếu.
+travel-city	itinerary	noun	B1	lịch trình	Our itinerary includes three cities.	Lịch trình của chúng tôi gồm ba thành phố.
+travel-city	information	noun	A2	thông tin	Ask for tourist information.	Hãy hỏi thông tin du lịch.
+travel-city	accommodation	noun	B1	chỗ ở	Accommodation is expensive here.	Chỗ ở ở đây đắt.
+travel-city	rate	noun	B1	giá phòng	The rate includes breakfast.	Giá phòng đã gồm bữa sáng.
+travel-city	facility	noun	B1	cơ sở	This facility includes a pool.	Cơ sở này có một hồ bơi.
+travel-city	exhibition	noun	B1	triển lãm	The exhibition is free.	Triển lãm vào cửa miễn phí.
+travel-city	festival	noun	A2	lễ hội	The festival is in the spring.	Lễ hội diễn ra vào mùa xuân.
+travel-city	ruins	noun	B1	phế tích	We visited the ruins.	Chúng tôi đã thăm khu phế tích.
+travel-city	adventure	noun	B1	cuộc phiêu lưu	The trip was an adventure.	Chuyến đi là một cuộc phiêu lưu.
+travel-city	photography	noun	B1	nhiếp ảnh	Photography is popular with tourists.	Nhiếp ảnh được khách du lịch ưa chuộng.
+travel-city	backpacker	noun	B1	người du lịch ba lô	The backpacker stayed at a hostel.	Người du lịch ba lô ở nhà nghỉ thanh niên.
+travel-city	nightlife	noun	B2	cuộc sống về đêm	The nightlife is busy downtown.	Cuộc sống về đêm ở trung tâm rất sôi động.
+travel-city	foreigner	noun	A2	người nước ngoài	The foreigner asked for directions.	Người nước ngoài đã hỏi đường.
+travel-city	travel	noun	A2	việc đi du lịch	Travel can be tiring.	Đi du lịch có thể mệt.
+travel-city	visit	noun	A2	chuyến thăm	The visit was short.	Chuyến thăm ngắn.
+travel-city	stay	noun	B1	kỳ lưu trú	Our stay was pleasant.	Kỳ lưu trú của chúng tôi dễ chịu.
+travel-city	cancel	verb	A2	hủy	Please cancel the reservation.	Xin hãy hủy đặt phòng.
+travel-city	confirm	verb	B1	xác nhận	Please confirm the booking.	Xin hãy xác nhận đặt chỗ.
+travel-city	reserve	verb	B1	đặt trước	Reserve a room for Friday.	Hãy đặt trước một phòng cho thứ Sáu.
+travel-city	explore	verb	A2	khám phá	Explore the old district.	Hãy khám phá khu phố cổ.
+travel-city	recommend	verb	A2	giới thiệu	I recommend this hotel.	Tôi giới thiệu khách sạn này.
+travel-city	unpack	verb	A2	dỡ đồ	Unpack after you arrive.	Hãy dỡ đồ sau khi bạn đến.
+travel-city	wander	verb	B1	đi lang thang	Wander around the old town.	Hãy đi lang thang quanh phố cổ.
+travel-city	historic	adjective	B1	có giá trị lịch sử	The square is historic.	Quảng trường có giá trị lịch sử.
+travel-city	ancient	adjective	B1	cổ xưa	The ruins are ancient.	Khu phế tích có từ thời cổ.
+travel-city	scenic	adjective	B1	có phong cảnh đẹp	The coastal road is scenic.	Con đường ven biển có phong cảnh đẹp.
+travel-city	urban	adjective	B1	đô thị	Urban life is busy.	Cuộc sống đô thị rất bận rộn.
+travel-city	central	adjective	A2	trung tâm	The hotel is central.	Khách sạn ở vị trí trung tâm.
+travel-city	convenient	adjective	B1	thuận tiện	The location is convenient.	Vị trí rất thuận tiện.
+travel-city	remote	adjective	B1	hẻo lánh	The village is remote.	Ngôi làng hẻo lánh.
+travel-city	international	adjective	B1	quốc tế	It is an international city.	Đây là một thành phố quốc tế.
+travel-city	domestic	adjective	B1	nội địa	This is a domestic flight.	Đây là chuyến bay nội địa.
+travel-city	bustling	adjective	B2	nhộn nhịp	The market is bustling.	Khu chợ rất nhộn nhịp.
+travel-city	touristy	adjective	B2	mang tính du lịch	This street is touristy.	Con phố này mang đậm tính du lịch.
+travel-city	cosmopolitan	adjective	B2	đa văn hóa	The capital is cosmopolitan.	Thủ đô mang tính đa văn hóa.
+travel-city	overseas	adverb	B1	ở nước ngoài	She studied overseas.	Cô ấy đã học ở nước ngoài.
+travel-city	nearby	adverb	A2	ở gần	The museum is nearby.	Bảo tàng ở gần đây.
+travel-city	downtown	adjective	A2	thuộc trung tâm	We stayed in a downtown hotel.	Chúng tôi ở một khách sạn ở trung tâm.

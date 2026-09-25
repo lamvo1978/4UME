@@ -1,0 +1,931 @@
+greetings	hello	interjection	A1	xin chào	Hello, my name is Mai.	Xin chào, tên tôi là Mai.
+greetings	hi	interjection	A1	chào	Hi, how are you?	Chào, bạn khỏe không?
+greetings	hey	interjection	A1	này	Hey, wait for me.	Này, đợi tôi với.
+greetings	goodbye	interjection	A1	tạm biệt	Goodbye, see you tomorrow.	Tạm biệt, hẹn gặp lại ngày mai.
+greetings	bye	interjection	A1	tạm biệt	Bye, have a good night.	Tạm biệt, chúc một buổi tối tốt.
+greetings	please	interjection	A1	làm ơn	Please sit next to me.	Làm ơn ngồi cạnh tôi.
+greetings	thanks	interjection	A1	cảm ơn	Thanks for your help.	Cảm ơn bạn đã giúp đỡ.
+greetings	thank	verb	A1	cảm ơn	I thank you for the gift.	Tôi cảm ơn bạn vì món quà.
+greetings	welcome	interjection	A1	chào mừng	Welcome to our class.	Chào mừng bạn đến lớp chúng tôi.
+greetings	sorry	adjective	A1	xin lỗi	I am sorry about the mess.	Tôi xin lỗi vì nhà cửa bừa bộn.
+greetings	yes	interjection	A1	vâng	Yes, I like this song.	Vâng, tôi thích bài hát này.
+greetings	no	interjection	A1	không	No, I am busy tonight.	Không, tối nay tôi bận.
+greetings	okay	interjection	A1	được	Okay, I will call you.	Được, tôi sẽ gọi cho bạn.
+greetings	excuse	verb	A1	xin lỗi	Excuse me, where is the station?	Xin lỗi, nhà ga ở đâu?
+greetings	pardon	interjection	A2	xin nhắc lại	Pardon, can you say that again?	Xin lỗi, bạn nói lại được không?
+greetings	greet	verb	A2	chào	Children greet the teacher.	Bọn trẻ chào thầy cô.
+greetings	greeting	noun	A2	lời chào	A kind greeting opens the day.	Một lời chào tử tế mở đầu ngày mới.
+greetings	introduce	verb	A2	giới thiệu	Let me introduce my sister.	Để tôi giới thiệu chị tôi.
+greetings	introduction	noun	A2	lời giới thiệu	His introduction was short.	Lời giới thiệu của anh ấy rất ngắn.
+greetings	meet	verb	A1	gặp	I am happy to meet you.	Tôi rất vui được gặp bạn.
+greetings	name	noun	A1	tên	What is your name?	Tên bạn là gì?
+greetings	smile	verb	A1	mỉm cười	Please smile for the photo.	Hãy mỉm cười khi chụp ảnh.
+greetings	smile	noun	A1	nụ cười	Your smile is kind.	Nụ cười của bạn thật tử tế.
+greetings	wave	verb	A1	vẫy tay	I wave goodbye to Dad.	Tôi vẫy tay tạm biệt bố.
+greetings	nod	verb	A2	gật đầu	Nod if you understand.	Hãy gật đầu nếu bạn hiểu.
+greetings	handshake	noun	A2	cái bắt tay	A handshake is a polite greeting.	Cái bắt tay là một lời chào lịch sự.
+greetings	polite	adjective	A2	lịch sự	Please be polite to guests.	Hãy lịch sự với khách.
+greetings	rude	adjective	A2	thô lỗ	It is rude to shout.	La hét là thô lỗ.
+greetings	kind	adjective	A1	tử tế	You are very kind.	Bạn rất tử tế.
+greetings	nice	adjective	A1	dễ chịu	Have a nice day.	Chúc bạn một ngày vui vẻ.
+greetings	good	adjective	A1	tốt	This is a good idea.	Đây là một ý tưởng tốt.
+greetings	bad	adjective	A1	tệ	I had a bad morning.	Tôi đã có một buổi sáng tệ.
+greetings	conversation	noun	A2	cuộc trò chuyện	We had a long conversation.	Chúng tôi đã trò chuyện rất lâu.
+greetings	talk	verb	A1	nói chuyện	They talk after dinner.	Họ nói chuyện sau bữa tối.
+greetings	chat	verb	A2	tán gẫu	We chat on the phone.	Chúng tôi tán gẫu qua điện thoại.
+greetings	speak	verb	A1	nói	Please speak more slowly.	Xin hãy nói chậm hơn.
+greetings	say	verb	A1	nói	Say your name clearly.	Hãy nói rõ tên của bạn.
+greetings	tell	verb	A1	kể	Tell me about your day.	Hãy kể cho tôi về ngày của bạn.
+greetings	ask	verb	A1	hỏi	Ask her for the time.	Hãy hỏi cô ấy xem mấy giờ.
+greetings	answer	verb	A1	trả lời	Please answer the question.	Hãy trả lời câu hỏi.
+greetings	answer	noun	A1	câu trả lời	Your answer is correct.	Câu trả lời của bạn đúng.
+greetings	question	noun	A1	câu hỏi	I have one question.	Tôi có một câu hỏi.
+greetings	call	verb	A1	gọi điện	Call me after class.	Gọi cho tôi sau giờ học.
+greetings	message	noun	A1	tin nhắn	I left a message for you.	Tôi đã để lại tin nhắn cho bạn.
+greetings	text	verb	A2	nhắn tin	Text me when you arrive.	Nhắn tin cho tôi khi bạn đến nơi.
+greetings	reply	verb	A2	hồi đáp	Please reply to my message.	Xin hãy hồi đáp tin nhắn của tôi.
+greetings	invite	verb	A2	mời	I invite you to dinner.	Tôi mời bạn ăn tối.
+greetings	invitation	noun	A2	lời mời	Thanks for the invitation.	Cảm ơn vì lời mời.
+greetings	guest	noun	A1	khách	The guest is at the door.	Khách đang ở cửa.
+greetings	host	noun	A2	chủ nhà	The host opened the door.	Chủ nhà đã mở cửa.
+greetings	birthday	noun	A1	sinh nhật	Today is my birthday.	Hôm nay là sinh nhật của tôi.
+greetings	party	noun	A1	bữa tiệc	The party starts at seven.	Bữa tiệc bắt đầu lúc bảy giờ.
+greetings	gift	noun	A1	món quà	This gift is for you.	Món quà này dành cho bạn.
+greetings	congratulations	interjection	A2	chúc mừng	Congratulations on your wedding.	Chúc mừng đám cưới của bạn.
+greetings	wish	verb	A2	chúc	I wish you good health.	Tôi chúc bạn mạnh khỏe.
+greetings	luck	noun	A2	sự may mắn	Good luck on the test.	Chúc may mắn trong bài kiểm tra.
+greetings	fine	adjective	A1	khỏe	I am fine, thanks.	Tôi khỏe, cảm ơn.
+greetings	great	adjective	A1	tuyệt vời	That is great news.	Đó là tin tuyệt vời.
+greetings	happy	adjective	A1	vui	I am happy to see you.	Tôi vui được gặp bạn.
+greetings	apologize	verb	A2	xin lỗi	I apologize for the delay.	Tôi xin lỗi vì sự chậm trễ.
+greetings	agree	verb	A2	đồng ý	I agree with you.	Tôi đồng ý với bạn.
+greetings	promise	verb	A2	hứa	I promise to call tonight.	Tôi hứa sẽ gọi tối nay.
+greetings	joke	noun	A2	câu đùa	He told a funny joke.	Anh ấy kể một câu đùa buồn cười.
+greetings	laugh	verb	A1	cười	The children laugh loudly.	Bọn trẻ cười lớn.
+greetings	funny	adjective	A1	buồn cười	That story is funny.	Câu chuyện đó buồn cười.
+numbers-time	zero	number	A1	số không	The score is zero.	Tỷ số là không.
+numbers-time	one	number	A1	một	I have one brother.	Tôi có một anh trai.
+numbers-time	two	number	A1	hai	I need two tickets.	Tôi cần hai vé.
+numbers-time	three	number	A1	ba	She has three cats.	Cô ấy có ba con mèo.
+numbers-time	four	number	A1	bốn	We need four chairs.	Chúng tôi cần bốn cái ghế.
+numbers-time	five	number	A1	năm	Give me five minutes.	Cho tôi năm phút.
+numbers-time	six	number	A1	sáu	The baby is six months old.	Em bé được sáu tháng tuổi.
+numbers-time	seven	number	A1	bảy	I wake at seven.	Tôi thức dậy lúc bảy giờ.
+numbers-time	eight	number	A1	tám	Class starts at eight.	Lớp học bắt đầu lúc tám giờ.
+numbers-time	nine	number	A1	chín	My cousin is nine.	Em họ tôi chín tuổi.
+numbers-time	ten	number	A1	mười	I can count to ten.	Tôi đếm được đến mười.
+numbers-time	eleven	number	A1	mười một	The bus comes at eleven.	Xe buýt đến lúc mười một giờ.
+numbers-time	twelve	number	A1	mười hai	A year has twelve months.	Một năm có mười hai tháng.
+numbers-time	thirteen	number	A1	mười ba	She is thirteen today.	Hôm nay cô bé mười ba tuổi.
+numbers-time	fourteen	number	A1	mười bốn	I see fourteen birds.	Tôi thấy mười bốn con chim.
+numbers-time	fifteen	number	A1	mười lăm	Please wait fifteen minutes.	Xin hãy đợi mười lăm phút.
+numbers-time	sixteen	number	A1	mười sáu	My brother is sixteen.	Em trai tôi mười sáu tuổi.
+numbers-time	seventeen	number	A1	mười bảy	She will be seventeen soon.	Cô ấy sắp mười bảy tuổi.
+numbers-time	eighteen	number	A1	mười tám	He is eighteen years old.	Anh ấy mười tám tuổi.
+numbers-time	nineteen	number	A1	mười chín	There are nineteen students here.	Ở đây có mười chín học sinh.
+numbers-time	twenty	number	A1	hai mươi	I have twenty dollars.	Tôi có hai mươi đô la.
+numbers-time	thirty	number	A1	ba mươi	The cake needs thirty minutes.	Chiếc bánh cần ba mươi phút.
+numbers-time	forty	number	A2	bốn mươi	My uncle is forty.	Chú tôi bốn mươi tuổi.
+numbers-time	fifty	number	A2	năm mươi	This pen costs fifty cents.	Cây bút này giá năm mươi xu.
+numbers-time	sixty	number	A2	sáu mươi	A minute has sixty seconds.	Một phút có sáu mươi giây.
+numbers-time	seventy	number	A2	bảy mươi	The ticket is seventy dollars.	Vé giá bảy mươi đô la.
+numbers-time	eighty	number	A2	tám mươi	Grandma is eighty years old.	Bà tôi tám mươi tuổi.
+numbers-time	ninety	number	A2	chín mươi	He scored ninety points.	Anh ấy được chín mươi điểm.
+numbers-time	hundred	number	A1	một trăm	The room has a hundred seats.	Phòng có một trăm chỗ ngồi.
+numbers-time	thousand	number	A2	một nghìn	This book has a thousand words.	Cuốn sách này có một nghìn từ.
+numbers-time	million	number	B1	một triệu	The city has a million people.	Thành phố có một triệu người.
+numbers-time	first	number	A1	thứ nhất	She is first in line.	Cô ấy đứng đầu hàng.
+numbers-time	second	number	A1	thứ hai	This is my second cup of tea.	Đây là tách trà thứ hai của tôi.
+numbers-time	third	number	A1	thứ ba	He lives on the third floor.	Anh ấy sống ở tầng thứ ba.
+numbers-time	fourth	number	A2	thứ tư	This is her fourth visit.	Đây là lần thứ tư cô ấy đến.
+numbers-time	fifth	number	A2	thứ năm	My birthday is on the fifth.	Sinh nhật tôi vào ngày mùng năm.
+numbers-time	sixth	number	A2	thứ sáu	Take the sixth bus, please.	Xin hãy đi chuyến xe buýt thứ sáu.
+numbers-time	seventh	number	A2	thứ bảy	This is the seventh cookie.	Đây là chiếc bánh quy thứ bảy.
+numbers-time	eighth	number	A2	thứ tám	She sits in the eighth row.	Cô ấy ngồi ở hàng thứ tám.
+numbers-time	ninth	number	A2	thứ chín	This is my ninth year here.	Đây là năm thứ chín tôi ở đây.
+numbers-time	tenth	number	A2	thứ mười	You are the tenth caller.	Bạn là người gọi thứ mười.
+numbers-time	dozen	noun	A2	một tá	I need a dozen eggs.	Tôi cần một tá trứng.
+numbers-time	pair	noun	A1	một đôi	I bought a pair of shoes.	Tôi mua một đôi giày.
+numbers-time	half	noun	A1	một nửa	Half of the pizza is left.	Còn lại một nửa bánh pizza.
+numbers-time	quarter	noun	A2	một phần tư	A quarter of an hour is fifteen minutes.	Một phần tư giờ là mười lăm phút.
+numbers-time	time	noun	A1	thời gian	What time is it?	Mấy giờ rồi?
+numbers-time	clock	noun	A1	đồng hồ	The clock is on the wall.	Đồng hồ ở trên tường.
+numbers-time	watch	noun	A1	đồng hồ đeo tay	My watch is slow.	Đồng hồ của tôi chạy chậm.
+numbers-time	hour	noun	A1	giờ	The class lasts an hour.	Lớp học kéo dài một giờ.
+numbers-time	minute	noun	A1	phút	Wait a minute, please.	Xin đợi một phút.
+numbers-time	second	noun	A1	giây	Give me one second.	Cho tôi một giây.
+numbers-time	morning	noun	A1	buổi sáng	I drink coffee every morning.	Tôi uống cà phê mỗi buổi sáng.
+numbers-time	afternoon	noun	A1	buổi chiều	We meet in the afternoon.	Chúng tôi gặp nhau vào buổi chiều.
+numbers-time	evening	noun	A1	buổi tối	The evening is quiet.	Buổi tối thật yên tĩnh.
+numbers-time	night	noun	A1	ban đêm	I sleep at night.	Tôi ngủ vào ban đêm.
+numbers-time	noon	noun	A1	buổi trưa	Lunch is at noon.	Bữa trưa vào lúc giữa trưa.
+numbers-time	midnight	noun	A2	nửa đêm	The movie ends at midnight.	Bộ phim kết thúc lúc nửa đêm.
+numbers-time	dawn	noun	B1	bình minh	Birds sing at dawn.	Chim hót lúc bình minh.
+numbers-time	today	adverb	A1	hôm nay	Today is a school day.	Hôm nay là ngày đi học.
+numbers-time	tomorrow	adverb	A1	ngày mai	I will call you tomorrow.	Tôi sẽ gọi cho bạn ngày mai.
+numbers-time	yesterday	adverb	A1	hôm qua	Yesterday was very cold.	Hôm qua trời rất lạnh.
+numbers-time	tonight	adverb	A1	tối nay	We eat out tonight.	Tối nay chúng tôi ăn ở ngoài.
+numbers-time	now	adverb	A1	bây giờ	Please come here now.	Xin hãy đến đây bây giờ.
+numbers-time	soon	adverb	A1	sớm	Dinner will be ready soon.	Bữa tối sẽ xong sớm thôi.
+numbers-time	later	adverb	A1	lát sau	I will do it later.	Tôi sẽ làm việc đó lát sau.
+numbers-time	early	adverb	A1	sớm	She arrived early.	Cô ấy đã đến sớm.
+numbers-time	late	adverb	A1	muộn	She arrived late.	Cô ấy đã đến muộn.
+numbers-time	always	adverb	A1	luôn luôn	He always smiles.	Anh ấy luôn mỉm cười.
+numbers-time	never	adverb	A1	không bao giờ	I never drink beer.	Tôi không bao giờ uống bia.
+numbers-time	sometimes	adverb	A1	thỉnh thoảng	Sometimes I walk to school.	Thỉnh thoảng tôi đi bộ đến trường.
+numbers-time	often	adverb	A1	thường xuyên	We often cook at home.	Chúng tôi thường nấu ăn ở nhà.
+numbers-time	usually	adverb	A2	thường	I usually wake at six.	Tôi thường thức dậy lúc sáu giờ.
+numbers-time	once	adverb	A1	một lần	I eat mango once a week.	Tôi ăn xoài một lần mỗi tuần.
+numbers-time	twice	adverb	A1	hai lần	I brush my teeth twice a day.	Tôi đánh răng hai lần mỗi ngày.
+numbers-time	again	adverb	A1	lần nữa	Please say that again.	Xin hãy nói điều đó lần nữa.
+numbers-time	already	adverb	A2	đã rồi	I already ate lunch.	Tôi đã ăn trưa rồi.
+numbers-time	yet	adverb	A2	chưa	She is not here yet.	Cô ấy vẫn chưa đến.
+numbers-time	still	adverb	A2	vẫn còn	He is still at school.	Anh ấy vẫn còn ở trường.
+numbers-time	ago	adverb	A1	trước đây	I met her two days ago.	Tôi gặp cô ấy hai ngày trước.
+numbers-time	day	noun	A1	ngày	Have a good day.	Chúc một ngày tốt lành.
+numbers-time	week	noun	A1	tuần	This week is busy.	Tuần này rất bận.
+numbers-time	month	noun	A1	tháng	My birthday is next month.	Sinh nhật tôi vào tháng sau.
+numbers-time	year	noun	A1	năm	This year I study English.	Năm nay tôi học tiếng Anh.
+numbers-time	weekend	noun	A1	cuối tuần	We rest on the weekend.	Chúng tôi nghỉ ngơi vào cuối tuần.
+numbers-time	weekday	noun	A2	ngày trong tuần	I study every weekday.	Tôi học mỗi ngày trong tuần.
+numbers-time	date	noun	A1	ngày tháng	What is the date today?	Hôm nay là ngày mấy?
+numbers-time	calendar	noun	A2	quyển lịch	Mark the day on the calendar.	Hãy đánh dấu ngày đó trên lịch.
+numbers-time	season	noun	A2	mùa	Summer is my favorite season.	Mùa hè là mùa tôi thích nhất.
+numbers-time	spring	noun	A1	mùa xuân	Flowers bloom in spring.	Hoa nở vào mùa xuân.
+numbers-time	summer	noun	A1	mùa hè	Summer is very hot here.	Mùa hè ở đây rất nóng.
+numbers-time	fall	noun	A1	mùa thu	Leaves turn red in fall.	Lá chuyển sang màu đỏ vào mùa thu.
+numbers-time	winter	noun	A1	mùa đông	Winter mornings are cold.	Buổi sáng mùa đông rất lạnh.
+numbers-time	past	noun	A2	quá khứ	That happened in the past.	Chuyện đó xảy ra trong quá khứ.
+numbers-time	future	noun	A2	tương lai	I think about the future.	Tôi nghĩ về tương lai.
+numbers-time	age	noun	A1	tuổi	What is your age?	Bạn bao nhiêu tuổi?
+numbers-time	o'clock	adverb	A1	giờ đúng	Class starts at nine o'clock.	Lớp học bắt đầu lúc chín giờ đúng.
+numbers-time	schedule	noun	A2	lịch trình	My schedule is full today.	Lịch hôm nay của tôi kín mít.
+numbers-time	appointment	noun	A2	cuộc hẹn	I have an appointment at noon.	Tôi có một cuộc hẹn vào buổi trưa.
+numbers-time	holiday	noun	A2	ngày lễ	Monday is a holiday.	Thứ Hai là ngày lễ.
+numbers-time	daily	adjective	A2	hằng ngày	Walking is my daily exercise.	Đi bộ là bài tập hằng ngày của tôi.
+numbers-time	weekly	adjective	A2	hằng tuần	We have a weekly meeting.	Chúng tôi có cuộc họp hằng tuần.
+numbers-time	monthly	adjective	A2	hằng tháng	Rent is a monthly payment.	Tiền thuê nhà là khoản trả hằng tháng.
+numbers-time	before	preposition	A1	trước	Wash your hands before dinner.	Hãy rửa tay trước bữa tối.
+numbers-time	after	preposition	A1	sau	We talk after class.	Chúng tôi nói chuyện sau giờ học.
+numbers-time	during	preposition	A2	trong lúc	Please be quiet during the movie.	Xin giữ yên lặng trong lúc xem phim.
+numbers-time	until	preposition	A2	cho đến	Wait until noon, please.	Xin hãy đợi cho đến trưa.
+numbers-time	when	adverb	A1	khi nào	When does the bus leave?	Xe buýt rời bến khi nào?
+numbers-time	moment	noun	A2	khoảnh khắc	Wait a moment, please.	Xin đợi một lát.
+numbers-time	while	noun	A2	một lát	Stay for a while.	Hãy ở lại một lát.
+family-people	family	noun	A1	gia đình	My family eats together.	Gia đình tôi ăn cơm cùng nhau.
+family-people	parent	noun	A1	bố hoặc mẹ	Ask your parent first.	Hãy hỏi bố hoặc mẹ trước.
+family-people	mother	noun	A1	mẹ	My mother cooks dinner.	Mẹ tôi nấu bữa tối.
+family-people	father	noun	A1	bố	My father reads the news.	Bố tôi đọc tin tức.
+family-people	mom	noun	A1	mẹ	Mom, I am home.	Mẹ ơi, con về rồi.
+family-people	dad	noun	A1	bố	Dad walks every morning.	Bố đi bộ mỗi buổi sáng.
+family-people	child	noun	A1	đứa trẻ	The child is sleeping.	Đứa trẻ đang ngủ.
+family-people	son	noun	A1	con trai	Their son is a student.	Con trai họ là học sinh.
+family-people	daughter	noun	A1	con gái	Her daughter likes music.	Con gái cô ấy thích nhạc.
+family-people	brother	noun	A1	anh hoặc em trai	My brother plays soccer.	Anh trai tôi chơi bóng đá.
+family-people	sister	noun	A1	chị hoặc em gái	My sister lives in Hanoi.	Chị tôi sống ở Hà Nội.
+family-people	sibling	noun	A2	anh chị em ruột	A sibling can be a brother or a sister.	Anh chị em ruột có thể là anh em trai hoặc chị em gái.
+family-people	grandmother	noun	A1	bà	My grandmother makes soup.	Bà tôi nấu súp.
+family-people	grandfather	noun	A1	ông	My grandfather tells stories.	Ông tôi kể chuyện.
+family-people	grandma	noun	A1	bà	Grandma bakes cookies.	Bà nướng bánh quy.
+family-people	grandpa	noun	A1	ông	Grandpa drinks tea outside.	Ông uống trà ở ngoài.
+family-people	grandchild	noun	A2	cháu nội hoặc ngoại	The grandchild visits on Sunday.	Đứa cháu đến thăm vào Chủ nhật.
+family-people	grandson	noun	A2	cháu trai	Her grandson is five.	Cháu trai của bà năm tuổi.
+family-people	granddaughter	noun	A2	cháu gái	His granddaughter can read.	Cháu gái của ông đã biết đọc.
+family-people	aunt	noun	A1	cô hoặc dì	My aunt lives nearby.	Cô tôi sống gần đây.
+family-people	uncle	noun	A1	chú hoặc bác	My uncle is a farmer.	Chú tôi là nông dân.
+family-people	cousin	noun	A1	anh chị em họ	My cousin is my age.	Anh họ tôi bằng tuổi tôi.
+family-people	nephew	noun	A2	cháu trai gọi bằng chú	My nephew starts school soon.	Cháu trai tôi sắp đi học.
+family-people	niece	noun	A2	cháu gái gọi bằng cô	My niece likes to draw.	Cháu gái tôi thích vẽ.
+family-people	husband	noun	A1	chồng	Her husband is a doctor.	Chồng cô ấy là bác sĩ.
+family-people	wife	noun	A1	vợ	His wife teaches English.	Vợ anh ấy dạy tiếng Anh.
+family-people	spouse	noun	B1	vợ hoặc chồng	Bring your spouse to the party.	Hãy đưa vợ hoặc chồng đến bữa tiệc.
+family-people	baby	noun	A1	em bé	The baby is crying.	Em bé đang khóc.
+family-people	infant	noun	B1	trẻ sơ sinh	The infant sleeps a lot.	Trẻ sơ sinh ngủ rất nhiều.
+family-people	toddler	noun	A2	trẻ chập chững	The toddler can walk now.	Đứa trẻ đã biết đi chập chững.
+family-people	boy	noun	A1	cậu bé	The boy has a red cap.	Cậu bé có một chiếc mũ đỏ.
+family-people	girl	noun	A1	cô bé	The girl is my friend.	Cô bé là bạn tôi.
+family-people	man	noun	A1	đàn ông	That man is my neighbor.	Người đàn ông đó là hàng xóm của tôi.
+family-people	woman	noun	A1	phụ nữ	The woman is a nurse.	Người phụ nữ đó là y tá.
+family-people	person	noun	A1	người	This person needs help.	Người này cần được giúp.
+family-people	people	noun	A1	mọi người	People are waiting outside.	Mọi người đang đợi ở ngoài.
+family-people	adult	noun	A2	người lớn	An adult paid for the ticket.	Một người lớn đã trả tiền vé.
+family-people	teenager	noun	A2	thiếu niên	The teenager studies at night.	Bạn thiếu niên học vào buổi tối.
+family-people	kid	noun	A1	trẻ con	The kid wants a cookie.	Đứa trẻ muốn một cái bánh quy.
+family-people	friend	noun	A1	bạn	She is my best friend.	Cô ấy là bạn thân nhất của tôi.
+family-people	boyfriend	noun	A2	bạn trai	Her boyfriend is kind.	Bạn trai cô ấy rất tử tế.
+family-people	girlfriend	noun	A2	bạn gái	His girlfriend likes tea.	Bạn gái anh ấy thích trà.
+family-people	neighbor	noun	A1	hàng xóm	Our neighbor has a dog.	Hàng xóm chúng tôi nuôi một con chó.
+family-people	stranger	noun	A2	người lạ	Do not follow a stranger.	Đừng đi theo người lạ.
+family-people	relative	noun	A2	họ hàng	A relative is coming today.	Một người họ hàng sẽ đến hôm nay.
+family-people	twin	noun	A2	người sinh đôi	She has a twin brother.	Cô ấy có một người anh em sinh đôi.
+family-people	stepfather	noun	A2	bố dượng	His stepfather cooks well.	Bố dượng anh ấy nấu ăn ngon.
+family-people	stepmother	noun	A2	mẹ kế	Her stepmother is friendly.	Mẹ kế cô ấy rất thân thiện.
+family-people	stepson	noun	B1	con trai riêng	His stepson is in school.	Con trai riêng của anh ấy đang đi học.
+family-people	stepdaughter	noun	B1	con gái riêng	Her stepdaughter loves music.	Con gái riêng của cô ấy thích nhạc.
+family-people	stepbrother	noun	A2	anh hoặc em trai kế	My stepbrother is tall.	Anh trai kế của tôi rất cao.
+family-people	stepsister	noun	A2	chị hoặc em gái kế	My stepsister shares a room.	Chị kế của tôi ở chung phòng.
+family-people	newborn	noun	A2	trẻ mới sinh	The newborn is very small.	Trẻ mới sinh rất nhỏ.
+family-people	generation	noun	B1	thế hệ	Our generation studies English.	Thế hệ chúng tôi học tiếng Anh.
+family-people	marriage	noun	A2	hôn nhân	Their marriage is happy.	Hôn nhân của họ hạnh phúc.
+family-people	wedding	noun	A1	đám cưới	The wedding is on Sunday.	Đám cưới vào Chủ nhật.
+family-people	married	adjective	A2	đã kết hôn	They got married last year.	Họ kết hôn năm ngoái.
+family-people	single	adjective	A2	độc thân	She is single.	Cô ấy còn độc thân.
+family-people	engaged	adjective	B1	đã đính hôn	They got engaged in June.	Họ đính hôn vào tháng Sáu.
+family-people	bride	noun	A2	cô dâu	The bride is wearing white.	Cô dâu đang mặc váy trắng.
+family-people	groom	noun	A2	chú rể	The groom looks happy.	Chú rể trông rất vui.
+family-people	mother-in-law	noun	A2	mẹ chồng hoặc mẹ vợ	My mother-in-law makes soup.	Mẹ vợ tôi nấu súp.
+family-people	father-in-law	noun	A2	bố chồng hoặc bố vợ	My father-in-law lives in Hue.	Bố vợ tôi sống ở Huế.
+family-people	brother-in-law	noun	A2	anh rể hoặc em rể	My brother-in-law is a driver.	Anh rể tôi là tài xế.
+family-people	sister-in-law	noun	A2	chị dâu hoặc em dâu	My sister-in-law is a teacher.	Chị dâu tôi là giáo viên.
+family-people	household	noun	B1	hộ gia đình	Our household has four people.	Nhà chúng tôi có bốn người.
+family-people	human	noun	A2	con người	A dog is not a human.	Chó không phải là người.
+family-people	gentleman	noun	A2	quý ông	The gentleman held the door.	Quý ông đã giữ cửa.
+family-people	lady	noun	A2	quý cô	The lady asked for tea.	Quý cô gọi một tách trà.
+family-people	elder	noun	B1	người lớn tuổi	An elder sat near the door.	Một người lớn tuổi ngồi gần cửa.
+family-people	couple	noun	A2	cặp đôi	The couple dances slowly.	Cặp đôi nhảy chậm.
+family-people	classmate	noun	A1	bạn cùng lớp	My classmate sits beside me.	Bạn cùng lớp ngồi cạnh tôi.
+family-people	roommate	noun	A2	bạn cùng phòng	My roommate is quiet.	Bạn cùng phòng của tôi ít nói.
+family-people	partner	noun	A2	bạn đời	She came with her partner.	Cô ấy đến cùng bạn đời.
+family-people	teacher	noun	A1	giáo viên	The teacher explains the word.	Giáo viên giải thích từ đó.
+family-people	student	noun	A1	học sinh	The student asks a question.	Học sinh đặt một câu hỏi.
+family-people	doctor	noun	A1	bác sĩ	The doctor works at the hospital.	Bác sĩ làm việc ở bệnh viện.
+family-people	nurse	noun	A1	y tá	The nurse brings water.	Y tá mang nước tới.
+family-people	patient	noun	A2	bệnh nhân	The patient needs rest.	Bệnh nhân cần nghỉ ngơi.
+family-people	driver	noun	A1	tài xế	The driver stopped the bus.	Tài xế dừng xe buýt.
+family-people	worker	noun	A2	người lao động	The worker arrives early.	Người lao động đến sớm.
+family-people	boss	noun	A2	sếp	My boss is kind.	Sếp của tôi rất tử tế.
+family-people	farmer	noun	A1	nông dân	The farmer grows rice.	Người nông dân trồng lúa.
+family-people	chef	noun	A2	đầu bếp	The chef cooks fish well.	Đầu bếp nấu cá rất giỏi.
+family-people	waiter	noun	A1	bồi bàn	The waiter brings the menu.	Người bồi bàn mang thực đơn tới.
+family-people	waitress	noun	A1	nữ bồi bàn	The waitress poured the tea.	Nữ bồi bàn rót trà.
+family-people	visitor	noun	A2	khách đến thăm	A visitor knocked on the door.	Một vị khách gõ cửa.
+family-people	member	noun	A2	thành viên	She is a member of the team.	Cô ấy là thành viên của đội.
+family-people	crowd	noun	A2	đám đông	A crowd waited outside.	Một đám đông đợi ở ngoài.
+family-people	group	noun	A1	nhóm	Our group has six people.	Nhóm chúng tôi có sáu người.
+family-people	team	noun	A1	đội	Our team won the game.	Đội chúng tôi thắng trận.
+family-people	babysitter	noun	A2	người trông trẻ	The babysitter reads to the baby.	Người trông trẻ đọc sách cho em bé.
+family-people	colleague	noun	A2	đồng nghiệp	My colleague brought coffee.	Đồng nghiệp của tôi mang cà phê đến.
+family-people	coach	noun	A2	huấn luyện viên	The coach trains the team.	Huấn luyện viên tập luyện cho đội.
+family-people	young	adjective	A1	trẻ	The young man is my cousin.	Chàng trai trẻ là anh họ tôi.
+family-people	old	adjective	A1	già	My grandfather is old.	Ông tôi đã già.
+family-people	elderly	adjective	B1	cao tuổi	The elderly woman needs a seat.	Bà cụ cần một chỗ ngồi.
+family-people	friendly	adjective	A1	thân thiện	Our neighbors are friendly.	Hàng xóm của chúng tôi rất thân thiện.
+family-people	shy	adjective	A2	nhút nhát	The shy boy did not speak.	Cậu bé nhút nhát đã không nói gì.
+family-people	famous	adjective	A2	nổi tiếng	That singer is famous.	Ca sĩ đó rất nổi tiếng.
+family-people	rich	adjective	A2	giàu	The rich man gave food away.	Người đàn ông giàu đã tặng thức ăn.
+family-people	poor	adjective	A2	nghèo	The poor family needs help.	Gia đình nghèo cần được giúp.
+family-people	caring	adjective	B1	chu đáo	She is a caring mother.	Cô ấy là một người mẹ chu đáo.
+family-people	male	adjective	A2	nam	The male singer is tall.	Ca sĩ nam thì cao.
+family-people	female	adjective	A2	nữ	The female doctor is here.	Bác sĩ nữ ở đây.
+family-people	visit	verb	A1	thăm	I visit my grandma on Sunday.	Tôi thăm bà vào Chủ nhật.
+family-people	born	adjective	A2	sinh ra	The baby was born in May.	Em bé sinh vào tháng Năm.
+family-people	grow	verb	A2	lớn lên	Children grow very fast.	Trẻ con lớn rất nhanh.
+food-drink	fruit	noun	A1	trái cây	Fruit is good for children.	Trái cây tốt cho trẻ em.
+food-drink	apple	noun	A1	quả táo	This apple is red and sweet.	Quả táo này đỏ và ngọt.
+food-drink	banana	noun	A1	quả chuối	The banana is ripe.	Quả chuối đã chín.
+food-drink	orange	noun	A1	quả cam	I eat an orange after lunch.	Tôi ăn một quả cam sau bữa trưa.
+food-drink	grape	noun	A1	quả nho	This grape is very sweet.	Quả nho này rất ngọt.
+food-drink	lemon	noun	A1	quả chanh vàng	This lemon is sour.	Quả chanh này chua.
+food-drink	lime	noun	A2	quả chanh xanh	Add a lime to the drink.	Hãy cho một quả chanh xanh vào đồ uống.
+food-drink	mango	noun	A1	quả xoài	The mango is sweet and juicy.	Quả xoài ngọt và mọng nước.
+food-drink	watermelon	noun	A1	dưa hấu	Watermelon is good in summer.	Dưa hấu ngon vào mùa hè.
+food-drink	strawberry	noun	A1	dâu tây	This strawberry is bright red.	Quả dâu tây này đỏ tươi.
+food-drink	peach	noun	A2	quả đào	The peach is soft and sweet.	Quả đào mềm và ngọt.
+food-drink	pear	noun	A2	quả lê	I packed a pear for lunch.	Tôi mang một quả lê cho bữa trưa.
+food-drink	cherry	noun	A2	quả anh đào	A cherry is small and red.	Quả anh đào nhỏ và đỏ.
+food-drink	pineapple	noun	A2	quả dứa	Pineapple is sweet and sour.	Dứa chua và ngọt.
+food-drink	coconut	noun	A2	quả dừa	Coconut water is refreshing.	Nước dừa rất mát.
+food-drink	avocado	noun	A2	quả bơ	I put avocado on the toast.	Tôi để quả bơ lên bánh mì nướng.
+food-drink	melon	noun	A2	quả dưa	This melon is very sweet.	Quả dưa này rất ngọt.
+food-drink	kiwi	noun	A2	quả kiwi	A kiwi is green inside.	Quả kiwi bên trong màu xanh.
+food-drink	papaya	noun	A2	quả đu đủ	Papaya is soft when it is ripe.	Đu đủ mềm khi đã chín.
+food-drink	vegetable	noun	A1	rau	Eat a vegetable with dinner.	Hãy ăn rau cùng bữa tối.
+food-drink	carrot	noun	A1	cà rốt	The rabbit eats a carrot.	Con thỏ ăn một củ cà rốt.
+food-drink	potato	noun	A1	khoai tây	The potato is in the oven.	Củ khoai tây ở trong lò.
+food-drink	tomato	noun	A1	cà chua	This tomato is red and fresh.	Quả cà chua này đỏ và tươi.
+food-drink	onion	noun	A1	củ hành	I fry the onion first.	Tôi chiên hành trước.
+food-drink	garlic	noun	A2	tỏi	Garlic makes the soup tasty.	Tỏi làm món súp thêm ngon.
+food-drink	cabbage	noun	A2	bắp cải	Cabbage is a cheap vegetable.	Bắp cải là loại rau rẻ.
+food-drink	lettuce	noun	A2	xà lách	Put lettuce in the sandwich.	Hãy cho xà lách vào bánh mì kẹp.
+food-drink	cucumber	noun	A2	dưa chuột	Cucumber is cool and fresh.	Dưa chuột mát và tươi.
+food-drink	pepper	noun	A2	hạt tiêu	Add pepper to the eggs.	Hãy cho hạt tiêu vào trứng.
+food-drink	chili	noun	A2	ớt	This chili is very spicy.	Quả ớt này rất cay.
+food-drink	corn	noun	A1	ngô	We grill corn in summer.	Chúng tôi nướng ngô vào mùa hè.
+food-drink	pea	noun	A2	đậu Hà Lan	There is a pea on the plate.	Có một hạt đậu Hà Lan trên đĩa.
+food-drink	bean	noun	A2	hạt đậu	Bean soup is hot and salty.	Súp đậu nóng và mặn.
+food-drink	broccoli	noun	A2	bông cải xanh	Broccoli is green and healthy.	Bông cải xanh màu xanh và tốt cho sức khỏe.
+food-drink	spinach	noun	A2	rau chân vịt	I add spinach to the soup.	Tôi cho rau chân vịt vào súp.
+food-drink	mushroom	noun	A2	nấm	The mushroom is in the pan.	Nấm ở trong chảo.
+food-drink	eggplant	noun	A2	cà tím	Eggplant is purple inside.	Cà tím bên trong màu tím.
+food-drink	pumpkin	noun	A2	bí ngô	Pumpkin soup is sweet.	Súp bí ngô có vị ngọt.
+food-drink	ginger	noun	A2	gừng	Ginger makes tea spicy.	Gừng làm trà có vị cay.
+food-drink	zucchini	noun	A2	bí ngòi	Slice the zucchini, please.	Xin hãy thái bí ngòi.
+food-drink	salad	noun	A1	rau trộn	I want a green salad.	Tôi muốn một đĩa rau trộn.
+food-drink	rice	noun	A1	cơm	We eat rice every evening.	Chúng tôi ăn cơm mỗi tối.
+food-drink	bread	noun	A1	bánh mì	The bread is fresh today.	Bánh mì hôm nay còn tươi.
+food-drink	noodle	noun	A1	mì	This noodle is soft.	Sợi mì này mềm.
+food-drink	pasta	noun	A2	mì ống	Pasta is easy to cook.	Mì ống dễ nấu.
+food-drink	flour	noun	A2	bột mì	The flour is in the bowl.	Bột mì ở trong bát.
+food-drink	cereal	noun	A2	ngũ cốc	I eat cereal with milk.	Tôi ăn ngũ cốc với sữa.
+food-drink	sandwich	noun	A1	bánh mì kẹp	I made a cheese sandwich.	Tôi làm một bánh mì kẹp phô mai.
+food-drink	toast	noun	A2	bánh mì nướng	I eat toast in the morning.	Tôi ăn bánh mì nướng vào buổi sáng.
+food-drink	bun	noun	A2	ổ bánh con	The burger sits on a bun.	Miếng thịt kẹp nằm trên ổ bánh con.
+food-drink	dumpling	noun	A2	bánh bao	This dumpling is still hot.	Chiếc bánh bao này vẫn còn nóng.
+food-drink	loaf	noun	A2	ổ bánh mì	I bought a loaf of bread.	Tôi mua một ổ bánh mì.
+food-drink	meat	noun	A1	thịt	The meat is on the plate.	Thịt ở trên đĩa.
+food-drink	beef	noun	A2	thịt bò	This beef is tasty.	Miếng thịt bò này ngon.
+food-drink	pork	noun	A2	thịt lợn	I do not eat pork.	Tôi không ăn thịt lợn.
+food-drink	chicken	noun	A1	thịt gà	We grill chicken on Sunday.	Chúng tôi nướng gà vào Chủ nhật.
+food-drink	fish	noun	A1	cá	We eat fish for dinner.	Chúng tôi ăn cá vào bữa tối.
+food-drink	shrimp	noun	A2	tôm	This shrimp is very big.	Con tôm này rất to.
+food-drink	crab	noun	A2	cua	The crab is in the pot.	Con cua ở trong nồi.
+food-drink	egg	noun	A1	trứng	I boil an egg for breakfast.	Tôi luộc một quả trứng cho bữa sáng.
+food-drink	tofu	noun	A2	đậu hũ	I cook tofu with vegetables.	Tôi nấu đậu hũ với rau.
+food-drink	sausage	noun	A2	xúc xích	The sausage is in the pan.	Xúc xích ở trong chảo.
+food-drink	bacon	noun	A2	thịt xông khói	I eat bacon with eggs.	Tôi ăn thịt xông khói với trứng.
+food-drink	ham	noun	A2	giăm bông	I want ham in the sandwich.	Tôi muốn giăm bông trong bánh mì kẹp.
+food-drink	turkey	noun	A2	thịt gà tây	We eat turkey in November.	Chúng tôi ăn thịt gà tây vào tháng Mười một.
+food-drink	lamb	noun	B1	thịt cừu	The lamb is in the oven.	Thịt cừu ở trong lò nướng.
+food-drink	steak	noun	A2	bít tết	He ordered a steak.	Anh ấy gọi một phần bít tết.
+food-drink	seafood	noun	A2	hải sản	We eat seafood by the sea.	Chúng tôi ăn hải sản ở gần biển.
+food-drink	salmon	noun	A2	cá hồi	This salmon is fresh.	Miếng cá hồi này tươi.
+food-drink	tuna	noun	A2	cá ngừ	I like tuna in a salad.	Tôi thích cá ngừ trong món rau trộn.
+food-drink	peanut	noun	A2	đậu phộng	This peanut is salty.	Hạt đậu phộng này mặn.
+food-drink	nut	noun	A2	hạt	A nut is a healthy snack.	Một loại hạt là món ăn nhẹ tốt.
+food-drink	milk	noun	A1	sữa	The child drinks milk.	Đứa trẻ uống sữa.
+food-drink	cheese	noun	A1	phô mai	I like cheese on pizza.	Tôi thích phô mai trên bánh pizza.
+food-drink	butter	noun	A1	bơ	Put butter on the bread.	Hãy phết bơ lên bánh mì.
+food-drink	yogurt	noun	A2	sữa chua	I eat yogurt for breakfast.	Tôi ăn sữa chua vào bữa sáng.
+food-drink	cream	noun	A2	kem sữa	There is cream on the cake.	Có kem sữa trên bánh.
+food-drink	ice	noun	A1	đá	The ice is in the glass.	Đá ở trong ly.
+food-drink	sugar	noun	A1	đường	This tea needs sugar.	Tách trà này cần đường.
+food-drink	salt	noun	A1	muối	The soup needs more salt.	Món súp cần thêm muối.
+food-drink	oil	noun	A2	dầu ăn	Heat the oil in the pan.	Hãy làm nóng dầu trong chảo.
+food-drink	vinegar	noun	A2	giấm	Add a little vinegar.	Hãy cho một chút giấm.
+food-drink	sauce	noun	A1	nước sốt	This sauce is spicy.	Nước sốt này cay.
+food-drink	honey	noun	A2	mật ong	I put honey in my tea.	Tôi cho mật ong vào trà.
+food-drink	jam	noun	A2	mứt	I want jam on the toast.	Tôi muốn mứt trên bánh mì nướng.
+food-drink	ketchup	noun	A2	tương cà	The child wants ketchup.	Đứa trẻ muốn tương cà.
+food-drink	flavor	noun	A2	hương vị	This sauce has a strong flavor.	Nước sốt này có hương vị đậm.
+food-drink	breakfast	noun	A1	bữa sáng	I eat breakfast at seven.	Tôi ăn sáng lúc bảy giờ.
+food-drink	lunch	noun	A1	bữa trưa	We have lunch at noon.	Chúng tôi ăn trưa lúc mười hai giờ.
+food-drink	dinner	noun	A1	bữa tối	Dinner is almost ready.	Bữa tối sắp sẵn sàng.
+food-drink	snack	noun	A1	món ăn nhẹ	I want a small snack.	Tôi muốn một món ăn nhẹ.
+food-drink	meal	noun	A1	bữa ăn	This meal has rice and fish.	Bữa ăn này có cơm và cá.
+food-drink	dessert	noun	A2	món tráng miệng	Cake is my favorite dessert.	Bánh ngọt là món tráng miệng tôi thích nhất.
+food-drink	menu	noun	A1	thực đơn	The menu is on the table.	Thực đơn nằm trên bàn.
+food-drink	recipe	noun	A2	công thức nấu ăn	This recipe uses two eggs.	Công thức này dùng hai quả trứng.
+food-drink	ingredient	noun	B1	nguyên liệu	Salt is a simple ingredient.	Muối là một nguyên liệu đơn giản.
+food-drink	soup	noun	A1	súp	The soup is too salty.	Món súp mặn quá.
+food-drink	pizza	noun	A1	bánh pizza	We share a large pizza.	Chúng tôi chia nhau một bánh pizza lớn.
+food-drink	burger	noun	A1	bánh kẹp thịt	He ate a burger for lunch.	Anh ấy ăn một bánh kẹp thịt vào bữa trưa.
+food-drink	fries	noun	A1	khoai tây chiên	These fries are crispy.	Phần khoai tây chiên này giòn.
+food-drink	chip	noun	A2	khoai tây lát chiên	This chip is very salty.	Miếng khoai tây lát này rất mặn.
+food-drink	cookie	noun	A1	bánh quy	She baked a big cookie.	Cô ấy nướng một cái bánh quy to.
+food-drink	cake	noun	A1	bánh ngọt	The cake is on the table.	Chiếc bánh ở trên bàn.
+food-drink	pie	noun	A2	bánh nướng nhân	Apple pie smells sweet.	Bánh táo có mùi ngọt.
+food-drink	candy	noun	A1	kẹo	The child wants some candy.	Đứa trẻ muốn một ít kẹo.
+food-drink	chocolate	noun	A1	sô cô la	This chocolate is sweet.	Thanh sô cô la này ngọt.
+food-drink	doughnut	noun	A2	bánh vòng	I want a doughnut with coffee.	Tôi muốn một bánh vòng với cà phê.
+food-drink	popcorn	noun	A2	bỏng ngô	We eat popcorn at the movie.	Chúng tôi ăn bỏng ngô khi xem phim.
+food-drink	pancake	noun	A2	bánh kếp	I eat a pancake on Sunday.	Tôi ăn bánh kếp vào Chủ nhật.
+food-drink	omelet	noun	A2	trứng rán	Dad made an omelet.	Bố làm một đĩa trứng rán.
+food-drink	curry	noun	A2	món cà ri	This curry is very spicy.	Món cà ri này rất cay.
+food-drink	water	noun	A1	nước	Please drink some water.	Xin hãy uống một ít nước.
+food-drink	tea	noun	A1	trà	I drink tea every morning.	Tôi uống trà mỗi buổi sáng.
+food-drink	coffee	noun	A1	cà phê	Hot coffee helps me wake up.	Cà phê nóng giúp tôi tỉnh táo.
+food-drink	juice	noun	A1	nước ép	Orange juice is sweet.	Nước ép cam thì ngọt.
+food-drink	soda	noun	A1	nước ngọt có ga	The soda is very cold.	Nước ngọt còn rất lạnh.
+food-drink	wine	noun	A2	rượu vang	Adults sometimes drink wine.	Người lớn thỉnh thoảng uống rượu vang.
+food-drink	beer	noun	A2	bia	He does not drink beer.	Anh ấy không uống bia.
+food-drink	lemonade	noun	A2	nước chanh	I want a glass of lemonade.	Tôi muốn một ly nước chanh.
+food-drink	drink	noun	A1	đồ uống	A cold drink is nice today.	Một đồ uống lạnh hôm nay thật dễ chịu.
+food-drink	drink	verb	A1	uống	I drink milk at breakfast.	Tôi uống sữa vào bữa sáng.
+food-drink	food	noun	A1	thức ăn	The food is on the table.	Thức ăn ở trên bàn.
+food-drink	plate	noun	A1	đĩa	Put the meat on a plate.	Hãy đặt thịt lên đĩa.
+food-drink	bowl	noun	A1	bát	The rice is in the bowl.	Cơm ở trong bát.
+food-drink	cup	noun	A1	tách	My cup of tea is hot.	Tách trà của tôi còn nóng.
+food-drink	mug	noun	A2	cốc có quai	The coffee is in a mug.	Cà phê ở trong một cái cốc.
+food-drink	glass	noun	A1	cái ly	The glass is full of water.	Cái ly đầy nước.
+food-drink	fork	noun	A1	nĩa	Use a fork for the salad.	Hãy dùng nĩa để ăn rau trộn.
+food-drink	spoon	noun	A1	thìa	The spoon is beside the bowl.	Cái thìa ở cạnh bát.
+food-drink	knife	noun	A1	dao	The knife is on the plate.	Con dao ở trên đĩa.
+food-drink	chopsticks	noun	A1	đũa	These chopsticks are clean.	Đôi đũa này sạch.
+food-drink	napkin	noun	A2	khăn ăn	The napkin is on the table.	Khăn ăn ở trên bàn.
+food-drink	pot	noun	A1	nồi	The soup is in a big pot.	Súp ở trong một cái nồi lớn.
+food-drink	pan	noun	A2	chảo	Heat the pan before you fry.	Hãy làm nóng chảo trước khi chiên.
+food-drink	kettle	noun	A2	ấm đun nước	The kettle is on the stove.	Ấm đun nước ở trên bếp.
+food-drink	bottle	noun	A1	chai	This bottle is full of water.	Cái chai này đầy nước.
+food-drink	can	noun	A2	lon	Open this can of tuna.	Hãy mở lon cá ngừ này.
+food-drink	straw	noun	A2	ống hút	I need a straw for the soda.	Tôi cần một cái ống hút cho nước ngọt.
+food-drink	eat	verb	A1	ăn	We eat rice every day.	Chúng tôi ăn cơm mỗi ngày.
+food-drink	cook	verb	A1	nấu	I cook dinner at six.	Tôi nấu bữa tối lúc sáu giờ.
+food-drink	bake	verb	A2	nướng bánh	She likes to bake cakes.	Cô ấy thích nướng bánh.
+food-drink	boil	verb	A2	luộc	Boil the eggs for ten minutes.	Hãy luộc trứng trong mười phút.
+food-drink	fry	verb	A2	chiên	I fry the fish in oil.	Tôi chiên cá với dầu.
+food-drink	grill	verb	A2	nướng	We grill meat in the yard.	Chúng tôi nướng thịt ở sân.
+food-drink	mix	verb	A2	trộn	Mix the sugar and the butter.	Hãy trộn đường với bơ.
+food-drink	stir	verb	A2	khuấy	Stir the soup slowly.	Hãy khuấy súp từ từ.
+food-drink	pour	verb	A2	rót	Pour the tea into the cup.	Hãy rót trà vào tách.
+food-drink	taste	verb	A1	nếm	Taste the soup, please.	Xin hãy nếm thử súp.
+food-drink	taste	noun	A2	vị	This sauce has a sweet taste.	Nước sốt này có vị ngọt.
+food-drink	serve	verb	A2	dọn ra	They serve lunch at noon.	Họ dọn bữa trưa lúc mười hai giờ.
+food-drink	order	verb	A1	gọi món	I order tea at the cafe.	Tôi gọi trà ở quán cà phê.
+food-drink	chew	verb	A2	nhai	Chew your food slowly.	Hãy nhai thức ăn từ từ.
+food-drink	bite	verb	A2	cắn	Do not bite the ice.	Đừng cắn đá.
+food-drink	slice	verb	A2	thái lát	Slice the bread, please.	Xin hãy thái bánh mì.
+food-drink	peel	verb	A2	gọt vỏ	Peel the apple first.	Hãy gọt vỏ táo trước.
+food-drink	sweet	adjective	A1	ngọt	The mango is very sweet.	Quả xoài rất ngọt.
+food-drink	sour	adjective	A1	chua	This lemon is too sour.	Quả chanh này chua quá.
+food-drink	salty	adjective	A2	mặn	The soup is a little salty.	Món súp hơi mặn.
+food-drink	bitter	adjective	A2	đắng	Black coffee tastes bitter.	Cà phê đen có vị đắng.
+food-drink	spicy	adjective	A1	cay	This chili sauce is spicy.	Nước sốt ớt này cay.
+food-drink	tasty	adjective	A1	ngon	The soup is really tasty.	Món súp thật sự ngon.
+food-drink	delicious	adjective	A1	ngon tuyệt	This cake is delicious.	Chiếc bánh này ngon tuyệt.
+food-drink	fresh	adjective	A1	tươi	These eggs are fresh.	Những quả trứng này tươi.
+food-drink	raw	adjective	A2	sống	Do not eat raw chicken.	Đừng ăn thịt gà sống.
+food-drink	ripe	adjective	A2	chín	Wait until the banana is ripe.	Hãy đợi đến khi chuối chín.
+food-drink	hot	adjective	A1	nóng	The tea is still hot.	Trà vẫn còn nóng.
+food-drink	cold	adjective	A1	lạnh	I want a cold drink.	Tôi muốn một đồ uống lạnh.
+food-drink	hungry	adjective	A1	đói	I am hungry before lunch.	Tôi đói trước bữa trưa.
+food-drink	thirsty	adjective	A1	khát	The boy is thirsty.	Cậu bé đang khát.
+food-drink	full	adjective	A1	đã no	I am full after dinner.	Tôi đã no sau bữa tối.
+food-drink	crispy	adjective	A2	giòn	The chicken skin is crispy.	Da gà giòn.
+food-drink	juicy	adjective	A2	mọng nước	This peach is juicy.	Quả đào này mọng nước.
+food-drink	yummy	adjective	A1	rất ngon	This cookie is yummy.	Bánh quy này rất ngon.
+food-drink	frozen	adjective	A2	đông lạnh	The peas are frozen.	Đậu Hà Lan đang đông lạnh.
+food-drink	fried	adjective	A2	đã chiên	I like fried rice.	Tôi thích cơm chiên.
+food-drink	vegetarian	adjective	B1	ăn chay	This dish is vegetarian.	Món này là món ăn chay.
+food-drink	bakery	noun	A2	tiệm bánh	I buy bread at the bakery.	Tôi mua bánh mì ở tiệm bánh.
+food-drink	grocery	noun	A2	cửa hàng tạp hóa	We buy milk at the grocery.	Chúng tôi mua sữa ở cửa hàng tạp hóa.
+daily-routine	wake	verb	A1	thức dậy	I wake at six on weekdays.	Tôi thức dậy lúc sáu giờ vào ngày đi học.
+daily-routine	sleep	verb	A1	ngủ	I sleep eight hours a night.	Tôi ngủ tám tiếng mỗi đêm.
+daily-routine	rest	verb	A1	nghỉ ngơi	Rest for a minute, please.	Xin hãy nghỉ một phút.
+daily-routine	nap	noun	A2	giấc ngủ ngắn	The baby needs a nap.	Em bé cần ngủ một giấc ngắn.
+daily-routine	dream	verb	A2	mơ	I dream about the beach.	Tôi mơ về bãi biển.
+daily-routine	brush	verb	A1	chải	I brush my teeth twice a day.	Tôi đánh răng hai lần mỗi ngày.
+daily-routine	wash	verb	A1	rửa	Wash your hands before you eat.	Hãy rửa tay trước khi ăn.
+daily-routine	shower	verb	A1	tắm vòi sen	I shower every morning.	Tôi tắm vòi sen mỗi buổi sáng.
+daily-routine	shower	noun	A1	vòi sen	The shower is in the bathroom.	Vòi sen ở trong phòng tắm.
+daily-routine	bathe	verb	A2	tắm	I bathe the baby at night.	Tôi tắm cho em bé vào buổi tối.
+daily-routine	bath	noun	A1	việc tắm	The child takes a bath.	Đứa trẻ đi tắm.
+daily-routine	rinse	verb	A2	tráng	Rinse the cup with water.	Hãy tráng tách bằng nước.
+daily-routine	comb	verb	A1	chải	Comb your hair before school.	Hãy chải tóc trước khi đi học.
+daily-routine	comb	noun	A1	lược	The comb is on the shelf.	Cái lược ở trên kệ.
+daily-routine	shave	verb	A2	cạo râu	I shave every morning.	Tôi cạo râu mỗi buổi sáng.
+daily-routine	dress	verb	A1	mặc quần áo	I dress after I shower.	Tôi mặc quần áo sau khi tắm.
+daily-routine	undress	verb	A2	cởi quần áo	Undress and put on pajamas.	Hãy cởi quần áo và mặc đồ ngủ.
+daily-routine	change	verb	A1	thay	I change my shirt at home.	Tôi thay áo khi ở nhà.
+daily-routine	clean	verb	A1	dọn	We clean the kitchen after dinner.	Chúng tôi dọn bếp sau bữa tối.
+daily-routine	sweep	verb	A2	quét	I sweep the floor every day.	Tôi quét sàn mỗi ngày.
+daily-routine	mop	verb	A2	lau nhà	Please mop the kitchen floor.	Xin hãy lau sàn bếp.
+daily-routine	wipe	verb	A2	lau	Wipe the table after you eat.	Hãy lau bàn sau khi ăn.
+daily-routine	vacuum	verb	A2	hút bụi	I vacuum the bedroom on Sunday.	Tôi hút bụi phòng ngủ vào Chủ nhật.
+daily-routine	dust	verb	A2	phủi bụi	Dust the shelf, please.	Xin hãy phủi bụi trên kệ.
+daily-routine	tidy	verb	A2	dọn gọn	Tidy your room before guests come.	Hãy dọn gọn phòng trước khi khách đến.
+daily-routine	iron	verb	A2	ủi	I iron my shirt in the evening.	Tôi ủi áo vào buổi tối.
+daily-routine	fold	verb	A2	gấp	Fold the clean clothes.	Hãy gấp quần áo sạch.
+daily-routine	hang	verb	A2	treo	Hang your coat by the door.	Hãy treo áo khoác cạnh cửa.
+daily-routine	exercise	verb	A1	tập thể dục	I exercise every morning.	Tôi tập thể dục mỗi buổi sáng.
+daily-routine	exercise	noun	A1	bài tập thể dục	Walking is good exercise.	Đi bộ là bài tập thể dục tốt.
+daily-routine	walk	verb	A1	đi bộ	We walk to school together.	Chúng tôi cùng đi bộ đến trường.
+daily-routine	run	verb	A1	chạy	I run in the park.	Tôi chạy trong công viên.
+daily-routine	jog	verb	A2	chạy bộ	I jog before breakfast.	Tôi chạy bộ trước bữa sáng.
+daily-routine	stretch	verb	A2	giãn cơ	Stretch your arms in the morning.	Hãy giãn cánh tay vào buổi sáng.
+daily-routine	play	verb	A1	chơi	The children play after school.	Bọn trẻ chơi sau giờ học.
+daily-routine	study	verb	A1	học	I study English every night.	Tôi học tiếng Anh mỗi tối.
+daily-routine	learn	verb	A1	học được	I learn new words every day.	Tôi học những từ mới mỗi ngày.
+daily-routine	practice	verb	A1	luyện tập	Practice new words with a friend.	Hãy luyện từ mới với một người bạn.
+daily-routine	read	verb	A1	đọc	I read a book before bed.	Tôi đọc sách trước khi đi ngủ.
+daily-routine	write	verb	A1	viết	Write your name on the paper.	Hãy viết tên bạn lên giấy.
+daily-routine	listen	verb	A1	nghe	I listen to music on the bus.	Tôi nghe nhạc trên xe buýt.
+daily-routine	watch	verb	A1	xem	We watch a movie on Friday.	Chúng tôi xem phim vào thứ Sáu.
+daily-routine	sing	verb	A1	hát	The children sing in class.	Bọn trẻ hát trong lớp.
+daily-routine	dance	verb	A1	nhảy	They dance at the party.	Họ nhảy ở bữa tiệc.
+daily-routine	draw	verb	A1	vẽ	The girl likes to draw.	Cô bé thích vẽ.
+daily-routine	paint	verb	A2	tô màu	The boy likes to paint.	Cậu bé thích tô màu.
+daily-routine	leave	verb	A1	rời đi	I leave home at seven.	Tôi rời nhà lúc bảy giờ.
+daily-routine	arrive	verb	A1	đến nơi	We arrive at school at eight.	Chúng tôi đến trường lúc tám giờ.
+daily-routine	stay	verb	A1	ở lại	Please stay for dinner.	Xin hãy ở lại ăn tối.
+daily-routine	wait	verb	A1	đợi	Wait for me at the door.	Hãy đợi tôi ở cửa.
+daily-routine	hurry	verb	A2	vội	Do not hurry so much.	Đừng vội quá.
+daily-routine	start	verb	A1	bắt đầu	Classes start at eight.	Các lớp bắt đầu lúc tám giờ.
+daily-routine	finish	verb	A1	kết thúc	I finish homework before dinner.	Tôi làm xong bài tập trước bữa tối.
+daily-routine	stop	verb	A1	dừng	Buses stop near my house.	Các xe buýt dừng gần nhà tôi.
+daily-routine	begin	verb	A1	bắt đầu	Movies begin at seven.	Các phim bắt đầu lúc bảy giờ.
+daily-routine	sit	verb	A1	ngồi	Please sit on this chair.	Xin hãy ngồi lên ghế này.
+daily-routine	stand	verb	A1	đứng	Stand near the window.	Hãy đứng gần cửa sổ.
+daily-routine	lie	verb	A1	nằm	I lie down after lunch.	Tôi nằm nghỉ sau bữa trưa.
+daily-routine	open	verb	A1	mở	Open the window, please.	Xin hãy mở cửa sổ.
+daily-routine	close	verb	A1	đóng	Close the door quietly.	Hãy đóng cửa nhẹ nhàng.
+daily-routine	lock	verb	A2	khóa	Lock the door at night.	Hãy khóa cửa vào ban đêm.
+daily-routine	feed	verb	A2	cho ăn	I feed the cat every morning.	Tôi cho mèo ăn mỗi buổi sáng.
+daily-routine	relax	verb	A2	thư giãn	I relax with a book.	Tôi thư giãn với một cuốn sách.
+daily-routine	yawn	verb	A2	ngáp	I yawn when I am sleepy.	Tôi ngáp khi buồn ngủ.
+daily-routine	recycle	verb	A2	tái chế	We recycle bottles and cans.	Chúng tôi tái chế chai và lon.
+daily-routine	routine	noun	A2	nếp sinh hoạt	A morning routine helps me.	Một nếp sinh hoạt buổi sáng giúp tôi.
+daily-routine	habit	noun	A2	thói quen	Reading is a good habit.	Đọc sách là một thói quen tốt.
+daily-routine	chore	noun	A2	việc nhà vặt	Washing dishes is my chore.	Rửa bát là việc nhà của tôi.
+daily-routine	housework	noun	A2	việc nhà	We share the housework.	Chúng tôi chia nhau việc nhà.
+daily-routine	laundry	noun	A2	đồ giặt	The laundry is still wet.	Đồ giặt vẫn còn ướt.
+daily-routine	homework	noun	A1	bài tập về nhà	I do homework after dinner.	Tôi làm bài tập về nhà sau bữa tối.
+daily-routine	game	noun	A1	trò chơi	This game is fun for kids.	Trò chơi này vui cho trẻ con.
+daily-routine	sport	noun	A1	môn thể thao	Soccer is my favorite sport.	Bóng đá là môn thể thao tôi thích nhất.
+daily-routine	soccer	noun	A1	bóng đá	We play soccer after class.	Chúng tôi chơi bóng đá sau giờ học.
+daily-routine	hobby	noun	A2	sở thích	Drawing is her hobby.	Vẽ là sở thích của cô ấy.
+daily-routine	music	noun	A1	nhạc	I listen to music at night.	Tôi nghe nhạc vào buổi tối.
+daily-routine	song	noun	A1	bài hát	This song is easy to sing.	Bài hát này dễ hát.
+daily-routine	movie	noun	A1	phim	The movie starts at eight.	Bộ phim bắt đầu lúc tám giờ.
+daily-routine	television	noun	A1	truyền hình	We watch television after dinner.	Chúng tôi xem truyền hình sau bữa tối.
+daily-routine	radio	noun	A2	đài phát thanh	Dad listens to the radio.	Bố nghe đài phát thanh.
+daily-routine	book	noun	A1	sách	This book is for children.	Cuốn sách này dành cho trẻ em.
+daily-routine	newspaper	noun	A2	báo	Grandpa reads the newspaper.	Ông đọc báo.
+daily-routine	magazine	noun	A2	tạp chí	She bought a fashion magazine.	Cô ấy mua một tạp chí thời trang.
+daily-routine	toy	noun	A1	đồ chơi	The toy is under the bed.	Đồ chơi ở dưới giường.
+daily-routine	soap	noun	A1	xà phòng	Use soap when you wash.	Hãy dùng xà phòng khi rửa.
+daily-routine	shampoo	noun	A2	dầu gội	This shampoo smells nice.	Dầu gội này có mùi dễ chịu.
+daily-routine	towel	noun	A1	khăn tắm	The towel is clean and dry.	Khăn tắm sạch và khô.
+daily-routine	toothbrush	noun	A1	bàn chải đánh răng	My toothbrush is blue.	Bàn chải đánh răng của tôi màu xanh.
+daily-routine	toothpaste	noun	A1	kem đánh răng	We need more toothpaste.	Chúng tôi cần thêm kem đánh răng.
+daily-routine	razor	noun	A2	dao cạo	The razor is in the bathroom.	Dao cạo ở trong phòng tắm.
+daily-routine	phone	noun	A1	điện thoại	My phone is on the table.	Điện thoại của tôi ở trên bàn.
+daily-routine	alarm	noun	A2	chuông báo thức	The alarm rings at six.	Chuông báo thức kêu lúc sáu giờ.
+daily-routine	trash	noun	A2	rác	Take the trash out, please.	Xin hãy đem rác ra ngoài.
+daily-routine	garbage	noun	A2	rác thải	The garbage smells bad.	Rác thải có mùi khó chịu.
+daily-routine	vacation	noun	A2	kỳ nghỉ	We take a vacation in summer.	Chúng tôi đi nghỉ vào mùa hè.
+daily-routine	diary	noun	A2	nhật ký	She writes in her diary.	Cô ấy viết nhật ký.
+daily-routine	break	noun	A2	giờ giải lao	We have a short break.	Chúng tôi có một giờ giải lao ngắn.
+daily-routine	awake	adjective	A2	đang thức	I am awake now.	Bây giờ tôi đang thức.
+daily-routine	asleep	adjective	A2	đang ngủ	The baby is asleep.	Em bé đang ngủ.
+daily-routine	sleepy	adjective	A2	buồn ngủ	I feel sleepy after lunch.	Tôi buồn ngủ sau bữa trưa.
+daily-routine	tired	adjective	A1	mệt	I am tired after the game.	Tôi mệt sau trận đấu.
+daily-routine	busy	adjective	A1	bận	I am busy this week.	Tuần này tôi bận.
+daily-routine	ready	adjective	A1	sẵn sàng	Dinner is ready.	Bữa tối đã sẵn sàng.
+daily-routine	free	adjective	A1	rảnh	I am free this evening.	Tối nay tôi rảnh.
+daily-routine	quiet	adjective	A1	yên tĩnh	Please be quiet in the library.	Xin hãy giữ yên tĩnh trong thư viện.
+daily-routine	fun	adjective	A1	vui nhộn	The game is fun.	Trò chơi này vui nhộn.
+clothes	clothes	noun	A1	quần áo	These clothes are clean.	Những bộ quần áo này sạch.
+clothes	clothing	noun	A2	trang phục	Warm clothing is good in winter.	Trang phục ấm thích hợp vào mùa đông.
+clothes	outfit	noun	A2	bộ đồ	This outfit is for the party.	Bộ đồ này dành cho bữa tiệc.
+clothes	shirt	noun	A1	áo sơ mi	This shirt is white.	Chiếc áo sơ mi này màu trắng.
+clothes	t-shirt	noun	A1	áo thun	I wear a blue t-shirt.	Tôi mặc một chiếc áo thun xanh.
+clothes	blouse	noun	A2	áo kiểu nữ	Her blouse is pink.	Áo kiểu của cô ấy màu hồng.
+clothes	sweater	noun	A1	áo len	This sweater is warm.	Chiếc áo len này ấm.
+clothes	sweatshirt	noun	A2	áo nỉ	He wears a gray sweatshirt.	Anh ấy mặc một chiếc áo nỉ xám.
+clothes	hoodie	noun	A2	áo nỉ có mũ	The hoodie has a pocket.	Chiếc áo nỉ có mũ có một cái túi.
+clothes	jacket	noun	A1	áo khoác	Take a jacket tonight.	Tối nay hãy mang theo áo khoác.
+clothes	coat	noun	A1	áo choàng	This coat is thick.	Chiếc áo choàng này dày.
+clothes	vest	noun	A2	áo ghi lê	He wears a vest with the suit.	Anh ấy mặc áo ghi lê cùng bộ vest.
+clothes	suit	noun	A2	bộ vest	Dad wears a suit to work.	Bố mặc bộ vest đi làm.
+clothes	tie	noun	A2	cà vạt	The tie is dark blue.	Chiếc cà vạt màu xanh đậm.
+clothes	scarf	noun	A2	khăn choàng	This scarf is soft.	Chiếc khăn choàng này mềm.
+clothes	glove	noun	A2	găng tay	I lost one glove.	Tôi làm mất một chiếc găng tay.
+clothes	hat	noun	A1	mũ	The hat keeps the sun off.	Chiếc mũ che nắng.
+clothes	cap	noun	A1	mũ lưỡi trai	He wears a red cap.	Anh ấy đội mũ lưỡi trai đỏ.
+clothes	sock	noun	A1	tất	This sock has a hole.	Chiếc tất này có một lỗ thủng.
+clothes	shoe	noun	A1	giày	This shoe is too small.	Chiếc giày này quá nhỏ.
+clothes	boot	noun	A2	ủng	The boot is for rainy days.	Đôi ủng dùng cho ngày mưa.
+clothes	sneaker	noun	A1	giày thể thao	I wear a sneaker to run.	Tôi đi giày thể thao khi chạy.
+clothes	sandal	noun	A2	dép quai	A sandal is cool in summer.	Dép quai mát vào mùa hè.
+clothes	slipper	noun	A2	dép trong nhà	Put on a slipper inside.	Hãy đi dép khi ở trong nhà.
+clothes	pants	noun	A1	quần dài	These pants are black.	Chiếc quần này màu đen.
+clothes	jeans	noun	A1	quần bò	She lives in jeans.	Cô ấy hầu như lúc nào cũng mặc quần bò.
+clothes	shorts	noun	A1	quần ngắn	He wears shorts in summer.	Anh ấy mặc quần ngắn vào mùa hè.
+clothes	skirt	noun	A1	chân váy	This skirt is too long.	Chiếc chân váy này quá dài.
+clothes	dress	noun	A1	váy	The dress is blue and white.	Chiếc váy màu xanh và trắng.
+clothes	uniform	noun	A2	đồng phục	The student wears a uniform.	Học sinh mặc đồng phục.
+clothes	pajamas	noun	A1	đồ ngủ	My pajamas are soft.	Bộ đồ ngủ của tôi mềm.
+clothes	underwear	noun	A2	đồ lót	Pack clean underwear.	Hãy mang theo đồ lót sạch.
+clothes	bra	noun	A2	áo ngực	This bra is comfortable.	Chiếc áo ngực này thoải mái.
+clothes	belt	noun	A2	thắt lưng	The belt is made of leather.	Thắt lưng làm bằng da.
+clothes	button	noun	A1	cúc áo	A button fell off the shirt.	Một chiếc cúc rơi khỏi áo.
+clothes	zipper	noun	A2	khóa kéo	The zipper is stuck.	Khóa kéo bị kẹt.
+clothes	pocket	noun	A1	túi áo	My keys are in my pocket.	Chìa khóa ở trong túi tôi.
+clothes	sleeve	noun	A2	tay áo	The sleeve is too long.	Tay áo quá dài.
+clothes	collar	noun	A2	cổ áo	The collar is white.	Cổ áo màu trắng.
+clothes	hood	noun	A2	mũ trùm	Pull the hood up in the rain.	Hãy kéo mũ trùm lên khi trời mưa.
+clothes	fabric	noun	B1	vải	This fabric is soft cotton.	Tấm vải này là vải bông mềm.
+clothes	cotton	noun	A2	vải bông	Cotton is good in hot weather.	Vải bông hợp khi trời nóng.
+clothes	wool	noun	A2	len	This scarf is pure wool.	Chiếc khăn choàng này làm hoàn toàn bằng len.
+clothes	silk	noun	A2	lụa	The dress is made of silk.	Chiếc váy làm bằng lụa.
+clothes	leather	noun	A2	da thuộc	These shoes are leather.	Đôi giày này làm bằng da thuộc.
+clothes	denim	noun	A2	vải bò	Jeans are made of denim.	Quần bò làm bằng vải bò.
+clothes	size	noun	A1	cỡ	What size shoe do you wear?	Bạn đi giày cỡ nào?
+clothes	wear	verb	A1	mặc	I wear a coat in winter.	Tôi mặc áo khoác vào mùa đông.
+clothes	fit	verb	A2	vừa	These pants fit me well.	Chiếc quần này vừa với tôi.
+clothes	try	verb	A1	thử	Try this jacket on.	Hãy thử chiếc áo khoác này.
+clothes	hanger	noun	A2	mắc áo	Put the shirt on a hanger.	Hãy treo áo lên mắc áo.
+clothes	jewelry	noun	A2	trang sức	She wears gold jewelry.	Cô ấy đeo trang sức vàng.
+clothes	ring	noun	A1	nhẫn	The ring is on her finger.	Chiếc nhẫn ở trên ngón tay cô ấy.
+clothes	necklace	noun	A2	dây chuyền	This necklace is silver.	Chiếc dây chuyền này bằng bạc.
+clothes	earring	noun	A2	bông tai	She lost an earring.	Cô ấy làm mất một chiếc bông tai.
+clothes	bracelet	noun	A2	vòng tay	The bracelet is a gift.	Chiếc vòng tay là một món quà.
+clothes	glasses	noun	A1	kính mắt	My glasses are on the desk.	Kính mắt của tôi ở trên bàn.
+clothes	sunglasses	noun	A2	kính râm	Wear sunglasses in the sun.	Hãy đeo kính râm khi có nắng.
+clothes	bag	noun	A1	túi	The bag is full of books.	Cái túi đầy sách.
+clothes	backpack	noun	A1	ba lô	His backpack is heavy.	Ba lô của anh ấy nặng.
+clothes	purse	noun	A2	túi xách	Her purse is on the chair.	Túi xách của cô ấy ở trên ghế.
+clothes	wallet	noun	A1	ví	My wallet is in my pocket.	Ví của tôi ở trong túi.
+clothes	umbrella	noun	A1	cái ô	Take an umbrella today.	Hôm nay hãy mang theo ô.
+clothes	tight	adjective	A2	chật	This shirt is too tight.	Chiếc áo này chật quá.
+clothes	loose	adjective	A2	rộng	These pants are loose.	Chiếc quần này rộng.
+clothes	comfortable	adjective	A2	thoải mái	These shoes are comfortable.	Đôi giày này thoải mái.
+clothes	formal	adjective	A2	trang trọng	A suit is formal clothing.	Bộ vest là trang phục trang trọng.
+clothes	casual	adjective	A2	bình thường	Jeans are casual clothes.	Quần bò là quần áo mặc thường.
+clothes	dirty	adjective	A1	bẩn	Those socks are dirty.	Đôi tất đó bẩn.
+clothes	clean	adjective	A1	sạch	I need a clean shirt.	Tôi cần một chiếc áo sạch.
+clothes	wet	adjective	A1	ướt	My coat is wet from the rain.	Áo khoác của tôi ướt vì mưa.
+clothes	dry	adjective	A1	khô	The towel is dry now.	Khăn bây giờ đã khô.
+clothes	new	adjective	A1	mới	She bought a new dress.	Cô ấy mua một chiếc váy mới.
+clothes	torn	adjective	A2	rách	This sleeve is torn.	Tay áo này bị rách.
+clothes	striped	adjective	A2	kẻ sọc	He likes striped shirts.	Anh ấy thích áo kẻ sọc.
+clothes	plain	adjective	A2	trơn	I prefer a plain t-shirt.	Tôi thích áo thun trơn hơn.
+clothes	soft	adjective	A1	mềm	This sweater is very soft.	Chiếc áo len này rất mềm.
+clothes	thick	adjective	A2	dày	Wear a thick coat today.	Hôm nay hãy mặc áo khoác dày.
+clothes	warm	adjective	A1	ấm	Wool socks are warm.	Tất len thì ấm.
+clothes	fashionable	adjective	B1	hợp thời trang	That jacket is fashionable.	Chiếc áo khoác đó hợp thời trang.
+clothes	stylish	adjective	B1	sành điệu	She looks stylish tonight.	Tối nay cô ấy trông sành điệu.
+body-colors	body	noun	A1	cơ thể	Exercise is good for the body.	Tập thể dục tốt cho cơ thể.
+body-colors	head	noun	A1	đầu	My head hurts today.	Hôm nay đầu tôi đau.
+body-colors	hair	noun	A1	tóc	Her hair is long and black.	Tóc cô ấy dài và đen.
+body-colors	face	noun	A1	khuôn mặt	Wash your face in the morning.	Hãy rửa mặt vào buổi sáng.
+body-colors	eye	noun	A1	mắt	Close one eye, please.	Xin hãy nhắm một bên mắt.
+body-colors	ear	noun	A1	tai	My ear is cold.	Tai tôi lạnh.
+body-colors	nose	noun	A1	mũi	The dog has a wet nose.	Con chó có chiếc mũi ướt.
+body-colors	mouth	noun	A1	miệng	Do not talk with your mouth full.	Đừng nói khi miệng còn đầy thức ăn.
+body-colors	lip	noun	A1	môi	Her lip is red.	Môi cô ấy đỏ.
+body-colors	tooth	noun	A1	răng	This tooth hurts.	Chiếc răng này đau.
+body-colors	tongue	noun	A2	lưỡi	The soup burned my tongue.	Món súp làm bỏng lưỡi tôi.
+body-colors	chin	noun	A2	cằm	He has a small chin.	Anh ấy có chiếc cằm nhỏ.
+body-colors	cheek	noun	A2	má	The baby has a round cheek.	Em bé có má tròn.
+body-colors	forehead	noun	A2	trán	She touched her forehead.	Cô ấy chạm vào trán.
+body-colors	eyebrow	noun	A2	lông mày	Her eyebrow is dark.	Lông mày cô ấy màu đậm.
+body-colors	eyelash	noun	A2	lông mi	An eyelash fell on her cheek.	Một sợi lông mi rơi xuống má cô ấy.
+body-colors	neck	noun	A1	cổ	The scarf is around her neck.	Khăn choàng quấn quanh cổ cô ấy.
+body-colors	throat	noun	A2	họng	My throat is sore.	Họng tôi đau.
+body-colors	shoulder	noun	A1	vai	He put a bag on his shoulder.	Anh ấy để túi lên vai.
+body-colors	arm	noun	A1	cánh tay	She broke her arm.	Cô ấy bị gãy tay.
+body-colors	elbow	noun	A2	khuỷu tay	Do not put your elbow on the table.	Đừng đặt khuỷu tay lên bàn.
+body-colors	wrist	noun	A2	cổ tay	The bracelet is on her wrist.	Vòng tay ở trên cổ tay cô ấy.
+body-colors	hand	noun	A1	bàn tay	Please hold my hand.	Xin hãy nắm tay tôi.
+body-colors	finger	noun	A1	ngón tay	She wears a ring on her finger.	Cô ấy đeo nhẫn ở ngón tay.
+body-colors	thumb	noun	A2	ngón cái	I cut my thumb.	Tôi đứt ngón cái.
+body-colors	nail	noun	A2	móng tay	Her nail is clean.	Móng tay cô ấy sạch.
+body-colors	chest	noun	A2	ngực	He has a pain in his chest.	Anh ấy đau ở ngực.
+body-colors	back	noun	A1	lưng	My back is tired.	Lưng tôi mỏi.
+body-colors	stomach	noun	A1	bụng	My stomach is full.	Bụng tôi no.
+body-colors	waist	noun	A2	eo	The belt is around his waist.	Thắt lưng quấn quanh eo anh ấy.
+body-colors	hip	noun	A2	hông	She stood with a hand on her hip.	Cô ấy đứng chống tay lên hông.
+body-colors	leg	noun	A1	chân	My leg is sore after the run.	Chân tôi mỏi sau khi chạy.
+body-colors	knee	noun	A1	đầu gối	I hurt my knee.	Tôi làm đau đầu gối.
+body-colors	ankle	noun	A2	mắt cá chân	Her ankle is swollen.	Mắt cá chân cô ấy bị sưng.
+body-colors	foot	noun	A1	bàn chân	My foot is cold.	Bàn chân tôi lạnh.
+body-colors	toe	noun	A1	ngón chân	My toe is cold.	Ngón chân tôi lạnh.
+body-colors	skin	noun	A1	làn da	Use soap on your skin.	Hãy dùng xà phòng trên da.
+body-colors	bone	noun	A2	xương	The dog buried a bone.	Con chó chôn một khúc xương.
+body-colors	muscle	noun	A2	cơ bắp	Exercise builds muscle.	Tập thể dục giúp cơ bắp phát triển.
+body-colors	blood	noun	A2	máu	There is blood on his finger.	Có máu trên ngón tay anh ấy.
+body-colors	heart	noun	A1	tim	My heart beats fast.	Tim tôi đập nhanh.
+body-colors	brain	noun	A2	bộ não	The brain needs sleep.	Bộ não cần được ngủ.
+body-colors	lung	noun	A2	phổi	Smoke is bad for the lung.	Khói thuốc có hại cho phổi.
+body-colors	beard	noun	A2	râu	My uncle has a beard.	Chú tôi có râu.
+body-colors	mustache	noun	A2	ria mép	He grew a mustache.	Anh ấy để ria mép.
+body-colors	voice	noun	A2	giọng nói	She has a soft voice.	Cô ấy có giọng nói nhẹ nhàng.
+body-colors	tear	noun	A2	nước mắt	A tear ran down her cheek.	Một giọt nước mắt lăn trên má cô ấy.
+body-colors	sweat	noun	A2	mồ hôi	Sweat is on his forehead.	Mồ hôi ở trên trán anh ấy.
+body-colors	breath	noun	A2	hơi thở	Take a deep breath.	Hãy hít một hơi thật sâu.
+body-colors	headache	noun	A1	cơn đau đầu	I have a headache.	Tôi bị đau đầu.
+body-colors	fever	noun	A2	sốt	The child has a fever.	Đứa trẻ bị sốt.
+body-colors	cough	verb	A2	ho	I cough when I am sick.	Tôi ho khi bị ốm.
+body-colors	pain	noun	A2	cơn đau	I feel a pain in my back.	Tôi thấy đau ở lưng.
+body-colors	hurt	verb	A1	làm đau	These shoes hurt my foot.	Đôi giày này làm đau chân tôi.
+body-colors	sick	adjective	A1	ốm	I am sick today.	Hôm nay tôi ốm.
+body-colors	healthy	adjective	A1	khỏe mạnh	Vegetables keep you healthy.	Rau giúp bạn khỏe mạnh.
+body-colors	tall	adjective	A1	cao	My brother is tall.	Anh trai tôi cao.
+body-colors	short	adjective	A1	thấp	The boy is short for his age.	Cậu bé thấp so với tuổi.
+body-colors	long	adjective	A1	dài	Her hair is long.	Tóc cô ấy dài.
+body-colors	thin	adjective	A1	gầy	The cat is too thin.	Con mèo gầy quá.
+body-colors	slim	adjective	A2	thon	She is slim and strong.	Cô ấy thon và khỏe.
+body-colors	fat	adjective	A1	béo	That cat is fat.	Con mèo đó béo.
+body-colors	heavy	adjective	A1	nặng	This bag is heavy.	Cái túi này nặng.
+body-colors	strong	adjective	A1	mạnh	He is strong from exercise.	Anh ấy mạnh nhờ tập thể dục.
+body-colors	weak	adjective	A2	yếu	I feel weak when I am sick.	Tôi thấy yếu khi bị ốm.
+body-colors	beautiful	adjective	A1	đẹp	The garden is beautiful.	Khu vườn thật đẹp.
+body-colors	handsome	adjective	A2	đẹp trai	The groom is handsome.	Chú rể đẹp trai.
+body-colors	pretty	adjective	A1	xinh	The little girl is pretty.	Cô bé rất xinh.
+body-colors	cute	adjective	A1	dễ thương	The puppy is cute.	Chú chó con dễ thương.
+body-colors	ugly	adjective	A2	xấu	That old shirt looks ugly.	Chiếc áo cũ đó trông xấu.
+body-colors	bald	adjective	A2	hói	My uncle is bald.	Chú tôi bị hói.
+body-colors	curly	adjective	A2	xoăn	He has curly hair.	Anh ấy có tóc xoăn.
+body-colors	straight	adjective	A2	thẳng	Her hair is straight.	Tóc cô ấy thẳng.
+body-colors	wavy	adjective	A2	gợn sóng	She has wavy hair.	Cô ấy có tóc gợn sóng.
+body-colors	blond	adjective	A2	vàng hoe	My cousin is blond.	Anh họ tôi có tóc vàng hoe.
+body-colors	pale	adjective	A2	nhợt nhạt	You look pale today.	Hôm nay trông bạn nhợt nhạt.
+body-colors	tan	adjective	A2	rám nắng	His skin is tan in summer.	Da anh ấy rám nắng vào mùa hè.
+body-colors	left	adjective	A1	bên trái	Raise your left hand.	Hãy giơ tay trái lên.
+body-colors	right	adjective	A1	bên phải	My right foot hurts.	Bàn chân phải của tôi đau.
+body-colors	color	noun	A1	màu sắc	Blue is my favorite color.	Xanh dương là màu tôi thích nhất.
+body-colors	red	adjective	A1	đỏ	The apple is red.	Quả táo màu đỏ.
+body-colors	blue	adjective	A1	xanh dương	The sky is blue.	Bầu trời màu xanh dương.
+body-colors	green	adjective	A1	xanh lá	The grass is green.	Cỏ màu xanh lá.
+body-colors	yellow	adjective	A1	vàng	The banana is yellow.	Quả chuối màu vàng.
+body-colors	orange	adjective	A1	màu cam	I have an orange hat.	Tôi có một chiếc mũ màu cam.
+body-colors	pink	adjective	A1	hồng	The flower is pink.	Bông hoa màu hồng.
+body-colors	purple	adjective	A1	tím	Eggplant is purple.	Cà tím có màu tím.
+body-colors	brown	adjective	A1	nâu	Her eyes are brown.	Mắt cô ấy màu nâu.
+body-colors	black	adjective	A1	đen	He wears a black coat.	Anh ấy mặc áo khoác đen.
+body-colors	white	adjective	A1	trắng	The dress is white.	Chiếc váy màu trắng.
+body-colors	gray	adjective	A1	xám	The cat is gray.	Con mèo màu xám.
+body-colors	gold	adjective	A2	vàng kim	She has a gold ring.	Cô ấy có một chiếc nhẫn vàng.
+body-colors	silver	adjective	A2	bạc	He wears a silver watch.	Anh ấy đeo một chiếc đồng hồ bạc.
+body-colors	beige	adjective	A2	màu be	These pants are beige.	Chiếc quần này màu be.
+body-colors	bright	adjective	A2	sáng	She likes bright colors.	Cô ấy thích những màu sáng.
+body-colors	dark	adjective	A1	tối	He wears a dark jacket.	Anh ấy mặc một chiếc áo khoác màu tối.
+body-colors	light	adjective	A2	nhạt	This blue is very light.	Màu xanh này rất nhạt.
+body-colors	colorful	adjective	A2	nhiều màu	The bird is colorful.	Con chim có nhiều màu.
+body-colors	rainbow	noun	A2	cầu vồng	A rainbow comes after rain.	Cầu vồng xuất hiện sau cơn mưa.
+animals	animal	noun	A1	động vật	A dog is a friendly animal.	Chó là một động vật thân thiện.
+animals	pet	noun	A1	thú cưng	A cat is a common pet.	Mèo là một thú cưng phổ biến.
+animals	dog	noun	A1	chó	The dog sleeps by the door.	Con chó ngủ cạnh cửa.
+animals	cat	noun	A1	mèo	The cat is on the sofa.	Con mèo ở trên ghế sofa.
+animals	puppy	noun	A1	chó con	The puppy is very cute.	Chú chó con rất dễ thương.
+animals	kitten	noun	A1	mèo con	The kitten drinks milk.	Mèo con uống sữa.
+animals	bird	noun	A1	chim	A bird sings in the morning.	Một con chim hót vào buổi sáng.
+animals	parrot	noun	A2	vẹt	The parrot can say hello.	Con vẹt nói được câu xin chào.
+animals	hen	noun	A2	gà mái	The hen laid an egg.	Gà mái đã đẻ một quả trứng.
+animals	rooster	noun	A2	gà trống	The rooster crows at dawn.	Gà trống gáy lúc bình minh.
+animals	chick	noun	A2	gà con	The chick is yellow.	Gà con màu vàng.
+animals	duck	noun	A1	vịt	A duck swims in the pond.	Một con vịt bơi trong ao.
+animals	goose	noun	A2	ngỗng	A goose is larger than a duck.	Ngỗng to hơn vịt.
+animals	cow	noun	A1	bò	The cow gives milk.	Con bò cho sữa.
+animals	pig	noun	A1	lợn	The pig lives on the farm.	Con lợn sống ở trang trại.
+animals	sheep	noun	A1	cừu	The sheep has thick wool.	Con cừu có bộ lông dày.
+animals	goat	noun	A1	dê	The goat eats grass.	Con dê ăn cỏ.
+animals	horse	noun	A1	ngựa	The horse runs fast.	Con ngựa chạy nhanh.
+animals	donkey	noun	A2	lừa	A donkey can carry a bag.	Con lừa có thể chở một cái túi.
+animals	rabbit	noun	A1	thỏ	The rabbit eats a carrot.	Con thỏ ăn cà rốt.
+animals	mouse	noun	A1	chuột nhắt	A mouse is in the kitchen.	Có một con chuột nhắt trong bếp.
+animals	rat	noun	A2	chuột cống	A rat is bigger than a mouse.	Chuột cống to hơn chuột nhắt.
+animals	hamster	noun	A2	chuột cảnh	The hamster runs in a wheel.	Chuột cảnh chạy trong bánh xe.
+animals	deer	noun	A2	hươu	A deer stands in the grass.	Một con hươu đứng trong cỏ.
+animals	fox	noun	A2	cáo	The fox has a long tail.	Con cáo có cái đuôi dài.
+animals	wolf	noun	A2	sói	A wolf lives in the wild.	Sói sống trong thiên nhiên hoang dã.
+animals	squirrel	noun	A2	sóc	The squirrel climbs the tree.	Con sóc trèo lên cây.
+animals	bat	noun	A2	dơi	A bat flies at night.	Dơi bay vào ban đêm.
+animals	bear	noun	A1	gấu	The bear likes honey.	Con gấu thích mật ong.
+animals	lion	noun	A1	sư tử	The lion is a strong animal.	Sư tử là một loài vật mạnh.
+animals	tiger	noun	A1	hổ	The tiger has stripes.	Con hổ có những vằn.
+animals	elephant	noun	A1	voi	An elephant has a long nose.	Voi có cái vòi dài.
+animals	monkey	noun	A1	khỉ	The monkey climbs well.	Con khỉ trèo rất giỏi.
+animals	snake	noun	A1	rắn	A snake has no legs.	Rắn không có chân.
+animals	lizard	noun	A2	thằn lằn	A lizard sits on the wall.	Một con thằn lằn đậu trên tường.
+animals	frog	noun	A1	ếch	The frog jumps into the water.	Con ếch nhảy xuống nước.
+animals	turtle	noun	A1	rùa	A turtle walks slowly.	Rùa đi rất chậm.
+animals	crocodile	noun	A2	cá sấu	A crocodile lives near water.	Cá sấu sống gần nước.
+animals	whale	noun	A2	cá voi	A whale is huge.	Cá voi rất lớn.
+animals	dolphin	noun	A2	cá heo	A dolphin is a smart animal.	Cá heo là động vật thông minh.
+animals	shark	noun	A2	cá mập	A shark swims in the sea.	Cá mập bơi dưới biển.
+animals	goldfish	noun	A1	cá vàng	The goldfish is in a bowl.	Cá vàng ở trong một cái bát.
+animals	octopus	noun	A2	bạch tuộc	An octopus has eight arms.	Bạch tuộc có tám cánh tay.
+animals	bee	noun	A1	ong	A bee makes honey.	Ong làm ra mật ong.
+animals	ant	noun	A1	kiến	An ant is very small.	Con kiến rất nhỏ.
+animals	spider	noun	A1	nhện	A spider made a web.	Một con nhện đã giăng tơ.
+animals	fly	noun	A1	ruồi	A fly is on the fruit.	Một con ruồi đậu trên trái cây.
+animals	mosquito	noun	A1	muỗi	A mosquito bit my arm.	Một con muỗi đốt cánh tay tôi.
+animals	butterfly	noun	A1	bướm	The butterfly is colorful.	Con bướm có nhiều màu.
+animals	worm	noun	A2	sâu	A worm is in the apple.	Có một con sâu trong quả táo.
+animals	snail	noun	A2	ốc sên	A snail moves very slowly.	Ốc sên bò rất chậm.
+animals	cockroach	noun	A2	gián	A cockroach ran under the fridge.	Một con gián đã chạy xuống gầm tủ lạnh.
+animals	insect	noun	A2	côn trùng	An ant is an insect.	Kiến là một loài côn trùng.
+animals	bug	noun	A1	sâu bọ	A bug landed on the leaf.	Một con sâu bọ đậu trên lá.
+animals	zoo	noun	A1	vườn thú	We saw a tiger at the zoo.	Chúng tôi thấy một con hổ ở vườn thú.
+animals	cage	noun	A2	chuồng	The bird is in a cage.	Con chim ở trong chuồng.
+animals	tail	noun	A1	đuôi	The dog wags its tail.	Con chó vẫy đuôi.
+animals	paw	noun	A2	chân thú	The cat has a white paw.	Con mèo có một bàn chân trắng.
+animals	wing	noun	A2	cánh	The bird hurt its wing.	Con chim bị đau cánh.
+animals	feather	noun	A2	lông vũ	A feather fell from the bird.	Một chiếc lông vũ rơi từ con chim.
+animals	fur	noun	A2	bộ lông	The cat has soft fur.	Con mèo có bộ lông mềm.
+animals	horn	noun	A2	sừng	The goat has a short horn.	Con dê có chiếc sừng ngắn.
+animals	beak	noun	A2	mỏ	The bird has a yellow beak.	Con chim có chiếc mỏ vàng.
+animals	claw	noun	B1	vuốt	The cat has a sharp claw.	Con mèo có móng vuốt sắc.
+animals	nest	noun	A2	tổ chim	The bird built a nest.	Con chim đã làm một cái tổ.
+animals	bark	verb	A1	sủa	Dogs bark at night.	Chó sủa vào ban đêm.
+animals	meow	verb	A1	kêu meo	Cats meow when they are hungry.	Mèo kêu meo khi đói.
+animals	wild	adjective	A2	hoang dã	A tiger is a wild animal.	Hổ là động vật hoang dã.
+animals	calf	noun	A2	bê	The calf stays near the cow.	Con bê ở gần bò mẹ.
+animals	panda	noun	A1	gấu trúc	A panda eats bamboo.	Gấu trúc ăn tre.
+animals	koala	noun	A2	gấu túi	A koala sleeps in a tree.	Gấu túi ngủ trên cây.
+animals	kangaroo	noun	A2	chuột túi	A kangaroo has a strong tail.	Chuột túi có cái đuôi khỏe.
+animals	giraffe	noun	A1	hươu cao cổ	A giraffe has a long neck.	Hươu cao cổ có cái cổ dài.
+animals	zebra	noun	A1	ngựa vằn	A zebra has black stripes.	Ngựa vằn có những vằn đen.
+animals	camel	noun	A2	lạc đà	A camel walks in the desert.	Lạc đà đi trong sa mạc.
+animals	penguin	noun	A2	chim cánh cụt	A penguin cannot fly.	Chim cánh cụt không biết bay.
+animals	owl	noun	A2	cú	An owl hunts at night.	Cú săn mồi vào ban đêm.
+animals	eagle	noun	A2	đại bàng	An eagle has strong wings.	Đại bàng có đôi cánh khỏe.
+animals	pigeon	noun	A2	bồ câu	A pigeon sits on the roof.	Một con bồ câu đậu trên mái nhà.
+animals	leash	noun	A2	dây dắt	Put the dog on a leash.	Hãy dắt chó bằng dây.
+animals	vet	noun	A2	bác sĩ thú y	The vet checked the puppy.	Bác sĩ thú y đã khám cho chó con.
+animals	pond	noun	A2	cái ao	Ducks swim in the pond.	Vịt bơi trong ao.
+animals	farm	noun	A1	trang trại	Cows live on a farm.	Bò sống ở trang trại.
+home-places	home	noun	A1	nhà	I feel happy at home.	Tôi thấy vui khi ở nhà.
+home-places	house	noun	A1	ngôi nhà	Our house has a small garden.	Nhà chúng tôi có một khu vườn nhỏ.
+home-places	apartment	noun	A1	căn hộ	They live in an apartment.	Họ sống trong một căn hộ.
+home-places	room	noun	A1	phòng	My room is small and quiet.	Phòng tôi nhỏ và yên tĩnh.
+home-places	bedroom	noun	A1	phòng ngủ	The bedroom is upstairs.	Phòng ngủ ở trên lầu.
+home-places	bathroom	noun	A1	phòng tắm	The bathroom has a shower.	Phòng tắm có vòi sen.
+home-places	kitchen	noun	A1	nhà bếp	Mom cooks in the kitchen.	Mẹ nấu ăn trong bếp.
+home-places	basement	noun	A2	tầng hầm	The basement is dark and cool.	Tầng hầm tối và mát.
+home-places	balcony	noun	A2	ban công	We drink tea on the balcony.	Chúng tôi uống trà ở ban công.
+home-places	garage	noun	A2	nhà để xe	The bike is in the garage.	Chiếc xe đạp ở trong nhà để xe.
+home-places	garden	noun	A1	vườn	Flowers grow in the garden.	Hoa mọc trong vườn.
+home-places	yard	noun	A1	sân	The children play in the yard.	Bọn trẻ chơi trong sân.
+home-places	fence	noun	A2	hàng rào	The dog stands behind the fence.	Con chó đứng sau hàng rào.
+home-places	gate	noun	A2	cổng	Please close the gate.	Xin hãy đóng cổng.
+home-places	roof	noun	A2	mái nhà	A bird sits on the roof.	Một con chim đậu trên mái nhà.
+home-places	wall	noun	A1	tường	A picture hangs on the wall.	Một bức tranh treo trên tường.
+home-places	floor	noun	A1	sàn nhà	The toy is on the floor.	Đồ chơi nằm trên sàn.
+home-places	ceiling	noun	A2	trần nhà	The fan is on the ceiling.	Cái quạt gắn trên trần.
+home-places	door	noun	A1	cửa	Please close the door.	Xin hãy đóng cửa.
+home-places	window	noun	A1	cửa sổ	Rain hits the window.	Mưa rơi vào cửa sổ.
+home-places	stair	noun	A2	bậc thang	She tripped on a stair.	Cô ấy vấp ở một bậc thang.
+home-places	hallway	noun	A2	hành lang	The hallway leads to the kitchen.	Hành lang dẫn đến bếp.
+home-places	building	noun	A1	tòa nhà	That building is a school.	Tòa nhà đó là một trường học.
+home-places	place	noun	A1	nơi chốn	This park is a quiet place.	Công viên này là một nơi yên tĩnh.
+home-places	address	noun	A1	địa chỉ	Write your address clearly.	Hãy viết rõ địa chỉ của bạn.
+home-places	neighborhood	noun	A2	khu phố	This neighborhood is friendly.	Khu phố này rất thân thiện.
+home-places	city	noun	A1	thành phố	I live in a big city.	Tôi sống ở một thành phố lớn.
+home-places	town	noun	A1	thị trấn	This town has one library.	Thị trấn này có một thư viện.
+home-places	village	noun	A1	làng	My grandma lives in a village.	Bà tôi sống ở một ngôi làng.
+home-places	country	noun	A1	đất nước	Vietnam is my country.	Việt Nam là đất nước của tôi.
+home-places	street	noun	A1	đường phố	Our street is quiet at night.	Đường phố nhà tôi yên tĩnh vào ban đêm.
+home-places	road	noun	A1	con đường	This road goes to the city.	Con đường này dẫn vào thành phố.
+home-places	sidewalk	noun	A2	vỉa hè	Please walk on the sidewalk.	Xin hãy đi trên vỉa hè.
+home-places	corner	noun	A2	góc phố	The shop is on the corner.	Tiệm ở góc phố.
+home-places	bridge	noun	A2	cây cầu	We walk across the bridge.	Chúng tôi đi bộ qua cầu.
+home-places	park	noun	A1	công viên	Children run in the park.	Bọn trẻ chạy trong công viên.
+home-places	school	noun	A1	trường học	School starts at seven.	Trường học bắt đầu lúc bảy giờ.
+home-places	hospital	noun	A1	bệnh viện	The hospital is on this street.	Bệnh viện ở trên đường này.
+home-places	store	noun	A1	cửa hàng	The store sells bread and milk.	Cửa hàng bán bánh mì và sữa.
+home-places	shop	noun	A1	tiệm	The shop closes at nine.	Tiệm đóng cửa lúc chín giờ.
+home-places	market	noun	A1	chợ	We buy vegetables at the market.	Chúng tôi mua rau ở chợ.
+home-places	supermarket	noun	A1	siêu thị	The supermarket is very big.	Siêu thị rất lớn.
+home-places	library	noun	A1	thư viện	I study at the library.	Tôi học ở thư viện.
+home-places	museum	noun	A2	bảo tàng	The museum opens at nine.	Bảo tàng mở cửa lúc chín giờ.
+home-places	bank	noun	A1	ngân hàng	The bank is next to the store.	Ngân hàng ở cạnh cửa hàng.
+home-places	hotel	noun	A1	khách sạn	We stayed at a small hotel.	Chúng tôi đã ở một khách sạn nhỏ.
+home-places	office	noun	A1	văn phòng	Dad works in an office.	Bố làm việc trong một văn phòng.
+home-places	station	noun	A1	nhà ga	We wait at the station.	Chúng tôi đợi ở nhà ga.
+home-places	airport	noun	A2	sân bay	The airport is outside the city.	Sân bay ở ngoài thành phố.
+home-places	restaurant	noun	A1	nhà hàng	This restaurant serves fish.	Nhà hàng này có món cá.
+home-places	cafe	noun	A1	quán cà phê	We meet at the cafe.	Chúng tôi gặp nhau ở quán cà phê.
+home-places	church	noun	A2	nhà thờ	The church is near the park.	Nhà thờ ở gần công viên.
+home-places	temple	noun	A2	ngôi chùa	The temple is quiet in the morning.	Ngôi chùa yên tĩnh vào buổi sáng.
+home-places	sea	noun	A1	biển	We swim in the sea in summer.	Chúng tôi bơi ở biển vào mùa hè.
+home-places	beach	noun	A1	bãi biển	The beach is busy in July.	Bãi biển đông vào tháng Bảy.
+home-places	pool	noun	A2	hồ bơi	The children swim in the pool.	Bọn trẻ bơi trong hồ bơi.
+home-places	map	noun	A1	bản đồ	The map shows the station.	Bản đồ chỉ vị trí nhà ga.
+home-places	key	noun	A1	chìa khóa	This key opens the front door.	Chìa khóa này mở cửa trước.
+home-places	lock	noun	A2	ổ khóa	The lock on the gate is new.	Ổ khóa trên cổng là mới.
+home-places	picture	noun	A1	bức tranh	A picture hangs in the hall.	Một bức tranh treo ở hành lang.
+home-places	table	noun	A1	bàn	Dinner is on the table.	Bữa tối ở trên bàn.
+home-places	chair	noun	A1	ghế	This chair is comfortable.	Chiếc ghế này thoải mái.
+home-places	sofa	noun	A1	ghế sofa	We sit on the sofa at night.	Chúng tôi ngồi trên ghế sofa vào buổi tối.
+home-places	couch	noun	A1	ghế dài	He sleeps on the couch.	Anh ấy ngủ trên ghế dài.
+home-places	bed	noun	A1	giường	I sleep in a small bed.	Tôi ngủ trên một chiếc giường nhỏ.
+home-places	desk	noun	A1	bàn học	My books are on the desk.	Sách của tôi ở trên bàn học.
+home-places	shelf	noun	A1	kệ	Put the cup on the shelf.	Hãy đặt tách lên kệ.
+home-places	closet	noun	A2	tủ quần áo	My coats are in the closet.	Áo khoác của tôi ở trong tủ.
+home-places	lamp	noun	A1	đèn	The lamp is on the desk.	Ngọn đèn ở trên bàn.
+home-places	mirror	noun	A1	gương	She looks in the mirror.	Cô ấy soi gương.
+home-places	carpet	noun	A2	thảm	The carpet in the bedroom is soft.	Tấm thảm trong phòng ngủ mềm.
+home-places	curtain	noun	A2	rèm cửa	Close the curtain at night.	Hãy kéo rèm vào ban đêm.
+home-places	pillow	noun	A1	gối	This pillow is very soft.	Chiếc gối này rất mềm.
+home-places	blanket	noun	A1	chăn	The blanket keeps me warm.	Chiếc chăn giữ tôi ấm.
+home-places	fridge	noun	A1	tủ lạnh	The milk is in the fridge.	Sữa ở trong tủ lạnh.
+home-places	refrigerator	noun	A2	tủ lạnh	Put the meat in the refrigerator.	Hãy để thịt vào tủ lạnh.
+home-places	stove	noun	A1	bếp	The pot is on the stove.	Nồi ở trên bếp.
+home-places	oven	noun	A2	lò nướng	The cake is in the oven.	Chiếc bánh ở trong lò nướng.
+home-places	microwave	noun	A2	lò vi sóng	Heat the soup in the microwave.	Hãy hâm súp bằng lò vi sóng.
+home-places	sink	noun	A2	bồn rửa	Wash the dishes in the sink.	Hãy rửa bát trong bồn rửa.
+home-places	faucet	noun	A2	vòi nước	The faucet in the kitchen drips.	Vòi nước trong bếp bị nhỏ giọt.
+home-places	toilet	noun	A1	bồn cầu	The toilet is in the bathroom.	Bồn cầu ở trong phòng tắm.
+home-places	bathtub	noun	A2	bồn tắm	The baby sits in the bathtub.	Em bé ngồi trong bồn tắm.
+home-places	fan	noun	A1	quạt	Turn on the fan, please.	Xin hãy bật quạt.
+home-places	elevator	noun	A2	thang máy	Take the elevator to the third floor.	Hãy đi thang máy lên tầng thứ ba.
+home-places	live	verb	A1	sống	We live in a small house.	Chúng tôi sống trong một ngôi nhà nhỏ.
+home-places	rent	verb	A2	thuê	They rent a room near school.	Họ thuê một phòng gần trường.
+home-places	move	verb	A2	chuyển nhà	We move to a new house in May.	Chúng tôi chuyển đến nhà mới vào tháng Năm.
+home-places	upstairs	adverb	A2	trên lầu	My bedroom is upstairs.	Phòng ngủ của tôi ở trên lầu.
+home-places	downstairs	adverb	A2	dưới nhà	Dad is downstairs.	Bố đang ở dưới nhà.
+home-places	inside	adverb	A1	ở trong	Come inside and sit down.	Hãy vào trong và ngồi xuống.
+home-places	outside	adverb	A1	ở ngoài	The children are playing outside.	Bọn trẻ đang chơi ở ngoài.
+home-places	here	adverb	A1	ở đây	Please sit here.	Xin hãy ngồi đây.
+home-places	there	adverb	A1	ở đó	Your bag is there.	Túi của bạn ở đó.
+home-places	near	preposition	A1	gần	The park is near our house.	Công viên ở gần nhà chúng tôi.
+home-places	plant	noun	A1	cây cảnh	Water the plant every morning.	Hãy tưới cây mỗi buổi sáng.
+home-places	flower	noun	A1	hoa	This flower is pink and pretty.	Bông hoa này hồng và xinh.
+home-places	tree	noun	A1	cây	A bird sings in the tree.	Một con chim hót trên cây.
+home-places	grass	noun	A1	cỏ	The grass is green after the rain.	Sau cơn mưa, cỏ có màu xanh.
+home-places	leaf	noun	A1	chiếc lá	A yellow leaf fell from the tree.	Một chiếc lá vàng rơi từ trên cây.
+home-places	big	adjective	A1	lớn	Our kitchen is big.	Nhà bếp của chúng tôi lớn.
+home-places	small	adjective	A1	nhỏ	This room is too small.	Phòng này nhỏ quá.
