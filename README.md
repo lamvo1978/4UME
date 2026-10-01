@@ -1,0 +1,51 @@
+# 4UME
+
+App học tiếng Anh cho người Việt: flashcard (~3.308 từ A1–B2), ngữ pháp căn bản, bài tập; tài khoản và tiến trình lưu trên PostgreSQL.
+
+Đường dẫn máy cá nhân dự kiến: `/Users/lamvhx/Projects/4UME`.
+
+## Stack
+
+- API: .NET 9 (Clean Architecture)
+- Mobile: React Native (Expo, TypeScript)
+- DB: PostgreSQL 16
+- Docker Compose trên Linux
+
+Chi tiết: [docs/architecture.md](docs/architecture.md) · UI: [docs/ui/DESIGN.md](docs/ui/DESIGN.md)
+
+## Chạy bằng Docker
+
+```bash
+docker compose up -d --build
+```
+
+- API: http://127.0.0.1:5088  
+- Swagger: http://127.0.0.1:5088/swagger  
+- Postgres: `localhost:5432` · db/user/pass `fourume`
+
+Trên một số môi trường agent, bridge Docker bị chặn: `docker-compose.yml` dùng `host.docker.internal` để API nối Postgres qua cổng host. Trên máy Mac/Linux bình thường bạn có thể đổi lại `Host=postgres` nếu muốn.
+
+## Mobile
+
+```bash
+cd mobile
+npm install
+# máy thật / simulator trỏ API:
+# EXPO_PUBLIC_API_URL=http://<ip-máy>:5088 npx expo start
+npx expo start
+```
+
+## Dev API không Docker
+
+```bash
+# Postgres đang chạy (compose chỉ postgres cũng được)
+dotnet run --project src/FourUme.Api
+```
+
+## Bộ từ vựng
+
+Nguồn: [`data/vocabulary.json`](data/vocabulary.json). Rebuild từ TSV:
+
+```bash
+python3 scripts/build_vocabulary.py
+```

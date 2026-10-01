@@ -1,6 +1,6 @@
-# Anh Rõ — UI design (duyệt trước khi code)
+# 4UME — UI design (duyệt trước khi code)
 
-Tên app tạm: **Anh Rõ**. Đổi tên được trước khi scaffold.
+Tên app: **4UME**.
 
 ## Design tokens
 
@@ -13,7 +13,7 @@ Tên app tạm: **Anh Rõ**. Đổi tên được trước khi scaffold.
 | `--accent` | `#0F6B5C` | Teal đậm, CTA |
 | `--accent-soft` | `#C8E4DC` | Trạng thái đúng / tiến độ |
 | `--danger-soft` | `#E8D4C8` | Nút “Chưa nhớ” (trầm, không đỏ gắt) |
-| Font display | Serif rõ nét (Fraunces / tương đương RN) | Tên app, từ trên thẻ |
+| Font display | Serif rõ nét (Fraunces / tương đương RN) | Tên app **4UME**, từ trên thẻ |
 | Font body | Sans đọc tốt (Source Sans 3 / tương đương) | UI tiếng Việt |
 
 Tránh: tím mặc định, glow, dark mode, cụm pill dày, dashboard nhiều thẻ.
@@ -41,6 +41,7 @@ Tránh: tím mặc định, glow, dark mode, cụm pill dày, dashboard nhiều 
 
 ## Stack gắn với UI
 
-- Mobile: React Native đọc các màn trên.
+- Mobile: React Native (Expo) đọc các màn trên.
 - API .NET 9 + PostgreSQL: đăng nhập, tiến trình từ, điểm ngữ pháp.
 - Nội dung từ: `data/vocabulary.json` (đã có).
+- Chi tiết hệ thống: [`docs/architecture.md`](../architecture.md).

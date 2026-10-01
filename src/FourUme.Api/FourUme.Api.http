@@ -1,0 +1,6 @@
+@FourUme.Api_HostAddress = http://localhost:5294
+
+GET {{FourUme.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
