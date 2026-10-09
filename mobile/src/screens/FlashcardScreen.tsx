@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { api, mediaUrl, Word } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Screen } from "../components/Screen";
@@ -48,6 +48,9 @@ export function FlashcardScreen({ route, navigation }: Props) {
   const [error, setError] = useState("");
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const flip = useRef(new Animated.Value(0)).current;
+  const window = useWindowDimensions();
+  // Leaves room for the word, IPA and tags on short phones (iPhone SE).
+  const imageSize = Math.round(Math.min(280, window.width * 0.66, window.height * 0.3));
 
   const loadSession = useCallback(async () => {
     setLoading(true);
@@ -206,14 +209,14 @@ export function FlashcardScreen({ route, navigation }: Props) {
 
       <Pressable style={styles.cardArea} onPress={toggleFlip}>
         <Animated.View
-          style={[styles.card, { transform: [{ perspective: 1000 }, { rotateY: frontRotate }] }]}
+          style={[styles.card, imageUrl ? styles.cardTop : null, { transform: [{ perspective: 1000 }, { rotateY: frontRotate }] }]}
           pointerEvents={flipped ? "none" : "auto"}
         >
           {imageUrl ? (
             <Image
               source={{ uri: imageUrl }}
-              style={styles.image}
-              resizeMode="cover"
+              style={[styles.image, { width: imageSize, height: imageSize }]}
+              resizeMode="contain"
               onError={() => setBrokenImages((s) => new Set(s).add(current.id))}
             />
           ) : null}
@@ -321,13 +324,13 @@ const styles = StyleSheet.create({
     backfaceVisibility: "hidden",
     ...shadow.card,
   },
+  cardTop: { justifyContent: "flex-start", paddingTop: spacing.xl },
   cardBack: { justifyContent: "flex-start", paddingTop: spacing.xl },
   image: {
-    width: "100%",
-    height: 180,
     borderRadius: 20,
     marginBottom: spacing.lg,
-    backgroundColor: colors.bgAlt,
+    // White clip-art backgrounds take the card colour instead of showing as a white box.
+    mixBlendMode: "multiply",
   },
   word: { fontSize: 44, fontWeight: "700", color: colors.ink },
   ipaRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.sm },

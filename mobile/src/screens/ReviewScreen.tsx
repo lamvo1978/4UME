@@ -504,7 +504,7 @@ function ImagePrompt({ ex }: { ex: Exercise }) {
       <Image
         source={{ uri: mediaUrl(word.imageUrl)! }}
         style={styles.promptImage}
-        resizeMode="cover"
+        resizeMode="contain"
         onError={() => setFailed(true)}
       />
     </View>
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
   optionWrong: { borderColor: colors.danger, backgroundColor: colors.dangerSoft },
   optionText: { flex: 1, fontSize: 17, fontWeight: "600", color: colors.ink },
   pressed: { opacity: 0.7 },
-  promptImage: { width: 240, height: 170, borderRadius: 18, backgroundColor: colors.bgAlt },
+  promptImage: { width: 190, height: 190, borderRadius: 18, mixBlendMode: "multiply" },
   feedback: { borderRadius: 20, padding: spacing.md, gap: 6 },
   feedbackOk: { backgroundColor: colors.accentSoft },
   feedbackBad: { backgroundColor: colors.dangerSoft },

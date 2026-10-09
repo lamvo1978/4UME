@@ -13,7 +13,7 @@ export function WordPreview({ word }: { word: SaveWord }) {
       </Text>
       <Paper radius={24} p="lg" shadow="sm" style={{ textAlign: "center" }}>
         {word.imageUrl ? (
-          <Image src={mediaSrc(word.imageUrl)} h={160} w="100%" radius="lg" fit="cover" mb="md" alt="" />
+          <Image src={mediaSrc(word.imageUrl)} h={200} w={200} mx="auto" radius="lg" fit="contain" mb="md" alt="" style={{ mixBlendMode: "multiply" }} />
         ) : null}
         <Text ff="heading" fz={36} fw={700} c="#1A2E28" style={{ wordBreak: "break-word" }}>
           {word.word || "…"}
