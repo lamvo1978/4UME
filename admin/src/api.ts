@@ -35,6 +35,20 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
   return res.status === 204 ? (undefined as T) : res.json();
 }
 
+export async function requestBlob(path: string, init: RequestInit = {}): Promise<Blob> {
+  const token = tokenStore.get();
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+  if (res.status === 401 && token) onUnauthorized();
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new ApiError(body?.error ?? `Lỗi máy chủ (${res.status})`, res.status);
+  }
+  return res.blob();
+}
+
 export type AdminIdentity = { id: string; email: string; displayName: string; role: string };
 
 export type OverviewDay = { date: string; learners: number; newUsers: number; newWords: number; reviews: number; grammarItems: number };
@@ -71,7 +85,7 @@ export type AdminUser = {
   grammarPassed: number;
 };
 export type CreateUser = { email: string; displayName: string; password: string; role: AdminUser["role"] };
-export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean };
+export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean; listens: number };
 export type AdminUserDetail = {
   user: AdminUser;
   bestStreak: number;
@@ -108,8 +122,10 @@ export type NotificationConfig = {
   weeklyTime: string;
   freezeNoticeTime: string;
 };
+export type ListeningConfig = { countsTowardStreak: boolean };
 export type AdminSettings = {
   notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
+  listening: { value: ListeningConfig; defaults: ListeningConfig; updatedAt: string | null };
 };
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
@@ -331,6 +347,85 @@ export type ImportGrammarResult = {
   rows: ImportGrammarRow[];
 };
 
+export type ListeningKind = "dialogue" | "story" | "news";
+export type ListeningSpeaker = { key: string; name: string; voice: string };
+export type ListeningLine = { speaker: string; en: string; vi: string };
+/** A listening piece (docs/listening.md); audio is generated from it on the server. */
+export type ListeningLesson = {
+  slug: string;
+  version: number;
+  titleEn: string;
+  titleVi: string;
+  kind: ListeningKind;
+  level: string;
+  topic?: string | null;
+  order: number;
+  summaryVi: string;
+  published?: boolean | null;
+  speakers: ListeningSpeaker[];
+  lines: ListeningLine[];
+};
+export type ListeningAudioState = "none" | "ready" | "stale" | "running" | "failed";
+export type AdminListeningSummary = {
+  slug: string;
+  titleEn: string;
+  titleVi: string;
+  kind: ListeningKind;
+  level: string;
+  topic: string | null;
+  sortOrder: number;
+  published: boolean;
+  lineCount: number;
+  chars: number;
+  durationMs: number | null;
+  audioState: ListeningAudioState;
+  listeners: number;
+  completions: number;
+  likes: number;
+  version: number;
+  updatedAt: string;
+  editedAt: string | null;
+};
+export type AdminListeningAudio = {
+  state: ListeningAudioState;
+  url: string | null;
+  durationMs: number | null;
+  /** [startMs, endMs] per line while the audio matches the script. */
+  timings: [number, number][] | null;
+  done: number;
+  total: number;
+  error: string | null;
+};
+export type AdminListeningDetail = {
+  lesson: ListeningLesson;
+  audio: AdminListeningAudio;
+  chars: number;
+  listeners: number;
+  completions: number;
+  likes: number;
+  updatedAt: string;
+  editedAt: string | null;
+  problems: string[];
+};
+export type ListeningVoice = { name: string; label: string; accent: string; gender: string };
+export type SpeechStatus = {
+  configured: boolean;
+  region: string | null;
+  voices: ListeningVoice[];
+  month: string;
+  charsUsed: number;
+  monthlyCharLimit: number;
+};
+export type ImportListeningRow = { slug: string; titleEn: string; status: ImportStatus; currentVersion: number | null; problems: string[] };
+export type ImportListeningResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportListeningRow[];
+};
+
 export type AuditEntry = {
   id: string;
   at: string;
@@ -378,6 +473,7 @@ export const api = {
   settings: () => request<AdminSettings>("/api/admin/settings"),
   saveNotificationSettings: (c: NotificationConfig) => request<AdminSettings>("/api/admin/settings/notifications", json("PUT", c)),
   resetNotificationSettings: () => request<AdminSettings>("/api/admin/settings/notifications/reset", { method: "POST" }),
+  saveListeningSettings: (c: ListeningConfig) => request<AdminSettings>("/api/admin/settings/listening", json("PUT", c)),
 
   meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
 
@@ -404,6 +500,19 @@ export const api = {
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  listeningLessons: () => request<AdminListeningSummary[]>("/api/admin/listening"),
+  listeningLesson: (slug: string) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`),
+  createListening: (l: ListeningLesson) => request<AdminListeningDetail>("/api/admin/listening", json("POST", l)),
+  updateListening: (slug: string, l: ListeningLesson) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`, json("PUT", l)),
+  validateListening: (l: ListeningLesson) => request<{ problems: string[] }>("/api/admin/listening/validate", json("POST", l)),
+  reorderListening: (ids: string[]) => request<void>("/api/admin/listening/order", json("PUT", { ids })),
+  deleteListening: (slug: string) => request<void>(`/api/admin/listening/${slug}`, { method: "DELETE" }),
+  exportListening: () => request<ListeningLesson[]>("/api/admin/listening/export"),
+  importListening: (lessons: unknown[], commit: boolean) =>
+    request<ImportListeningResult>("/api/admin/listening/import", json("POST", { lessons, commit })),
+  generateListeningAudio: (slug: string) => request<AdminListeningAudio>(`/api/admin/listening/${slug}/audio`, { method: "POST" }),
+  speechStatus: () => request<SpeechStatus>("/api/admin/listening/speech"),
+  previewVoice: (voice: string, text?: string, level?: string) => requestBlob("/api/admin/listening/speech/preview", json("POST", { voice, text, level })),
   importGrammar: (lessons: unknown[], commit: boolean) =>
     request<ImportGrammarResult>("/api/admin/grammar/import", json("POST", { lessons, commit })),
 

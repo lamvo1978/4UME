@@ -2,6 +2,7 @@ export const ENTITY_TYPES = [
   { value: "word", label: "Từ vựng" },
   { value: "deck", label: "Bộ từ" },
   { value: "grammar", label: "Ngữ pháp" },
+  { value: "listening", label: "Bài nghe" },
   { value: "media", label: "Hình ảnh" },
   { value: "user", label: "Người dùng" },
   { value: "settings", label: "Cài đặt" },
@@ -18,16 +19,19 @@ export const ACTIONS: Record<string, { label: string; color: string }> = {
   restore: { label: "Khôi phục", color: "violet" },
   import: { label: "Nhập file", color: "cyan" },
   reorder: { label: "Đổi thứ tự", color: "gray" },
+  generate: { label: "Tạo âm thanh", color: "teal" },
 };
 
 /** Where the entity is edited; null when it has no page of its own. */
 export function entityPath(type: string, id: string) {
-  if (id === "*") return type === "deck" ? "/decks" : type === "grammar" ? "/grammar" : null;
+  if (id === "*") return type === "deck" ? "/decks" : type === "grammar" ? "/grammar" : type === "listening" ? "/listening" : null;
   switch (type) {
     case "word":
       return `/words/${encodeURIComponent(id)}`;
     case "grammar":
       return `/grammar/${id}`;
+    case "listening":
+      return `/listening/${id}`;
     case "deck":
       return "/decks";
     case "media":
@@ -65,6 +69,16 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     published: "Hiện trong app",
     version: "Phiên bản",
   },
+  listening: {
+    titleEn: "Tên tiếng Anh",
+    titleVi: "Tên bài",
+    kind: "Thể loại",
+    level: "Cấp độ",
+    topic: "Chủ đề",
+    summaryVi: "Tóm tắt",
+    published: "Hiện trong app",
+    version: "Phiên bản",
+  },
   media: { originalName: "Tên file", url: "Đường dẫn", width: "Rộng", height: "Cao", bytes: "Dung lượng" },
   user: { email: "Email", displayName: "Tên", role: "Quyền", locked: "Bị khoá" },
   settings: {
@@ -78,5 +92,6 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     weeklyDay: "Ngày tổng kết tuần",
     weeklyTime: "Giờ tổng kết tuần",
     freezeNoticeTime: "Giờ báo đóng băng",
+    countsTowardStreak: "Nghe xong tính vào chuỗi ngày",
   },
 };

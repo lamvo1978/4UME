@@ -1,6 +1,7 @@
 import { Image, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
 import { mediaSrc, type AuditDetail } from "../api";
 import { sectionLabel } from "../grammar/meta";
+import { kindLabel } from "../listening/meta";
 import { posLabel } from "../lib";
 import { FIELD_LABELS, WEEKDAY_NAMES } from "./meta";
 
@@ -14,6 +15,7 @@ function format(key: string, value: unknown): string {
   if (key === "pos" && typeof value === "string") return posLabel(value);
   if (key === "bytes" && typeof value === "number") return `${Math.round(value / 1024)} KB`;
   if (key === "role") return value === "admin" ? "Quản trị" : "Người học";
+  if (key === "kind" && typeof value === "string") return kindLabel(value);
   if (key === "weeklyDay" && typeof value === "number") return WEEKDAY_NAMES[value] ?? String(value);
   if (Array.isArray(value)) return value.length ? `ngày ${value.join(", ")}` : "tắt";
   return String(value);
@@ -37,7 +39,7 @@ export function AuditDiff({ detail }: { detail: AuditDetail }) {
   const single = !before || !after;
   const snapshot = (after ?? before) as Snapshot;
   const keys = Object.keys(labels).filter((k) => (single ? k in snapshot : !same(before[k], after[k])));
-  const grammarNotes = type === "grammar" ? grammarChanges(before, after) : [];
+  const grammarNotes = type === "grammar" ? grammarChanges(before, after) : type === "listening" ? listeningChanges(before, after) : [];
 
   if (!single && keys.length === 0 && grammarNotes.length === 0) {
     return (
@@ -98,6 +100,25 @@ function Value({ field, value }: { field: string; value: unknown }) {
       {text}
     </Text>
   );
+}
+
+type Line = { speaker: string; en: string; vi: string };
+
+/** Plain-language summary of script changes inside a listening snapshot. */
+function listeningChanges(before: Snapshot | null, after: Snapshot | null): string[] {
+  const bl = (before?.lines as Line[] | undefined) ?? [];
+  const al = (after?.lines as Line[] | undefined) ?? [];
+  if (!before || !after) return [`${al.length || bl.length} câu trong script.`];
+
+  const notes: string[] = [];
+  if (!same(before.speakers, after.speakers)) notes.push("Người đọc / giọng đọc đã thay đổi.");
+  const edited = al.map((l, i) => (i < bl.length && !same(l, bl[i]) ? i + 1 : null)).filter(Boolean);
+  const parts: string[] = [];
+  if (edited.length) parts.push(`sửa câu ${edited.slice(0, 8).join(", ")}${edited.length > 8 ? "…" : ""}`);
+  if (al.length > bl.length) parts.push(`thêm ${al.length - bl.length} câu`);
+  if (al.length < bl.length) parts.push(`bỏ ${bl.length - al.length} câu`);
+  if (parts.length) notes.push(`Script: ${parts.join("; ")}.`);
+  return notes;
 }
 
 type Section = { type: string; title?: string | null };

@@ -11,6 +11,7 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
+  Switch,
   Text,
   TextInput,
   Title,
@@ -155,6 +156,8 @@ export function SettingsPage() {
         </div>
         {desktop ? <Group gap="sm">{actions}</Group> : null}
       </Group>
+
+      <ListeningSettings settings={settings.data} />
 
       <Section title="Thông báo · Giờ gửi" description="Giờ địa phương của từng người dùng.">
         <DayTimeline config={form} />
@@ -312,6 +315,42 @@ export function SettingsPage() {
         onRestored={() => setHistoryOpen(false)}
       />
     </Stack>
+  );
+}
+
+/** Saved as soon as the switch changes (a single on/off value, recorded in the history like the rest). */
+function ListeningSettings({ settings }: { settings: AdminSettings }) {
+  const queryClient = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const value = settings.listening.value;
+
+  async function toggle(countsTowardStreak: boolean) {
+    setSaving(true);
+    try {
+      queryClient.setQueryData(["settings"], await api.saveListeningSettings({ ...value, countsTowardStreak }));
+      notifySaved(countsTowardStreak ? "Nghe xong một bài sẽ giữ chuỗi ngày" : "Bài nghe không còn tính vào chuỗi ngày");
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Section title="Góc nghe" description="Tab Nghe trong app: hội thoại, câu chuyện, bản tin để luyện nghe thoải mái.">
+      <Switch
+        size="md"
+        disabled={saving}
+        checked={value.countsTowardStreak}
+        onChange={(e) => toggle(e.currentTarget.checked)}
+        label="Nghe hết một bài được tính là đã học hôm đó"
+        description={
+          value.countsTowardStreak === settings.listening.defaults.countsTowardStreak
+            ? "Giữ được chuỗi ngày chỉ bằng việc nghe. Mặc định tắt để chuỗi vẫn gắn với học từ và ngữ pháp."
+            : "Mặc định: tắt."
+        }
+      />
+    </Section>
   );
 }
 
