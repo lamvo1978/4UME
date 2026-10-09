@@ -41,7 +41,8 @@
 
 ### 3. Từ vựng
 
-- **Danh sách**: tìm theo từ / nghĩa; lọc theo bộ, cấp độ, loại từ, có / không có hình, đã ẩn; phân trang.
+- **Danh sách**: tìm theo từ / nghĩa; lọc theo bộ, cấp độ, loại từ, đã ẩn; ô *Hình ảnh / bổ sung*: **Đã có hình**, Chưa có hình, Ảnh chưa duyệt, Thiếu câu ví dụ, Thiếu phiên âm; phân trang.
+  - Kết quả tìm xếp: từ khớp đúng từ khoá trước (gõ `go` thì `go` đứng đầu), rồi từ bắt đầu bằng từ khoá, rồi các từ còn lại (kể cả khớp theo nghĩa tiếng Việt, ví dụ "ngoan" chứa "go").
   - Máy tính: dạng bảng, sửa nhanh ngay trên dòng.
   - Điện thoại: dạng thẻ, chạm để mở form.
 - **Form từ**: từ, phiên âm, loại từ, cấp độ, nghĩa tiếng Việt, câu ví dụ + nghĩa, bộ, thứ tự, hình ảnh.
@@ -59,10 +60,12 @@
 - Upload từ máy tính, hoặc **chụp / chọn ảnh từ thư viện** khi dùng trên điện thoại.
 - Cắt khung vuông trước khi lưu; server tự thu nhỏ (tối đa 800px) và chuyển sang WebP.
 - Dán URL ảnh có sẵn cũng được.
-- Thư viện ảnh: xem ảnh đã upload, ảnh chưa dùng, thay ảnh cho từ.
+- Thư viện ảnh (trang *Hình ảnh*, `/images`): xem ảnh đã upload, ảnh chưa dùng, thay ảnh cho từ. Mỗi ảnh hiện **từ đang dùng** ảnh đó (tối đa 3 từ, bấm để mở trang sửa từ, kèm cấp độ và bộ từ; nhiều hơn thì "+N từ khác"), hoặc nhãn *Chưa dùng*.
+- Hiển thị ảnh (app + xem trước trong admin): ảnh hiện trọn trong khung vuông (`contain`, không cắt), nền trắng của ảnh hoà vào màu thẻ (`mixBlendMode: multiply`). Thẻ flashcard có ảnh thì đưa nội dung lên phía trên, ảnh to theo màn hình (tối đa 280px).
 - **Ảnh từ Pexels / Pixabay** (cần API key miễn phí, xem bên dưới):
   - Nút **Tìm ảnh** trong trang sửa từ: tìm theo từ (sửa được từ khoá), bấm ảnh → máy chủ tải ảnh lớn về, cắt vuông, lưu WebP vào thư viện. Cùng một ảnh chỉ tải một lần.
   - Trang **Gắn ảnh** (`/image-assign`): lọc cấp độ / bộ / loại từ (mặc định danh từ), hiện từng từ chưa có ảnh kèm kết quả tìm, bấm 1 ảnh là gắn và sang từ sau; từ khó tả bằng ảnh thì *Bỏ qua*.
+    - Ô **Tìm từ vựng** phía trên: gõ từ bất kỳ (ví dụ `go`), chọn trong danh sách gợi ý → thẻ bên trái và ô tìm ảnh bên phải chuyển sang từ đó. Dùng được cho cả từ đã có ảnh (báo "Từ này đã có ảnh, chọn ảnh mới sẽ thay ảnh cũ."). Gắn xong hoặc bấm *Về hàng đợi* thì quay lại danh sách từ chưa có ảnh.
   - **Tự gán ảnh**: chạy từng lượt 8 từ, lấy ảnh đầu tiên (Pexels trước, hết lượt / không có thì Pixabay), dừng / tiếp tục được. Ảnh tự gán có cờ `ImagePending` (**chưa duyệt**): **app không hiện** cho tới khi duyệt ở tab *Duyệt ảnh tự gán* (duyệt, đổi ảnh, bỏ ảnh, duyệt cả trang) hoặc trong trang sửa từ. Gán / đổi ảnh bằng tay thì không cần duyệt.
   - Mỗi ảnh lưu nguồn, tác giả, link ảnh gốc (hiện "Ảnh: tác giả / Pexels" ở thư viện, trang sửa từ). Kết quả tìm cache 24 giờ (Pixabay yêu cầu); Pexels 200 lượt / giờ, Pixabay 100 lượt / phút. Ảnh luôn tải về máy chủ, không nhúng link của Pexels / Pixabay.
   - API key: `StockImages__PexelsKey`, `StockImages__PixabayKey` — trong compose lấy từ `PEXELS_API_KEY`, `PIXABAY_API_KEY` của `.env`. Thiếu key thì trang báo chưa cấu hình; có một key thì chỉ dùng nguồn đó.
@@ -90,6 +93,7 @@
 - **Thêm tài khoản** (nút trên trang Người dùng): chọn *Quản trị* hoặc *Người học*, nhập tên, email, mật khẩu (≥ 6 ký tự, nhập lại). Dùng để tạo tài khoản chỉ để quản trị web, không cần đăng ký qua app. Ghi lịch sử "Tạo tài khoản quản trị: email".
 - Cấp / thu quyền admin, khoá / mở khoá (quy tắc ở mục *Người dùng và phân quyền*).
 - Không xem / sửa mật khẩu người khác. Mỗi người tự **đổi mật khẩu** của mình: nút chìa khoá cạnh tên ở góc trái dưới (máy tính) hoặc menu *Thêm* (điện thoại); dùng `POST /api/me/password` như app.
+- **Quên mật khẩu**: link *Quên mật khẩu?* ở trang đăng nhập → nhận mã 6 số qua email → nhập mã + mật khẩu mới → đăng nhập luôn. Chi tiết, giới hạn và cấu hình: [email.md](email.md). Email phải nhận được thư thật (`admin@4ume.io.vn` chưa có hộp thư cho tới khi làm Zoho).
 
 ### 7. Lịch sử thay đổi
 
@@ -150,6 +154,9 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 
 - Nút bấm ≥ 44px, ô nhập đủ lớn để gõ trên điện thoại.
 - Có trạng thái "chưa lưu" và hỏi lại khi rời trang.
+- Trên điện thoại, thanh nút *Lưu* của các trang sửa (từ, bài ngữ pháp, cài đặt, nhập file) **cố định ngay trên thanh tab** dưới đáy, tính cả vùng an toàn của iPhone (`admin/src/layout/mobileActionBar.ts`); máy tính vẫn dính ở cuối nội dung như cũ.
+- Ô chọn (`AppSelect`) trên màn hình cảm ứng dùng hộp chọn gốc của hệ điều hành, **không hỗ trợ nhóm** — danh sách lựa chọn phải là danh sách phẳng.
+- **Tự báo bản mới**: chỉ ở bản build (không ở `npm run dev`). Admin đọc `/` (không cache) xem tên file `/assets/index-*.js` có đổi không, khi mở lại app, khi quay lại tab và mỗi 5 phút; có bản mới thì hiện thanh *Đã có bản admin mới* + nút *Tải lại* (`admin/src/layout/UpdateBanner.tsx`). Cần cho web admin thêm vào màn hình chính iPhone (iOS giữ trang cũ).
 - Màu sắc, font theo bộ nhận diện của app (`docs/ui/DESIGN.md`).
 
 ## Kỹ thuật
@@ -170,7 +177,7 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 |---|---|
 | Tổng quan | `GET /api/admin/overview` |
 | Bộ từ | `GET/POST /api/admin/decks`, `PUT/DELETE /api/admin/decks/{id}`, `PUT /api/admin/decks/order` |
-| Từ vựng | `GET /api/admin/words?q=&deck=&level=&missing=image`, `GET/PUT/DELETE /api/admin/words/{id}`, `POST /api/admin/words`, `POST /api/admin/words/import` (xem trước + xác nhận), `GET /api/admin/words/export` |
+| Từ vựng | `GET /api/admin/words?q=&deckId=&level=&pos=&published=&missing=image\|has-image\|image-review\|example\|ipa`, `GET/PUT/DELETE /api/admin/words/{id}`, `POST /api/admin/words`, `POST /api/admin/words/import` (xem trước + xác nhận), `GET /api/admin/words/export` |
 | Hình ảnh | `POST /api/admin/media` (multipart), `GET /api/admin/media`, `DELETE /api/admin/media/{id}` |
 | Ảnh Pexels / Pixabay | `GET /api/admin/stock-images?q=&page=`, `POST /api/admin/stock-images/import` (`{source, id}` → ảnh trong thư viện), `PUT /api/admin/words/{id}/image` (`{source, id}`, gán + duyệt), `POST /api/admin/words/{id}/image/approve`, `DELETE /api/admin/words/{id}/image`, `POST /api/admin/words/auto-images` (`{level, deckId, pos, after, batch}` → một lượt tự gán) |
 | Ngữ pháp | `GET/POST /api/admin/grammar`, `GET/PUT/DELETE /api/admin/grammar/{slug}`, `POST /api/admin/grammar/validate`, `PUT /api/admin/grammar/order`, `GET /api/admin/grammar/export`, `POST /api/admin/grammar/import` (xem trước + xác nhận) |

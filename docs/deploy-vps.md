@@ -7,6 +7,7 @@
 | Web admin | `https://admin.4ume.io.vn` |
 | API cho app | `https://api.4ume.io.vn` |
 | Thư mục trên VPS | `/opt/4ume` (mã nguồn, chỉ dùng phần `deploy/`) |
+| Email gửi mã | Resend, `noreply@4ume.io.vn` — [email.md](email.md) |
 | Container | `fourume-postgres-1`, `fourume-api-1`, `fourume-admin-1` (project `fourume`) |
 
 ```
@@ -47,6 +48,17 @@ chmod 600 .env
 ```
 
 > Giữ `.env` cẩn thận (nên chép một bản ra ngoài): mất `JWT_KEY` thì mọi người phải đăng nhập lại; mất `POSTGRES_PASSWORD` thì phải đặt lại mật khẩu database.
+
+Các biến tuỳ chọn khác trong `.env`:
+
+| Biến | Dùng cho |
+|---|---|
+| `PIXABAY_API_KEY`, `PEXELS_API_KEY` | Tìm ảnh trong admin ([admin-web.md](admin-web.md#4-hình-ảnh)) |
+| `RESEND_API_KEY` | Gửi mã xác nhận đăng ký / quên mật khẩu. **Bắt buộc** nếu muốn người dùng tạo được tài khoản trên app ([email.md](email.md)) |
+| `EMAIL_REPLY_TO` | Địa chỉ nhận thư khi người dùng bấm *Trả lời* thư mã |
+| `IMAGE_TAG` | Chạy một bản cũ (`sha-<commit>`) thay vì `latest` |
+
+Sửa `.env` xong chạy `docker compose up -d` để áp dụng.
 
 ### 3. Chứng chỉ SSL (tự gia hạn qua Cloudflare)
 
@@ -163,6 +175,8 @@ Build / chạy app trỏ tới API thật:
 cd mobile
 EXPO_PUBLIC_API_URL=https://api.4ume.io.vn npx expo start
 ```
+
+Hoặc đặt sẵn `EXPO_PUBLIC_API_URL=https://api.4ume.io.vn` trong `mobile/.env.local` (git bỏ qua, đang có trên máy Mac) rồi chỉ cần `npx expo start --go -c`. Bản build EAS luôn trỏ API thật (`mobile/eas.json`). Đưa lên cửa hàng: [app-store.md](app-store.md).
 
 ## Lệnh hay dùng
 

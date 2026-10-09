@@ -57,7 +57,7 @@ openssl rand -hex 32   # chạy 2 lần, dán vào POSTGRES_PASSWORD và JWT_KEY
 nano .env
 ```
 
-Điền trong `.env`: `API_DOMAIN`, `ADMIN_DOMAIN`, `ACME_EMAIL` (email nhận thông báo SSL), `POSTGRES_PASSWORD`, `JWT_KEY`, và `ADMIN_INITIAL_PASSWORD` (mật khẩu tạm cho `admin@4ume.io.vn`).
+Điền trong `.env`: `API_DOMAIN`, `ADMIN_DOMAIN`, `ACME_EMAIL` (email nhận thông báo SSL), `POSTGRES_PASSWORD`, `JWT_KEY`, và `ADMIN_INITIAL_PASSWORD` (mật khẩu tạm cho `admin@4ume.io.vn`). Để người dùng tạo được tài khoản trên app cần thêm `RESEND_API_KEY` (gửi mã xác nhận, xem [email.md](email.md)); tìm ảnh trong admin cần `PIXABAY_API_KEY` / `PEXELS_API_KEY`.
 
 > Giữ `.env` cẩn thận: mất `JWT_KEY` thì mọi người phải đăng nhập lại; mất `POSTGRES_PASSWORD` thì phải đặt lại mật khẩu database.
 

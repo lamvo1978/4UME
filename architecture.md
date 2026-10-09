@@ -21,7 +21,9 @@ Trên Cloud Agent, working tree là root repo (`/workspace` tương đương n�
 | DB | PostgreSQL 16 | User, tiến trình từ, điểm bài tập |
 | Container | Docker + Docker Compose | Chạy API + Postgres trên Linux |
 | OS server | Linux | Host production / VPS |
-| Nội dung từ | `backend/data/vocabulary.json` | ~3.308 mục A1–B2 (tự biên) |
+| Web admin | React + Vite + Mantine | Quản lý nội dung, người dùng, cài đặt |
+| Nội dung từ | `backend/data/vocabulary.json` → database | 7.544 từ A1–B2, 27 bộ; 46 bài ngữ pháp |
+| Email | Resend (HTTP API) | Mã xác nhận đăng ký / quên mật khẩu |
 
 Không dùng danh sách Oxford 3000 chính thức trong app (cần giấy phép OUP).
 
@@ -70,29 +72,44 @@ flowchart TB
 
 v1 không thêm MediatR/CQRS/event bus trừ khi sau này cần.
 
-## PostgreSQL — bảng chính
+## PostgreSQL — bảng chính (cập nhật 10/10/2026)
 
 | Bảng | Nội dung |
 |---|---|
-| `users` | id, email, password_hash, display_name, created_at |
-| `word_progress` | user_id, word_id, status (`new`/`hard`/`known`), next_review_at, updated_at |
-| `grammar_attempts` | user_id, lesson_slug, score, total, created_at |
+| `Users` | email, mật khẩu băm, tên hiển thị, `Role` (user / admin), `LockedAt`, cài đặt học + nhắc, chuỗi ngày (đóng băng, dài nhất) |
+| `Decks`, `Words` | Bộ từ và từ (nghĩa, phiên âm, ví dụ, ảnh, `ImagePending`, `Published`, `EditedAt`) |
+| `WordProgresses` | Tiến độ từng từ của người học (`new` / `hard` / `known`, cấp ôn tập, lần ôn tới) |
+| `GrammarLessons`, `GrammarProgresses`, `GrammarAttempts` | Bài ngữ pháp (lý thuyết + bài tập dạng JSON), tiến độ và lượt làm |
+| `StudyDays` | Ngày có học (tính chuỗi, biểu đồ) |
+| `MediaFiles` | Ảnh trong thư viện (kể cả nguồn Pexels / Pixabay) |
+| `DeviceTokens`, `NotificationLogs` | Thiết bị nhận thông báo, thông báo đã gửi |
+| `AppSettings` | Thông số hệ thống chỉnh trong admin (JSON) |
+| `AuditLogs` | Lịch sử thay đổi nội dung / quyền (trước / sau) |
+| `EmailCodes` | Mã xác nhận qua email (chỉ lưu bản băm) — [docs/email.md](docs/email.md) |
 
-Từ vựng: seed từ JSON vào bảng `words` (hoặc serve từ file ở bản đầu). Tiến trình luôn gắn `user_id` trên DB — không dùng `localStorage` làm nguồn chính.
+Từ vựng / ngữ pháp nạp lần đầu từ `backend/data/` rồi database là nguồn chính (sửa qua web admin). Tiến trình luôn gắn người dùng trên DB — không dùng `localStorage` làm nguồn chính.
 
-## API bề mặt (v1)
+## API bề mặt cho app
 
 | Method | Path | Mô tả |
 |---|---|---|
-| POST | `/api/auth/register` | Tạo tài khoản |
+| POST | `/api/auth/register/code` | Gửi mã xác nhận tới email đăng ký |
+| POST | `/api/auth/register` | Tạo tài khoản (cần mã), trả JWT |
 | POST | `/api/auth/login` | Đăng nhập, trả JWT |
-| GET | `/api/me` | Hồ sơ + thống kê nhanh |
-| GET | `/api/vocabulary/decks` | Danh sách bộ từ + tiến độ user |
-| GET | `/api/vocabulary/decks/{id}` | Từ trong bộ |
+| POST | `/api/auth/password/code` | Gửi mã đặt lại mật khẩu |
+| POST | `/api/auth/password/reset` | Đặt mật khẩu mới bằng mã, trả JWT |
+| GET | `/api/me`, `/api/me/stats` | Hồ sơ, chuỗi ngày, thống kê |
+| PUT | `/api/me/settings` | Cài đặt học / nhắc / múi giờ |
+| POST | `/api/me/password`, `/api/me/delete` | Đổi mật khẩu, xoá tài khoản |
+| POST / DELETE | `/api/me/devices`, `/api/me/devices/{token}` | Đăng ký / gỡ thiết bị nhận thông báo |
+| GET | `/api/config` | Thông số hệ thống cho app |
+| GET | `/api/vocabulary/decks`, `/decks/{id}`, `/search` | Bộ từ + tiến độ, từ trong bộ, tìm từ |
 | POST | `/api/vocabulary/progress` | Cập nhật trạng thái từ (flashcard) |
-| GET | `/api/grammar/lessons` | 10 bài ngữ pháp |
-| GET | `/api/grammar/lessons/{slug}` | Nội dung + câu hỏi |
-| POST | `/api/grammar/lessons/{slug}/submit` | Nộp bài, lưu điểm |
+| GET / POST | `/api/review/summary`, `/forecast`, `/due`, `/answer`, `/practice`, `/practice/answer` | Ôn tập từ vựng |
+| GET / POST | `/api/grammar/lessons`, `/lessons/{slug}`, `/lessons/{slug}/complete` | Bài ngữ pháp |
+| GET / POST | `/api/grammar/review/summary`, `/due`, `/practice`, `/answer`, `/practice/answer` | Ôn tập ngữ pháp |
+
+API cho web admin (`/api/admin/*`): [docs/admin-web.md](docs/admin-web.md#api-dự-kiến).
 
 ## Mobile (React Native / Expo)
 
@@ -118,10 +135,10 @@ Production: cùng Compose hoặc reverse proxy (Caddy/Nginx) trên VPS Linux.
 
 ## Bảo mật v1
 
-- Mật khẩu: ASP.NET Identity password hasher (hoặc BCrypt)  
-- JWT Bearer, secret qua biến môi trường  
-- CORS chỉ origin mobile/dev  
-- Không commit connection string / JWT secret thật  
+- Mật khẩu: ASP.NET Identity password hasher
+- JWT Bearer (7 ngày), secret qua biến môi trường; tài khoản bị khoá / xoá thì token cũ bị từ chối ngay
+- Đăng ký và đặt lại mật khẩu phải có mã 6 số gửi qua email (10 phút, tối đa 5 lần sai, giới hạn gửi theo email và IP)
+- Không commit connection string / JWT secret / API key thật (để trong `.env`, git bỏ qua)
 
 ## Thứ tự triển khai
 

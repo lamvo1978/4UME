@@ -1,4 +1,26 @@
-# Việc còn lại sau khi triển khai (tạm dừng 09/10/2026)
+# Việc còn lại sau khi triển khai (cập nhật 10/10/2026)
+
+## Nhật ký thay đổi
+
+| Ngày | Commit | Nội dung |
+|---|---|---|
+| 09/10 | `821f1e2`, `0d1d4ef` | Lên VPS cạnh PetHubPro, SSL wildcard tự gia hạn qua Cloudflare |
+| 09/10 | `667b868` | Tài khoản quản trị gốc đổi thành `admin@4ume.io.vn` |
+| 09/10 | `30012c8` | Tìm / gắn ảnh Pexels, Pixabay trong admin (trang *Gắn ảnh*, *Tự gán ảnh*, duyệt ảnh tự gán) |
+| 09/10 | `3abd602` | App + xem trước admin: ảnh hiện trọn trong khung vuông, nền trắng của ảnh hoà vào thẻ (`mixBlendMode: multiply`), thẻ flashcard có ảnh đưa nội dung lên trên |
+| 09/10 | `23b0dcf` | App phát âm được cả khi iPhone gạt sang im lặng (`expo-audio`, `playsInSilentMode`) |
+| 09/10 | `700df27` | Admin trên iPhone: thanh nút Lưu nằm trên thanh tab dưới đáy, không bị che |
+| 09/10 | `3bead81` | Trang *Hình ảnh*: mỗi ảnh hiện từ đang dùng (tối đa 3, kèm cấp độ, bộ từ), "Chưa dùng" nếu không có |
+| 10/10 | `58bd9ab` | Admin tự báo "Đã có bản admin mới" + nút *Tải lại* khi có bản mới (cần cho web admin thêm vào màn hình chính iPhone) |
+| 10/10 | `0970172` | Trang *Từ vựng*: lọc **Đã có hình**; tìm kiếm ưu tiên từ khớp chính xác, rồi từ bắt đầu bằng từ khoá |
+| 10/10 | `4a33e3e` | Trang *Gắn ảnh*: ô **Tìm từ vựng** để gắn ảnh cho bất kỳ từ nào (kể cả từ đã có ảnh) |
+| 10/10 | `ceb1622`, `26861f0` | **Mã xác nhận qua email** khi tạo tài khoản và quên mật khẩu (app + web admin) — xem [email.md](email.md) |
+
+Cập nhật VPS sau mỗi lần push (đợi GitHub Actions *Build images* xong):
+
+```bash
+cd /opt/4ume && git pull && cd deploy/vps && docker compose pull && docker compose up -d
+```
 
 ## Trạng thái hiện tại
 
@@ -9,6 +31,14 @@
 - DNS `4ume.io.vn` quản lý trên Cloudflare (mua ở PA Việt Nam, nameserver `tiffany` / `zeus.ns.cloudflare.com`). Bản ghi A `api`, `admin` → IP VPS, **DNS only** (mây xám).
 - SSL wildcard `4ume.io.vn` + `*.4ume.io.vn`, **tự gia hạn** qua certbot + plugin Cloudflare (token chỉ có quyền DNS của `4ume.io.vn`, lưu ở `/root/.secrets/cloudflare-4ume.ini`). Hết hạn 07/01/2027, certbot tự gia hạn trước đó; hook `/usr/local/sbin/4ume-cert-hook` chép chứng chỉ sang nginx và reload.
 - Dữ liệu trên VPS là dữ liệu **mới** (không chuyển từ máy cá nhân), đang dùng để thử nghiệm.
+- Email: Resend gửi mã từ `noreply@4ume.io.vn` (domain Verified, key trong `.env` trên VPS) — [email.md](email.md).
+- `.env` trên VPS hiện có: `POSTGRES_PASSWORD`, `JWT_KEY`, `ADMIN_INITIAL_PASSWORD` (nên xoá), `PIXABAY_API_KEY`, `RESEND_API_KEY`. Pexels đang **tạm ngừng cấp key mới**, nên chỉ dùng Pixabay; có key Pexels sau thì thêm `PEXELS_API_KEY`.
+
+## Ghi chú khi dùng
+
+- **Web admin "Thêm vào màn hình chính" trên iPhone**: iOS mở lại trang cũ nên trước đây phải xoá cache mới thấy bản mới. Từ `58bd9ab`, admin tự kiểm tra bản mới (khi mở lại, khi quay lại tab, mỗi 5 phút) và hiện thanh *Đã có bản admin mới → Tải lại*. Bản cũ đã cài trước đó cần xoá cache **một lần** (hoặc xoá biểu tượng và thêm lại) để có tính năng này.
+- **Expo Go trên iPhone**: Mac và app Expo Go phải đăng nhập cùng tài khoản Expo (`npx expo login`). Chạy `cd mobile && npx expo start --go -c`, quét QR bằng Camera.
+- **Máy dev**: `dotnet build` có lúc treo — build API bằng `docker compose up -d --build api` (lỗi `mcr.microsoft.com … EOF` là lỗi mạng tạm thời, chạy lại).
 
 ## Nên làm sớm
 
@@ -21,9 +51,11 @@
 - [ ] **Chứng chỉ PetHubPro hết hạn 19/11/2026** và đang là `manual` (không tự gia hạn). Gia hạn tay trước hạn, hoặc chuyển DNS `pethubpro.io.vn` sang Cloudflare và làm giống 4UME để tự gia hạn.
 - [x] Reboot VPS lên kernel `5.15.0-198` (09/10/2026) — mọi container PetHubPro + 4UME tự chạy lại. Lần sau khi `apt` hỏi *Which services should be restarted?* thì chọn **none** (tránh restart Docker giữa giờ), reboot vào giờ ít người dùng.
 
-## Ảnh Pexels / Pixabay (trang Gắn ảnh)
+- [ ] **Hộp thư Zoho** `hotro@4ume.io.vn` (nhận thư, email hỗ trợ cho cửa hàng ứng dụng, đặt lại mật khẩu cho `admin@4ume.io.vn`) — [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm).
 
-Đăng ký 2 API key miễn phí (xem [admin-web.md](admin-web.md#4-hình-ảnh)):
+## Ảnh Pexels / Pixabay (trang Gắn ảnh) — đã có Pixabay
+
+Đăng ký 2 API key miễn phí (xem [admin-web.md](admin-web.md#4-hình-ảnh)). Pexels hiện báo *New API key issuance is currently paused*, chỉ cần Pixabay là đủ dùng:
 
 - Pexels: https://www.pexels.com/api/ → *Get Started* → đăng nhập → điền mô tả dự án → nhận key.
 - Pixabay: đăng ký tài khoản https://pixabay.com → https://pixabay.com/api/docs/ → key hiện ở mục *Parameters* (`key`).
@@ -52,6 +84,8 @@ crontab -l
 > Nếu muốn **xoá sạch dữ liệu thử nghiệm** trước khi dùng thật: `cd /opt/4ume/deploy/vps && docker compose down -v && docker compose up -d` (tạo lại database mới; đặt lại `ADMIN_INITIAL_PASSWORD` trong `.env` trước khi chạy để có lại tài khoản `admin@4ume.io.vn`, xong thì xoá đi).
 
 ## 2. Build app điện thoại
+
+> Kế hoạch đưa lên Google Play / App Store (tài khoản, yêu cầu 12 người thử 14 ngày của Google, chính sách quyền riêng tư, ảnh chụp…): [app-store.md](app-store.md).
 
 Đã có sẵn [`mobile/eas.json`](../mobile/eas.json): mọi bản build trỏ về `https://api.4ume.io.vn`.
 
