@@ -1,0 +1,10 @@
+.git
+**/node_modules
+**/bin
+**/obj
+**/dist
+mobile
+backend/data/sources
+backend/data/new-words
+.env
+.env.*

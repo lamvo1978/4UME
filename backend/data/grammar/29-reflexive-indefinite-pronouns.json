@@ -1,0 +1,81 @@
+{
+  "slug": "reflexive-indefinite-pronouns",
+  "version": 1,
+  "titleVi": "Đại từ phản thân và đại từ bất định",
+  "titleEn": "Reflexive and indefinite pronouns",
+  "level": "A2",
+  "order": 29,
+  "summaryVi": "Đại từ phản thân (myself, yourself...) dùng khi chủ ngữ tự làm cho chính mình. Đại từ bất định (someone, anything, nowhere...) chỉ người, vật, nơi chốn không xác định.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Đại từ phản thân",
+      "headers": ["Chủ ngữ", "Đại từ phản thân"],
+      "cells": [
+        ["I", "myself"],
+        ["you (một người)", "yourself"],
+        ["he / she / it", "himself / herself / itself"],
+        ["we", "ourselves"],
+        ["you (nhiều người)", "yourselves"],
+        ["they", "themselves"]
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Khi nào dùng đại từ phản thân",
+      "items": [
+        { "textVi": "Chủ ngữ và tân ngữ là một người.", "example": { "en": "Be careful! Don't hurt yourself.", "vi": "Cẩn thận! Đừng để bị thương." } },
+        { "textVi": "Nhấn mạnh tự mình làm, không ai giúp.", "example": { "en": "I painted the room myself.", "vi": "Tôi tự sơn căn phòng." } },
+        { "textVi": "by + myself / yourself...: một mình.", "example": { "en": "She lives by herself.", "vi": "Cô ấy sống một mình." } },
+        { "textVi": "Cụm cố định: enjoy yourself (chơi vui nhé), help yourself (cứ tự nhiên dùng).", "example": { "en": "Enjoy yourselves at the party!", "vi": "Các bạn đi tiệc vui nhé!" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Đại từ bất định",
+      "headers": ["", "some- (khẳng định)", "any- (phủ định, câu hỏi)", "no- (động từ khẳng định)", "every- (tất cả)"],
+      "cells": [
+        ["người", "someone / somebody", "anyone / anybody", "no one / nobody", "everyone / everybody"],
+        ["vật", "something", "anything", "nothing", "everything"],
+        ["nơi chốn", "somewhere", "anywhere", "nowhere", "everywhere"]
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Quy tắc dùng đại từ bất định",
+      "items": [
+        { "textVi": "some- trong câu khẳng định.", "example": { "en": "Someone is at the door.", "vi": "Có ai đó ở ngoài cửa." } },
+        { "textVi": "any- trong câu phủ định và câu hỏi.", "example": { "en": "I didn't see anyone. Did you buy anything?", "vi": "Tôi không thấy ai cả. Bạn có mua gì không?" } },
+        { "textVi": "no- đi với động từ khẳng định (đã mang nghĩa phủ định). Không dùng hai lần phủ định.", "example": { "en": "Nobody called. I have nothing to do.", "vi": "Không ai gọi cả. Tôi chẳng có việc gì làm." } },
+        { "textVi": "Đại từ bất định làm chủ ngữ → động từ chia số ít.", "example": { "en": "Everyone is ready.", "vi": "Mọi người đã sẵn sàng." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "He hurt hisself.", "right": "He hurt himself.", "noteVi": "Không có hisself / theirselves; dùng himself / themselves." },
+        { "wrong": "I didn't see nobody.", "right": "I didn't see anybody.", "noteVi": "Đã có didn't thì dùng any-, không phủ định hai lần." },
+        { "wrong": "Everyone are here.", "right": "Everyone is here.", "noteVi": "everyone chia động từ số ít." },
+        { "wrong": "We enjoyed very much at the party.", "right": "We enjoyed ourselves at the party.", "noteVi": "enjoy cần tân ngữ: enjoy + ourselves / the party." }
+      ]
+    },
+    { "type": "tip", "textVi": "someone = somebody, anyone = anybody, no one = nobody: nghĩa như nhau, -one hay dùng hơn khi viết. no one viết rời hai chữ." }
+  ],
+  "exercises": [
+    { "id": "rp-01", "type": "mcq", "prompt": "Be careful with that knife! Don't cut ___.", "options": ["yourself", "you", "yourselfs"], "answer": "yourself", "explanationVi": "Chủ ngữ (you) tự làm đau chính mình → yourself." },
+    { "id": "rp-02", "type": "mcq", "prompt": "My little sister made this cake ___. Nobody helped her.", "options": ["herself", "himself", "her"], "answer": "herself", "explanationVi": "Tự làm, không ai giúp; she → herself." },
+    { "id": "rp-03", "type": "mcq", "prompt": "I'm hungry, but there isn't ___ in the fridge.", "options": ["anything", "nothing", "something"], "answer": "anything", "explanationVi": "Câu phủ định (isn't) → anything. isn't nothing là phủ định hai lần." },
+    { "id": "rp-04", "type": "mcq", "prompt": "___ knows the answer. The question is too difficult for all of us.", "options": ["Nobody", "Somebody", "Anybody"], "answer": "Nobody", "explanationVi": "Không ai biết → Nobody + động từ khẳng định (knows)." },
+    { "id": "rp-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Everyone is here.", "Everyone are here.", "Everyone here are."], "answer": "Everyone is here.", "explanationVi": "everyone chia động từ số ít → is." },
+    { "id": "rp-06", "type": "fill", "prompt": "We had a great time at the party. We really enjoyed ___. (đại từ phản thân)", "answers": ["ourselves"], "explanationVi": "we → ourselves; enjoy oneself = chơi vui." },
+    { "id": "rp-07", "type": "fill", "prompt": "I can't find my keys ___. (ở đâu cả)", "answers": ["anywhere"], "explanationVi": "Câu phủ định (can't) → anywhere." },
+    { "id": "rp-08", "type": "fill", "prompt": "There's ___ at the door. Can you open it? (ai đó)", "answers": ["someone", "somebody"], "explanationVi": "Câu khẳng định → someone / somebody." },
+    { "id": "rp-09", "type": "order", "promptVi": "Anh ấy sống một mình.", "answer": "He lives by himself.", "distractors": ["hisself"], "explanationVi": "by himself = một mình. Không có hisself." },
+    { "id": "rp-10", "type": "order", "promptVi": "Tôi không gặp ai cả.", "answer": "I didn't meet anyone.", "distractors": ["nobody"], "explanationVi": "Đã có didn't → anyone; không phủ định hai lần." },
+    { "id": "rp-11", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "I bought something for her.", "answer": "I didn't buy anything for her.", "distractors": ["buys", "nothing"], "explanationVi": "Phủ định: didn't + V; something → anything." },
+    { "id": "rp-12", "type": "transform", "instructionVi": "Viết lại câu dùng 'nothing', giữ nguyên nghĩa", "source": "There isn't anything in the box.", "answer": "There is nothing in the box.", "distractors": ["isn't", "no"], "explanationVi": "not ... anything = nothing (động từ khẳng định)." },
+    { "id": "rp-13", "type": "error", "sentence": "He hurt [hisself] when he fell off his bike.", "correction": "himself", "explanationVi": "he → himself." },
+    { "id": "rp-14", "type": "error", "sentence": "I looked for my phone, but I couldn't find it [nowhere].", "correction": "anywhere", "explanationVi": "Đã có couldn't → anywhere; không phủ định hai lần." }
+  ]
+}

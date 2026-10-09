@@ -1,0 +1,78 @@
+{
+  "slug": "have-to",
+  "version": 1,
+  "titleVi": "have to, don't have to và must",
+  "titleEn": "have to, don't have to and must",
+  "level": "A2",
+  "order": 23,
+  "summaryVi": "have to / has to = phải (thường do quy định, hoàn cảnh); had to = đã phải. don't have to = không cần, còn mustn't = cấm.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Cách dùng",
+      "items": [
+        { "textVi": "have to / has to: phải làm gì, thường vì quy định, công việc hoặc hoàn cảnh bên ngoài.", "example": { "en": "I have to wear a uniform at work.", "vi": "Ở chỗ làm tôi phải mặc đồng phục." } },
+        { "textVi": "had to: đã phải làm gì trong quá khứ (must không có dạng quá khứ).", "example": { "en": "Yesterday I had to stay late at the office.", "vi": "Hôm qua tôi phải ở lại văn phòng muộn." } },
+        { "textVi": "don't / doesn't have to: không cần, không bắt buộc (làm cũng được, không làm cũng được).", "example": { "en": "You don't have to bring anything. We have lots of food.", "vi": "Bạn không cần mang gì đâu. Nhà mình có nhiều đồ ăn lắm." } },
+        { "textVi": "mustn't: cấm, không được phép làm.", "example": { "en": "You mustn't park here.", "vi": "Bạn không được đỗ xe ở đây." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Chia have to",
+      "headers": ["", "Hiện tại", "Quá khứ"],
+      "cells": [
+        ["Khẳng định", "I / you / we / they have to · he / she / it has to", "had to (mọi chủ ngữ)"],
+        ["Phủ định", "don't have to · doesn't have to", "didn't have to"],
+        ["Câu hỏi", "Do I / you ... have to? · Does he / she ... have to?", "Did ... have to?"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + have to / has to / had to + V", "example": { "en": "She has to take the bus to work.", "vi": "Cô ấy phải đi xe buýt đi làm." } },
+        { "kind": "negative", "pattern": "S + don't / doesn't / didn't + have to + V", "example": { "en": "He doesn't have to work on Sundays.", "vi": "Anh ấy không phải làm vào Chủ nhật." } },
+        { "kind": "question", "pattern": "Do / Does / Did + S + have to + V?", "example": { "en": "Do I have to pay now?", "vi": "Tôi có phải trả tiền bây giờ không?" } },
+        { "kind": "short-answer", "pattern": "Yes, you do. / No, you don't.", "example": { "en": "Does she have to go? – No, she doesn't.", "vi": "Cô ấy có phải đi không? – Không." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "must hay have to?",
+      "headers": ["", "Nghĩa", "Ví dụ"],
+      "cells": [
+        ["must", "Phải, người nói tự thấy cần (ý kiến của mình)", "I must call my mum. I haven't talked to her for weeks."],
+        ["have to", "Phải, vì quy định hoặc người khác yêu cầu", "I have to show my ID card at the gate."],
+        ["mustn't", "Cấm", "You mustn't smoke in the hospital."],
+        ["don't have to", "Không cần", "You don't have to wear a tie. It's a casual party."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She have to work late.", "right": "She has to work late.", "noteVi": "he / she / it → has to." },
+        { "wrong": "He doesn't has to go.", "right": "He doesn't have to go.", "noteVi": "Có doesn't thì dùng have, không dùng has." },
+        { "wrong": "I musted go home early yesterday.", "right": "I had to go home early yesterday.", "noteVi": "must không có quá khứ → dùng had to." },
+        { "wrong": "You mustn't pay. It's free.", "right": "You don't have to pay. It's free.", "noteVi": "Không cần → don't have to; mustn't là cấm." }
+      ]
+    },
+    { "type": "tip", "textVi": "Ở trình độ A2, nếu phân vân giữa must và have to trong câu khẳng định, dùng have to gần như luôn an toàn. Nhưng ở dạng phủ định, nghĩa khác hẳn: mustn't = cấm, don't have to = không cần." }
+  ],
+  "exercises": [
+    { "id": "ht-01", "type": "mcq", "prompt": "My sister is a nurse. She ___ work at night sometimes.", "options": ["has to", "have to", "must to"], "answer": "has to", "explanationVi": "She → has to + V." },
+    { "id": "ht-02", "type": "mcq", "prompt": "Tomorrow is a holiday, so we ___ go to school.", "options": ["don't have to", "mustn't", "doesn't have to"], "answer": "don't have to", "explanationVi": "Nghỉ lễ → không cần đi học: don't have to. mustn't nghĩa là bị cấm." },
+    { "id": "ht-03", "type": "mcq", "prompt": "This is a hospital. You ___ make noise here.", "options": ["mustn't", "don't have to", "didn't have to"], "answer": "mustn't", "explanationVi": "Không được phép làm ồn → mustn't (cấm)." },
+    { "id": "ht-04", "type": "mcq", "prompt": "Last night I ___ stay at the office until 9 p.m.", "options": ["had to", "must", "have to"], "answer": "had to", "explanationVi": "Quá khứ (last night) → had to; must không có quá khứ." },
+    { "id": "ht-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Do I have to bring my passport?", "Do I must bring my passport?", "Does I have to bring my passport?"], "answer": "Do I have to bring my passport?", "explanationVi": "Câu hỏi: Do + I + have to + V? Không dùng do với must." },
+    { "id": "ht-06", "type": "fill", "prompt": "___ your brother have to wear a uniform at work? – Yes, he does.", "answers": ["Does"], "explanationVi": "your brother = he → Does ... have to?" },
+    { "id": "ht-07", "type": "fill", "prompt": "We ___ (not / have to) pay. The museum is free on Sundays.", "answers": ["don't have to", "do not have to"], "explanationVi": "Miễn phí → không cần trả tiền: don't have to." },
+    { "id": "ht-08", "type": "fill", "prompt": "I couldn't go to the party because I ___ (have to) look after my little brother.", "answers": ["had to"], "explanationVi": "Chuyện đã qua → had to." },
+    { "id": "ht-09", "type": "order", "promptVi": "Cô ấy không cần nấu ăn.", "answer": "She doesn't have to cook.", "distractors": ["don't"], "explanationVi": "Không cần → doesn't have to; sau doesn't dùng have." },
+    { "id": "ht-10", "type": "order", "promptVi": "Bạn có phải làm việc vào thứ Bảy không?", "answer": "Do you have to work on Saturdays?", "distractors": ["Does", "has"], "explanationVi": "Câu hỏi: Do + you + have to + V?" },
+    { "id": "ht-11", "type": "transform", "instructionVi": "Chuyển sang quá khứ", "source": "I have to wait for the bus.", "answer": "I had to wait for the bus.", "distractors": ["musted", "have"], "explanationVi": "have to → had to." },
+    { "id": "ht-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "He has to finish the report today.", "answer": "Does he have to finish the report today?", "distractors": ["has", "Is"], "explanationVi": "Mượn does, has to trở về have to." },
+    { "id": "ht-13", "type": "error", "sentence": "My father [have to] get up at 5 a.m. every day.", "correction": "has to", "explanationVi": "My father = he → has to." },
+    { "id": "ht-14", "type": "error", "sentence": "At my old school, we [didn't must] wear a uniform.", "correction": "didn't have to", "explanationVi": "must không có quá khứ; không cần (trong quá khứ) → didn't have to." }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "slug": "present-continuous-future",
+  "version": 1,
+  "titleVi": "Hiện tại tiếp diễn và hiện tại đơn chỉ tương lai",
+  "titleEn": "Present continuous and present simple for the future",
+  "level": "A2",
+  "order": 20,
+  "summaryVi": "Dùng hiện tại tiếp diễn cho kế hoạch đã hẹn, đã sắp xếp (I'm meeting Lan tonight). Dùng hiện tại đơn cho lịch trình cố định như giờ tàu xe, giờ chiếu phim (The bus leaves at 7).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Khi nào dùng",
+      "items": [
+        { "textVi": "Hiện tại tiếp diễn: kế hoạch cá nhân đã sắp xếp xong (đã hẹn người, đã đặt vé, đã chốt giờ). Thường có thời gian tương lai đi kèm.", "example": { "en": "I'm meeting Lan for dinner tonight.", "vi": "Tối nay tôi đi ăn tối với Lan (đã hẹn rồi)." } },
+        { "textVi": "Hỏi về kế hoạch của ai đó.", "example": { "en": "What are you doing this weekend?", "vi": "Cuối tuần này bạn làm gì?" } },
+        { "textVi": "Hiện tại đơn: lịch trình cố định, theo thời gian biểu chung (tàu, xe, máy bay, phim, lớp học, giờ mở cửa).", "example": { "en": "The bus leaves at 7 tomorrow morning.", "vi": "Xe buýt chạy lúc 7 giờ sáng mai." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + am / is / are + V-ing + (thời gian tương lai)", "example": { "en": "We're flying to Da Nang on Friday.", "vi": "Thứ Sáu này chúng tôi bay ra Đà Nẵng." } },
+        { "kind": "negative", "pattern": "S + am / is / are + not + V-ing", "example": { "en": "She isn't coming to the party.", "vi": "Cô ấy sẽ không đến bữa tiệc." } },
+        { "kind": "question", "pattern": "Am / Is / Are + S + V-ing?", "example": { "en": "Are you doing anything tonight?", "vi": "Tối nay bạn có bận gì không?" } },
+        { "kind": "note", "pattern": "Lịch trình: S + V(s/es) · What time does + S + V?", "example": { "en": "What time does the film start?", "vi": "Mấy giờ phim bắt đầu?" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "So sánh nhanh các cách nói tương lai",
+      "headers": ["Cách nói", "Dùng khi", "Ví dụ"],
+      "cells": [
+        ["am / is / are + V-ing", "Đã sắp xếp, đã hẹn", "I'm seeing the dentist at 3 tomorrow."],
+        ["be going to + V", "Dự định đã có trong đầu", "I'm going to learn to swim this summer."],
+        ["will + V", "Quyết định ngay lúc nói, dự đoán, lời hứa", "I'm tired. I'll go to bed now."],
+        ["V(s/es) hiện tại đơn", "Lịch trình, thời gian biểu cố định", "The train arrives at 9 p.m."]
+      ]
+    },
+    { "type": "signals", "words": ["tonight", "tomorrow", "this weekend", "on Friday", "next Monday", "at 7 o'clock", "What time does ...?"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I meeting my boss tomorrow.", "right": "I'm meeting my boss tomorrow.", "noteVi": "Không được bỏ am / is / are." },
+        { "wrong": "Are you do anything tonight?", "right": "Are you doing anything tonight?", "noteVi": "Sau am / is / are là V-ing." },
+        { "wrong": "The bus leave at 7.", "right": "The bus leaves at 7.", "noteVi": "Chủ ngữ số ít (the bus) → động từ thêm s." },
+        { "wrong": "What time does the film starts?", "right": "What time does the film start?", "noteVi": "Có does thì động từ chính giữ nguyên mẫu." }
+      ]
+    },
+    { "type": "tip", "textVi": "Nếu không có thời gian tương lai, người nghe sẽ hiểu là việc đang xảy ra lúc này: \"I'm meeting Lan\" (đang gặp) khác \"I'm meeting Lan tonight\" (tối nay sẽ gặp)." }
+  ],
+  "exercises": [
+    { "id": "pf-01", "type": "mcq", "prompt": "I ___ Lan for dinner tonight. We booked a table for 7 o'clock.", "options": ["am meeting", "meet", "meeting"], "answer": "am meeting", "explanationVi": "Kế hoạch đã sắp xếp (đã đặt bàn) → am meeting." },
+    { "id": "pf-02", "type": "mcq", "prompt": "The train to Hue ___ at 6:15 tomorrow morning.", "options": ["leaves", "leave", "is leave"], "answer": "leaves", "explanationVi": "Lịch trình tàu chạy → hiện tại đơn; the train số ít → leaves." },
+    { "id": "pf-03", "type": "mcq", "prompt": "What ___ this weekend? – I'm visiting my grandparents.", "options": ["are you doing", "you are doing", "do you doing"], "answer": "are you doing", "explanationVi": "Hỏi kế hoạch: What + are + you + V-ing?" },
+    { "id": "pf-04", "type": "mcq", "prompt": "Oh no, I forgot my wallet! – Don't worry. I ___ for the coffee.", "options": ["'ll pay", "am paying", "paying"], "answer": "'ll pay", "explanationVi": "Quyết định ngay lúc nói, không có sắp xếp trước → will." },
+    { "id": "pf-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["What time does the film start?", "What time does the film starts?", "What time the film starts?"], "answer": "What time does the film start?", "explanationVi": "Câu hỏi lịch trình: What time + does + S + V nguyên mẫu?" },
+    { "id": "pf-06", "type": "fill", "prompt": "We ___ (fly) to Da Nang next Friday. The tickets are booked. (dùng hiện tại tiếp diễn)", "answers": ["are flying", "'re flying"], "explanationVi": "Đã đặt vé → kế hoạch đã sắp xếp: are flying." },
+    { "id": "pf-07", "type": "fill", "prompt": "Hurry up! The concert ___ (start) at 8 p.m. (dùng hiện tại đơn)", "answers": ["starts"], "explanationVi": "Giờ diễn là lịch cố định → hiện tại đơn; the concert số ít → starts." },
+    { "id": "pf-08", "type": "fill", "prompt": "My brother ___ (not / come) to the party on Saturday. He's working that day. (dùng hiện tại tiếp diễn)", "answers": ["isn't coming", "is not coming", "'s not coming"], "explanationVi": "Phủ định của kế hoạch: is not (isn't) + coming." },
+    { "id": "pf-09", "type": "order", "promptVi": "Tối nay bạn có bận gì không?", "answer": "Are you doing anything tonight?", "distractors": ["do"], "explanationVi": "Hỏi kế hoạch: Are + you + V-ing...?" },
+    { "id": "pf-10", "type": "order", "promptVi": "Mấy giờ xe buýt chạy?", "answer": "What time does the bus leave?", "distractors": ["leaves"], "explanationVi": "Lịch trình → hiện tại đơn; có does thì leave giữ nguyên mẫu." },
+    { "id": "pf-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "She is flying to Singapore on Monday.", "answer": "Is she flying to Singapore on Monday?", "distractors": ["Does"], "explanationVi": "Đảo is lên trước chủ ngữ, giữ V-ing." },
+    { "id": "pf-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "The train arrives at 9 p.m.", "answer": "Does the train arrive at 9 p.m.?", "distractors": ["arrives", "Is"], "explanationVi": "Hiện tại đơn → mượn does; động từ chính về nguyên mẫu arrive." },
+    { "id": "pf-13", "type": "error", "sentence": "I [meeting] my boss at 10 tomorrow morning.", "correction": "am meeting", "explanationVi": "Thiếu am: I am (I'm) meeting..." },
+    { "id": "pf-14", "type": "error", "sentence": "The last bus [leave] at 11 p.m.", "correction": "leaves", "explanationVi": "Lịch trình → hiện tại đơn; the last bus số ít → leaves." }
+  ]
+}

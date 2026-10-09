@@ -1,0 +1,52 @@
+{
+  "slug": "first-conditional",
+  "version": 3,
+  "titleVi": "Câu điều kiện loại 1",
+  "titleEn": "First conditional",
+  "level": "B1",
+  "order": 36,
+  "summaryVi": "If + hiện tại đơn, will + V: điều kiện có thể xảy ra ở hiện tại hoặc tương lai và kết quả của nó.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "If + S + V (hiện tại đơn), S + will + V", "example": { "en": "If it rains, we will stay at home.", "vi": "Nếu trời mưa, chúng tôi sẽ ở nhà." } },
+        { "kind": "affirmative", "pattern": "S + will + V + if + S + V (hiện tại đơn)", "example": { "en": "We will stay at home if it rains.", "vi": "Chúng tôi sẽ ở nhà nếu trời mưa." } },
+        { "kind": "negative", "pattern": "unless = if ... not", "example": { "en": "You'll be late unless you hurry.", "vi": "Bạn sẽ muộn nếu không nhanh lên." } },
+        { "kind": "note", "pattern": "Mệnh đề chính có thể dùng can / may / should / câu mệnh lệnh.", "example": { "en": "If you see Tom, tell him to call me.", "vi": "Nếu gặp Tom, bảo anh ấy gọi cho tôi." } },
+        { "kind": "note", "pattern": "Sự thật luôn đúng (điều kiện loại 0): If + hiện tại đơn, hiện tại đơn", "example": { "en": "If you heat ice, it melts.", "vi": "Nếu làm nóng nước đá, nó sẽ tan." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Khi If đứng đầu câu, dùng dấu phẩy ngăn hai mệnh đề.", "example": { "en": "If you study hard, you will pass.", "vi": "Nếu học chăm, bạn sẽ đỗ." } },
+        { "textVi": "Dùng để cảnh báo, hứa hẹn, đặt điều kiện thực tế.", "example": { "en": "If you touch that, you'll get burned.", "vi": "Chạm vào đó là bị bỏng đấy." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "If it will rain, we will stay home.", "right": "If it rains, we will stay home.", "noteVi": "Mệnh đề If không dùng will." },
+        { "wrong": "If you will heat ice, it melts.", "right": "If you heat ice, it melts.", "noteVi": "Sự thật luôn đúng (loại 0): cả hai mệnh đề dùng hiện tại đơn, mệnh đề If không dùng will." },
+        { "wrong": "Unless you don't hurry, you'll miss the bus.", "right": "Unless you hurry, you'll miss the bus.", "noteVi": "unless đã mang nghĩa phủ định." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "c1-01", "type": "mcq", "prompt": "If you ___ now, you'll catch the train.", "options": ["leave", "will leave", "left"], "answer": "leave", "explanationVi": "Mệnh đề If dùng hiện tại đơn." },
+    { "id": "c1-02", "type": "mcq", "prompt": "If she studies hard, she ___ the exam next month.", "options": ["passes", "will pass", "passed"], "answer": "will pass", "explanationVi": "Mệnh đề chính: will + V." },
+    { "id": "c1-03", "type": "mcq", "prompt": "We won't go out ___ the rain stops.", "options": ["if", "unless", "so"], "answer": "unless", "explanationVi": "unless = if ... not: sẽ không ra ngoài nếu mưa không tạnh." },
+    { "id": "c1-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["If it will be sunny, we will go to the beach.", "If it is sunny, we will go to the beach.", "If it is sunny, we go to the beach tomorrow."], "answer": "If it is sunny, we will go to the beach.", "explanationVi": "If + hiện tại đơn, will + V." },
+    { "id": "c1-05", "type": "mcq", "prompt": "If you ___ hungry, there's some food in the fridge.", "options": ["are", "will be", "were"], "answer": "are", "explanationVi": "Mệnh đề If dùng hiện tại đơn." },
+    { "id": "c1-06", "type": "fill", "prompt": "If I ___ (see) him, I'll give him your message.", "answers": ["see"], "explanationVi": "Mệnh đề If: hiện tại đơn." },
+    { "id": "c1-07", "type": "fill", "prompt": "If you don't hurry, you ___ (miss) the bus.", "answers": ["will miss", "'ll miss"], "explanationVi": "Mệnh đề chính: will + V." },
+    { "id": "c1-08", "type": "fill", "prompt": "She won't come if you ___ (not / invite) her.", "answers": ["don't invite", "do not invite"], "explanationVi": "Mệnh đề If phủ định: don't + V." },
+    { "id": "c1-09", "type": "order", "promptVi": "Nếu trời mưa, chúng tôi sẽ ở nhà.", "answer": "If it rains, we will stay at home.", "distractors": ["rain"], "explanationVi": "If + hiện tại đơn, will + V." },
+    { "id": "c1-10", "type": "order", "promptVi": "Tôi sẽ gọi cho bạn nếu tôi có thời gian.", "answer": "I will call you if I have time.", "distractors": ["had"], "explanationVi": "will + V + if + hiện tại đơn." },
+    { "id": "c1-11", "type": "transform", "instructionVi": "Viết lại dùng 'unless'", "source": "If you don't study, you will fail.", "answer": "Unless you study, you will fail.", "distractors": ["don't"], "explanationVi": "unless = if ... not → bỏ don't." },
+    { "id": "c1-12", "type": "error", "sentence": "If it [rained] tomorrow, the match will be cancelled.", "correction": "rains", "explanationVi": "Điều kiện loại 1: mệnh đề If dùng hiện tại đơn (rains)." },
+    { "id": "c1-13", "type": "error", "sentence": "If you heat water to 100°C, it [boiled].", "correction": "boils", "explanationVi": "Sự thật luôn đúng (điều kiện loại 0): If + hiện tại đơn, hiện tại đơn (boils)." }
+  ]
+}

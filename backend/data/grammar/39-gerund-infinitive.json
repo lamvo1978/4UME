@@ -1,0 +1,57 @@
+{
+  "slug": "gerund-infinitive",
+  "version": 3,
+  "titleVi": "V-ing hay to V?",
+  "titleEn": "Gerunds and infinitives",
+  "level": "B1",
+  "order": 39,
+  "summaryVi": "Một số động từ theo sau là V-ing (enjoy doing), một số là to V (want to do). Sau giới từ luôn dùng V-ing.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Động từ hay gặp",
+      "headers": ["+ V-ing", "+ to V"],
+      "cells": [
+        ["enjoy, finish, mind, avoid", "want, need, hope, plan"],
+        ["keep, practise, suggest, miss", "decide, agree, promise, refuse"],
+        ["can't stand, give up, look forward to", "learn, would like, afford, manage"]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "V-ing làm chủ ngữ.", "example": { "en": "Swimming is good for your health.", "vi": "Bơi lội tốt cho sức khoẻ." } },
+        { "textVi": "Sau giới từ (in, at, of, about, for, without...) dùng V-ing.", "example": { "en": "She is good at drawing.", "vi": "Cô ấy vẽ giỏi." } },
+        { "textVi": "to V chỉ mục đích (để làm gì).", "example": { "en": "I went to the shop to buy milk.", "vi": "Tôi ra cửa hàng để mua sữa." } },
+        { "textVi": "like / love / hate / start / begin: dùng được cả hai, nghĩa gần như không đổi.", "example": { "en": "I like reading. = I like to read.", "vi": "Tôi thích đọc sách." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I enjoy to cook.", "right": "I enjoy cooking.", "noteVi": "enjoy + V-ing." },
+        { "wrong": "She wants going home.", "right": "She wants to go home.", "noteVi": "want + to V." },
+        { "wrong": "I'm interested in learn English.", "right": "I'm interested in learning English.", "noteVi": "Sau giới từ dùng V-ing." },
+        { "wrong": "I look forward to see you.", "right": "I look forward to seeing you.", "noteVi": "to trong look forward to là giới từ → V-ing." }
+      ]
+    },
+    { "type": "tip", "textVi": "stop / remember / forget / try dùng được cả hai nhưng nghĩa khác nhau: 'I stopped smoking' = tôi đã bỏ thuốc; 'I stopped to smoke' = tôi dừng lại để hút thuốc. 'Remember to lock the door' = nhớ khoá cửa (việc phải làm); 'I remember locking the door' = tôi nhớ là đã khoá cửa rồi." }
+  ],
+  "exercises": [
+    { "id": "gi-01", "type": "mcq", "prompt": "I enjoy ___ to music.", "options": ["listen", "to listen", "listening"], "answer": "listening", "explanationVi": "enjoy + V-ing." },
+    { "id": "gi-02", "type": "mcq", "prompt": "We decided ___ a taxi.", "options": ["taking", "to take", "take"], "answer": "to take", "explanationVi": "decide + to V." },
+    { "id": "gi-03", "type": "mcq", "prompt": "She is good at ___ problems.", "options": ["solve", "to solve", "solving"], "answer": "solving", "explanationVi": "Sau giới từ at dùng V-ing." },
+    { "id": "gi-04", "type": "mcq", "prompt": "Would you mind ___ the door?", "options": ["closing", "to close", "close"], "answer": "closing", "explanationVi": "mind + V-ing." },
+    { "id": "gi-05", "type": "mcq", "prompt": "I'm saving money ___ a new phone.", "options": ["to buy", "buying", "for buy"], "answer": "to buy", "explanationVi": "to V chỉ mục đích." },
+    { "id": "gi-06", "type": "mcq", "prompt": "I'm looking forward to ___ you soon.", "options": ["see", "seeing", "saw"], "answer": "seeing", "explanationVi": "look forward to + V-ing (to là giới từ)." },
+    { "id": "gi-07", "type": "fill", "prompt": "He finally gave up ___ (smoke).", "answers": ["smoking"], "explanationVi": "give up + V-ing." },
+    { "id": "gi-08", "type": "fill", "prompt": "They hope ___ (visit) Vietnam next year.", "answers": ["to visit"], "explanationVi": "hope + to V." },
+    { "id": "gi-09", "type": "fill", "prompt": "___ (eat) too much sugar is bad for you.", "answers": ["Eating"], "explanationVi": "V-ing làm chủ ngữ." },
+    { "id": "gi-10", "type": "order", "promptVi": "Tôi muốn học lái xe.", "answer": "I want to learn to drive.", "distractors": ["drove"], "explanationVi": "want + to V; learn + to V." },
+    { "id": "gi-11", "type": "order", "promptVi": "Cô ấy đã dọn phòng xong.", "answer": "She has finished cleaning her room.", "distractors": ["to"], "explanationVi": "finish + V-ing." },
+    { "id": "gi-12", "type": "error", "sentence": "My brother avoids [eat] fast food.", "correction": "eating", "explanationVi": "avoid + V-ing." },
+    { "id": "gi-13", "type": "error", "sentence": "I'm thinking about [move] to a new city.", "correction": "moving", "explanationVi": "Sau giới từ about dùng V-ing." },
+    { "id": "gi-14", "type": "error", "sentence": "She promised [calling] me tonight.", "correction": "to call", "explanationVi": "promise + to V." }
+  ]
+}

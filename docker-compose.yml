@@ -18,7 +18,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: deploy/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       # Use host-gateway so API can reach Postgres via published host port
@@ -28,6 +28,12 @@ services:
       Jwt__Issuer: 4UME
       Jwt__Audience: 4UME
       Vocabulary__Path: /app/data/vocabulary.json
+      Grammar__Path: /app/data/grammar
+      # Comma-separated emails granted the admin role at startup (accounts must already exist).
+      Admin__Emails: lamvo1978@gmail.com
+      Media__Path: /app/media
+    volumes:
+      - fourume_media:/app/media
     ports:
       - "5088:5088"
     extra_hosts:
@@ -38,3 +44,4 @@ services:
 
 volumes:
   fourume_pg:
+  fourume_media:

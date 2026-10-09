@@ -1,0 +1,65 @@
+{
+  "slug": "present-continuous",
+  "version": 3,
+  "titleVi": "Thì hiện tại tiếp diễn",
+  "titleEn": "Present continuous",
+  "level": "A1",
+  "order": 12,
+  "summaryVi": "am / is / are + V-ing: việc đang diễn ra ngay lúc nói, việc tạm thời, hoặc kế hoạch đã sắp xếp trong tương lai gần.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Việc đang xảy ra ngay lúc nói.", "example": { "en": "She is cooking now.", "vi": "Cô ấy đang nấu ăn." } },
+        { "textVi": "Việc tạm thời trong khoảng thời gian này.", "example": { "en": "I'm staying with my aunt this month.", "vi": "Tháng này tôi ở nhờ nhà dì." } },
+        { "textVi": "Kế hoạch đã sắp xếp cho tương lai gần.", "example": { "en": "We are meeting Tom tomorrow.", "vi": "Ngày mai chúng tôi gặp Tom." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + am / is / are + V-ing", "example": { "en": "They are playing football.", "vi": "Họ đang chơi bóng đá." } },
+        { "kind": "negative", "pattern": "S + am not / isn't / aren't + V-ing", "example": { "en": "He isn't working today.", "vi": "Hôm nay anh ấy không làm việc." } },
+        { "kind": "question", "pattern": "Am / Is / Are + S + V-ing?", "example": { "en": "Are you listening?", "vi": "Bạn có đang nghe không?" } },
+        { "kind": "note", "pattern": "Động từ trạng thái (know, like, want, need, believe, understand) thường không dùng V-ing.", "example": { "en": "I know him. (không phải: I'm knowing him)", "vi": "Tôi biết anh ấy." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Cách thêm -ing",
+      "headers": ["Quy tắc", "Ví dụ"],
+      "cells": [
+        ["Thông thường: + ing", "read → reading, play → playing"],
+        ["Tận cùng e câm: bỏ e + ing", "write → writing, make → making"],
+        ["1 nguyên âm + 1 phụ âm (âm tiết nhấn): gấp đôi phụ âm (trừ w, x, y)", "run → running, swim → swimming, sit → sitting; nhưng snow → snowing, fix → fixing"],
+        ["Tận cùng ie: ie → ying", "lie → lying, die → dying"]
+      ]
+    },
+    { "type": "signals", "words": ["now", "right now", "at the moment", "Look!", "Listen!", "today", "this week", "these days"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She cooking now.", "right": "She is cooking now.", "noteVi": "Không được bỏ am / is / are." },
+        { "wrong": "I am wanting a drink.", "right": "I want a drink.", "noteVi": "want là động từ trạng thái." },
+        { "wrong": "He is swiming.", "right": "He is swimming.", "noteVi": "swim → gấp đôi m." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pc-01", "type": "mcq", "prompt": "Look! The baby ___.", "options": ["sleeps", "is sleeping", "sleep"], "answer": "is sleeping", "explanationVi": "Look! → việc đang diễn ra → is sleeping." },
+    { "id": "pc-02", "type": "mcq", "prompt": "Be quiet! I ___ to the radio.", "options": ["listen", "am listening", "listening"], "answer": "am listening", "explanationVi": "Đang nghe ngay lúc nói." },
+    { "id": "pc-03", "type": "mcq", "prompt": "I ___ the answer now.", "options": ["know", "am knowing", "knowing"], "answer": "know", "explanationVi": "know là động từ trạng thái, không dùng V-ing." },
+    { "id": "pc-04", "type": "mcq", "prompt": "She usually walks, but today she ___ the bus.", "options": ["takes", "is taking", "take"], "answer": "is taking", "explanationVi": "usually → thói quen; today → tạm thời → is taking." },
+    { "id": "pc-05", "type": "mcq", "prompt": "Chọn dạng V-ing đúng của 'run':", "options": ["runing", "running", "runeing"], "answer": "running", "explanationVi": "1 nguyên âm + 1 phụ âm → gấp đôi n." },
+    { "id": "pc-06", "type": "fill", "prompt": "They ___ (play) tennis at the moment.", "answers": ["are playing", "'re playing"], "explanationVi": "They + are + V-ing." },
+    { "id": "pc-07", "type": "fill", "prompt": "He ___ (write) an email right now.", "answers": ["is writing", "'s writing"], "explanationVi": "write → bỏ e → writing." },
+    { "id": "pc-08", "type": "fill", "prompt": "I ___ (not / work) this week. I'm on holiday.", "answers": ["am not working", "'m not working"], "explanationVi": "Phủ định: am not + V-ing." },
+    { "id": "pc-09", "type": "order", "promptVi": "Chúng tôi đang học tiếng Anh.", "answer": "We are learning English.", "distractors": ["learn"], "explanationVi": "We + are + V-ing." },
+    { "id": "pc-10", "type": "order", "promptVi": "Bạn đang làm gì vậy?", "answer": "What are you doing?", "distractors": ["do"], "explanationVi": "Từ để hỏi + are + S + V-ing?" },
+    { "id": "pc-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "She is reading a book.", "answer": "Is she reading a book?", "distractors": ["Does"], "explanationVi": "Đảo is lên trước chủ ngữ." },
+    { "id": "pc-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "They are watching TV.", "answer": "They aren't watching TV.", "distractors": ["don't"], "explanationVi": "aren't + V-ing." },
+    { "id": "pc-13", "type": "error", "sentence": "Listen! Someone [sings] in the next room.", "correction": "is singing", "explanationVi": "Listen! → đang diễn ra → is singing." },
+    { "id": "pc-14", "type": "error", "sentence": "I [am needing] some help.", "correction": "need", "explanationVi": "need là động từ trạng thái → I need some help." }
+  ]
+}

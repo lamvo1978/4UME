@@ -1,0 +1,76 @@
+{
+  "slug": "might-may",
+  "version": 1,
+  "titleVi": "might và may",
+  "titleEn": "might and may",
+  "level": "A2",
+  "order": 24,
+  "summaryVi": "might / may + V nguyên mẫu = có thể (không chắc chắn), dùng cho hiện tại và tương lai. May I...? là cách xin phép lịch sự.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Cách dùng",
+      "items": [
+        { "textVi": "might / may: có thể xảy ra, nhưng người nói không chắc. Nghĩa gần như nhau.", "example": { "en": "Take a jacket. It might be cold this evening.", "vi": "Mang áo khoác đi. Tối nay có thể trời lạnh đấy." } },
+        { "textVi": "might not / may not: có thể không.", "example": { "en": "I may not have time to call you today.", "vi": "Hôm nay có thể tôi không có thời gian gọi cho bạn." } },
+        { "textVi": "May I...?: xin phép một cách lịch sự (lịch sự hơn Can I...?).", "example": { "en": "May I sit here?", "vi": "Tôi ngồi đây được không ạ?" } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + might / may + V nguyên mẫu", "example": { "en": "She might come later.", "vi": "Lát nữa có thể cô ấy sẽ đến." } },
+        { "kind": "negative", "pattern": "S + might not / may not + V", "example": { "en": "He might not like spicy food.", "vi": "Có thể anh ấy không thích đồ cay." } },
+        { "kind": "question", "pattern": "May I / we + V? (xin phép)", "example": { "en": "May I ask you a question?", "vi": "Cho phép tôi hỏi một câu được không?" } },
+        { "kind": "note", "pattern": "Hỏi về khả năng xảy ra: dùng Will...? / Do you think...?, không dùng Might...?", "example": { "en": "Do you think it will rain?", "vi": "Bạn nghĩ trời có mưa không?" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Mức độ chắc chắn",
+      "headers": ["Cách nói", "Mức độ", "Ví dụ"],
+      "cells": [
+        ["will", "Chắc chắn", "I'll be at home tonight."],
+        ["might / may", "Có thể (khoảng 50%)", "I might be at home tonight."],
+        ["might not / may not", "Có thể không", "I might not be at home tonight."],
+        ["won't", "Chắc chắn không", "I won't be at home tonight."]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "maybe hay may be?",
+      "headers": ["", "Loại từ", "Ví dụ"],
+      "cells": [
+        ["maybe (viết liền)", "Trạng từ = có lẽ, thường đứng đầu câu", "Maybe she is busy."],
+        ["may be (viết rời)", "Động từ = có thể là", "She may be busy."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "It might rains tomorrow.", "right": "It might rain tomorrow.", "noteVi": "Sau might / may dùng V nguyên mẫu, không thêm s." },
+        { "wrong": "I might to go out tonight.", "right": "I might go out tonight.", "noteVi": "Sau might không có to." },
+        { "wrong": "He doesn't might come.", "right": "He might not come.", "noteVi": "Phủ định: might not, không dùng doesn't." },
+        { "wrong": "May be the shop is closed.", "right": "Maybe the shop is closed.", "noteVi": "Đứng đầu câu với nghĩa \"có lẽ\" → maybe viết liền." }
+      ]
+    },
+    { "type": "tip", "textVi": "Muốn nói \"có lẽ\" thì có hai cách: Maybe + câu bình thường (Maybe he is right), hoặc S + might / may + V (He might be right)." }
+  ],
+  "exercises": [
+    { "id": "mm-01", "type": "mcq", "prompt": "Take an umbrella. It ___ rain this afternoon.", "options": ["might", "mights", "might to"], "answer": "might", "explanationVi": "might + V nguyên mẫu, không thêm s, không có to." },
+    { "id": "mm-02", "type": "mcq", "prompt": "I'm not sure yet, but I ___ go to the gym after work.", "options": ["may", "will definitely", "may to"], "answer": "may", "explanationVi": "Không chắc (not sure) → may. will definitely là chắc chắn, mâu thuẫn với not sure." },
+    { "id": "mm-03", "type": "mcq", "prompt": "___ I use your phone, please?", "options": ["May", "Must", "Maybe"], "answer": "May", "explanationVi": "Xin phép lịch sự → May I...?" },
+    { "id": "mm-04", "type": "mcq", "prompt": "___ we can meet next week. I'll check my calendar.", "options": ["Maybe", "May be", "Might"], "answer": "Maybe", "explanationVi": "Đứng đầu câu, nghĩa \"có lẽ\", phía sau là câu đầy đủ → Maybe (viết liền)." },
+    { "id": "mm-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["He might not come to the party.", "He might not comes to the party.", "He doesn't might come to the party."], "answer": "He might not come to the party.", "explanationVi": "Phủ định: might not + V nguyên mẫu." },
+    { "id": "mm-06", "type": "fill", "prompt": "I'm very busy, so I ___ (not / have) time to call you tonight. (dùng might)", "answers": ["might not have", "mightn't have"], "explanationVi": "might not + V nguyên mẫu: might not have." },
+    { "id": "mm-07", "type": "fill", "prompt": "Don't eat that fish. It ___ (be) bad. (dùng may)", "answers": ["may be"], "explanationVi": "may + be viết rời = có thể là." },
+    { "id": "mm-08", "type": "fill", "prompt": "Excuse me, ___ I come in? (xin phép lịch sự)", "answers": ["May", "Can", "Could"], "explanationVi": "Xin phép: May I...? là lịch sự nhất; Can / Could I...? cũng đúng." },
+    { "id": "mm-09", "type": "order", "promptVi": "Có thể cô ấy sẽ không thích món quà này.", "answer": "She might not like this present.", "distractors": ["likes"], "explanationVi": "might not + V nguyên mẫu." },
+    { "id": "mm-10", "type": "order", "promptVi": "Tôi mượn bút của bạn được không?", "answer": "May I borrow your pen?", "distractors": ["Maybe"], "explanationVi": "Xin phép lịch sự: May I + V?" },
+    { "id": "mm-11", "type": "transform", "instructionVi": "Viết lại câu dùng 'might', giữ nguyên nghĩa", "source": "Maybe Tom knows the answer.", "answer": "Tom might know the answer.", "distractors": ["knows", "to"], "explanationVi": "Maybe + câu = S + might + V nguyên mẫu (knows → know)." },
+    { "id": "mm-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "The answer may be correct.", "answer": "The answer may not be correct.", "distractors": ["doesn't"], "explanationVi": "Thêm not sau may: may not be." },
+    { "id": "mm-13", "type": "error", "sentence": "It's very cloudy. It might [rains] later.", "correction": "rain", "explanationVi": "Sau might dùng V nguyên mẫu: might rain." },
+    { "id": "mm-14", "type": "error", "sentence": "[May be] the bus is late because of the traffic.", "correction": "Maybe", "explanationVi": "Đầu câu, nghĩa \"có lẽ\", sau là câu đầy đủ → Maybe viết liền." }
+  ]
+}

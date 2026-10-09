@@ -1,0 +1,78 @@
+{
+  "slug": "past-perfect",
+  "version": 1,
+  "titleVi": "Thì quá khứ hoàn thành",
+  "titleEn": "Past perfect",
+  "level": "B1",
+  "order": 35,
+  "summaryVi": "had + V3: việc đã xảy ra TRƯỚC một việc khác trong quá khứ. Việc xảy ra sau dùng quá khứ đơn.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + had + V3", "example": { "en": "When we arrived, the film had already started.", "vi": "Khi chúng tôi đến thì phim đã bắt đầu rồi." } },
+        { "kind": "negative", "pattern": "S + hadn't + V3", "example": { "en": "I hadn't eaten all day, so I was starving.", "vi": "Cả ngày tôi chưa ăn gì nên đói lả." } },
+        { "kind": "question", "pattern": "Had + S + V3?", "example": { "en": "Had you met him before the party?", "vi": "Trước bữa tiệc bạn đã gặp anh ấy chưa?" } },
+        { "kind": "note", "pattern": "had dùng cho mọi chủ ngữ; viết tắt: I'd, she'd, they'd...", "example": { "en": "She'd left before I called.", "vi": "Cô ấy đã đi trước khi tôi gọi." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Việc xảy ra trước một mốc hoặc một việc khác trong quá khứ.", "example": { "en": "By the time the police arrived, the thief had escaped.", "vi": "Khi cảnh sát đến nơi thì tên trộm đã trốn mất." } },
+        { "textVi": "Giải thích nguyên nhân của một tình huống trong quá khứ.", "example": { "en": "She was upset because she had lost her phone.", "vi": "Cô ấy buồn vì đã làm mất điện thoại." } },
+        { "textVi": "Trải nghiệm chưa từng có cho đến một thời điểm trong quá khứ.", "example": { "en": "I had never seen snow before I went to Japan.", "vi": "Trước khi sang Nhật, tôi chưa từng thấy tuyết." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Quá khứ đơn hay quá khứ hoàn thành?",
+      "headers": ["Câu", "Nghĩa"],
+      "cells": [
+        ["When she came home, we had dinner.", "Cô ấy về rồi cả nhà mới ăn tối."],
+        ["When she came home, we had had dinner.", "Cả nhà ăn xong trước khi cô ấy về."]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Động từ bất quy tắc hay gặp",
+      "headers": ["V", "V2", "V3"],
+      "cells": [
+        ["go", "went", "gone"],
+        ["see", "saw", "seen"],
+        ["eat", "ate", "eaten"],
+        ["leave", "left", "left"],
+        ["forget", "forgot", "forgotten"],
+        ["break", "broke", "broken"],
+        ["fly", "flew", "flown"],
+        ["begin", "began", "begun"]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "When I arrived, the meeting has already started.", "right": "When I arrived, the meeting had already started.", "noteVi": "Mốc là quá khứ (arrived) → had + V3, không dùng has." },
+        { "wrong": "I had went there before.", "right": "I had gone there before.", "noteVi": "Sau had dùng V3 (gone), không dùng V2." },
+        { "wrong": "After she had finish work, she went home.", "right": "After she had finished work, she went home.", "noteVi": "had + V3 (finished)." }
+      ]
+    },
+    { "type": "tip", "textVi": "Với before / after, thứ tự đã rõ nên người bản xứ hay dùng quá khứ đơn cho cả hai việc. Quá khứ hoàn thành quan trọng nhất sau when và by the time." }
+  ],
+  "exercises": [
+    { "id": "pp-01", "type": "mcq", "prompt": "When we got to the cinema, the film ___ already started.", "options": ["has", "had", "have"], "answer": "had", "explanationVi": "Phim bắt đầu trước khi chúng tôi đến (quá khứ) → had + V3." },
+    { "id": "pp-02", "type": "mcq", "prompt": "By the time the police arrived, the thief ___.", "options": ["escaped", "had escaped", "has escaped"], "answer": "had escaped", "explanationVi": "By the time + quá khứ đơn → mệnh đề kia dùng quá khứ hoàn thành." },
+    { "id": "pp-03", "type": "mcq", "prompt": "I didn't recognise him because I ___ him before.", "options": ["had never seen", "had never saw", "have never seen"], "answer": "had never seen", "explanationVi": "had + V3 (seen); câu ở quá khứ nên không dùng have." },
+    { "id": "pp-04", "type": "mcq", "prompt": "She was hungry because she ___ breakfast.", "options": ["hadn't eaten", "hasn't eaten", "doesn't eat"], "answer": "hadn't eaten", "explanationVi": "Không ăn sáng xảy ra trước lúc đói (quá khứ) → hadn't + V3." },
+    { "id": "pp-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["After he had finished his homework, he went to bed.", "After he had finish his homework, he went to bed.", "After he has finished his homework, he went to bed."], "answer": "After he had finished his homework, he went to bed.", "explanationVi": "had + V3 (finished) cho việc xảy ra trước." },
+    { "id": "pp-06", "type": "fill", "prompt": "When I arrived at the party, Tom ___ (leave), so I didn't see him.", "answers": ["had left", "'d left"], "explanationVi": "Tom đi trước khi tôi đến → had + V3 (left)." },
+    { "id": "pp-07", "type": "fill", "prompt": "I ___ (not / finish) my report when my boss asked for it.", "answers": ["hadn't finished", "had not finished"], "explanationVi": "Trước lúc sếp hỏi, báo cáo chưa xong → hadn't + V3." },
+    { "id": "pp-08", "type": "fill", "prompt": "They ___ (never / fly) before their trip to Bangkok last year.", "answers": ["had never flown", "'d never flown"], "explanationVi": "Trải nghiệm chưa từng có trước một mốc quá khứ → had never + V3; fly → flew → flown." },
+    { "id": "pp-09", "type": "order", "promptVi": "Khi chúng tôi đến rạp thì phim đã bắt đầu.", "answer": "When we got to the cinema, the film had started.", "distractors": ["has", "get"], "explanationVi": "Việc xảy ra trước (phim bắt đầu) → had + V3; việc sau → quá khứ đơn (got)." },
+    { "id": "pp-10", "type": "order", "promptVi": "Tôi chưa từng ăn phở trước khi đến Hà Nội.", "answer": "I had never eaten pho before I came to Hanoi.", "distractors": ["ate", "have"], "explanationVi": "had never + V3 (eaten) cho trải nghiệm trước một mốc quá khứ." },
+    { "id": "pp-11", "type": "transform", "instructionVi": "Nối hai câu, bắt đầu bằng After và dùng quá khứ hoàn thành cho việc xảy ra trước", "source": "She finished work. Then she went to the gym.", "answer": "After she had finished work, she went to the gym.", "distractors": ["has", "finish"], "explanationVi": "Việc trước: had finished; việc sau: went." },
+    { "id": "pp-12", "type": "transform", "instructionVi": "Nối hai câu, bắt đầu bằng By the time", "source": "My plane left at 9:45. I got to the airport at 10:00.", "answer": "By the time I got to the airport, my plane had left.", "distractors": ["leave", "has"], "explanationVi": "Máy bay cất cánh trước → had left; By the time + quá khứ đơn (got)." },
+    { "id": "pp-13", "type": "error", "sentence": "When I got home, I saw that someone [has broken] the window.", "correction": "had broken", "explanationVi": "Cửa sổ bị vỡ trước lúc tôi về (quá khứ) → had broken." },
+    { "id": "pp-14", "type": "error", "sentence": "I had already [ate] lunch when she called.", "correction": "eaten", "explanationVi": "Sau had dùng V3: eat → ate → eaten." }
+  ]
+}

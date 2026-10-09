@@ -1,0 +1,71 @@
+{
+  "slug": "quantifiers",
+  "version": 1,
+  "titleVi": "Lượng từ: much, many, a lot of, a few, a little",
+  "titleEn": "Quantifiers: much, many, a lot of, a few, a little",
+  "level": "A2",
+  "order": 25,
+  "summaryVi": "a lot of / lots of dùng tự nhiên trong câu khẳng định; much / many hay dùng trong câu phủ định và câu hỏi. a few / a little = một vài (đủ dùng), few / little = rất ít (không đủ).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Chọn lượng từ theo danh từ",
+      "headers": ["Nghĩa", "Danh từ đếm được số nhiều", "Danh từ không đếm được"],
+      "cells": [
+        ["nhiều (câu khẳng định)", "a lot of / lots of friends", "a lot of / lots of money"],
+        ["nhiều (phủ định, câu hỏi)", "not many / many ...?", "not much / much ...?"],
+        ["một vài, một ít (đủ, tích cực)", "a few eggs", "a little milk"],
+        ["rất ít (không đủ, tiêu cực)", "few people", "little time"],
+        ["hỏi số lượng", "How many apples ...?", "How much water ...?"]
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Cách dùng",
+      "items": [
+        { "textVi": "Câu khẳng định thường dùng a lot of / lots of. Dùng much trong câu khẳng định nghe rất trang trọng, không tự nhiên.", "example": { "en": "She drinks a lot of coffee.", "vi": "Cô ấy uống rất nhiều cà phê." } },
+        { "textVi": "Câu phủ định và câu hỏi thường dùng much / many.", "example": { "en": "We don't have much time. Are there many people outside?", "vi": "Chúng ta không có nhiều thời gian. Bên ngoài có đông người không?" } },
+        { "textVi": "a lot (không có of) đứng cuối câu, sau động từ, khi không có danh từ theo sau.", "example": { "en": "I like this song a lot.", "vi": "Tôi rất thích bài hát này." } },
+        { "textVi": "few / little (không có a) mang ý tiêu cực: ít đến mức không đủ. Hay đi với very.", "example": { "en": "Very few students came to class today.", "vi": "Hôm nay rất ít sinh viên đến lớp." } },
+        { "textVi": "How much dùng để hỏi giá tiền.", "example": { "en": "How much are these shoes?", "vi": "Đôi giày này bao nhiêu tiền?" } }
+      ]
+    },
+    {
+      "type": "examples",
+      "title": "a few hay few?",
+      "items": [
+        { "en": "I have a few friends here, so I'm not lonely.", "vi": "Tôi có vài người bạn ở đây nên không thấy cô đơn." },
+        { "en": "I have few friends here, so I often feel lonely.", "vi": "Tôi có rất ít bạn ở đây nên hay thấy cô đơn." },
+        { "en": "There's a little rice left. Do you want some?", "vi": "Còn một ít cơm. Bạn ăn không?" },
+        { "en": "There's very little rice left. We need to buy more.", "vi": "Gần hết gạo rồi. Phải mua thêm thôi." }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "There were much people at the concert.", "right": "There were a lot of people at the concert.", "noteVi": "people đếm được; câu khẳng định dùng a lot of." },
+        { "wrong": "I like it a lot of.", "right": "I like it a lot.", "noteVi": "Không có danh từ phía sau → a lot, bỏ of." },
+        { "wrong": "Can I have a few water?", "right": "Can I have a little water?", "noteVi": "water không đếm được → a little." },
+        { "wrong": "How many money do you need?", "right": "How much money do you need?", "noteVi": "money không đếm được → How much." }
+      ]
+    },
+    { "type": "tip", "textVi": "Không chắc dùng much hay many trong câu khẳng định? Dùng a lot of: đúng với cả hai loại danh từ. Còn \"quá nhiều\" (too much / too many) sẽ học ở bài sau." }
+  ],
+  "exercises": [
+    { "id": "qu-01", "type": "mcq", "prompt": "There aren't ___ eggs in the fridge. Let's buy some.", "options": ["many", "much", "a little"], "answer": "many", "explanationVi": "eggs đếm được, câu phủ định → many." },
+    { "id": "qu-02", "type": "mcq", "prompt": "We have ___ time before the train leaves, so let's have a coffee.", "options": ["a little", "a few", "few"], "answer": "a little", "explanationVi": "time không đếm được, còn đủ để uống cà phê (tích cực) → a little." },
+    { "id": "qu-03", "type": "mcq", "prompt": "The test was very hard. Very ___ students passed it.", "options": ["few", "a few", "much"], "answer": "few", "explanationVi": "Rất ít, ý tiêu cực, đi với danh từ đếm được → very few." },
+    { "id": "qu-04", "type": "mcq", "prompt": "How ___ is this T-shirt? – It's 150,000 dong.", "options": ["much", "many", "a lot"], "answer": "much", "explanationVi": "Hỏi giá tiền → How much." },
+    { "id": "qu-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I like this song a lot.", "I like this song a lot of.", "I like this song lots of."], "answer": "I like this song a lot.", "explanationVi": "Cuối câu, không có danh từ theo sau → a lot." },
+    { "id": "qu-06", "type": "fill", "prompt": "She has ___ friends in Hanoi, so she never feels lonely. (a few / a little)", "answers": ["a few"], "explanationVi": "friends đếm được, ý tích cực → a few." },
+    { "id": "qu-07", "type": "fill", "prompt": "How ___ people are coming to your party? (much / many)", "answers": ["many"], "explanationVi": "people đếm được → How many." },
+    { "id": "qu-08", "type": "fill", "prompt": "Could I have ___ milk in my coffee, please? (a few / a little)", "answers": ["a little"], "explanationVi": "milk không đếm được → a little." },
+    { "id": "qu-09", "type": "order", "promptVi": "Bạn có nhiều bạn bè không?", "answer": "Do you have many friends?", "distractors": ["much"], "explanationVi": "Câu hỏi, friends đếm được → many." },
+    { "id": "qu-10", "type": "order", "promptVi": "Tôi biết một vài từ tiếng Nhật.", "answer": "I know a few Japanese words.", "distractors": ["little"], "explanationVi": "words đếm được → a few." },
+    { "id": "qu-11", "type": "transform", "instructionVi": "Chuyển sang câu phủ định, dùng 'much'", "source": "He drinks a lot of coffee.", "answer": "He doesn't drink much coffee.", "distractors": ["many", "drinks"], "explanationVi": "Phủ định: doesn't + V; coffee không đếm được → much." },
+    { "id": "qu-12", "type": "transform", "instructionVi": "Đặt câu hỏi với 'How many'", "source": "She has three children.", "answer": "How many children does she have?", "distractors": ["much", "has"], "explanationVi": "children đếm được → How many + N + does she have?" },
+    { "id": "qu-13", "type": "error", "sentence": "[How many] sugar do you want in your tea?", "correction": "How much", "explanationVi": "sugar không đếm được → How much." },
+    { "id": "qu-14", "type": "error", "sentence": "There are a [little] apples in the basket.", "correction": "few", "explanationVi": "apples đếm được → a few." }
+  ]
+}

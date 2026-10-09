@@ -1,0 +1,68 @@
+{
+  "slug": "present-simple",
+  "version": 3,
+  "titleVi": "Thì hiện tại đơn",
+  "titleEn": "Present simple",
+  "level": "A1",
+  "order": 6,
+  "summaryVi": "Dùng cho thói quen, việc lặp lại và sự thật hiển nhiên. Chủ ngữ he / she / it thì động từ thêm -s / -es.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Thói quen, hành động lặp lại.", "example": { "en": "I get up at six every day.", "vi": "Tôi dậy lúc 6 giờ mỗi ngày." } },
+        { "textVi": "Sự thật, chân lý.", "example": { "en": "Water boils at 100 degrees.", "vi": "Nước sôi ở 100 độ." } },
+        { "textVi": "Lịch trình, thời gian biểu cố định.", "example": { "en": "The train leaves at 8 a.m.", "vi": "Tàu khởi hành lúc 8 giờ sáng." } },
+        { "textVi": "Sở thích, trạng thái (like, love, know, want...).", "example": { "en": "She likes coffee.", "vi": "Cô ấy thích cà phê." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "I / You / We / They + V  ·  He / She / It + V-s/es", "example": { "en": "He works in a bank.", "vi": "Anh ấy làm ở ngân hàng." } },
+        { "kind": "negative", "pattern": "S + do not (don't) / does not (doesn't) + V", "example": { "en": "She doesn't eat meat.", "vi": "Cô ấy không ăn thịt." } },
+        { "kind": "question", "pattern": "Do / Does + S + V?", "example": { "en": "Do you speak English?", "vi": "Bạn có nói tiếng Anh không?" } },
+        { "kind": "short-answer", "pattern": "Yes, S + do/does. / No, S + don't/doesn't.", "example": { "en": "Yes, I do. / No, she doesn't.", "vi": "Có. / Không." } },
+        { "kind": "note", "pattern": "Sau does / doesn't, động từ trở về nguyên mẫu (không thêm s).", "example": { "en": "Does he play? (không phải: Does he plays?)", "vi": "Anh ấy có chơi không?" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Thêm -s / -es với he / she / it",
+      "headers": ["Quy tắc", "Ví dụ"],
+      "cells": [
+        ["Thông thường: + s", "work → works, play → plays"],
+        ["Tận cùng o, s, x, ch, sh: + es", "go → goes, watch → watches, wash → washes"],
+        ["Phụ âm + y: y → ies", "study → studies, fly → flies"],
+        ["Bất quy tắc", "have → has, be → is"]
+      ]
+    },
+    { "type": "signals", "words": ["always", "usually", "often", "sometimes", "never", "every day", "every week", "on Mondays", "once a week"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She go to school by bus.", "right": "She goes to school by bus.", "noteVi": "He / She / It: động từ thêm s / es." },
+        { "wrong": "He don't like tea.", "right": "He doesn't like tea.", "noteVi": "He / She / It dùng doesn't." },
+        { "wrong": "Does she works here?", "right": "Does she work here?", "noteVi": "Sau does dùng động từ nguyên mẫu." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "ps-01", "type": "mcq", "prompt": "My brother ___ in a hospital.", "options": ["work", "works", "working"], "answer": "works", "explanationVi": "My brother = he → works." },
+    { "id": "ps-02", "type": "mcq", "prompt": "They ___ coffee in the morning.", "options": ["drinks", "drink", "drinking"], "answer": "drink", "explanationVi": "They → động từ nguyên mẫu." },
+    { "id": "ps-03", "type": "mcq", "prompt": "___ your sister live in Hanoi?", "options": ["Do", "Does", "Is"], "answer": "Does", "explanationVi": "Your sister = she → Does." },
+    { "id": "ps-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["He doesn't likes fish.", "He don't like fish.", "He doesn't like fish."], "answer": "He doesn't like fish.", "explanationVi": "He + doesn't + động từ nguyên mẫu." },
+    { "id": "ps-05", "type": "mcq", "prompt": "Water ___ at 100°C.", "options": ["boil", "boils", "is boil"], "answer": "boils", "explanationVi": "Sự thật hiển nhiên; water = it → boils." },
+    { "id": "ps-06", "type": "fill", "prompt": "She ___ (watch) TV every evening.", "answers": ["watches"], "explanationVi": "watch tận cùng ch → watches." },
+    { "id": "ps-07", "type": "fill", "prompt": "Minh ___ (study) English on Mondays.", "answers": ["studies"], "explanationVi": "Phụ âm + y → ies: studies." },
+    { "id": "ps-08", "type": "fill", "prompt": "We ___ (not / like) horror films.", "answers": ["don't like", "do not like"], "explanationVi": "We + don't + V." },
+    { "id": "ps-09", "type": "fill", "prompt": "My father ___ (have) a red car.", "answers": ["has"], "explanationVi": "have → has với he / she / it." },
+    { "id": "ps-10", "type": "order", "promptVi": "Cô ấy sống với bố mẹ.", "answer": "She lives with her parents.", "distractors": ["live"], "explanationVi": "She → lives." },
+    { "id": "ps-11", "type": "order", "promptVi": "Bạn có nói tiếng Pháp không?", "answer": "Do you speak French?", "distractors": ["Does"], "explanationVi": "You → Do + S + V?" },
+    { "id": "ps-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "He plays the guitar.", "answer": "He doesn't play the guitar.", "distractors": ["plays", "don't"], "explanationVi": "doesn't + động từ nguyên mẫu (play, không phải plays)." },
+    { "id": "ps-13", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "Lan works in a bank.", "answer": "Does Lan work in a bank?", "distractors": ["works", "Do"], "explanationVi": "Does + S + V nguyên mẫu?" },
+    { "id": "ps-14", "type": "error", "sentence": "My mother [cook] dinner every day.", "correction": "cooks", "explanationVi": "My mother = she → cooks." },
+    { "id": "ps-15", "type": "error", "sentence": "Does he [goes] to the gym?", "correction": "go", "explanationVi": "Sau does dùng động từ nguyên mẫu." }
+  ]
+}

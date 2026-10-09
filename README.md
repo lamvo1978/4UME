@@ -11,7 +11,7 @@ App học tiếng Anh cho người Việt: flashcard (~3.308 từ A1–B2), ng�
 - DB: PostgreSQL 16
 - Docker Compose trên Linux
 
-Chi tiết: [docs/architecture.md](docs/architecture.md) · UI: [docs/ui/DESIGN.md](docs/ui/DESIGN.md)
+Chi tiết: [architecture.md](architecture.md) · UI: [docs/ui/DESIGN.md](docs/ui/DESIGN.md)
 
 ## Chạy bằng Docker
 
@@ -24,6 +24,20 @@ docker compose up -d --build
 - Postgres: `localhost:5432` · db/user/pass `fourume`
 
 Trên một số môi trường agent, bridge Docker bị chặn: `docker-compose.yml` dùng `host.docker.internal` để API nối Postgres qua cổng host. Trên máy Mac/Linux bình thường bạn có thể đổi lại `Host=postgres` nếu muốn.
+
+## Web admin
+
+```bash
+cd admin
+npm install
+npm run dev   # http://localhost:5173 (gọi API :5088 qua proxy)
+```
+
+Chi tiết: [docs/admin-web.md](docs/admin-web.md)
+
+## Triển khai lên VPS
+
+`docker-compose.prod.yml` + Caddy (HTTPS tự động) — hướng dẫn từng bước, sao lưu, cập nhật: [docs/deploy.md](docs/deploy.md)
 
 ## Mobile
 
@@ -39,13 +53,13 @@ npx expo start
 
 ```bash
 # Postgres đang chạy (compose chỉ postgres cũng được)
-dotnet run --project src/FourUme.Api
+dotnet run --project backend/FourUme.Api
 ```
 
 ## Bộ từ vựng
 
-Nguồn: [`data/vocabulary.json`](data/vocabulary.json). Rebuild từ TSV:
+Nguồn: [`backend/data/vocabulary.json`](backend/data/vocabulary.json). Rebuild từ TSV:
 
 ```bash
-python3 scripts/build_vocabulary.py
+python3 backend/scripts/build_vocabulary.py
 ```

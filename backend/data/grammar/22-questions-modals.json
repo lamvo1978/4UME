@@ -1,0 +1,58 @@
+{
+  "slug": "questions-modals",
+  "version": 3,
+  "titleVi": "Động từ khuyết thiếu can, must, should",
+  "titleEn": "Modal verbs: can, must, should",
+  "level": "A2",
+  "order": 22,
+  "summaryVi": "can (có thể), must (phải), should (nên) đứng trước động từ nguyên mẫu, không thêm -s, không dùng do / does trong câu hỏi.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Nghĩa và cách dùng",
+      "headers": ["Động từ", "Nghĩa", "Ví dụ"],
+      "cells": [
+        ["can / can't", "có thể / không thể; xin phép", "I can swim. Can I sit here?"],
+        ["could", "có thể (quá khứ); hỏi lịch sự", "Could you help me?"],
+        ["must / mustn't", "phải (bắt buộc) / cấm", "You must wear a helmet. You mustn't smoke here."],
+        ["have to / don't have to", "phải (do quy định) / không cần", "I have to work on Saturday. You don't have to come."],
+        ["should / shouldn't", "nên / không nên (lời khuyên)", "You should see a doctor."]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + can / must / should + V nguyên mẫu", "example": { "en": "She can speak three languages.", "vi": "Cô ấy nói được ba thứ tiếng." } },
+        { "kind": "negative", "pattern": "S + cannot (can't) / mustn't / shouldn't + V", "example": { "en": "You shouldn't eat so much sugar.", "vi": "Bạn không nên ăn nhiều đường như vậy." } },
+        { "kind": "question", "pattern": "Can / Should + S + V?", "example": { "en": "Should I call him?", "vi": "Tôi có nên gọi anh ấy không?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She cans drive.", "right": "She can drive.", "noteVi": "Động từ khuyết thiếu không thêm s." },
+        { "wrong": "You should to rest.", "right": "You should rest.", "noteVi": "Sau should không có to." },
+        { "wrong": "Do you can swim?", "right": "Can you swim?", "noteVi": "Câu hỏi đảo can lên đầu, không dùng do." },
+        { "wrong": "You mustn't come. (ý: không cần đến)", "right": "You don't have to come.", "noteVi": "mustn't = cấm; don't have to = không cần." }
+      ]
+    },
+    { "type": "tip", "textVi": "Phủ định của can có 2 cách viết: cannot (viết liền) hoặc can't." }
+  ],
+  "exercises": [
+    { "id": "qm-01", "type": "mcq", "prompt": "My grandfather is 80, but he ___ still ride a bike.", "options": ["can", "must", "should"], "answer": "can", "explanationVi": "Khả năng → can." },
+    { "id": "qm-02", "type": "mcq", "prompt": "You look tired. You ___ go to bed early.", "options": ["can", "should", "mustn't"], "answer": "should", "explanationVi": "Lời khuyên → should." },
+    { "id": "qm-03", "type": "mcq", "prompt": "You ___ use your phone during the exam. It's not allowed.", "options": ["mustn't", "don't have to", "should"], "answer": "mustn't", "explanationVi": "Bị cấm → mustn't." },
+    { "id": "qm-04", "type": "mcq", "prompt": "Tomorrow is Sunday, so I ___ get up early.", "options": ["mustn't", "don't have to", "can't"], "answer": "don't have to", "explanationVi": "Không cần thiết → don't have to." },
+    { "id": "qm-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Do you can help me?", "Can you help me?", "Can you to help me?"], "answer": "Can you help me?", "explanationVi": "Đảo can lên đầu + V nguyên mẫu." },
+    { "id": "qm-06", "type": "fill", "prompt": "I'm sorry, I ___ come to your party. I'm busy. (không thể)", "answers": ["can't", "cannot"], "explanationVi": "Không thể → can't / cannot." },
+    { "id": "qm-07", "type": "fill", "prompt": "Drivers ___ stop at a red light. (phải, bắt buộc)", "answers": ["must", "have to"], "explanationVi": "Bắt buộc → must / have to." },
+    { "id": "qm-08", "type": "fill", "prompt": "___ I open the window? It's hot. (xin phép)", "answers": ["Can", "Could", "May", "Shall"], "explanationVi": "Xin phép: Can / Could / May I...? (Shall I...? dùng để đề nghị giúp cũng được.)" },
+    { "id": "qm-09", "type": "order", "promptVi": "Bạn nên uống nhiều nước hơn.", "answer": "You should drink more water.", "distractors": ["to"], "explanationVi": "should + V nguyên mẫu." },
+    { "id": "qm-10", "type": "order", "promptVi": "Cô ấy biết chơi piano.", "answer": "She can play the piano.", "distractors": ["cans"], "explanationVi": "can không thêm s." },
+    { "id": "qm-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "He can speak Japanese.", "answer": "Can he speak Japanese?", "distractors": ["Does"], "explanationVi": "Đảo can lên trước chủ ngữ." },
+    { "id": "qm-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "You should eat fast food.", "answer": "You shouldn't eat fast food.", "distractors": ["don't"], "explanationVi": "should not = shouldn't." },
+    { "id": "qm-13", "type": "error", "sentence": "She [cans] cook very well.", "correction": "can", "explanationVi": "Động từ khuyết thiếu không thêm s." },
+    { "id": "qm-14", "type": "error", "sentence": "You must [finishing] your homework before dinner.", "correction": "finish", "explanationVi": "Sau must dùng V nguyên mẫu." }
+  ]
+}

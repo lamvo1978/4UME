@@ -1,0 +1,72 @@
+{
+  "slug": "imperatives",
+  "version": 1,
+  "titleVi": "Câu mệnh lệnh",
+  "titleEn": "Imperatives",
+  "level": "A1",
+  "order": 8,
+  "summaryVi": "Mở đầu bằng động từ nguyên mẫu để yêu cầu, hướng dẫn, khuyên (Open the door.). Phủ định dùng Don't + V; rủ cùng làm dùng Let's + V.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Yêu cầu, nhờ ai làm gì.", "example": { "en": "Close the window, please.", "vi": "Bạn đóng cửa sổ giúp mình nhé." } },
+        { "textVi": "Hướng dẫn, chỉ đường.", "example": { "en": "Turn left at the bank.", "vi": "Đến ngân hàng thì rẽ trái." } },
+        { "textVi": "Khuyên, cảnh báo.", "example": { "en": "Don't touch that! It's hot.", "vi": "Đừng chạm vào! Nóng đấy." } },
+        { "textVi": "Mời, chúc.", "example": { "en": "Come in and sit down.", "vi": "Mời vào ngồi." } },
+        { "textVi": "Rủ cùng làm: Let's + V.", "example": { "en": "Let's go to the cinema.", "vi": "Mình đi xem phim đi." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "V (nguyên mẫu) + ...", "example": { "en": "Open your books.", "vi": "Mở sách ra." } },
+        { "kind": "negative", "pattern": "Don't (Do not) + V + ...", "example": { "en": "Don't run in the classroom.", "vi": "Không được chạy trong lớp." } },
+        { "kind": "note", "pattern": "Với tính từ: Be + tính từ  ·  Don't be + tính từ", "example": { "en": "Be quiet! Don't be late.", "vi": "Trật tự nào! Đừng đến muộn nhé." } },
+        { "kind": "note", "pattern": "Let's (= Let us) + V  ·  Let's not + V", "example": { "en": "Let's not take a taxi.", "vi": "Mình đừng đi taxi." } },
+        { "kind": "note", "pattern": "please đặt ở đầu hoặc cuối câu cho lịch sự.", "example": { "en": "Please sit down. / Sit down, please.", "vi": "Mời bạn ngồi." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Câu ngắn hay dùng",
+      "headers": ["Tiếng Anh", "Nghĩa"],
+      "cells": [
+        ["Come here.", "Lại đây."],
+        ["Wait a minute.", "Chờ một chút."],
+        ["Look!", "Nhìn kìa!"],
+        ["Be careful!", "Cẩn thận!"],
+        ["Don't worry.", "Đừng lo."],
+        ["Have a nice day!", "Chúc một ngày vui vẻ!"]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Don't to open the door.", "right": "Don't open the door.", "noteVi": "Sau Don't dùng động từ nguyên mẫu, không có to." },
+        { "wrong": "Not be late!", "right": "Don't be late!", "noteVi": "Phủ định dùng Don't, kể cả với be." },
+        { "wrong": "Don't late!", "right": "Don't be late!", "noteVi": "late là tính từ nên cần be." },
+        { "wrong": "Let's to go home.", "right": "Let's go home.", "noteVi": "Sau Let's dùng động từ nguyên mẫu." },
+        { "wrong": "Let's don't go out.", "right": "Let's not go out.", "noteVi": "Phủ định của Let's là Let's not." }
+      ]
+    },
+    { "type": "tip", "textVi": "Câu mệnh lệnh không cần chủ ngữ you, nhưng nghe khá thẳng. Thêm please và nói nhẹ nhàng để lịch sự hơn, nhất là với người lạ hoặc cấp trên." }
+  ],
+  "exercises": [
+    { "id": "im-01", "type": "mcq", "prompt": "___ the window, please. It's cold.", "options": ["Close", "Closes", "Closing"], "answer": "Close", "explanationVi": "Câu mệnh lệnh bắt đầu bằng động từ nguyên mẫu." },
+    { "id": "im-02", "type": "mcq", "prompt": "___ touch the oven. It's very hot!", "options": ["Don't", "Not", "No"], "answer": "Don't", "explanationVi": "Phủ định: Don't + V." },
+    { "id": "im-03", "type": "mcq", "prompt": "___ late for class tomorrow!", "options": ["Don't be", "Don't", "Not be"], "answer": "Don't be", "explanationVi": "late là tính từ → Don't be late." },
+    { "id": "im-04", "type": "mcq", "prompt": "I'm hungry. – ___ have lunch now.", "options": ["Let's", "Let", "Let's to"], "answer": "Let's", "explanationVi": "Rủ cùng làm: Let's + V nguyên mẫu." },
+    { "id": "im-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Please be quiet.", "Please quiet.", "Please are quiet."], "answer": "Please be quiet.", "explanationVi": "quiet là tính từ → cần be: Be quiet." },
+    { "id": "im-06", "type": "fill", "prompt": "___ (not / worry). Everything is OK.", "answers": ["Don't worry", "Do not worry"], "explanationVi": "Phủ định: Don't + V." },
+    { "id": "im-07", "type": "fill", "prompt": "___ (be) careful! The floor is wet.", "answers": ["Be"], "explanationVi": "Câu mệnh lệnh với tính từ: Be + tính từ." },
+    { "id": "im-08", "type": "fill", "prompt": "It's a nice day. Let's ___ (go) to the park.", "answers": ["go"], "explanationVi": "Let's + V nguyên mẫu, không có to." },
+    { "id": "im-09", "type": "order", "promptVi": "Đừng nói chuyện trong thư viện.", "answer": "Don't talk in the library.", "distractors": ["Not", "to"], "explanationVi": "Don't + V nguyên mẫu." },
+    { "id": "im-10", "type": "order", "promptVi": "Mình ăn tối ở nhà đi.", "answer": "Let's have dinner at home.", "distractors": ["to"], "explanationVi": "Let's + V nguyên mẫu." },
+    { "id": "im-11", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "Open the door.", "answer": "Don't open the door.", "distractors": ["Not", "opens"], "explanationVi": "Thêm Don't trước động từ." },
+    { "id": "im-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "Let's watch TV.", "answer": "Let's not watch TV.", "distractors": ["no", "to"], "explanationVi": "Phủ định của Let's là Let's not + V." },
+    { "id": "im-13", "type": "error", "sentence": "[Not] be late, please.", "correction": "Don't", "explanationVi": "Phủ định của câu mệnh lệnh: Don't be..." },
+    { "id": "im-14", "type": "error", "sentence": "Please [sits] down.", "correction": "sit", "explanationVi": "Câu mệnh lệnh dùng động từ nguyên mẫu." }
+  ]
+}

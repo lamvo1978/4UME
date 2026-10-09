@@ -1,0 +1,69 @@
+{
+  "slug": "was-were",
+  "version": 1,
+  "titleVi": "Quá khứ của to be: was / were",
+  "titleEn": "Past of be: was / were",
+  "level": "A1",
+  "order": 15,
+  "summaryVi": "was / were là dạng quá khứ của am / is / are: nói ai, cái gì ở đâu, như thế nào trong quá khứ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Chia theo chủ ngữ",
+      "headers": ["Chủ ngữ", "Hiện tại", "Quá khứ", "Phủ định"],
+      "cells": [
+        ["I", "am", "was", "was not (wasn't)"],
+        ["He / She / It", "is", "was", "was not (wasn't)"],
+        ["You / We / They", "are", "were", "were not (weren't)"]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Vị trí trong quá khứ.", "example": { "en": "We were in Hue last summer.", "vi": "Hè năm ngoái chúng tôi ở Huế." } },
+        { "textVi": "Cảm xúc, thời tiết, tính chất trong quá khứ.", "example": { "en": "The weather was terrible yesterday.", "vi": "Hôm qua thời tiết tệ lắm." } },
+        { "textVi": "Nghề nghiệp, tuổi trong quá khứ.", "example": { "en": "My grandfather was a teacher.", "vi": "Ông tôi từng là giáo viên." } },
+        { "textVi": "Năm sinh, nơi sinh: was / were born.", "example": { "en": "I was born in 1995.", "vi": "Tôi sinh năm 1995." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + was / were + ...", "example": { "en": "I was at home last night.", "vi": "Tối qua tôi ở nhà." } },
+        { "kind": "negative", "pattern": "S + wasn't / weren't + ...", "example": { "en": "The shops weren't open.", "vi": "Các cửa hàng không mở cửa." } },
+        { "kind": "question", "pattern": "Was / Were + S + ...?  ·  Wh- + was / were + S?", "example": { "en": "Where were you on Sunday?", "vi": "Chủ nhật bạn ở đâu?" } },
+        { "kind": "short-answer", "pattern": "Yes, S + was / were. / No, S + wasn't / weren't.", "example": { "en": "Was it cold? – Yes, it was.", "vi": "Trời có lạnh không? – Có." } },
+        { "kind": "note", "pattern": "There was + số ít / không đếm được  ·  There were + số nhiều", "example": { "en": "There were a lot of people at the party.", "vi": "Bữa tiệc có rất đông người." } }
+      ]
+    },
+    { "type": "signals", "words": ["yesterday", "yesterday morning", "last night", "last week", "last year", "two days ago", "in 2020", "at that time"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "They was happy.", "right": "They were happy.", "noteVi": "You / We / They → were." },
+        { "wrong": "I born in 1998.", "right": "I was born in 1998.", "noteVi": "Nói năm sinh luôn có was / were." },
+        { "wrong": "Did you be at school?", "right": "Were you at school?", "noteVi": "Câu hỏi với to be không dùng did." },
+        { "wrong": "I was in Hanoi before two years.", "right": "I was in Hanoi two years ago.", "noteVi": "\"... trước\" (tính từ bây giờ) dùng ago, đặt sau khoảng thời gian." },
+        { "wrong": "Yesterday is Sunday.", "right": "Yesterday was Sunday.", "noteVi": "Tiếng Việt không đổi động từ, tiếng Anh phải đổi is → was." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: chủ ngữ đi với am / is → was; chủ ngữ đi với are → were. You dù chỉ một người vẫn dùng were." }
+  ],
+  "exercises": [
+    { "id": "ww-01", "type": "mcq", "prompt": "I ___ very tired yesterday.", "options": ["was", "were", "am"], "answer": "was", "explanationVi": "yesterday → quá khứ; I → was." },
+    { "id": "ww-02", "type": "mcq", "prompt": "My parents ___ at home last night.", "options": ["was", "were", "are"], "answer": "were", "explanationVi": "last night → quá khứ; my parents số nhiều → were." },
+    { "id": "ww-03", "type": "mcq", "prompt": "___ you at the party last Saturday?", "options": ["Was", "Were", "Did"], "answer": "Were", "explanationVi": "Câu hỏi với to be: Were + you? Không dùng Did." },
+    { "id": "ww-04", "type": "mcq", "prompt": "There ___ a lot of people at the market yesterday.", "options": ["was", "were", "is"], "answer": "were", "explanationVi": "people số nhiều, yesterday → There were." },
+    { "id": "ww-05", "type": "mcq", "prompt": "Was the film good? – No, it ___.", "options": ["wasn't", "weren't", "isn't"], "answer": "wasn't", "explanationVi": "it → wasn't." },
+    { "id": "ww-06", "type": "fill", "prompt": "We ___ (be) in Da Lat last week.", "answers": ["were"], "explanationVi": "We → were." },
+    { "id": "ww-07", "type": "fill", "prompt": "She ___ (not / be) at work yesterday.", "answers": ["wasn't", "was not"], "explanationVi": "She → wasn't / was not." },
+    { "id": "ww-08", "type": "fill", "prompt": "I ___ (be) born in 2001.", "answers": ["was"], "explanationVi": "Năm sinh: I was born ..." },
+    { "id": "ww-09", "type": "order", "promptVi": "Bố tôi từng là bác sĩ.", "answer": "My father was a doctor.", "distractors": ["were"], "explanationVi": "My father = he → was." },
+    { "id": "ww-10", "type": "order", "promptVi": "Kỳ nghỉ của bạn thế nào?", "answer": "How was your holiday?", "distractors": ["were"], "explanationVi": "Wh- + was + S? your holiday số ít → was." },
+    { "id": "ww-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "They were at the beach.", "answer": "Were they at the beach?", "distractors": ["Did"], "explanationVi": "Đảo were lên trước chủ ngữ, không dùng did." },
+    { "id": "ww-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "There was a bank here.", "answer": "There wasn't a bank here.", "distractors": ["weren't", "didn't"], "explanationVi": "a bank số ít → There wasn't." },
+    { "id": "ww-13", "type": "error", "sentence": "Tom and I [was] in the same class.", "correction": "were", "explanationVi": "Tom and I = we → were." },
+    { "id": "ww-14", "type": "error", "sentence": "We [are] at the zoo last Sunday.", "correction": "were", "explanationVi": "last Sunday → quá khứ → were." }
+  ]
+}

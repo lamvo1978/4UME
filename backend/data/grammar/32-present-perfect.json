@@ -1,0 +1,70 @@
+{
+  "slug": "present-perfect",
+  "version": 3,
+  "titleVi": "Thì hiện tại hoàn thành",
+  "titleEn": "Present perfect",
+  "level": "A2",
+  "order": 32,
+  "summaryVi": "have / has + V3: trải nghiệm từ trước đến nay, việc vừa xảy ra còn ảnh hưởng hiện tại, hoặc việc bắt đầu trong quá khứ kéo dài đến nay.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Trải nghiệm (không nói rõ khi nào), hay đi với ever / never.", "example": { "en": "Have you ever been to Japan?", "vi": "Bạn đã bao giờ đến Nhật chưa?" } },
+        { "textVi": "Việc vừa xảy ra, kết quả còn ở hiện tại (just, already, yet).", "example": { "en": "I've just finished my homework.", "vi": "Tôi vừa làm xong bài tập." } },
+        { "textVi": "Việc bắt đầu trong quá khứ, kéo dài đến nay (for / since).", "example": { "en": "She has lived here for ten years.", "vi": "Cô ấy đã sống ở đây mười năm." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "I / You / We / They + have ('ve) + V3  ·  He / She / It + has ('s) + V3", "example": { "en": "He has lost his keys.", "vi": "Anh ấy làm mất chìa khoá rồi." } },
+        { "kind": "negative", "pattern": "S + haven't / hasn't + V3", "example": { "en": "We haven't seen that film.", "vi": "Chúng tôi chưa xem phim đó." } },
+        { "kind": "question", "pattern": "Have / Has + S + V3?", "example": { "en": "Has she called you yet?", "vi": "Cô ấy gọi bạn chưa?" } },
+        { "kind": "note", "pattern": "for + khoảng thời gian (for two years) · since + mốc thời gian (since 2020)", "example": { "en": "I've known him since 2015.", "vi": "Tôi quen anh ấy từ năm 2015." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "V3 (quá khứ phân từ) hay gặp",
+      "headers": ["Nguyên mẫu", "V2", "V3"],
+      "cells": [
+        ["be", "was / were", "been"],
+        ["go", "went", "gone"],
+        ["see", "saw", "seen"],
+        ["eat", "ate", "eaten"],
+        ["do", "did", "done"],
+        ["write", "wrote", "written"],
+        ["take", "took", "taken"],
+        ["know", "knew", "known"]
+      ]
+    },
+    { "type": "tip", "textVi": "been hay gone? 'She has gone to Hanoi' = cô ấy đã đi Hà Nội và giờ chưa về. 'She has been to Hanoi' = cô ấy đã từng đến Hà Nội (giờ đã về)." },
+    { "type": "signals", "words": ["ever", "never", "just", "already", "yet", "for", "since", "so far", "recently"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I have seen him yesterday.", "right": "I saw him yesterday.", "noteVi": "Có thời điểm cụ thể trong quá khứ → quá khứ đơn." },
+        { "wrong": "She has went home.", "right": "She has gone home.", "noteVi": "Sau has dùng V3 (gone), không phải V2." },
+        { "wrong": "I live here since 2018.", "right": "I have lived here since 2018.", "noteVi": "Kéo dài từ quá khứ đến nay → hiện tại hoàn thành." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pp3-01", "type": "mcq", "prompt": "___ you ever eaten durian?", "options": ["Did", "Have", "Has"], "answer": "Have", "explanationVi": "Hỏi trải nghiệm: Have you ever + V3?" },
+    { "id": "pp3-02", "type": "mcq", "prompt": "She has worked here ___ 2019.", "options": ["for", "since", "ago"], "answer": "since", "explanationVi": "2019 là mốc thời gian → since." },
+    { "id": "pp3-03", "type": "mcq", "prompt": "We have been friends ___ ten years.", "options": ["for", "since", "in"], "answer": "for", "explanationVi": "ten years là khoảng thời gian → for." },
+    { "id": "pp3-04", "type": "mcq", "prompt": "I haven't finished my report ___.", "options": ["already", "yet", "just"], "answer": "yet", "explanationVi": "yet dùng trong câu phủ định / câu hỏi, đứng cuối câu." },
+    { "id": "pp3-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["He has wrote three books.", "He has written three books.", "He have written three books."], "answer": "He has written three books.", "explanationVi": "He + has + V3 (written)." },
+    { "id": "pp3-06", "type": "fill", "prompt": "I ___ (never / see) snow.", "answers": ["have never seen", "'ve never seen"], "explanationVi": "have + never + V3." },
+    { "id": "pp3-07", "type": "fill", "prompt": "My brother ___ (just / buy) a new laptop.", "answers": ["has just bought", "'s just bought"], "explanationVi": "has + just + V3 (bought)." },
+    { "id": "pp3-08", "type": "fill", "prompt": "They ___ (not / arrive) yet.", "answers": ["haven't arrived", "have not arrived"], "explanationVi": "haven't + V3." },
+    { "id": "pp3-09", "type": "order", "promptVi": "Tôi đã sống ở đây được năm năm.", "answer": "I have lived here for five years.", "distractors": ["since"], "explanationVi": "five years là khoảng thời gian → for." },
+    { "id": "pp3-10", "type": "order", "promptVi": "Bạn đã bao giờ đến Đà Nẵng chưa?", "answer": "Have you ever been to Da Nang?", "distractors": ["Did"], "explanationVi": "Have + S + ever + V3?" },
+    { "id": "pp3-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "She has finished her work.", "answer": "Has she finished her work?", "distractors": ["Did"], "explanationVi": "Đảo has lên trước chủ ngữ." },
+    { "id": "pp3-12", "type": "error", "sentence": "I have [knew] her for a long time.", "correction": "known", "explanationVi": "Sau have dùng V3: known." },
+    { "id": "pp3-13", "type": "error", "sentence": "He [have] already left.", "correction": "has", "explanationVi": "He đi với has." },
+    { "id": "pp3-14", "type": "error", "sentence": "We have lived in this city [for] 2010.", "correction": "since", "explanationVi": "2010 là mốc thời gian → since." }
+  ]
+}

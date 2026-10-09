@@ -1,0 +1,68 @@
+{
+  "slug": "this-that",
+  "version": 1,
+  "titleVi": "This, that, these, those",
+  "titleEn": "This, that, these, those",
+  "level": "A1",
+  "order": 4,
+  "summaryVi": "this / these chỉ người, vật ở gần; that / those chỉ người, vật ở xa. this / that đi với số ít, these / those đi với số nhiều.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Gần hay xa, một hay nhiều",
+      "headers": ["", "Gần (này)", "Xa (kia, đó)"],
+      "cells": [
+        ["Số ít", "this", "that"],
+        ["Số nhiều", "these", "those"]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "this: một người, vật ở gần.", "example": { "en": "This bag is heavy.", "vi": "Cái túi này nặng quá." } },
+        { "textVi": "that: một người, vật ở xa.", "example": { "en": "That house is beautiful.", "vi": "Ngôi nhà kia đẹp thật." } },
+        { "textVi": "these: nhiều người, vật ở gần.", "example": { "en": "These shoes are new.", "vi": "Đôi giày này mới." } },
+        { "textVi": "those: nhiều người, vật ở xa.", "example": { "en": "Those people are my neighbours.", "vi": "Mấy người kia là hàng xóm của tôi." } },
+        { "textVi": "Giới thiệu một người: This is ...", "example": { "en": "Mum, this is my friend Tuan.", "vi": "Mẹ ơi, đây là Tuấn, bạn con." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "note", "pattern": "Đi kèm danh từ: this / that / these / those + danh từ", "example": { "en": "I like this song.", "vi": "Tôi thích bài hát này." } },
+        { "kind": "note", "pattern": "Đứng một mình, thay cho danh từ", "example": { "en": "What's that?", "vi": "Kia là cái gì vậy?" } },
+        { "kind": "question", "pattern": "Is this / that ...?  ·  Are these / those ...?", "example": { "en": "Are these your keys?", "vi": "Đây có phải chìa khóa của bạn không?" } },
+        { "kind": "short-answer", "pattern": "this / that → it  ·  these / those → they", "example": { "en": "Is that your car? – Yes, it is.", "vi": "Kia là xe của bạn à? – Đúng rồi." } },
+        { "kind": "note", "pattern": "this one / that one: thay cho danh từ số ít đã nhắc đến", "example": { "en": "I don't like this shirt. I like that one.", "vi": "Tôi không thích cái áo này. Tôi thích cái kia." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "This books are mine.", "right": "These books are mine.", "noteVi": "Danh từ số nhiều đi với these / those." },
+        { "wrong": "These is my sister.", "right": "This is my sister.", "noteVi": "Một người → This is." },
+        { "wrong": "Is this your keys?", "right": "Are these your keys?", "noteVi": "keys số nhiều → Are these." },
+        { "wrong": "Is that your bag? – Yes, that's.", "right": "Is that your bag? – Yes, it is.", "noteVi": "Câu trả lời ngắn dùng it / they và không viết tắt." },
+        { "wrong": "I like that ones.", "right": "I like that one.", "noteVi": "Sau this / that dùng one (số ít)." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: \"này\" → this / these, \"kia\", \"đó\" → that / those. Nhìn danh từ phía sau: số ít → this / that, số nhiều → these / those. Chú ý phát âm: this (i ngắn) khác these (i dài)." }
+  ],
+  "exercises": [
+    { "id": "tt-01", "type": "mcq", "prompt": "___ apples here are very cheap.", "options": ["This", "These", "That"], "answer": "These", "explanationVi": "apples số nhiều, ở gần (here) → These." },
+    { "id": "tt-02", "type": "mcq", "prompt": "Look at ___ bird over there!", "options": ["this", "those", "that"], "answer": "that", "explanationVi": "bird số ít, ở xa (over there) → that." },
+    { "id": "tt-03", "type": "mcq", "prompt": "Are ___ your keys?", "options": ["this", "that", "these"], "answer": "these", "explanationVi": "keys số nhiều, động từ are → these." },
+    { "id": "tt-04", "type": "mcq", "prompt": "Is that your car? – Yes, ___.", "options": ["it is", "that's", "this is"], "answer": "it is", "explanationVi": "Trả lời ngắn cho this / that dùng it: Yes, it is." },
+    { "id": "tt-05", "type": "mcq", "prompt": "I don't like this shirt. I like ___.", "options": ["that one", "that ones", "those one"], "answer": "that one", "explanationVi": "shirt số ít → that one." },
+    { "id": "tt-06", "type": "fill", "prompt": "___ (this) children are my students.", "answers": ["These"], "explanationVi": "children số nhiều → this đổi thành these." },
+    { "id": "tt-07", "type": "fill", "prompt": "___ (that) people over there are my neighbours.", "answers": ["Those"], "explanationVi": "people số nhiều, ở xa → those." },
+    { "id": "tt-08", "type": "fill", "prompt": "Are these your books? – Yes, ___ are.", "answers": ["they"], "explanationVi": "Trả lời ngắn cho these / those dùng they." },
+    { "id": "tt-09", "type": "order", "promptVi": "Những quả táo này rất ngọt.", "answer": "These apples are very sweet.", "distractors": ["This"], "explanationVi": "apples số nhiều → These." },
+    { "id": "tt-10", "type": "order", "promptVi": "Người đàn ông kia có phải bố bạn không?", "answer": "Is that man your father?", "distractors": ["those"], "explanationVi": "Một người ở xa → that man; câu hỏi đảo is lên đầu." },
+    { "id": "tt-11", "type": "transform", "instructionVi": "Chuyển sang số nhiều", "source": "This is my book.", "answer": "These are my books.", "distractors": ["is", "book"], "explanationVi": "This is → These are, book → books." },
+    { "id": "tt-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "Those are your shoes.", "answer": "Are those your shoes?", "distractors": ["Is"], "explanationVi": "Đảo are lên trước those." },
+    { "id": "tt-13", "type": "error", "sentence": "These [is] my friends, Nam and Hoa.", "correction": "are", "explanationVi": "These (số nhiều) đi với are." },
+    { "id": "tt-14", "type": "error", "sentence": "I don't like this hat. I like [that ones].", "correction": "that one", "explanationVi": "hat số ít → that one." }
+  ]
+}

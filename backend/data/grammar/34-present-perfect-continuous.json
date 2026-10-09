@@ -1,0 +1,66 @@
+{
+  "slug": "present-perfect-continuous",
+  "version": 1,
+  "titleVi": "Thì hiện tại hoàn thành tiếp diễn",
+  "titleEn": "Present perfect continuous",
+  "level": "B1",
+  "order": 34,
+  "summaryVi": "have / has been + V-ing: việc bắt đầu trong quá khứ, kéo dài đến nay (hoặc vừa mới dừng), nhấn mạnh quá trình và thời gian bao lâu.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + have / has + been + V-ing", "example": { "en": "She has been waiting for an hour.", "vi": "Cô ấy đã chờ được một tiếng rồi." } },
+        { "kind": "negative", "pattern": "S + haven't / hasn't + been + V-ing", "example": { "en": "I haven't been sleeping well lately.", "vi": "Dạo này tôi ngủ không ngon." } },
+        { "kind": "question", "pattern": "Have / Has + S + been + V-ing?", "example": { "en": "How long have you been learning English?", "vi": "Bạn học tiếng Anh được bao lâu rồi?" } },
+        { "kind": "note", "pattern": "for + khoảng thời gian (for two hours) · since + mốc thời gian (since 2020, since Monday)", "example": { "en": "We've been living here since 2019.", "vi": "Chúng tôi sống ở đây từ năm 2019." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Việc bắt đầu trong quá khứ và vẫn đang tiếp diễn, nhấn mạnh đã bao lâu.", "example": { "en": "I've been working here for three years.", "vi": "Tôi làm ở đây được ba năm rồi." } },
+        { "textVi": "Việc vừa mới dừng nhưng còn để lại dấu hiệu nhìn thấy được.", "example": { "en": "You're out of breath. Have you been running?", "vi": "Bạn thở hổn hển thế. Bạn vừa chạy à?" } },
+        { "textVi": "Việc lặp đi lặp lại gần đây, thường kèm chút phàn nàn.", "example": { "en": "My neighbour has been playing loud music all week.", "vi": "Cả tuần nay hàng xóm của tôi cứ mở nhạc ầm ĩ." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Hoàn thành đơn hay hoàn thành tiếp diễn?",
+      "headers": ["", "Hiện tại hoàn thành", "Hiện tại hoàn thành tiếp diễn"],
+      "cells": [
+        ["Nhấn mạnh", "kết quả, số lượng (how many / how much)", "quá trình, thời gian (how long)"],
+        ["Việc", "thường đã xong", "có thể chưa xong"],
+        ["Ví dụ", "I've read three books this month.", "I've been reading this book since Monday."]
+      ]
+    },
+    { "type": "signals", "words": ["for", "since", "how long", "all day", "all morning", "lately", "recently"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I am learning English for three years.", "right": "I have been learning English for three years.", "noteVi": "Kéo dài từ quá khứ đến nay → không dùng hiện tại tiếp diễn." },
+        { "wrong": "I have been knowing him since 2019.", "right": "I have known him since 2019.", "noteVi": "know là động từ trạng thái → không chia tiếp diễn." },
+        { "wrong": "She has been writing five emails today.", "right": "She has written five emails today.", "noteVi": "Có số lượng (five emails) → hiện tại hoàn thành đơn." },
+        { "wrong": "I've been waiting since two hours.", "right": "I've been waiting for two hours.", "noteVi": "two hours là khoảng thời gian → for." }
+      ]
+    },
+    { "type": "tip", "textVi": "Động từ trạng thái như know, like, love, want, believe, understand, own, need không chia tiếp diễn. Dùng hiện tại hoàn thành đơn: 'I've wanted this job for years.'" }
+  ],
+  "exercises": [
+    { "id": "ppc-01", "type": "mcq", "prompt": "I'm tired because I ___ all day.", "options": ["have been working", "has been working", "am working"], "answer": "have been working", "explanationVi": "Việc kéo dài cả ngày và để lại kết quả (mệt) → have been + V-ing; chủ ngữ I đi với have." },
+    { "id": "ppc-02", "type": "mcq", "prompt": "Your eyes are red. ___ you been crying?", "options": ["Have", "Did", "Are"], "answer": "Have", "explanationVi": "Dấu hiệu còn thấy được (mắt đỏ) → Have + S + been + V-ing?" },
+    { "id": "ppc-03", "type": "mcq", "prompt": "How long ___ here? – Since 7 o'clock.", "options": ["are you waiting", "have you been waiting", "did you wait"], "answer": "have you been waiting", "explanationVi": "Câu trả lời có since → việc kéo dài đến nay → hiện tại hoàn thành tiếp diễn." },
+    { "id": "ppc-04", "type": "mcq", "prompt": "So far today I ___ five emails.", "options": ["have been writing", "have written", "am writing"], "answer": "have written", "explanationVi": "Nói số lượng đã xong (five emails) → hiện tại hoàn thành đơn." },
+    { "id": "ppc-05", "type": "mcq", "prompt": "I ___ Mai since we were at university.", "options": ["have been knowing", "have known", "am knowing"], "answer": "have known", "explanationVi": "know là động từ trạng thái → không dùng tiếp diễn, dùng have known." },
+    { "id": "ppc-06", "type": "fill", "prompt": "It ___ (rain – hiện tại hoàn thành tiếp diễn) since this morning, and the streets are flooded.", "answers": ["has been raining", "'s been raining"], "explanationVi": "it → has been + V-ing (raining)." },
+    { "id": "ppc-07", "type": "fill", "prompt": "I ___ (want) to visit Japan for years.", "answers": ["have wanted", "'ve wanted"], "explanationVi": "want là động từ trạng thái → hiện tại hoàn thành đơn: have wanted." },
+    { "id": "ppc-08", "type": "fill", "prompt": "She ___ (learn – hiện tại hoàn thành tiếp diễn) Korean for six months.", "answers": ["has been learning", "'s been learning"], "explanationVi": "she → has been + V-ing; for six months chỉ khoảng thời gian." },
+    { "id": "ppc-09", "type": "order", "promptVi": "Tôi học tiếng Anh được hai năm rồi.", "answer": "I have been learning English for two years.", "distractors": ["since", "am"], "explanationVi": "have been + V-ing; two years là khoảng thời gian → for." },
+    { "id": "ppc-10", "type": "order", "promptVi": "Bạn đã chờ bao lâu rồi?", "answer": "How long have you been waiting?", "distractors": ["did", "are"], "explanationVi": "How long + have + S + been + V-ing?" },
+    { "id": "ppc-11", "type": "transform", "instructionVi": "Viết lại thành một câu, dùng hiện tại hoàn thành tiếp diễn với for", "source": "He started working here three years ago. He still works here.", "answer": "He has been working here for three years.", "distractors": ["since", "ago"], "explanationVi": "Bắt đầu ba năm trước, vẫn tiếp tục → has been working ... for three years." },
+    { "id": "ppc-12", "type": "transform", "instructionVi": "Đặt câu hỏi với How long", "source": "They have been playing tennis for an hour.", "answer": "How long have they been playing tennis?", "distractors": ["did", "for"], "explanationVi": "How long + have + they + been + V-ing?" },
+    { "id": "ppc-13", "type": "error", "sentence": "I [am] waiting for you since 6 o'clock.", "correction": "have been", "explanationVi": "since 6 o'clock → kéo dài đến nay → have been waiting." },
+    { "id": "ppc-14", "type": "error", "sentence": "We have [been knowing] each other for ten years.", "correction": "known", "explanationVi": "know là động từ trạng thái → have known." }
+  ]
+}

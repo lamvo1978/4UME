@@ -1,0 +1,56 @@
+{
+  "slug": "articles",
+  "version": 3,
+  "titleVi": "Mạo từ a / an / the",
+  "titleEn": "Articles",
+  "level": "A1",
+  "order": 5,
+  "summaryVi": "a / an dùng cho danh từ đếm được số ít, nhắc đến lần đầu. the dùng khi người nghe đã biết ta nói về cái nào.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "a + từ bắt đầu bằng âm phụ âm.", "example": { "en": "a book, a university, a European city", "vi": "u- và Eu- đọc là /ju/ → âm phụ âm." } },
+        { "textVi": "an + từ bắt đầu bằng âm nguyên âm (a, e, i, o, u khi đọc).", "example": { "en": "an apple, an hour, an honest man", "vi": "h câm → đọc bằng nguyên âm → an." } },
+        { "textVi": "the: vật đã nhắc đến trước đó hoặc cả hai bên đều biết.", "example": { "en": "I saw a dog. The dog was big.", "vi": "Tôi thấy một con chó. Con chó đó rất to." } },
+        { "textVi": "the: vật duy nhất (the sun, the moon), so sánh nhất, số thứ tự.", "example": { "en": "the best student, the first day", "vi": "học sinh giỏi nhất, ngày đầu tiên" } },
+        { "textVi": "Không dùng mạo từ: nói chung chung với danh từ số nhiều / không đếm được, bữa ăn, môn thể thao, ngôn ngữ.", "example": { "en": "I like cats. We have lunch at 12.", "vi": "Tôi thích mèo. Chúng tôi ăn trưa lúc 12 giờ." } }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "en": "She is an engineer.", "vi": "Cô ấy là kỹ sư." },
+        { "en": "Close the door, please.", "vi": "Làm ơn đóng cửa lại." },
+        { "en": "He plays football every weekend.", "vi": "Anh ấy chơi bóng đá mỗi cuối tuần." }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She is doctor.", "right": "She is a doctor.", "noteVi": "Nói nghề nghiệp cần a / an." },
+        { "wrong": "a hour", "right": "an hour", "noteVi": "Xét theo âm đọc, không theo chữ cái." },
+        { "wrong": "I play the football.", "right": "I play football.", "noteVi": "Môn thể thao không dùng the." },
+        { "wrong": "The life is beautiful.", "right": "Life is beautiful.", "noteVi": "Nói chung chung (không chỉ cái cụ thể nào) không dùng the." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: nghe âm đầu khi đọc to lên. 'an umbrella' nhưng 'a uniform'; 'an hour' nhưng 'a house'." }
+  ],
+  "exercises": [
+    { "id": "ar-01", "type": "mcq", "prompt": "She has ___ umbrella.", "options": ["a", "an", "the"], "answer": "an", "explanationVi": "umbrella bắt đầu bằng âm nguyên âm /ʌ/ → an." },
+    { "id": "ar-02", "type": "mcq", "prompt": "He studies at ___ university in Hanoi.", "options": ["a", "an", "—"], "answer": "a", "explanationVi": "university đọc /ju:/ → âm phụ âm → a." },
+    { "id": "ar-03", "type": "mcq", "prompt": "I waited for ___ hour.", "options": ["a", "an", "the"], "answer": "an", "explanationVi": "h trong hour là âm câm → an hour." },
+    { "id": "ar-04", "type": "mcq", "prompt": "___ sun rises in the east.", "options": ["A", "An", "The"], "answer": "The", "explanationVi": "Mặt trời là duy nhất → the." },
+    { "id": "ar-05", "type": "mcq", "prompt": "We usually have ___ dinner at seven.", "options": ["a", "the", "—"], "answer": "—", "explanationVi": "Bữa ăn (breakfast, lunch, dinner) thường không dùng mạo từ." },
+    { "id": "ar-06", "type": "mcq", "prompt": "I bought a shirt and a jacket. ___ jacket was expensive.", "options": ["A", "The", "An"], "answer": "The", "explanationVi": "jacket đã được nhắc ở trước → the." },
+    { "id": "ar-07", "type": "fill", "prompt": "My mother is ___ engineer. (a / an)", "answers": ["an"], "explanationVi": "engineer bắt đầu bằng âm /e/ → an." },
+    { "id": "ar-08", "type": "fill", "prompt": "This is ___ best film I have ever seen. (a / an / the)", "answers": ["the"], "explanationVi": "So sánh nhất dùng the." },
+    { "id": "ar-09", "type": "fill", "prompt": "Can you open ___ window next to you, please? It's hot. (a / an / the)", "answers": ["the"], "explanationVi": "Cửa sổ cụ thể (cạnh bạn), cả hai người đều biết là cái nào → the." },
+    { "id": "ar-10", "type": "order", "promptVi": "Anh ấy là một người trung thực.", "answer": "He is an honest man.", "distractors": ["a"], "explanationVi": "honest có h câm → an." },
+    { "id": "ar-11", "type": "order", "promptVi": "Tôi thích chơi quần vợt.", "answer": "I like playing tennis.", "distractors": ["the"], "explanationVi": "Môn thể thao không dùng the." },
+    { "id": "ar-12", "type": "error", "sentence": "She is [a] artist.", "correction": "an", "explanationVi": "artist bắt đầu bằng nguyên âm → an artist." },
+    { "id": "ar-13", "type": "error", "sentence": "Look at [a] moon tonight!", "correction": "the", "explanationVi": "Mặt trăng là duy nhất → the moon." },
+    { "id": "ar-14", "type": "transform", "instructionVi": "Chuyển sang số ít, dùng chủ ngữ He", "source": "They are students.", "answer": "He is a student.", "distractors": ["an"], "explanationVi": "Danh từ đếm được số ít cần a / an." }
+  ]
+}

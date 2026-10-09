@@ -1,0 +1,73 @@
+{
+  "slug": "pronouns-plural",
+  "version": 2,
+  "titleVi": "Đại từ và danh từ số nhiều",
+  "titleEn": "Pronouns and plural nouns",
+  "level": "A1",
+  "order": 2,
+  "summaryVi": "Đại từ thay cho danh từ (I, me, mine), tính từ sở hữu đi kèm danh từ (my). Danh từ số nhiều thường thêm -s / -es, một số từ bất quy tắc.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Các loại đại từ",
+      "headers": ["Chủ ngữ", "Tân ngữ", "Tính từ sở hữu", "Đại từ sở hữu"],
+      "cells": [
+        ["I", "me", "my", "mine"],
+        ["you", "you", "your", "yours"],
+        ["he", "him", "his", "his"],
+        ["she", "her", "her", "hers"],
+        ["it", "it", "its", "—"],
+        ["we", "us", "our", "ours"],
+        ["they", "them", "their", "theirs"]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Đại từ chủ ngữ đứng trước động từ.", "example": { "en": "She works here.", "vi": "Cô ấy làm việc ở đây." } },
+        { "textVi": "Đại từ tân ngữ đứng sau động từ hoặc giới từ.", "example": { "en": "Call me later.", "vi": "Gọi cho tôi sau nhé." } },
+        { "textVi": "Tính từ sở hữu luôn đi kèm danh từ.", "example": { "en": "This is my bag.", "vi": "Đây là túi của tôi." } },
+        { "textVi": "Đại từ sở hữu đứng một mình, thay cho 'tính từ sở hữu + danh từ'.", "example": { "en": "This bag is mine.", "vi": "Cái túi này là của tôi." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Danh từ số nhiều",
+      "headers": ["Quy tắc", "Ví dụ"],
+      "cells": [
+        ["Thông thường: + s", "book → books, car → cars"],
+        ["Tận cùng s, x, z, ch, sh: + es", "bus → buses, box → boxes, quiz → quizzes, watch → watches"],
+        ["Tận cùng o: một số từ + es, nhiều từ chỉ + s", "tomato → tomatoes, potato → potatoes, hero → heroes; nhưng photo → photos, piano → pianos, radio → radios"],
+        ["Phụ âm + y: y → ies", "baby → babies, city → cities (nhưng boy → boys)"],
+        ["Nhiều từ tận cùng f / fe: → ves", "knife → knives, leaf → leaves, wife → wives, half → halves; nhưng roof → roofs, chief → chiefs"],
+        ["Bất quy tắc", "man → men, woman → women, child → children, foot → feet, tooth → teeth, person → people"]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Me am a student.", "right": "I am a student.", "noteVi": "Làm chủ ngữ phải dùng I." },
+        { "wrong": "This is mine book.", "right": "This is my book. / This book is mine.", "noteVi": "mine đứng một mình, không đi với danh từ." },
+        { "wrong": "two childs", "right": "two children", "noteVi": "child có số nhiều bất quy tắc." },
+        { "wrong": "The dog wagged it's tail.", "right": "The dog wagged its tail.", "noteVi": "its là sở hữu; it's = it is." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pp-01", "type": "mcq", "prompt": "Can you help ___?", "options": ["I", "me", "my"], "answer": "me", "explanationVi": "Sau động từ help dùng đại từ tân ngữ: me." },
+    { "id": "pp-02", "type": "mcq", "prompt": "This pen isn't yours. It's ___.", "options": ["my", "me", "mine"], "answer": "mine", "explanationVi": "Đứng một mình, không có danh từ theo sau → đại từ sở hữu mine." },
+    { "id": "pp-03", "type": "mcq", "prompt": "Lan loves ___ cat very much.", "options": ["she", "her", "hers"], "answer": "her", "explanationVi": "Trước danh từ cat dùng tính từ sở hữu her." },
+    { "id": "pp-04", "type": "mcq", "prompt": "Số nhiều của 'person' là:", "options": ["persons", "people", "peoples"], "answer": "people", "explanationVi": "person → people (bất quy tắc)." },
+    { "id": "pp-05", "type": "mcq", "prompt": "My friends and I play football. ___ play every Sunday.", "options": ["They", "We", "Us"], "answer": "We", "explanationVi": "My friends and I = we (làm chủ ngữ)." },
+    { "id": "pp-06", "type": "fill", "prompt": "I have two ___ (child).", "answers": ["children"], "explanationVi": "child → children." },
+    { "id": "pp-07", "type": "fill", "prompt": "There are three ___ (box) on the floor.", "answers": ["boxes"], "explanationVi": "Tận cùng x → thêm es." },
+    { "id": "pp-08", "type": "fill", "prompt": "Big ___ (city) are often noisy.", "answers": ["cities"], "explanationVi": "Phụ âm + y → ies." },
+    { "id": "pp-09", "type": "fill", "prompt": "Tom and Mai are here. I'll talk to ___ (they).", "answers": ["them"], "explanationVi": "Sau giới từ to dùng tân ngữ them." },
+    { "id": "pp-10", "type": "order", "promptVi": "Cái điện thoại này là của cô ấy.", "answer": "This phone is hers.", "distractors": ["her"], "explanationVi": "Đứng cuối câu, không có danh từ theo sau → hers." },
+    { "id": "pp-11", "type": "order", "promptVi": "Anh ấy gọi cho chúng tôi mỗi ngày.", "answer": "He calls us every day.", "distractors": ["we"], "explanationVi": "Sau động từ dùng tân ngữ us." },
+    { "id": "pp-12", "type": "transform", "instructionVi": "Viết lại dùng đại từ sở hữu", "source": "This is our house.", "answer": "This house is ours.", "distractors": ["our"], "explanationVi": "our house = ours." },
+    { "id": "pp-13", "type": "error", "sentence": "My brother has two [babys].", "correction": "babies", "explanationVi": "baby: phụ âm + y → babies." },
+    { "id": "pp-14", "type": "error", "sentence": "[Him] is my best friend.", "correction": "He", "explanationVi": "Làm chủ ngữ phải dùng He." }
+  ]
+}

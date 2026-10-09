@@ -1,48 +1,268 @@
-import { useNavigation } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ComponentProps, useCallback, useState } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { api, Me, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { MainTabParamList } from "../navigation/types";
-import { colors, spacing } from "../theme";
+import { Avatar } from "../components/Avatar";
+import { StreakChip } from "../components/streak/StreakChip";
+import { streakStatus } from "../components/streak/streakCopy";
+import { Screen } from "../components/Screen";
+import { MainTabParamList, RootStackParamList } from "../navigation/types";
+import { colors, fonts, shadow, spacing } from "../theme";
+
+type Nav = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
 export function HomeScreen() {
-  const { me, user } = useAuth();
-  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
+  const { me, user, refreshMe } = useAuth();
+  const navigation = useNavigation<Nav>();
+  const name = me?.displayName ?? user?.displayName;
+  const grammarDone = me?.grammarLessonsCompleted ?? 0;
+  const grammarTotal = me?.grammarLessonsTotal ?? 0;
+  const [review, setReview] = useState<ReviewSummary | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      api.reviewSummary().then(setReview).catch(() => setReview(null));
+      refreshMe().catch(() => undefined);
+    }, [refreshMe])
+  );
 
   return (
-    <View style={styles.root}>
-      <Text style={styles.brand}>4UME</Text>
-      <Text style={styles.hello}>Xin chào, {me?.displayName ?? user?.displayName}</Text>
-      <Text style={styles.progress}>
-        Đã nhớ {me?.knownWords ?? 0} từ · Đang khó {me?.hardWords ?? 0} · Ngữ pháp{" "}
-        {me?.grammarLessonsCompleted ?? 0}/10
-      </Text>
+    <Screen>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <View style={styles.brandRow}>
+            <Image source={require("../../assets/logo-emblem.png")} style={styles.logo} resizeMode="contain" />
+            <Text style={styles.brand}>4UME</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <Pressable
+              onPress={() => navigation.navigate("WordSearch")}
+              hitSlop={8}
+              style={({ pressed }) => [styles.searchBtn, pressed && styles.pressed]}
+              accessibilityLabel="Tìm từ"
+            >
+              <Ionicons name="search" size={20} color={colors.accent} />
+            </Pressable>
+            <StreakChip
+              streak={me?.streak ?? 0}
+              studiedToday={me?.studiedToday ?? false}
+              onPress={() => navigation.navigate("Profile")}
+            />
+            <Pressable onPress={() => navigation.navigate("Profile")} hitSlop={8}>
+              <Avatar name={name} />
+            </Pressable>
+          </View>
+        </View>
 
-      <Pressable style={styles.entry} onPress={() => navigation.navigate("Study")}>
-        <Text style={styles.entryTitle}>Từ vựng</Text>
-        <Text style={styles.entrySub}>23 bộ · A1–B2</Text>
-      </Pressable>
+        <Text style={styles.hello}>Xin chào, {name}</Text>
+        <Text style={styles.progress}>
+          Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
+        </Text>
 
-      <Pressable style={styles.entry} onPress={() => navigation.navigate("Study")}>
-        <Text style={styles.entryTitle}>Ngữ pháp</Text>
-        <Text style={styles.entrySub}>10 bài căn bản</Text>
-      </Pressable>
-    </View>
+        {me ? <GoalCard me={me} onPress={() => navigation.navigate("Study", { tab: "vocab" })} /> : null}
+
+        {review && review.inReview > 0 ? (
+          <ReviewBanner
+            review={review}
+            onPress={() =>
+              navigation.navigate(
+                "Review",
+                review.dueCount > 0 ? { mode: "due" } : { mode: "practice", title: "Luyện thêm" }
+              )
+            }
+          />
+        ) : null}
+
+        <View style={styles.card}>
+          <Entry
+            icon="book-outline"
+            title="Từ vựng"
+            subtitle="Theo chủ đề · A1–B2"
+            onPress={() => navigation.navigate("Study", { tab: "vocab" })}
+          />
+          <View style={styles.divider} />
+          <Entry
+            icon="create-outline"
+            title="Ngữ pháp"
+            subtitle={grammarTotal ? `${grammarTotal} bài · A1–B1` : "Bài học ngữ pháp"}
+            onPress={() => navigation.navigate("Study", { tab: "grammar" })}
+          />
+        </View>
+      </ScrollView>
+    </Screen>
+  );
+}
+
+function GoalCard({ me, onPress }: { me: Me; onPress: () => void }) {
+  const goal = me.settings.dailyGoal;
+  const done = Math.min(me.todayNewWords, goal);
+  const met = me.todayNewWords >= goal;
+  return (
+    <Pressable style={({ pressed }) => [styles.goal, pressed && styles.pressed]} onPress={onPress}>
+      <View style={[styles.goalIcon, met && styles.goalIconMet]}>
+        <Ionicons name={met ? "trophy" : "flag"} size={22} color={met ? colors.white : colors.flame} />
+      </View>
+      <View style={styles.entryText}>
+        <View style={styles.goalTop}>
+          <Text style={styles.goalTitle}>{met ? "Đã đạt mục tiêu!" : "Mục tiêu hôm nay"}</Text>
+          <Text style={[styles.goalCount, met && styles.goalCountMet]}>
+            {me.todayNewWords}/{goal} từ mới
+          </Text>
+        </View>
+        <View style={styles.goalBar}>
+          <View style={[styles.goalFill, met && styles.goalFillMet, { width: `${(done / goal) * 100}%` }]} />
+        </View>
+        <Text style={styles.goalSub}>{streakStatus(me.streak, me.studiedToday)}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+function ReviewBanner({ review, onPress }: { review: ReviewSummary; onPress: () => void }) {
+  const due = review.dueCount > 0;
+  const next = review.nextDueAt ? new Date(review.nextDueAt) : null;
+  return (
+    <Pressable
+      style={({ pressed }) => [styles.review, !due && styles.reviewIdle, pressed && styles.pressed]}
+      onPress={onPress}
+    >
+      <View style={[styles.reviewIcon, !due && styles.reviewIconIdle]}>
+        <Ionicons name={due ? "repeat" : "flash-outline"} size={24} color={due ? colors.accent : colors.white} />
+      </View>
+      <View style={styles.entryText}>
+        <Text style={[styles.reviewTitle, !due && styles.reviewTitleIdle]}>
+          {due ? `Ôn tập hôm nay: ${review.dueCount} từ` : "Đã ôn xong · Luyện thêm?"}
+        </Text>
+        <Text style={[styles.reviewSub, !due && styles.reviewSubIdle]}>
+          {due
+            ? "Vài phút để giữ từ đã nhớ không bị quên"
+            : `Luyện nhanh 10 từ${next ? ` · lịch ôn tới ${next.getDate()}/${next.getMonth() + 1}` : ""}`}
+        </Text>
+      </View>
+      <Ionicons name="arrow-forward" size={22} color={due ? colors.white : colors.accent} />
+    </Pressable>
+  );
+}
+
+function Entry({
+  icon,
+  title,
+  subtitle,
+  onPress,
+}: {
+  icon: ComponentProps<typeof Ionicons>["name"];
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable style={({ pressed }) => [styles.entry, pressed && styles.pressed]} onPress={onPress}>
+      <View style={styles.entryIcon}>
+        <Ionicons name={icon} size={28} color={colors.accent} />
+      </View>
+      <View style={styles.entryText}>
+        <Text style={styles.entryTitle}>{title}</Text>
+        <Text style={styles.entrySub}>{subtitle}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={22} color={colors.accent} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg, padding: spacing.lg, gap: spacing.md },
-  brand: { marginTop: spacing.lg, color: colors.accent, fontWeight: "800", fontSize: 18 },
-  hello: { fontSize: 28, fontWeight: "700", color: colors.ink },
-  progress: { color: colors.muted, marginBottom: spacing.md },
-  entry: {
-    backgroundColor: colors.surface,
-    borderRadius: 18,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+  content: { padding: spacing.lg, paddingTop: spacing.md },
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  brandRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  logo: { width: 30, height: 48 },
+  brand: { fontFamily: fonts.display, fontSize: 26, fontWeight: "700", color: colors.accent },
+  hello: { marginTop: spacing.xl, fontSize: 28, fontWeight: "700", color: colors.ink },
+  progress: { marginTop: spacing.xs, color: colors.muted, fontSize: 15 },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  searchBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.accentSoft,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  entryTitle: { fontSize: 22, fontWeight: "700", color: colors.accent },
-  entrySub: { marginTop: 6, color: colors.muted },
+  goal: {
+    marginTop: spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    ...shadow.card,
+  },
+  goalIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.flameSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  goalIconMet: { backgroundColor: colors.gold },
+  goalTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 },
+  goalTitle: { flexShrink: 1, fontSize: 16, fontWeight: "700", color: colors.ink },
+  goalCount: { fontSize: 14, fontWeight: "800", color: colors.flameDeep },
+  goalCountMet: { color: colors.gold },
+  goalBar: { height: 8, borderRadius: 99, backgroundColor: colors.flameSoft, overflow: "hidden", marginTop: 8 },
+  goalFill: { height: 8, borderRadius: 99, backgroundColor: colors.flame },
+  goalFillMet: { backgroundColor: colors.gold },
+  goalSub: { marginTop: 6, fontSize: 13, color: colors.muted },
+  card: {
+    marginTop: spacing.lg,
+    backgroundColor: colors.surface,
+    borderRadius: 22,
+    paddingHorizontal: spacing.md,
+    ...shadow.card,
+  },
+  review: {
+    marginTop: spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: 22,
+    backgroundColor: colors.accent,
+    ...shadow.card,
+  },
+  reviewIdle: { backgroundColor: colors.surface },
+  reviewIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.white,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reviewIconIdle: { backgroundColor: colors.accent },
+  reviewTitle: { fontSize: 17, fontWeight: "700", color: colors.white },
+  reviewTitleIdle: { color: colors.ink },
+  reviewSub: { marginTop: 2, color: colors.accentSoft, fontSize: 13 },
+  reviewSubIdle: { color: colors.muted },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
+  entry: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.md + 4 },
+  pressed: { opacity: 0.6 },
+  entryIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.accentSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  entryText: { flex: 1 },
+  entryTitle: { fontSize: 19, fontWeight: "700", color: colors.ink },
+  entrySub: { marginTop: 4, color: colors.muted },
 });

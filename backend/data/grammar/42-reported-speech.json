@@ -1,0 +1,83 @@
+{
+  "slug": "reported-speech",
+  "version": 1,
+  "titleVi": "Câu tường thuật",
+  "titleEn": "Reported speech",
+  "level": "B1",
+  "order": 42,
+  "summaryVi": "Thuật lại lời người khác: dùng said / told / asked, lùi thì một bậc, đổi đại từ và trạng từ thời gian; câu hỏi tường thuật không đảo ngữ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "say hay tell?",
+      "headers": ["", "Cấu trúc", "Ví dụ"],
+      "cells": [
+        ["say", "say (that) + mệnh đề", "She said (that) she was tired."],
+        ["tell", "tell + NGƯỜI + (that) + mệnh đề", "She told me (that) she was tired."]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Lùi thì",
+      "headers": ["Lời nói trực tiếp", "Câu tường thuật"],
+      "cells": [
+        ["am / is → was; are → were", "\"I'm busy.\" → He said he was busy."],
+        ["hiện tại đơn → quá khứ đơn", "\"I live in Hue.\" → She said she lived in Hue."],
+        ["will → would", "\"I'll call you.\" → He said he would call me."],
+        ["can → could", "\"I can't swim.\" → She said she couldn't swim."],
+        ["hiện tại hoàn thành → quá khứ hoàn thành", "\"I've lost my key.\" → He said he had lost his key."],
+        ["quá khứ đơn → quá khứ hoàn thành", "\"I saw Nam.\" → She said she had seen Nam."]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Đổi từ chỉ thời gian, nơi chốn",
+      "headers": ["Trực tiếp", "Tường thuật"],
+      "cells": [
+        ["today / tonight", "that day / that night"],
+        ["tomorrow", "the next day"],
+        ["yesterday", "the day before"],
+        ["now", "then"],
+        ["here", "there"],
+        ["this", "that"]
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "Câu hỏi và mệnh lệnh",
+      "rows": [
+        { "kind": "question", "pattern": "Yes/No: asked (+ người) + if / whether + S + V", "example": { "en": "\"Are you hungry?\" → He asked me if I was hungry.", "vi": "Anh ấy hỏi tôi có đói không." } },
+        { "kind": "question", "pattern": "Wh-: asked (+ người) + từ để hỏi + S + V (không đảo, không do/does/did)", "example": { "en": "\"Where do you live?\" → She asked me where I lived.", "vi": "Cô ấy hỏi tôi sống ở đâu." } },
+        { "kind": "affirmative", "pattern": "Mệnh lệnh: told + người + to V", "example": { "en": "\"Close the door.\" → He told me to close the door.", "vi": "Anh ấy bảo tôi đóng cửa." } },
+        { "kind": "negative", "pattern": "Lời cấm: told + người + not to V", "example": { "en": "\"Don't be late.\" → She told us not to be late.", "vi": "Cô ấy dặn chúng tôi đừng đến muộn." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She said me that she was busy.", "right": "She told me that she was busy.", "noteVi": "Có người nghe ngay sau động từ → dùng told." },
+        { "wrong": "He asked me where did I live.", "right": "He asked me where I lived.", "noteVi": "Câu hỏi tường thuật giữ trật tự câu kể, bỏ did." },
+        { "wrong": "She told me don't worry.", "right": "She told me not to worry.", "noteVi": "Lời cấm: told + người + not to V." },
+        { "wrong": "He said he will call me the next day.", "right": "He said he would call me the next day.", "noteVi": "will lùi thành would." }
+      ]
+    },
+    { "type": "tip", "textVi": "that sau said / told có thể bỏ. Nếu điều được nói vẫn còn đúng ở hiện tại, đôi khi có thể không lùi thì; nhưng khi đang học, hãy cứ lùi thì sau said / told / asked." }
+  ],
+  "exercises": [
+    { "id": "rs-01", "type": "mcq", "prompt": "She ___ me that she was leaving.", "options": ["said", "told", "spoke"], "answer": "told", "explanationVi": "Có người nghe (me) ngay sau động từ → told." },
+    { "id": "rs-02", "type": "mcq", "prompt": "He ___ that he didn't like coffee.", "options": ["said", "told", "asked"], "answer": "said", "explanationVi": "Không có người nghe sau động từ → said. told phải có người nghe đi kèm." },
+    { "id": "rs-03", "type": "mcq", "prompt": "\"Where do you live?\" she asked. → She asked me where ___.", "options": ["do I live", "I lived", "did I live"], "answer": "I lived", "explanationVi": "Câu hỏi tường thuật: từ để hỏi + S + V, không đảo ngữ, lùi thì (live → lived)." },
+    { "id": "rs-04", "type": "mcq", "prompt": "\"Don't touch the cake,\" Mum said. → Mum told us ___ the cake.", "options": ["not to touch", "don't touch", "to not touching"], "answer": "not to touch", "explanationVi": "Lời cấm: told + người + not to V." },
+    { "id": "rs-05", "type": "mcq", "prompt": "\"Are you ready?\" he asked. → He asked ___ I was ready.", "options": ["if", "that", "what"], "answer": "if", "explanationVi": "Câu hỏi Yes/No → asked if / whether." },
+    { "id": "rs-06", "type": "fill", "prompt": "\"I can't come to the party tonight,\" Nam said yesterday. → Nam said he ___ come to the party that night.", "answers": ["couldn't", "could not"], "explanationVi": "can't lùi thành couldn't; tonight → that night." },
+    { "id": "rs-07", "type": "fill", "prompt": "\"I have finished my homework,\" Lan said. → Lan said she ___ her homework. (finish – lùi thì)", "answers": ["had finished", "'d finished"], "explanationVi": "Hiện tại hoàn thành lùi thành quá khứ hoàn thành: had finished." },
+    { "id": "rs-08", "type": "fill", "prompt": "\"I will help you tomorrow,\" Tom said last Monday. → Tom said he ___ help me the next day.", "answers": ["would", "'d"], "explanationVi": "will lùi thành would; tomorrow → the next day." },
+    { "id": "rs-09", "type": "order", "promptVi": "Anh ấy hỏi tôi có thích nhạc jazz không.", "answer": "He asked me if I liked jazz.", "distractors": ["did", "that"], "explanationVi": "Câu hỏi Yes/No: asked + người + if + S + V (lùi thì: liked)." },
+    { "id": "rs-10", "type": "order", "promptVi": "Cô ấy bảo tôi đừng lo lắng.", "answer": "She told me not to worry.", "distractors": ["don't", "said"], "explanationVi": "Lời khuyên / cấm: told + người + not to V." },
+    { "id": "rs-11", "type": "transform", "instructionVi": "Chuyển sang câu tường thuật, bắt đầu bằng Minh said", "source": "\"I am busy today,\" Minh said.", "answer": "Minh said he was busy that day.", "distractors": ["is", "am"], "explanationVi": "I → he; am → was; today → that day." },
+    { "id": "rs-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi tường thuật, bắt đầu bằng He asked me", "source": "\"Where are you going?\" he asked me.", "answer": "He asked me where I was going.", "distractors": ["are", "did"], "explanationVi": "where + S + V (không đảo); you → I; are → was." },
+    { "id": "rs-13", "type": "error", "sentence": "She asked me where [did I work].", "correction": "I worked", "explanationVi": "Câu hỏi tường thuật không đảo ngữ, không dùng did: where I worked." },
+    { "id": "rs-14", "type": "error", "sentence": "He [said] me the whole story.", "correction": "told", "explanationVi": "Có người nghe (me) ngay sau động từ → told." }
+  ]
+}

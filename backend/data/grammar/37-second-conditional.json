@@ -1,0 +1,55 @@
+{
+  "slug": "second-conditional",
+  "version": 3,
+  "titleVi": "Câu điều kiện loại 2",
+  "titleEn": "Second conditional",
+  "level": "B1",
+  "order": 37,
+  "summaryVi": "If + quá khứ đơn, would + V: tình huống giả định, không có thật hoặc khó xảy ra ở hiện tại / tương lai.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "If + S + V2 (quá khứ đơn), S + would + V", "example": { "en": "If I had more money, I would buy a car.", "vi": "Nếu có nhiều tiền hơn, tôi sẽ mua ô tô. (thực tế không có)" } },
+        { "kind": "negative", "pattern": "If + S + didn't + V, S + wouldn't + V", "example": { "en": "If he didn't work so much, he wouldn't be tired.", "vi": "Nếu anh ấy không làm nhiều thế, anh ấy sẽ không mệt như vậy." } },
+        { "kind": "question", "pattern": "What would you do if + S + V2?", "example": { "en": "What would you do if you won the lottery?", "vi": "Bạn sẽ làm gì nếu trúng xổ số?" } },
+        { "kind": "note", "pattern": "to be dùng were cho mọi chủ ngữ (văn trang trọng): If I were you, ...", "example": { "en": "If I were you, I would take the job.", "vi": "Nếu tôi là bạn, tôi sẽ nhận việc đó." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Loại 1 hay loại 2?",
+      "headers": ["", "Loại 1", "Loại 2"],
+      "cells": [
+        ["Khả năng", "có thể xảy ra", "giả định, khó / không xảy ra"],
+        ["Công thức", "If + hiện tại, will + V", "If + quá khứ, would + V"],
+        ["Ví dụ", "If I finish early, I'll call you.", "If I were a bird, I would fly."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "If I would have time, I would help you.", "right": "If I had time, I would help you.", "noteVi": "Mệnh đề If không dùng would." },
+        { "wrong": "If I am you, I would rest.", "right": "If I were you, I would rest.", "noteVi": "Lời khuyên giả định: If I were you." },
+        { "wrong": "If she knew, she will tell us.", "right": "If she knew, she would tell us.", "noteVi": "Loại 2: mệnh đề chính dùng would." }
+      ]
+    },
+    { "type": "tip", "textVi": "Dù dùng thì quá khứ, câu điều kiện loại 2 nói về HIỆN TẠI hoặc TƯƠNG LAI không có thật." }
+  ],
+  "exercises": [
+    { "id": "c2-01", "type": "mcq", "prompt": "If I ___ rich, I would travel the world.", "options": ["am", "were", "will be"], "answer": "were", "explanationVi": "Loại 2: If + quá khứ; to be dùng were." },
+    { "id": "c2-02", "type": "mcq", "prompt": "If she had a car, she ___ drive to work.", "options": ["will", "would", "can"], "answer": "would", "explanationVi": "Loại 2: mệnh đề chính dùng would." },
+    { "id": "c2-03", "type": "mcq", "prompt": "What would you do if you ___ a million dollars?", "options": ["find", "found", "would find"], "answer": "found", "explanationVi": "Mệnh đề If loại 2: quá khứ đơn." },
+    { "id": "c2-04", "type": "mcq", "prompt": "___ I were you, I would apologize.", "options": ["If", "When", "Unless"], "answer": "If", "explanationVi": "Cấu trúc khuyên: If I were you, I would..." },
+    { "id": "c2-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["If I would know her number, I would call her.", "If I knew her number, I would call her.", "If I knew her number, I will call her."], "answer": "If I knew her number, I would call her.", "explanationVi": "If + quá khứ, would + V." },
+    { "id": "c2-06", "type": "fill", "prompt": "If I ___ (have) more free time, I would learn to play the guitar.", "answers": ["had"], "explanationVi": "Mệnh đề If: quá khứ đơn." },
+    { "id": "c2-07", "type": "fill", "prompt": "If he lived closer, we ___ (see) him more often.", "answers": ["would see", "'d see"], "explanationVi": "Mệnh đề chính: would + V." },
+    { "id": "c2-08", "type": "fill", "prompt": "If it ___ (not / be) so expensive, I would buy it.", "answers": ["weren't", "were not", "wasn't", "was not"], "explanationVi": "Mệnh đề If phủ định với to be: weren't (wasn't cũng được trong văn nói)." },
+    { "id": "c2-09", "type": "order", "promptVi": "Nếu tôi là bạn, tôi sẽ nhận công việc đó.", "answer": "If I were you, I would take the job.", "distractors": ["am", "will"], "explanationVi": "If I were you, I would + V." },
+    { "id": "c2-10", "type": "order", "promptVi": "Bạn sẽ làm gì nếu bạn trúng xổ số?", "answer": "What would you do if you won the lottery?", "distractors": ["will", "win"], "explanationVi": "What would you do if + quá khứ đơn?" },
+    { "id": "c2-11", "type": "transform", "instructionVi": "Viết câu điều kiện loại 2 (giả định ngược với thực tế)", "source": "I don't have a car, so I don't drive to work.", "answer": "If I had a car, I would drive to work.", "distractors": ["have", "will"], "explanationVi": "Thực tế: không có xe → giả định: If I had..., I would..." },
+    { "id": "c2-12", "type": "error", "sentence": "If I won the lottery, I [will] buy a big house.", "correction": "would", "explanationVi": "Loại 2: If + quá khứ, mệnh đề chính dùng would." },
+    { "id": "c2-13", "type": "error", "sentence": "If she [studies] harder, she would get better grades.", "correction": "studied", "explanationVi": "Loại 2: mệnh đề If dùng quá khứ đơn (studied)." }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "slug": "ed-ing-adjectives",
+  "version": 1,
+  "titleVi": "Tính từ đuôi -ed và -ing",
+  "titleEn": "-ed and -ing adjectives",
+  "level": "A2",
+  "order": 28,
+  "summaryVi": "Tính từ -ed nói về cảm xúc của người (I'm bored = tôi thấy chán). Tính từ -ing nói về tính chất của sự vật, sự việc gây ra cảm xúc đó (The film is boring = phim chán).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Cách dùng",
+      "items": [
+        { "textVi": "-ed: người cảm thấy thế nào.", "example": { "en": "I'm tired after work.", "vi": "Tôi mệt sau giờ làm." } },
+        { "textVi": "-ing: cái gì / ai đó gây ra cảm giác ấy.", "example": { "en": "My job is very tiring.", "vi": "Công việc của tôi rất mệt." } },
+        { "textVi": "Người cũng có thể đi với -ing khi họ khiến người khác có cảm giác đó.", "example": { "en": "Our new teacher is really interesting.", "vi": "Thầy giáo mới của chúng tôi rất thú vị." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Các cặp hay gặp",
+      "headers": ["-ed (cảm thấy)", "-ing (gây ra cảm giác)", "Nghĩa"],
+      "cells": [
+        ["bored", "boring", "chán / gây chán"],
+        ["interested", "interesting", "quan tâm, thích / thú vị"],
+        ["tired", "tiring", "mệt / gây mệt"],
+        ["excited", "exciting", "háo hức / hấp dẫn, sôi động"],
+        ["surprised", "surprising", "ngạc nhiên / đáng ngạc nhiên"],
+        ["confused", "confusing", "bối rối, không hiểu / khó hiểu"],
+        ["embarrassed", "embarrassing", "ngượng, xấu hổ / đáng xấu hổ"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Giới từ đi kèm tính từ -ed",
+      "headers": ["Tính từ", "Ví dụ"],
+      "cells": [
+        ["interested in", "She's interested in photography."],
+        ["bored with / of", "I'm bored with this game."],
+        ["tired of (chán ngấy)", "I'm tired of eating noodles."],
+        ["excited about", "The kids are excited about the trip."],
+        ["surprised at / by", "We were surprised by the news."],
+        ["embarrassed about", "He was embarrassed about his mistake."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I'm boring. Let's go out.", "right": "I'm bored. Let's go out.", "noteVi": "\"Tôi chán\" = I'm bored. I'm boring = tôi là người nhạt nhẽo." },
+        { "wrong": "The film was very excited.", "right": "The film was very exciting.", "noteVi": "Bộ phim gây ra cảm xúc → -ing." },
+        { "wrong": "I'm interesting in music.", "right": "I'm interested in music.", "noteVi": "Cảm xúc của người → -ed; đi với giới từ in." },
+        { "wrong": "She is interested on cooking.", "right": "She is interested in cooking.", "noteVi": "interested luôn đi với in." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo nhớ: -ed = \"tôi cảm thấy\" (feel), -ing = \"nó làm tôi cảm thấy\". Hỏi: ai đang có cảm xúc? Nếu là chủ ngữ → -ed." }
+  ],
+  "exercises": [
+    { "id": "ei-01", "type": "mcq", "prompt": "The film was long and slow. I was ___.", "options": ["bored", "boring", "bore"], "answer": "bored", "explanationVi": "Tôi cảm thấy chán → bored." },
+    { "id": "ei-02", "type": "mcq", "prompt": "This book is really ___. I can't stop reading it.", "options": ["interesting", "interested", "interest"], "answer": "interesting", "explanationVi": "Cuốn sách gây hứng thú → interesting." },
+    { "id": "ei-03", "type": "mcq", "prompt": "I'm so ___ about our trip to Phu Quoc next week!", "options": ["excited", "exciting", "excite"], "answer": "excited", "explanationVi": "Cảm xúc của tôi → excited about." },
+    { "id": "ei-04", "type": "mcq", "prompt": "Tom is interested ___ learning Korean.", "options": ["in", "on", "at"], "answer": "in", "explanationVi": "interested in + N / V-ing." },
+    { "id": "ei-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["The result was very surprising.", "The result was very surprised.", "The result were very surprising."], "answer": "The result was very surprising.", "explanationVi": "Kết quả gây ngạc nhiên → surprising; the result số ít → was." },
+    { "id": "ei-06", "type": "fill", "prompt": "Working twelve hours a day is very ___ (tire).", "answers": ["tiring"], "explanationVi": "Công việc gây mệt → tiring." },
+    { "id": "ei-07", "type": "fill", "prompt": "I fell over in front of the whole class. I was so ___ (embarrass)!", "answers": ["embarrassed"], "explanationVi": "Cảm xúc của tôi → embarrassed." },
+    { "id": "ei-08", "type": "fill", "prompt": "The teacher's explanation was ___ (confuse), so nobody understood the lesson.", "answers": ["confusing"], "explanationVi": "Lời giải thích gây khó hiểu → confusing." },
+    { "id": "ei-09", "type": "order", "promptVi": "Tôi chán công việc này rồi.", "answer": "I am bored with this job.", "distractors": ["boring"], "explanationVi": "Cảm xúc của tôi → bored with." },
+    { "id": "ei-10", "type": "order", "promptVi": "Trận bóng đá đó rất hấp dẫn.", "answer": "That football match was very exciting.", "distractors": ["excited"], "explanationVi": "Trận đấu gây hào hứng → exciting." },
+    { "id": "ei-11", "type": "transform", "instructionVi": "Viết lại câu bắt đầu bằng 'I', dùng tính từ -ed", "source": "The news surprised me.", "answer": "I was surprised by the news.", "distractors": ["surprising"], "explanationVi": "Cảm xúc của tôi → I was surprised by..." },
+    { "id": "ei-12", "type": "transform", "instructionVi": "Viết lại câu với chủ ngữ là 'The trip', dùng tính từ -ing", "source": "I was tired after the trip.", "answer": "The trip was tiring.", "distractors": ["tired"], "explanationVi": "Chuyến đi gây mệt → tiring." },
+    { "id": "ei-13", "type": "error", "sentence": "I'm [boring]. Let's go out and do something fun.", "correction": "bored", "explanationVi": "\"Tôi thấy chán\" → I'm bored." },
+    { "id": "ei-14", "type": "error", "sentence": "My son is very interested [on] science.", "correction": "in", "explanationVi": "interested in." }
+  ]
+}

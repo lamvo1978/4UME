@@ -1,0 +1,67 @@
+{
+  "slug": "third-conditional-wish",
+  "version": 1,
+  "titleVi": "Câu điều kiện loại 3 và câu ước",
+  "titleEn": "Third conditional, wish and if only",
+  "level": "B1",
+  "order": 38,
+  "summaryVi": "If + had V3, would have V3: giả định ngược với quá khứ. I wish / If only + quá khứ đơn (ước cho hiện tại) hoặc quá khứ hoàn thành (tiếc về quá khứ).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "title": "Câu điều kiện loại 3",
+      "rows": [
+        { "kind": "affirmative", "pattern": "If + S + had + V3, S + would have + V3", "example": { "en": "If I had left earlier, I would have caught the train.", "vi": "Nếu tôi đi sớm hơn thì đã kịp chuyến tàu. (thực tế tôi đi muộn và lỡ tàu)" } },
+        { "kind": "negative", "pattern": "If + S + hadn't + V3, S + wouldn't have + V3", "example": { "en": "If it hadn't rained, we wouldn't have cancelled the picnic.", "vi": "Nếu trời không mưa thì chúng tôi đã không huỷ buổi dã ngoại." } },
+        { "kind": "question", "pattern": "What would you have done if + S + had + V3?", "example": { "en": "What would you have done if you had missed the flight?", "vi": "Nếu lỡ chuyến bay thì bạn đã làm gì?" } },
+        { "kind": "note", "pattern": "'d = had (mệnh đề If) hoặc would (mệnh đề chính)", "example": { "en": "If I'd known, I'd have told you.", "vi": "Nếu tôi biết thì tôi đã nói với bạn rồi." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Loại 2 hay loại 3?",
+      "headers": ["", "Loại 2", "Loại 3"],
+      "cells": [
+        ["Thời gian", "hiện tại / tương lai", "quá khứ (đã qua, không đổi được)"],
+        ["Công thức", "If + V2, would + V", "If + had V3, would have V3"],
+        ["Ví dụ", "If I had a car, I would drive you home.", "If I had had a car, I would have driven you home."]
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Câu ước: wish / If only",
+      "items": [
+        { "textVi": "wish + quá khứ đơn: ước hiện tại khác đi. to be thường dùng were.", "example": { "en": "I wish I had more free time.", "vi": "Ước gì tôi có nhiều thời gian rảnh hơn. (thực tế không có)" } },
+        { "textVi": "wish + quá khứ hoàn thành: tiếc nuối về một việc đã xảy ra.", "example": { "en": "I wish I hadn't said that to her.", "vi": "Giá mà tôi đã không nói điều đó với cô ấy." } },
+        { "textVi": "If only giống I wish nhưng cảm xúc mạnh hơn.", "example": { "en": "If only I had listened to my parents!", "vi": "Giá mà tôi đã nghe lời bố mẹ!" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "If I would have known, I would have come.", "right": "If I had known, I would have come.", "noteVi": "Mệnh đề If không dùng would." },
+        { "wrong": "If she had studied, she would pass the exam.", "right": "If she had studied, she would have passed the exam.", "noteVi": "Loại 3: mệnh đề chính dùng would have + V3." },
+        { "wrong": "I wish I have a car.", "right": "I wish I had a car.", "noteVi": "Ước cho hiện tại → lùi về quá khứ đơn." },
+        { "wrong": "I wish I didn't eat so much last night.", "right": "I wish I hadn't eaten so much last night.", "noteVi": "Tiếc về quá khứ (last night) → quá khứ hoàn thành." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: câu ước và câu điều kiện đều 'lùi một thì' so với thực tế. Thực tế hiện tại → quá khứ đơn; thực tế quá khứ → quá khứ hoàn thành." }
+  ],
+  "exercises": [
+    { "id": "c3-01", "type": "mcq", "prompt": "If I ___ about the meeting, I would have come.", "options": ["knew", "had known", "would know"], "answer": "had known", "explanationVi": "Loại 3: mệnh đề If dùng had + V3." },
+    { "id": "c3-02", "type": "mcq", "prompt": "If you had told me, I ___ you.", "options": ["would have helped", "will have helped", "had helped"], "answer": "would have helped", "explanationVi": "Loại 3: mệnh đề chính dùng would have + V3." },
+    { "id": "c3-03", "type": "mcq", "prompt": "I wish I ___ taller.", "options": ["am", "were", "will be"], "answer": "were", "explanationVi": "Ước cho hiện tại: wish + quá khứ; to be dùng were." },
+    { "id": "c3-04", "type": "mcq", "prompt": "I failed the test. I wish I ___ harder.", "options": ["have studied", "had studied", "would study"], "answer": "had studied", "explanationVi": "Tiếc về việc đã qua (trượt bài thi) → wish + quá khứ hoàn thành." },
+    { "id": "c3-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["If it hadn't rained, we would have gone to the beach.", "If it wouldn't have rained, we would have gone to the beach.", "If it hadn't rained, we will go to the beach."], "answer": "If it hadn't rained, we would have gone to the beach.", "explanationVi": "If + had (not) V3, would have + V3. Mệnh đề If không dùng would." },
+    { "id": "c3-06", "type": "fill", "prompt": "If we ___ (take) a taxi, we wouldn't have missed the flight.", "answers": ["had taken", "'d taken"], "explanationVi": "Mệnh đề If loại 3: had + V3 (taken)." },
+    { "id": "c3-07", "type": "fill", "prompt": "If she had asked me, I ___ (lend) her some money.", "answers": ["would have lent", "'d have lent", "would've lent"], "explanationVi": "Mệnh đề chính loại 3: would have + V3; lend → lent → lent." },
+    { "id": "c3-08", "type": "fill", "prompt": "I wish I ___ (not / eat) so much last night.", "answers": ["hadn't eaten", "had not eaten"], "explanationVi": "Tiếc về quá khứ (last night) → wish + hadn't + V3." },
+    { "id": "c3-09", "type": "order", "promptVi": "Nếu tôi biết thì tôi đã nói với bạn rồi.", "answer": "If I had known, I would have told you.", "distractors": ["will", "knew"], "explanationVi": "If + had V3, would have V3." },
+    { "id": "c3-10", "type": "order", "promptVi": "Giá mà tôi đã nghe lời bạn!", "answer": "If only I had listened to you!", "distractors": ["listen", "have"], "explanationVi": "Tiếc về quá khứ: If only + had + V3." },
+    { "id": "c3-11", "type": "transform", "instructionVi": "Viết câu điều kiện loại 3", "source": "I didn't have your number, so I didn't call you.", "answer": "If I had had your number, I would have called you.", "distractors": ["has", "will"], "explanationVi": "Thực tế quá khứ: không có số → If I had had (had + V3 của have), I would have called." },
+    { "id": "c3-12", "type": "transform", "instructionVi": "Viết lại với I wish (ước cho hiện tại)", "source": "I don't speak French.", "answer": "I wish I spoke French.", "distractors": ["speak", "spoken"], "explanationVi": "Ước cho hiện tại → wish + quá khứ đơn (spoke)." },
+    { "id": "c3-13", "type": "error", "sentence": "If I [would have known] the truth, I would have acted differently.", "correction": "had known", "explanationVi": "Mệnh đề If loại 3 dùng had + V3, không dùng would." },
+    { "id": "c3-14", "type": "error", "sentence": "I wish I [know] her phone number.", "correction": "knew", "explanationVi": "Ước cho hiện tại → wish + quá khứ đơn: knew." }
+  ]
+}

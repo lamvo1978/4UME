@@ -1,0 +1,65 @@
+{
+  "slug": "passive-voice",
+  "version": 3,
+  "titleVi": "Câu bị động",
+  "titleEn": "The passive voice",
+  "level": "B1",
+  "order": 40,
+  "summaryVi": "be + V3: nhấn mạnh hành động hoặc đối tượng chịu tác động, khi người làm không quan trọng hoặc không rõ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Không biết hoặc không cần nói ai làm.", "example": { "en": "My bike was stolen last night.", "vi": "Xe đạp của tôi bị lấy cắp tối qua." } },
+        { "textVi": "Nhấn mạnh đối tượng / kết quả hơn người làm; người làm (nếu cần) đi sau by.", "example": { "en": "This bridge was built by the French.", "vi": "Cây cầu này được người Pháp xây." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Bị động theo thì",
+      "headers": ["Thì", "Chủ động", "Bị động"],
+      "cells": [
+        ["Hiện tại đơn", "They clean the room.", "The room is cleaned."],
+        ["Quá khứ đơn", "They cleaned the room.", "The room was cleaned."],
+        ["Hiện tại tiếp diễn", "They are cleaning the room.", "The room is being cleaned."],
+        ["Hiện tại hoàn thành", "They have cleaned the room.", "The room has been cleaned."],
+        ["Tương lai (will)", "They will clean the room.", "The room will be cleaned."],
+        ["Động từ khuyết thiếu", "They must clean the room.", "The room must be cleaned."]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S (đối tượng) + be (chia theo thì) + V3 (+ by ...)", "example": { "en": "English is spoken all over the world.", "vi": "Tiếng Anh được nói khắp thế giới." } },
+        { "kind": "negative", "pattern": "S + be + not + V3", "example": { "en": "The letter wasn't sent.", "vi": "Lá thư đã không được gửi đi." } },
+        { "kind": "question", "pattern": "Be + S + V3?", "example": { "en": "Was the window broken?", "vi": "Cửa sổ có bị vỡ không?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "The cake was make by my mum.", "right": "The cake was made by my mum.", "noteVi": "Bị động dùng V3." },
+        { "wrong": "The house built in 1990.", "right": "The house was built in 1990.", "noteVi": "Không được bỏ be." },
+        { "wrong": "Rice is grew in Vietnam.", "right": "Rice is grown in Vietnam.", "noteVi": "grow → grew → grown (V3)." }
+      ]
+    },
+    { "type": "tip", "textVi": "Đổi chủ động → bị động: tân ngữ lên làm chủ ngữ, giữ nguyên thì bằng cách chia be, động từ chính đổi sang V3." }
+  ],
+  "exercises": [
+    { "id": "pv2-01", "type": "mcq", "prompt": "Millions of emails ___ every day.", "options": ["are sent", "send", "are sending"], "answer": "are sent", "explanationVi": "Bị động hiện tại đơn: emails số nhiều → are + V3 (sent)." },
+    { "id": "pv2-02", "type": "mcq", "prompt": "The Eiffel Tower ___ in 1889.", "options": ["built", "was built", "is built"], "answer": "was built", "explanationVi": "Năm 1889 → bị động quá khứ: was + V3." },
+    { "id": "pv2-03", "type": "mcq", "prompt": "The road ___ at the moment.", "options": ["is repaired", "is being repaired", "repairs"], "answer": "is being repaired", "explanationVi": "at the moment → bị động tiếp diễn: is being + V3." },
+    { "id": "pv2-04", "type": "mcq", "prompt": "Your order ___ tomorrow.", "options": ["will deliver", "will be delivered", "is deliver"], "answer": "will be delivered", "explanationVi": "Bị động tương lai: will be + V3." },
+    { "id": "pv2-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Coffee is grew in Dak Lak.", "Coffee is grown in Dak Lak.", "Coffee grown in Dak Lak."], "answer": "Coffee is grown in Dak Lak.", "explanationVi": "is + V3 (grown)." },
+    { "id": "pv2-06", "type": "fill", "prompt": "The windows ___ (clean) every week. (bị động, hiện tại đơn)", "answers": ["are cleaned"], "explanationVi": "windows số nhiều → are + V3." },
+    { "id": "pv2-07", "type": "fill", "prompt": "My phone ___ (steal) yesterday. (bị động)", "answers": ["was stolen"], "explanationVi": "yesterday → was + V3 (stolen)." },
+    { "id": "pv2-08", "type": "fill", "prompt": "The report has ___ (finish). (bị động)", "answers": ["been finished"], "explanationVi": "Hiện tại hoàn thành bị động: has been + V3." },
+    { "id": "pv2-09", "type": "order", "promptVi": "Tiếng Anh được nói ở nhiều quốc gia.", "answer": "English is spoken in many countries.", "distractors": ["speaks"], "explanationVi": "is + V3 (spoken)." },
+    { "id": "pv2-10", "type": "order", "promptVi": "Bức tranh này được vẽ bởi một nghệ sĩ nổi tiếng.", "answer": "This picture was painted by a famous artist.", "distractors": ["painting"], "explanationVi": "was + V3 + by + người làm." },
+    { "id": "pv2-11", "type": "transform", "instructionVi": "Chuyển sang câu bị động", "source": "Someone stole my wallet.", "answer": "My wallet was stolen.", "distractors": ["stole"], "explanationVi": "Tân ngữ my wallet lên đầu; quá khứ → was + V3; someone không cần nói." },
+    { "id": "pv2-12", "type": "transform", "instructionVi": "Chuyển sang câu bị động", "source": "They will open a new school next year.", "answer": "A new school will be opened next year.", "distractors": ["open"], "explanationVi": "will be + V3." },
+    { "id": "pv2-13", "type": "error", "sentence": "The letters were [send] last week.", "correction": "sent", "explanationVi": "Bị động dùng V3: sent." },
+    { "id": "pv2-14", "type": "error", "sentence": "This house [built] by my grandfather.", "correction": "was built", "explanationVi": "Thiếu be: was built." }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "slug": "have-got-would-like",
+  "version": 1,
+  "titleVi": "have / have got và would like",
+  "titleEn": "Have got and would like",
+  "level": "A1",
+  "order": 11,
+  "summaryVi": "have và have got đều nghĩa là \"có\" (sở hữu). would like dùng để xin, gọi món, mời một cách lịch sự.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "have / has: có (đồ vật, người thân, đặc điểm). Dùng được trong mọi tình huống.", "example": { "en": "I have two sisters.", "vi": "Tôi có hai chị gái." } },
+        { "textVi": "have got / has got: nghĩa giống have, hay dùng khi nói (nhất là tiếng Anh–Anh).", "example": { "en": "She's got a new phone.", "vi": "Cô ấy có điện thoại mới." } },
+        { "textVi": "would like + danh từ: muốn (lịch sự), dùng khi gọi món, mua hàng.", "example": { "en": "I'd like a coffee, please.", "vi": "Cho tôi một ly cà phê." } },
+        { "textVi": "would like + to V: muốn làm gì (lịch sự).", "example": { "en": "I'd like to book a table for two.", "vi": "Tôi muốn đặt bàn cho hai người." } },
+        { "textVi": "Would you like ...? để mời.", "example": { "en": "Would you like some tea?", "vi": "Bạn uống chút trà nhé?" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "have và have got",
+      "headers": ["", "have", "have got"],
+      "cells": [
+        ["Khẳng định", "I / you / we / they have · he / she / it has", "I've got · he's got / she's got"],
+        ["Phủ định", "don't have · doesn't have", "haven't got · hasn't got"],
+        ["Câu hỏi", "Do you have ...? · Does she have ...?", "Have you got ...? · Has she got ...?"],
+        ["Trả lời ngắn", "Yes, I do. · No, she doesn't.", "Yes, I have. · No, she hasn't."]
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "would like",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + would ('d) like + danh từ / to V", "example": { "en": "We'd like two teas, please.", "vi": "Cho chúng tôi hai ly trà." } },
+        { "kind": "question", "pattern": "Would + S + like + danh từ / to V?", "example": { "en": "Would you like to come with us?", "vi": "Bạn có muốn đi cùng chúng tôi không?" } },
+        { "kind": "short-answer", "pattern": "Yes, please. / No, thank you.", "example": { "en": "Would you like some cake? – Yes, please.", "vi": "Bạn ăn chút bánh nhé? – Vâng, cảm ơn." } },
+        { "kind": "note", "pattern": "I like = tôi thích (nói chung). I'd like = tôi muốn (lúc này, lịch sự).", "example": { "en": "I like coffee, but now I'd like a tea.", "vi": "Tôi thích cà phê, nhưng giờ tôi muốn uống trà." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Do you have got a car?", "right": "Have you got a car? / Do you have a car?", "noteVi": "Không trộn do với have got." },
+        { "wrong": "She have got a cat.", "right": "She has got a cat.", "noteVi": "He / She / It → has got." },
+        { "wrong": "I don't have got time.", "right": "I haven't got time. / I don't have time.", "noteVi": "have got phủ định bằng haven't got." },
+        { "wrong": "I would like go home.", "right": "I would like to go home.", "noteVi": "would like + to V." },
+        { "wrong": "I like a coffee, please.", "right": "I'd like a coffee, please.", "noteVi": "Gọi món dùng I'd like." }
+      ]
+    },
+    { "type": "tip", "textVi": "'s got là has got (She's got a dog), không phải is. 'd like là would like. have got chỉ dùng cho sở hữu ở hiện tại; với hoạt động (have breakfast, have a shower) chỉ dùng have." }
+  ],
+  "exercises": [
+    { "id": "hg-01", "type": "mcq", "prompt": "My sister ___ long hair.", "options": ["has got", "have got", "is got"], "answer": "has got", "explanationVi": "My sister = she → has got." },
+    { "id": "hg-02", "type": "mcq", "prompt": "___ you got a pen?", "options": ["Have", "Do", "Has"], "answer": "Have", "explanationVi": "Câu hỏi với have got: Have + you + got?" },
+    { "id": "hg-03", "type": "mcq", "prompt": "Does your flat have a balcony? – No, it ___.", "options": ["doesn't", "hasn't", "isn't"], "answer": "doesn't", "explanationVi": "Hỏi bằng Does thì trả lời bằng doesn't." },
+    { "id": "hg-04", "type": "mcq", "prompt": "(Ở nhà hàng) ___ the chicken soup, please.", "options": ["I'd like", "I like", "I'm like"], "answer": "I'd like", "explanationVi": "Gọi món lịch sự: I'd like + món." },
+    { "id": "hg-05", "type": "mcq", "prompt": "Would you like ___ a film tonight?", "options": ["to watch", "watch", "watching"], "answer": "to watch", "explanationVi": "would like + to V." },
+    { "id": "hg-06", "type": "fill", "prompt": "We ___ (not / have got) a car.", "answers": ["haven't got", "have not got"], "explanationVi": "Phủ định của have got: haven't got." },
+    { "id": "hg-07", "type": "fill", "prompt": "___ (do) your brother have a job?", "answers": ["Does"], "explanationVi": "your brother = he → Does ... have?" },
+    { "id": "hg-08", "type": "fill", "prompt": "I'd like ___ (book) a table for two.", "answers": ["to book"], "explanationVi": "would like + to V." },
+    { "id": "hg-09", "type": "order", "promptVi": "Chị gái bạn có xe ô tô không?", "answer": "Has your sister got a car?", "distractors": ["Is", "have"], "explanationVi": "your sister = she → Has + S + got ...?" },
+    { "id": "hg-10", "type": "order", "promptVi": "Tôi muốn nói chuyện với quản lý.", "answer": "I'd like to speak to the manager.", "distractors": ["speaking"], "explanationVi": "I'd like + to V." },
+    { "id": "hg-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "She has got a bike.", "answer": "Has she got a bike?", "distractors": ["Does"], "explanationVi": "Đảo has lên trước chủ ngữ, giữ got." },
+    { "id": "hg-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "They have a dog.", "answer": "They don't have a dog.", "distractors": ["doesn't", "not"], "explanationVi": "have (không có got) phủ định bằng don't have." },
+    { "id": "hg-13", "type": "error", "sentence": "She [have] got two children.", "correction": "has", "explanationVi": "She → has got." },
+    { "id": "hg-14", "type": "error", "sentence": "I would like [go] to Japan one day.", "correction": "to go", "explanationVi": "would like + to V." }
+  ]
+}

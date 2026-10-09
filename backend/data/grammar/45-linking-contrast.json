@@ -1,0 +1,70 @@
+{
+  "slug": "linking-contrast",
+  "version": 1,
+  "titleVi": "So / such và các từ nối tương phản",
+  "titleEn": "So, such and linking words of contrast",
+  "level": "B1",
+  "order": 45,
+  "summaryVi": "so / such để nhấn mạnh (…đến nỗi…). although, despite, however, but để nối hai ý trái ngược, mỗi từ đi với một cấu trúc riêng.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "so hay such?",
+      "headers": ["Cấu trúc", "Ví dụ"],
+      "cells": [
+        ["so + tính từ / trạng từ", "The film was so boring."],
+        ["such + a / an + tính từ + danh từ số ít", "It was such a boring film."],
+        ["such + tính từ + danh từ số nhiều / không đếm được", "They are such kind people."],
+        ["so + tính từ + that + mệnh đề", "It was so hot that we stayed inside."],
+        ["such (a) + tính từ + danh từ + that + mệnh đề", "It was such a hot day that we stayed inside."]
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "Diễn tả sự tương phản",
+      "rows": [
+        { "kind": "note", "pattern": "although / though / even though + S + V", "example": { "en": "Although it was raining, we went out.", "vi": "Mặc dù trời mưa, chúng tôi vẫn ra ngoài." } },
+        { "kind": "note", "pattern": "despite / in spite of + danh từ / V-ing", "example": { "en": "In spite of feeling tired, she kept working.", "vi": "Dù thấy mệt, cô ấy vẫn tiếp tục làm việc." } },
+        { "kind": "note", "pattern": "Câu 1. However, câu 2.", "example": { "en": "The flat is small. However, it's very cheap.", "vi": "Căn hộ nhỏ. Tuy nhiên, nó rất rẻ." } },
+        { "kind": "note", "pattern": "Mệnh đề 1, but mệnh đề 2.", "example": { "en": "The flat is small, but it's very cheap.", "vi": "Căn hộ nhỏ nhưng rất rẻ." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "but hay however?",
+      "headers": ["", "but", "however"],
+      "cells": [
+        ["Vị trí", "giữa câu, nối hai mệnh đề", "đầu câu mới"],
+        ["Dấu câu", "dấu phẩy trước but", "dấu chấm trước, dấu phẩy sau However"],
+        ["Văn phong", "thân mật, mọi lúc", "trang trọng hơn, hay dùng khi viết"]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Although it was late, but we kept working.", "right": "Although it was late, we kept working.", "noteVi": "Tiếng Việt nói 'Mặc dù… nhưng…', tiếng Anh chỉ dùng một trong hai." },
+        { "wrong": "Despite it was raining, we went out.", "right": "Despite the rain, we went out.", "noteVi": "despite + danh từ / V-ing, không + mệnh đề." },
+        { "wrong": "It was so a good film.", "right": "It was such a good film.", "noteVi": "Có a + danh từ → such." },
+        { "wrong": "I was tired, however I finished the report.", "right": "I was tired. However, I finished the report.", "noteVi": "However mở đầu câu mới và có dấu phẩy sau." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: phía sau là một mệnh đề (có chủ ngữ + động từ) → although. Phía sau chỉ là danh từ hoặc V-ing → despite / in spite of. Nhớ: in spite OF, nhưng despite không có of." }
+  ],
+  "exercises": [
+    { "id": "lc-01", "type": "mcq", "prompt": "It was ___ a beautiful day that we went to the beach.", "options": ["so", "such", "very"], "answer": "such", "explanationVi": "a + tính từ + danh từ (a beautiful day) → such." },
+    { "id": "lc-02", "type": "mcq", "prompt": "The coffee was ___ hot that I couldn't drink it.", "options": ["so", "such", "such a"], "answer": "so", "explanationVi": "Chỉ có tính từ (hot), không có danh từ → so." },
+    { "id": "lc-03", "type": "mcq", "prompt": "___ the heavy traffic, we arrived on time.", "options": ["Although", "Despite", "However"], "answer": "Despite", "explanationVi": "Phía sau là cụm danh từ (the heavy traffic) → Despite." },
+    { "id": "lc-04", "type": "mcq", "prompt": "___ she was ill, she went to work.", "options": ["Despite", "Although", "However"], "answer": "Although", "explanationVi": "Phía sau là mệnh đề (she was ill) → Although." },
+    { "id": "lc-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Although he is rich, but he isn't happy.", "Although he is rich, he isn't happy.", "Despite he is rich, he isn't happy."], "answer": "Although he is rich, he isn't happy.", "explanationVi": "Không dùng although và but cùng lúc; despite không đi với mệnh đề." },
+    { "id": "lc-06", "type": "fill", "prompt": "In spite ___ the rain, the match continued.", "answers": ["of"], "explanationVi": "in spite of + danh từ." },
+    { "id": "lc-07", "type": "fill", "prompt": "They are ___ friendly people. (so / such)", "answers": ["such"], "explanationVi": "Tính từ + danh từ số nhiều (friendly people) → such." },
+    { "id": "lc-08", "type": "fill", "prompt": "The hotel was very cheap. ___, the rooms were clean and comfortable. (however / although / despite)", "answers": ["However"], "explanationVi": "Đầu câu mới, có dấu phẩy phía sau → However." },
+    { "id": "lc-09", "type": "order", "promptVi": "Mặc dù mệt, cô ấy vẫn tiếp tục làm việc.", "answer": "Although she was tired, she kept working.", "distractors": ["but", "despite"], "explanationVi": "Although + mệnh đề; không thêm but." },
+    { "id": "lc-10", "type": "order", "promptVi": "Đó là một bộ phim hay đến nỗi tôi đã xem nó hai lần.", "answer": "It was such a good film that I watched it twice.", "distractors": ["very", "an"], "explanationVi": "such + a + tính từ + danh từ + that + mệnh đề." },
+    { "id": "lc-11", "type": "transform", "instructionVi": "Viết lại dùng Despite + danh từ", "source": "Although it rained, we enjoyed the trip.", "answer": "Despite the rain, we enjoyed the trip.", "distractors": ["although", "it"], "explanationVi": "Despite + danh từ (the rain), không + mệnh đề." },
+    { "id": "lc-12", "type": "transform", "instructionVi": "Viết lại dùng However (tách thành hai câu)", "source": "I set two alarms, but I still woke up late.", "answer": "I set two alarms. However, I still woke up late.", "distractors": ["but", "although"], "explanationVi": "Câu 1. However, câu 2." },
+    { "id": "lc-13", "type": "error", "sentence": "It was [so] a long journey that we were exhausted.", "correction": "such", "explanationVi": "a + tính từ + danh từ (a long journey) → such." },
+    { "id": "lc-14", "type": "error", "sentence": "In spite of [feel] tired, she finished the race.", "correction": "feeling", "explanationVi": "in spite of + V-ing." }
+  ]
+}

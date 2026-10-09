@@ -1,0 +1,75 @@
+{
+  "slug": "question-words",
+  "version": 1,
+  "titleVi": "Từ để hỏi",
+  "titleEn": "Question words",
+  "level": "A1",
+  "order": 9,
+  "summaryVi": "Câu hỏi Wh- bắt đầu bằng từ để hỏi (what, where, who...), tiếp theo là to be hoặc do / does, rồi mới đến chủ ngữ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Các từ để hỏi",
+      "headers": ["Từ để hỏi", "Hỏi về", "Ví dụ"],
+      "cells": [
+        ["what", "cái gì, việc gì", "What is your name?"],
+        ["where", "ở đâu", "Where do you live?"],
+        ["when", "khi nào", "When is your birthday?"],
+        ["who", "ai", "Who is that man?"],
+        ["why", "tại sao", "Why are you sad?"],
+        ["how", "thế nào, bằng cách nào", "How do you go to work?"],
+        ["which", "cái nào (chọn trong vài thứ)", "Which colour do you like, red or blue?"],
+        ["whose", "của ai", "Whose bag is this?"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "How + ...",
+      "headers": ["Cụm từ", "Hỏi về", "Ví dụ"],
+      "cells": [
+        ["how much", "giá tiền; lượng (không đếm được)", "How much is this shirt? / How much water do you drink?"],
+        ["how many", "số lượng (đếm được, số nhiều)", "How many children do you have?"],
+        ["how old", "tuổi", "How old is your son?"],
+        ["how often", "bao lâu một lần", "How often do you play tennis?"],
+        ["what time", "mấy giờ", "What time do you get up?"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "question", "pattern": "Wh- + am / is / are + S + ...?", "example": { "en": "Where is the bank?", "vi": "Ngân hàng ở đâu?" } },
+        { "kind": "question", "pattern": "Wh- + do / does + S + V?", "example": { "en": "What does your father do?", "vi": "Bố bạn làm nghề gì?" } },
+        { "kind": "question", "pattern": "Wh- + am / is / are + S + V-ing?", "example": { "en": "Why are you laughing?", "vi": "Sao bạn cười thế?" } },
+        { "kind": "note", "pattern": "Trả lời câu hỏi Why thường bắt đầu bằng Because.", "example": { "en": "Why are you at home? – Because I'm ill.", "vi": "Sao bạn ở nhà? – Vì tôi bị ốm." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Where you live?", "right": "Where do you live?", "noteVi": "Động từ thường: không được bỏ do / does." },
+        { "wrong": "Where your sister is?", "right": "Where is your sister?", "noteVi": "Đảo is lên trước chủ ngữ." },
+        { "wrong": "What does she likes?", "right": "What does she like?", "noteVi": "Sau does dùng động từ nguyên mẫu." },
+        { "wrong": "How many money do you have?", "right": "How much money do you have?", "noteVi": "money không đếm được → how much." },
+        { "wrong": "What old are you?", "right": "How old are you?", "noteVi": "Hỏi tuổi dùng How old." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo xếp trật tự: viết câu hỏi Yes / No trước, rồi đặt từ để hỏi lên đầu. Do you live here? → Where do you live? · Is the shop open? → When is the shop open?" }
+  ],
+  "exercises": [
+    { "id": "qw-01", "type": "mcq", "prompt": "___ shirt do you like, the red one or the blue one?", "options": ["Which", "Who", "Whose"], "answer": "Which", "explanationVi": "Chọn một trong vài thứ → Which." },
+    { "id": "qw-02", "type": "mcq", "prompt": "___ is your birthday? – On 5th May.", "options": ["What", "When", "Where"], "answer": "When", "explanationVi": "Câu trả lời là ngày tháng → When." },
+    { "id": "qw-03", "type": "mcq", "prompt": "___ brothers and sisters do you have?", "options": ["How much", "How many", "How old"], "answer": "How many", "explanationVi": "brothers and sisters đếm được, số nhiều → How many." },
+    { "id": "qw-04", "type": "mcq", "prompt": "___ do you go to the gym? – Three times a week.", "options": ["How often", "How many", "When"], "answer": "How often", "explanationVi": "Three times a week trả lời cho bao lâu một lần → How often." },
+    { "id": "qw-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["What time does the film start?", "What time the film starts?", "What time does the film starts?"], "answer": "What time does the film start?", "explanationVi": "Wh- + does + S + V nguyên mẫu." },
+    { "id": "qw-06", "type": "fill", "prompt": "___ are you sad? – Because my cat is ill.", "answers": ["Why"], "explanationVi": "Câu trả lời bắt đầu bằng Because → hỏi lý do: Why." },
+    { "id": "qw-07", "type": "fill", "prompt": "___ is that woman? – She's my aunt.", "answers": ["Who"], "explanationVi": "Hỏi về người → Who." },
+    { "id": "qw-08", "type": "fill", "prompt": "___ old is your daughter? – She's six.", "answers": ["How"], "explanationVi": "Hỏi tuổi → How old." },
+    { "id": "qw-09", "type": "order", "promptVi": "Bạn sống ở đâu?", "answer": "Where do you live?", "distractors": ["are"], "explanationVi": "Where + do + S + V?" },
+    { "id": "qw-10", "type": "order", "promptVi": "Cái áo sơ mi này giá bao nhiêu?", "answer": "How much is this shirt?", "distractors": ["many"], "explanationVi": "Hỏi giá → How much + is + S?" },
+    { "id": "qw-11", "type": "transform", "instructionVi": "Đặt câu hỏi với Where", "source": "She works in a hospital.", "answer": "Where does she work?", "distractors": ["works", "do"], "explanationVi": "Where + does + S + V nguyên mẫu?" },
+    { "id": "qw-12", "type": "transform", "instructionVi": "Đặt câu hỏi với How old", "source": "His son is ten.", "answer": "How old is his son?", "distractors": ["does"], "explanationVi": "How old + is + S? Câu có to be thì không dùng does." },
+    { "id": "qw-13", "type": "error", "sentence": "What time [you get] up every day?", "correction": "do you get", "explanationVi": "Động từ thường: Wh- + do + S + V." },
+    { "id": "qw-14", "type": "error", "sentence": "How [many] money do you need?", "correction": "much", "explanationVi": "money không đếm được → How much." }
+  ]
+}

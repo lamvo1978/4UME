@@ -1,0 +1,65 @@
+{
+  "slug": "subject-object-questions",
+  "version": 1,
+  "titleVi": "Câu hỏi chủ ngữ và câu hỏi tân ngữ",
+  "titleEn": "Subject and object questions",
+  "level": "A2",
+  "order": 30,
+  "summaryVi": "Khi Who / What hỏi về chủ ngữ (người / vật làm hành động), không dùng do / does / did: Who called you? Khi hỏi về tân ngữ, vẫn dùng trợ động từ như bình thường: Who did you call?",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Hai loại câu hỏi",
+      "items": [
+        { "textVi": "Câu hỏi chủ ngữ: hỏi ai / cái gì làm hành động. Who / What thay cho chủ ngữ, động từ giữ nguyên như câu khẳng định.", "example": { "en": "Who called you? – Lan called me.", "vi": "Ai gọi cho bạn thế? – Lan gọi." } },
+        { "textVi": "Câu hỏi tân ngữ: hỏi ai / cái gì nhận hành động. Dùng do / does / did như câu hỏi thường.", "example": { "en": "Who did you call? – I called Lan.", "vi": "Bạn đã gọi cho ai? – Tôi gọi cho Lan." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Từ một câu, hỏi hai cách",
+      "headers": ["Câu gốc", "Hỏi chủ ngữ", "Hỏi tân ngữ"],
+      "cells": [
+        ["Lan called Minh.", "Who called Minh? – Lan.", "Who did Lan call? – Minh."],
+        ["The dog ate my sandwich.", "What ate my sandwich? – The dog.", "What did the dog eat? – My sandwich."],
+        ["My mum loves flowers.", "Who loves flowers? – My mum.", "What does your mum love? – Flowers."]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "question", "pattern": "Câu hỏi chủ ngữ: Who / What + V (chia như câu khẳng định)?", "example": { "en": "What happened?", "vi": "Có chuyện gì vậy?" } },
+        { "kind": "question", "pattern": "Câu hỏi tân ngữ: Who / What + do / does / did + S + V?", "example": { "en": "What did you eat for lunch?", "vi": "Trưa nay bạn ăn gì?" } },
+        { "kind": "note", "pattern": "Hiện tại đơn: Who + V-s/es (như he / she)", "example": { "en": "Who wants coffee?", "vi": "Ai muốn uống cà phê nào?" } },
+        { "kind": "note", "pattern": "How many / Which + N cũng có thể làm chủ ngữ", "example": { "en": "How many people came to the meeting?", "vi": "Có bao nhiêu người đến dự họp?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "What did happen?", "right": "What happened?", "noteVi": "What là chủ ngữ → không dùng did." },
+        { "wrong": "Who did call you?", "right": "Who called you?", "noteVi": "Hỏi người gọi (chủ ngữ) → không dùng did." },
+        { "wrong": "Who you called?", "right": "Who did you call?", "noteVi": "Hỏi người được gọi (tân ngữ) → cần did." },
+        { "wrong": "Who live here?", "right": "Who lives here?", "noteVi": "Who làm chủ ngữ → động từ chia như he / she." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: thử trả lời câu hỏi. Nếu câu trả lời đứng ở vị trí chủ ngữ (Lan called me) → không dùng do / does / did. Nếu đứng sau động từ (I called Lan) → dùng do / does / did." }
+  ],
+  "exercises": [
+    { "id": "sq-01", "type": "mcq", "prompt": "___ broke the window? – Tom did.", "options": ["Who", "Who did", "Who does"], "answer": "Who", "explanationVi": "Hỏi người làm vỡ (chủ ngữ) → Who + V, không dùng did." },
+    { "id": "sq-02", "type": "mcq", "prompt": "What ___ last night? – There was a big storm.", "options": ["happened", "did happen", "did it happen"], "answer": "happened", "explanationVi": "What là chủ ngữ → What happened?" },
+    { "id": "sq-03", "type": "mcq", "prompt": "Who ___ at the party? – I met Lan and her husband.", "options": ["did you meet", "met you", "you met"], "answer": "did you meet", "explanationVi": "Hỏi người được gặp (tân ngữ) → Who did you meet?" },
+    { "id": "sq-04", "type": "mcq", "prompt": "Who ___ in this house? – My grandparents do.", "options": ["lives", "live", "does live"], "answer": "lives", "explanationVi": "Who làm chủ ngữ → động từ chia số ít: lives." },
+    { "id": "sq-05", "type": "mcq", "prompt": "Hỏi về người nấu bữa tối: \"Mai cooked dinner.\"", "options": ["Who cooked dinner?", "Who did cook dinner?", "Who did Mai cook?"], "answer": "Who cooked dinner?", "explanationVi": "Hỏi chủ ngữ (Mai) → Who cooked dinner?" },
+    { "id": "sq-06", "type": "fill", "prompt": "Who ___ (tell) you about the party? – Nam told me.", "answers": ["told"], "explanationVi": "Hỏi người kể (chủ ngữ) → động từ quá khứ: told." },
+    { "id": "sq-07", "type": "fill", "prompt": "What ___ you buy at the market? – I bought some fruit.", "answers": ["did"], "explanationVi": "Hỏi vật được mua (tân ngữ) → What did you buy?" },
+    { "id": "sq-08", "type": "fill", "prompt": "How many people ___ (come) to the meeting yesterday? – About twenty.", "answers": ["came"], "explanationVi": "How many people là chủ ngữ → came, không dùng did." },
+    { "id": "sq-09", "type": "order", "promptVi": "Ai đã gọi cho bạn tối qua?", "answer": "Who called you last night?", "distractors": ["did"], "explanationVi": "Hỏi người gọi (chủ ngữ) → Who called...?" },
+    { "id": "sq-10", "type": "order", "promptVi": "Bạn đã gặp ai ở trường?", "answer": "Who did you meet at school?", "distractors": ["does"], "explanationVi": "Hỏi người được gặp (tân ngữ) → Who did you meet?" },
+    { "id": "sq-11", "type": "transform", "instructionVi": "Đặt câu hỏi về người sửa máy tính", "source": "My brother fixed the computer.", "answer": "Who fixed the computer?", "distractors": ["does", "fixing"], "explanationVi": "Hỏi chủ ngữ → Who + V quá khứ, không dùng did." },
+    { "id": "sq-12", "type": "transform", "instructionVi": "Đặt câu hỏi về thứ Linh đã mua", "source": "Linh bought a new bike.", "answer": "What did Linh buy?", "distractors": ["bought"], "explanationVi": "Hỏi tân ngữ → What did + S + V nguyên mẫu?" },
+    { "id": "sq-13", "type": "error", "sentence": "What [did happen] at school today?", "correction": "happened", "explanationVi": "What là chủ ngữ → What happened?" },
+    { "id": "sq-14", "type": "error", "sentence": "Who did you [saw] at the cinema yesterday?", "correction": "see", "explanationVi": "Có did thì động từ chính về nguyên mẫu: see." }
+  ]
+}

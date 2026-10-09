@@ -1,0 +1,58 @@
+{
+  "slug": "countable-uncountable",
+  "version": 3,
+  "titleVi": "Danh từ đếm được và không đếm được",
+  "titleEn": "Countable and uncountable nouns",
+  "level": "A1",
+  "order": 13,
+  "summaryVi": "Danh từ đếm được có số ít / số nhiều (an apple, two apples). Danh từ không đếm được không có số nhiều (water, money) và đi với much, a little.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Đếm được: đi với a / an, số đếm, many, a few.", "example": { "en": "I have a few friends here.", "vi": "Tôi có vài người bạn ở đây." } },
+        { "textVi": "Không đếm được: chất lỏng, chất liệu, khái niệm (water, rice, money, advice, information, homework, furniture).", "example": { "en": "Can I give you some advice?", "vi": "Tôi cho bạn vài lời khuyên nhé?" } },
+        { "textVi": "Muốn đếm danh từ không đếm được, dùng đơn vị: a glass of, a piece of, a bottle of, a kilo of.", "example": { "en": "a piece of information, two cups of tea", "vi": "một thông tin, hai tách trà" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Từ chỉ số lượng",
+      "headers": ["", "Đếm được (số nhiều)", "Không đếm được"],
+      "cells": [
+        ["nhiều (thường trong phủ định / câu hỏi)", "many", "much"],
+        ["một ít / vài", "a few", "a little"],
+        ["ít, gần như không", "few", "little"],
+        ["một vài / một ít (khẳng định)", "some", "some"],
+        ["nào (phủ định / hỏi)", "any", "any"],
+        ["hỏi số lượng", "How many ...?", "How much ...?"],
+        ["nhiều (khẳng định, cả hai)", "a lot of / lots of", "a lot of / lots of"]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I need some informations.", "right": "I need some information.", "noteVi": "information không đếm được, không thêm s." },
+        { "wrong": "How many money do you have?", "right": "How much money do you have?", "noteVi": "money không đếm được → How much." },
+        { "wrong": "Can I give you an advice?", "right": "Can I give you a piece of advice?", "noteVi": "advice không đi với a / an." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "cu-01", "type": "mcq", "prompt": "How ___ water do you drink every day?", "options": ["many", "much", "few"], "answer": "much", "explanationVi": "water không đếm được → How much." },
+    { "id": "cu-02", "type": "mcq", "prompt": "How ___ brothers do you have?", "options": ["many", "much", "little"], "answer": "many", "explanationVi": "brothers đếm được số nhiều → How many." },
+    { "id": "cu-03", "type": "mcq", "prompt": "Từ nào KHÔNG đếm được?", "options": ["chair", "furniture", "table"], "answer": "furniture", "explanationVi": "furniture (đồ nội thất) không đếm được." },
+    { "id": "cu-04", "type": "mcq", "prompt": "There is only ___ milk left.", "options": ["a few", "a little", "many"], "answer": "a little", "explanationVi": "milk không đếm được → a little." },
+    { "id": "cu-05", "type": "mcq", "prompt": "I have ___ homework tonight.", "options": ["a lot of", "many", "a"], "answer": "a lot of", "explanationVi": "homework không đếm được; a lot of dùng được cho cả hai." },
+    { "id": "cu-06", "type": "mcq", "prompt": "Chọn cụm đúng.", "options": ["a bread", "a piece of bread", "two breads"], "answer": "a piece of bread", "explanationVi": "bread không đếm được → a piece of bread." },
+    { "id": "cu-07", "type": "fill", "prompt": "I only have ___ friends in this city. (a few / a little)", "answers": ["a few"], "explanationVi": "friends đếm được → a few." },
+    { "id": "cu-08", "type": "fill", "prompt": "Can I have a ___ of water, please? (cốc)", "answers": ["glass", "cup"], "explanationVi": "a glass of water: một cốc nước." },
+    { "id": "cu-09", "type": "fill", "prompt": "We don't have ___ time. Hurry up! (much / many)", "answers": ["much"], "explanationVi": "time (thời gian) không đếm được → much." },
+    { "id": "cu-10", "type": "order", "promptVi": "Bạn có bao nhiêu tiền?", "answer": "How much money do you have?", "distractors": ["many"], "explanationVi": "money không đếm được → How much." },
+    { "id": "cu-11", "type": "order", "promptVi": "Cô ấy mua hai chai nước.", "answer": "She buys two bottles of water.", "distractors": ["waters"], "explanationVi": "Đếm bằng đơn vị: bottles of water." },
+    { "id": "cu-12", "type": "error", "sentence": "My teacher always gives me useful [advices].", "correction": "advice", "explanationVi": "advice không đếm được, không có số nhiều." },
+    { "id": "cu-13", "type": "error", "sentence": "There aren't [much] students in the library.", "correction": "many", "explanationVi": "students đếm được → many." },
+    { "id": "cu-14", "type": "transform", "instructionVi": "Viết lại dùng 'a little' hoặc 'a few'", "source": "I have some sugar.", "answer": "I have a little sugar.", "distractors": ["few"], "explanationVi": "sugar không đếm được → a little." }
+  ]
+}

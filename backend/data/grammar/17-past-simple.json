@@ -1,0 +1,83 @@
+{
+  "slug": "past-simple",
+  "version": 3,
+  "titleVi": "Thì quá khứ đơn",
+  "titleEn": "Past simple",
+  "level": "A2",
+  "order": 17,
+  "summaryVi": "Diễn tả việc đã xảy ra và kết thúc trong quá khứ. Động từ có quy tắc thêm -ed, bất quy tắc phải học thuộc (go → went).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Việc đã xảy ra và kết thúc tại thời điểm xác định trong quá khứ.", "example": { "en": "I visited Hue last year.", "vi": "Năm ngoái tôi đã đến Huế." } },
+        { "textVi": "Chuỗi hành động nối tiếp trong quá khứ.", "example": { "en": "He got up, had breakfast and left.", "vi": "Anh ấy thức dậy, ăn sáng rồi đi." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + V-ed / V2 (bất quy tắc)", "example": { "en": "She went to Paris.", "vi": "Cô ấy đã đến Paris." } },
+        { "kind": "negative", "pattern": "S + did not (didn't) + V nguyên mẫu", "example": { "en": "We didn't see him.", "vi": "Chúng tôi không thấy anh ấy." } },
+        { "kind": "question", "pattern": "Did + S + V nguyên mẫu?", "example": { "en": "Did you call her?", "vi": "Bạn có gọi cho cô ấy không?" } },
+        { "kind": "short-answer", "pattern": "Yes, S + did. / No, S + didn't.", "example": { "en": "Yes, I did.", "vi": "Có." } },
+        { "kind": "note", "pattern": "to be: I / He / She / It + was · You / We / They + were", "example": { "en": "They were at home.", "vi": "Họ đã ở nhà." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Cách thêm -ed",
+      "headers": ["Quy tắc", "Ví dụ"],
+      "cells": [
+        ["Thông thường: + ed", "work → worked, play → played"],
+        ["Tận cùng e: + d", "live → lived, like → liked"],
+        ["Phụ âm + y: y → ied", "study → studied, cry → cried"],
+        ["1 âm tiết, 1 nguyên âm + 1 phụ âm: gấp đôi phụ âm (trừ w, x, y)", "stop → stopped, plan → planned; nhưng fix → fixed"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Động từ bất quy tắc hay gặp",
+      "headers": ["Nguyên mẫu", "Quá khứ", "Nghĩa"],
+      "cells": [
+        ["go", "went", "đi"],
+        ["have", "had", "có"],
+        ["see", "saw", "thấy"],
+        ["buy", "bought", "mua"],
+        ["eat", "ate", "ăn"],
+        ["take", "took", "lấy, mang"],
+        ["make", "made", "làm"],
+        ["write", "wrote", "viết"],
+        ["come", "came", "đến"],
+        ["get", "got", "nhận, được"]
+      ]
+    },
+    { "type": "signals", "words": ["yesterday", "last night", "last week", "two days ago", "in 2019", "when I was young"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I goed to school.", "right": "I went to school.", "noteVi": "go là động từ bất quy tắc." },
+        { "wrong": "Did you saw it?", "right": "Did you see it?", "noteVi": "Sau did dùng động từ nguyên mẫu." },
+        { "wrong": "She didn't went.", "right": "She didn't go.", "noteVi": "Sau didn't dùng động từ nguyên mẫu." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pa-01", "type": "mcq", "prompt": "We ___ a great film last night.", "options": ["see", "saw", "seen"], "answer": "saw", "explanationVi": "last night → quá khứ; see → saw." },
+    { "id": "pa-02", "type": "mcq", "prompt": "___ you go to the party yesterday?", "options": ["Do", "Did", "Were"], "answer": "Did", "explanationVi": "Câu hỏi quá khứ với động từ thường: Did + S + V." },
+    { "id": "pa-03", "type": "mcq", "prompt": "They ___ at the cinema on Sunday.", "options": ["was", "were", "did"], "answer": "were", "explanationVi": "They + were." },
+    { "id": "pa-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["She didn't called me.", "She didn't call me.", "She not called me."], "answer": "She didn't call me.", "explanationVi": "didn't + V nguyên mẫu." },
+    { "id": "pa-05", "type": "mcq", "prompt": "Quá khứ của 'buy' là:", "options": ["buyed", "bought", "brought"], "answer": "bought", "explanationVi": "buy → bought (brought là quá khứ của bring)." },
+    { "id": "pa-06", "type": "fill", "prompt": "I ___ (play) football yesterday.", "answers": ["played"], "explanationVi": "Có quy tắc: play → played." },
+    { "id": "pa-07", "type": "fill", "prompt": "She ___ (go) to Japan in 2019.", "answers": ["went"], "explanationVi": "go → went." },
+    { "id": "pa-08", "type": "fill", "prompt": "We ___ (not / have) time to eat.", "answers": ["didn't have", "did not have"], "explanationVi": "didn't + V nguyên mẫu." },
+    { "id": "pa-09", "type": "fill", "prompt": "The weather ___ (be) terrible last weekend.", "answers": ["was"], "explanationVi": "The weather = it → was." },
+    { "id": "pa-10", "type": "order", "promptVi": "Tôi đã mua một chiếc xe đạp mới tuần trước.", "answer": "I bought a new bike last week.", "distractors": ["buy"], "explanationVi": "buy → bought." },
+    { "id": "pa-11", "type": "order", "promptVi": "Hôm qua bạn đã làm gì?", "answer": "What did you do yesterday?", "distractors": ["done"], "explanationVi": "Từ để hỏi + did + S + V?" },
+    { "id": "pa-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "He wrote a letter.", "answer": "Did he write a letter?", "distractors": ["wrote"], "explanationVi": "Did + S + V nguyên mẫu (write)." },
+    { "id": "pa-13", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "They came home late.", "answer": "They didn't come home late.", "distractors": ["came"], "explanationVi": "didn't + come." },
+    { "id": "pa-14", "type": "error", "sentence": "My dad [taked] me to the zoo.", "correction": "took", "explanationVi": "take → took." },
+    { "id": "pa-15", "type": "error", "sentence": "Did you [watched] the match?", "correction": "watch", "explanationVi": "Sau did dùng V nguyên mẫu." }
+  ]
+}

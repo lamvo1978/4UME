@@ -1,0 +1,64 @@
+{
+  "slug": "prepositions",
+  "version": 2,
+  "titleVi": "Giới từ chỉ thời gian và nơi chốn",
+  "titleEn": "Prepositions of time and place",
+  "level": "A2",
+  "order": 16,
+  "summaryVi": "in / on / at dùng cho cả thời gian và nơi chốn, từ phạm vi lớn (in) đến cụ thể (at).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Thời gian",
+      "headers": ["Giới từ", "Dùng với", "Ví dụ"],
+      "cells": [
+        ["in", "tháng, năm, mùa, thế kỷ, buổi trong ngày", "in May, in 2020, in summer, in the morning"],
+        ["on", "thứ, ngày cụ thể, ngày lễ có 'day'", "on Monday, on 5 May, on my birthday, on Christmas Day"],
+        ["at", "giờ, thời điểm", "at 7 o'clock, at noon, at night, at the weekend (Anh) / on the weekend (Mỹ)"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Nơi chốn",
+      "headers": ["Giới từ", "Dùng với", "Ví dụ"],
+      "cells": [
+        ["in", "bên trong không gian, thành phố, quốc gia", "in the box, in Hanoi, in Vietnam"],
+        ["on", "trên bề mặt, tầng, đường phố", "on the table, on the second floor, on Le Loi Street"],
+        ["at", "một điểm, địa chỉ cụ thể, sự kiện", "at the door, at 12 Le Loi Street, at a party, at home, at work"]
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Giới từ vị trí khác",
+      "items": [
+        { "textVi": "under (dưới), next to (bên cạnh), between ... and ... (ở giữa), behind (phía sau), in front of (phía trước), opposite (đối diện).", "example": { "en": "The bank is between the café and the school.", "vi": "Ngân hàng nằm giữa quán cà phê và trường học." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "in Monday", "right": "on Monday", "noteVi": "Thứ trong tuần dùng on." },
+        { "wrong": "on the morning", "right": "in the morning", "noteVi": "Buổi trong ngày dùng in (nhưng at night)." },
+        { "wrong": "in home", "right": "at home", "noteVi": "at home, at work, at school là cụm cố định." }
+      ]
+    },
+    { "type": "tip", "textVi": "Hình tam giác ngược: IN (rộng nhất: năm, tháng, thành phố) → ON (ngày, bề mặt, đường) → AT (hẹp nhất: giờ, địa chỉ)." }
+  ],
+  "exercises": [
+    { "id": "pr-01", "type": "mcq", "prompt": "My birthday is ___ June.", "options": ["in", "on", "at"], "answer": "in", "explanationVi": "Tháng dùng in." },
+    { "id": "pr-02", "type": "mcq", "prompt": "The meeting starts ___ 9 a.m.", "options": ["in", "on", "at"], "answer": "at", "explanationVi": "Giờ cụ thể dùng at." },
+    { "id": "pr-03", "type": "mcq", "prompt": "I'll see you ___ Friday.", "options": ["in", "on", "at"], "answer": "on", "explanationVi": "Thứ dùng on." },
+    { "id": "pr-04", "type": "mcq", "prompt": "The keys are ___ the table.", "options": ["on", "at", "in"], "answer": "on", "explanationVi": "Trên bề mặt bàn → on." },
+    { "id": "pr-05", "type": "mcq", "prompt": "She lives ___ Da Nang.", "options": ["on", "at", "in"], "answer": "in", "explanationVi": "Thành phố dùng in." },
+    { "id": "pr-06", "type": "mcq", "prompt": "I usually read ___ night.", "options": ["in", "on", "at"], "answer": "at", "explanationVi": "at night là cụm cố định." },
+    { "id": "pr-07", "type": "fill", "prompt": "We often go hiking ___ the weekend. (giới từ)", "answers": ["at", "on"], "explanationVi": "Anh-Anh: at the weekend; Anh-Mỹ: on the weekend. Cả hai đều đúng." },
+    { "id": "pr-08", "type": "fill", "prompt": "Her office is ___ the third floor. (giới từ)", "answers": ["on"], "explanationVi": "Tầng dùng on." },
+    { "id": "pr-09", "type": "fill", "prompt": "Vietnam's National Day is ___ 2 September. (giới từ)", "answers": ["on"], "explanationVi": "Ngày cụ thể dùng on." },
+    { "id": "pr-10", "type": "order", "promptVi": "Tôi sinh năm 1998.", "answer": "I was born in 1998.", "distractors": ["on"], "explanationVi": "Năm dùng in." },
+    { "id": "pr-11", "type": "order", "promptVi": "Con mèo đang ở dưới gầm giường.", "answer": "The cat is under the bed.", "distractors": ["on"], "explanationVi": "under: bên dưới." },
+    { "id": "pr-12", "type": "error", "sentence": "We have English classes [in] Tuesday.", "correction": "on", "explanationVi": "Thứ trong tuần dùng on." },
+    { "id": "pr-13", "type": "error", "sentence": "He is not [in] home right now.", "correction": "at", "explanationVi": "at home là cụm cố định." },
+    { "id": "pr-14", "type": "error", "sentence": "I drink coffee [on] the morning.", "correction": "in", "explanationVi": "Buổi trong ngày: in the morning." }
+  ]
+}

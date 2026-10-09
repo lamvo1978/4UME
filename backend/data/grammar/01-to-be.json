@@ -1,0 +1,66 @@
+{
+  "slug": "to-be",
+  "version": 2,
+  "titleVi": "Động từ to be",
+  "titleEn": "The verb to be",
+  "level": "A1",
+  "order": 1,
+  "summaryVi": "am / is / are dùng để nói ai đó là ai, ở đâu, như thế nào. Tiếng Anh không được bỏ to be như tiếng Việt.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Giới thiệu tên, nghề nghiệp, quốc tịch.", "example": { "en": "I am a student.", "vi": "Tôi là học sinh." } },
+        { "textVi": "Miêu tả tính chất, cảm xúc (đi với tính từ).", "example": { "en": "She is happy.", "vi": "Cô ấy vui." } },
+        { "textVi": "Nói vị trí, nơi chốn.", "example": { "en": "They are at school.", "vi": "Họ đang ở trường." } },
+        { "textVi": "Nói tuổi: tiếng Anh dùng to be, không dùng have.", "example": { "en": "He is ten years old.", "vi": "Cậu ấy mười tuổi." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Chia theo chủ ngữ",
+      "headers": ["Chủ ngữ", "Khẳng định", "Viết tắt", "Phủ định"],
+      "cells": [
+        ["I", "am", "I'm", "am not"],
+        ["He / She / It", "is", "he's / she's / it's", "is not (isn't)"],
+        ["You / We / They", "are", "you're / we're / they're", "are not (aren't)"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + am / is / are + ...", "example": { "en": "We are friends.", "vi": "Chúng tôi là bạn." } },
+        { "kind": "negative", "pattern": "S + am / is / are + not + ...", "example": { "en": "It is not cold.", "vi": "Trời không lạnh." } },
+        { "kind": "question", "pattern": "Am / Is / Are + S + ...?", "example": { "en": "Are you tired?", "vi": "Bạn mệt không?" } },
+        { "kind": "short-answer", "pattern": "Yes, S + am/is/are. / No, S + 'm not / isn't / aren't.", "example": { "en": "Yes, I am. / No, I'm not.", "vi": "Có. / Không." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I student.", "right": "I am a student.", "noteVi": "Không được bỏ to be." },
+        { "wrong": "I have 20 years old.", "right": "I am 20 years old.", "noteVi": "Nói tuổi dùng to be, không dùng have." },
+        { "wrong": "She are my sister.", "right": "She is my sister.", "noteVi": "He / She / It đi với is." },
+        { "wrong": "Yes, I'm.", "right": "Yes, I am.", "noteVi": "Câu trả lời ngắn khẳng định không viết tắt." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: I → am; một người/vật (he, she, it, Tom, the cat) → is; nhiều người/vật và you → are." }
+  ],
+  "exercises": [
+    { "id": "tb-01", "type": "mcq", "prompt": "I ___ a teacher.", "options": ["am", "is", "are"], "answer": "am", "explanationVi": "I luôn đi với am." },
+    { "id": "tb-02", "type": "mcq", "prompt": "My parents ___ at work.", "options": ["am", "is", "are"], "answer": "are", "explanationVi": "My parents là số nhiều → are." },
+    { "id": "tb-03", "type": "mcq", "prompt": "The cat ___ under the table.", "options": ["am", "is", "are"], "answer": "is", "explanationVi": "The cat = it → is." },
+    { "id": "tb-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I am 25 years old.", "I have 25 years old.", "I is 25 years old."], "answer": "I am 25 years old.", "explanationVi": "Nói tuổi dùng to be: I am ... years old." },
+    { "id": "tb-05", "type": "mcq", "prompt": "Are you hungry? – No, I ___.", "options": ["am not", "isn't", "aren't"], "answer": "am not", "explanationVi": "Câu hỏi với you thì trả lời bằng I → I'm not / I am not." },
+    { "id": "tb-06", "type": "fill", "prompt": "She ___ (be) a nurse.", "answers": ["is", "'s"], "explanationVi": "She đi với is." },
+    { "id": "tb-07", "type": "fill", "prompt": "We ___ (be) in the same class.", "answers": ["are", "'re"], "explanationVi": "We đi với are." },
+    { "id": "tb-08", "type": "fill", "prompt": "___ (be) your brother a doctor?", "answers": ["Is"], "explanationVi": "Câu hỏi: đảo to be lên đầu. Your brother = he → Is." },
+    { "id": "tb-09", "type": "order", "promptVi": "Họ là bạn của tôi.", "answer": "They are my friends.", "distractors": ["is"], "explanationVi": "They đi với are." },
+    { "id": "tb-10", "type": "order", "promptVi": "Bố tôi không ở nhà.", "answer": "My father is not at home.", "distractors": ["are"], "explanationVi": "Phủ định: is + not." },
+    { "id": "tb-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "They are from Japan.", "answer": "Are they from Japan?", "distractors": ["Do"], "explanationVi": "Đảo are lên trước chủ ngữ, không dùng do." },
+    { "id": "tb-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "He is tired.", "answer": "He is not tired.", "distractors": ["does"], "explanationVi": "Thêm not ngay sau to be." },
+    { "id": "tb-13", "type": "error", "sentence": "She [are] a doctor.", "correction": "is", "explanationVi": "She đi với is." },
+    { "id": "tb-14", "type": "error", "sentence": "Tom and Anna [is] students.", "correction": "are", "explanationVi": "Tom and Anna là hai người → are." }
+  ]
+}

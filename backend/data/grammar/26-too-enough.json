@@ -1,0 +1,65 @@
+{
+  "slug": "too-enough",
+  "version": 1,
+  "titleVi": "too và enough",
+  "titleEn": "too and enough",
+  "level": "A2",
+  "order": 26,
+  "summaryVi": "too = quá (nhiều hơn mức cần, gây vấn đề), đứng trước tính từ. enough = đủ, đứng sau tính từ nhưng trước danh từ. Có thể thêm to + V phía sau.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "title": "too",
+      "rows": [
+        { "kind": "affirmative", "pattern": "too + adj / adv", "example": { "en": "This coffee is too hot.", "vi": "Cà phê này nóng quá (không uống được)." } },
+        { "kind": "affirmative", "pattern": "too much + N không đếm được · too many + N số nhiều", "example": { "en": "There's too much traffic and too many cars.", "vi": "Đường đông quá, quá nhiều xe." } },
+        { "kind": "affirmative", "pattern": "too + adj + (for sb) + to V", "example": { "en": "This box is too heavy for me to carry.", "vi": "Thùng này nặng quá, tôi không bê nổi." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "enough",
+      "rows": [
+        { "kind": "affirmative", "pattern": "adj / adv + enough", "example": { "en": "He's old enough to drive.", "vi": "Cậu ấy đủ tuổi lái xe rồi." } },
+        { "kind": "affirmative", "pattern": "enough + N", "example": { "en": "We have enough chairs for everyone.", "vi": "Chúng ta có đủ ghế cho mọi người." } },
+        { "kind": "negative", "pattern": "not + adj + enough + (to V) · not enough + N", "example": { "en": "I don't have enough money to buy it.", "vi": "Tôi không đủ tiền để mua nó." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "too hay very?",
+      "items": [
+        { "textVi": "very = rất, chỉ mức độ, không có ý tiêu cực.", "example": { "en": "The soup is very hot, but I can eat it.", "vi": "Súp rất nóng nhưng tôi ăn được." } },
+        { "textVi": "too = quá mức, dẫn tới một vấn đề.", "example": { "en": "The soup is too hot. I can't eat it.", "vi": "Súp nóng quá, tôi không ăn được." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Your dress is too beautiful!", "right": "Your dress is very beautiful!", "noteVi": "Khen \"đẹp quá\" dùng very / so. too mang ý chê, có vấn đề." },
+        { "wrong": "He isn't enough old.", "right": "He isn't old enough.", "noteVi": "enough đứng sau tính từ." },
+        { "wrong": "We don't have chairs enough.", "right": "We don't have enough chairs.", "noteVi": "enough đứng trước danh từ." },
+        { "wrong": "This tea is too much hot.", "right": "This tea is too hot.", "noteVi": "Trước tính từ chỉ dùng too, không có much." },
+        { "wrong": "The bag is too heavy to carry it.", "right": "The bag is too heavy to carry.", "noteVi": "Chủ ngữ đã là the bag, không lặp lại it sau to V." }
+      ]
+    },
+    { "type": "tip", "textVi": "Nhớ vị trí: too đứng TRƯỚC tính từ (too small), enough đứng SAU tính từ (big enough) nhưng TRƯỚC danh từ (enough time)." }
+  ],
+  "exercises": [
+    { "id": "te2-01", "type": "mcq", "prompt": "I can't drink this tea. It's ___ hot.", "options": ["too", "enough", "too much"], "answer": "too", "explanationVi": "Nóng quá mức, không uống được → too + adj." },
+    { "id": "te2-02", "type": "mcq", "prompt": "She isn't ___ to drive a car. She's only 15.", "options": ["old enough", "enough old", "too old"], "answer": "old enough", "explanationVi": "Chưa đủ tuổi → not + adj + enough." },
+    { "id": "te2-03", "type": "mcq", "prompt": "There are ___ cars in the city centre. The traffic is terrible.", "options": ["too many", "too much", "enough"], "answer": "too many", "explanationVi": "cars đếm được số nhiều → too many." },
+    { "id": "te2-04", "type": "mcq", "prompt": "Wow, your new dress is ___ beautiful! I love it.", "options": ["very", "too", "enough"], "answer": "very", "explanationVi": "Lời khen → very. too mang ý tiêu cực." },
+    { "id": "te2-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["We don't have enough money to buy a car.", "We don't have money enough to buy a car.", "We don't have enough money for buy a car."], "answer": "We don't have enough money to buy a car.", "explanationVi": "enough + N + to V." },
+    { "id": "te2-06", "type": "fill", "prompt": "I put ___ salt in the soup. Now nobody can eat it. (quá nhiều)", "answers": ["too much"], "explanationVi": "salt không đếm được → too much." },
+    { "id": "te2-07", "type": "fill", "prompt": "This box is too heavy for me ___ (lift).", "answers": ["to lift"], "explanationVi": "too + adj + for sb + to V." },
+    { "id": "te2-08", "type": "fill", "prompt": "The room is warm ___. You don't need a jacket. (đủ)", "answers": ["enough"], "explanationVi": "adj + enough: warm enough." },
+    { "id": "te2-09", "type": "order", "promptVi": "Phòng này không đủ rộng cho chúng ta.", "answer": "This room isn't big enough for us.", "distractors": ["much"], "explanationVi": "not + adj + enough." },
+    { "id": "te2-10", "type": "order", "promptVi": "Trời quá lạnh để đi bơi.", "answer": "It is too cold to go swimming.", "distractors": ["much"], "explanationVi": "too + adj + to V." },
+    { "id": "te2-11", "type": "transform", "instructionVi": "Viết lại câu dùng 'enough', giữ nguyên nghĩa", "source": "He is too short to play basketball.", "answer": "He isn't tall enough to play basketball.", "distractors": ["much", "more"], "explanationVi": "too short = not tall enough." },
+    { "id": "te2-12", "type": "transform", "instructionVi": "Viết lại câu dùng 'too', giữ nguyên nghĩa", "source": "The water isn't warm enough to swim in.", "answer": "The water is too cold to swim in.", "distractors": ["many", "much"], "explanationVi": "not warm enough = too cold." },
+    { "id": "te2-13", "type": "error", "sentence": "This shirt is [enough big] for me.", "correction": "big enough", "explanationVi": "enough đứng sau tính từ: big enough." },
+    { "id": "te2-14", "type": "error", "sentence": "There is [too many] noise in this café.", "correction": "too much", "explanationVi": "noise không đếm được → too much." }
+  ]
+}

@@ -10,3 +10,4 @@ mobile/dist/
 .env
 .env.*
 !.env.example
+backups/

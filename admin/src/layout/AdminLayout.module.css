@@ -1,0 +1,49 @@
+.logo {
+  width: 26px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.navLink {
+  border-radius: var(--mantine-radius-md);
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.account {
+  border-top: 1px solid var(--mantine-color-gray-3);
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-gray-7);
+}
+
+.iconBtn:hover {
+  background: var(--mantine-color-gray-1);
+}
+
+.tabBar {
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mantine-color-gray-6);
+}
+
+.tab[data-active] {
+  color: var(--mantine-color-brand-7);
+}

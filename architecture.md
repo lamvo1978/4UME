@@ -21,7 +21,7 @@ Trên Cloud Agent, working tree là root repo (`/workspace` tương đương n�
 | DB | PostgreSQL 16 | User, tiến trình từ, điểm bài tập |
 | Container | Docker + Docker Compose | Chạy API + Postgres trên Linux |
 | OS server | Linux | Host production / VPS |
-| Nội dung từ | `data/vocabulary.json` | ~3.308 mục A1–B2 (tự biên) |
+| Nội dung từ | `backend/data/vocabulary.json` | ~3.308 mục A1–B2 (tự biên) |
 
 Không dùng danh sách Oxford 3000 chính thức trong app (cần giấy phép OUP).
 
@@ -29,22 +29,24 @@ Không dùng danh sách Oxford 3000 chính thức trong app (cần giấy phép 
 
 ```text
 /Users/lamvhx/Projects/4UME
-├── docs/
-│   ├── architecture.md          # file này
-│   └── ui/                      # mock UI + DESIGN.md
-├── data/
-│   ├── vocabulary.json          # nguồn từ vựng
-│   └── raw/                     # TSV nguồn để rebuild JSON
-├── scripts/
-│   └── build_vocabulary.py
-├── src/
+├── architecture.md              # file này
+├── backend/
+│   ├── FourUme.sln
 │   ├── FourUme.Domain/          # Entities, enums
 │   ├── FourUme.Application/     # Use cases, DTOs, interfaces
 │   ├── FourUme.Infrastructure/  # EF Core, JWT, seed vocabulary
-│   └── FourUme.Api/             # HTTP endpoints
-├── mobile/                      # Expo React Native app
+│   ├── FourUme.Api/             # HTTP endpoints
+│   ├── data/
+│   │   ├── vocabulary.json      # nguồn từ vựng
+│   │   └── raw/                 # TSV nguồn để rebuild JSON
+│   └── scripts/
+│       └── build_vocabulary.py
+├── deploy/
+│   └── Dockerfile               # API image
 ├── docker-compose.yml
-├── Dockerfile                   # API image
+├── docs/
+│   └── ui/                      # mock UI + DESIGN.md
+├── mobile/                      # Expo React Native app
 └── README.md
 ```
 

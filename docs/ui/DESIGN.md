@@ -43,5 +43,5 @@ Tránh: tím mặc định, glow, dark mode, cụm pill dày, dashboard nhiều 
 
 - Mobile: React Native (Expo) đọc các màn trên.
 - API .NET 9 + PostgreSQL: đăng nhập, tiến trình từ, điểm ngữ pháp.
-- Nội dung từ: `data/vocabulary.json` (đã có).
-- Chi tiết hệ thống: [`docs/architecture.md`](../architecture.md).
+- Nội dung từ: `backend/data/vocabulary.json` (đã có).
+- Chi tiết hệ thống: [`architecture.md`](../../architecture.md).

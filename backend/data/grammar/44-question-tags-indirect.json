@@ -1,0 +1,69 @@
+{
+  "slug": "question-tags-indirect",
+  "version": 1,
+  "titleVi": "Câu hỏi đuôi và câu hỏi gián tiếp",
+  "titleEn": "Question tags and indirect questions",
+  "level": "B1",
+  "order": 44,
+  "summaryVi": "Câu hỏi đuôi (…, isn't it?) để xác nhận thông tin. Câu hỏi gián tiếp (Could you tell me…?) để hỏi lịch sự, phần sau giữ trật tự câu kể.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "title": "Câu hỏi đuôi",
+      "rows": [
+        { "kind": "affirmative", "pattern": "Câu khẳng định, + trợ động từ phủ định + đại từ?", "example": { "en": "You're a teacher, aren't you?", "vi": "Bạn là giáo viên, phải không?" } },
+        { "kind": "negative", "pattern": "Câu phủ định, + trợ động từ khẳng định + đại từ?", "example": { "en": "She doesn't eat meat, does she?", "vi": "Cô ấy không ăn thịt, đúng không?" } },
+        { "kind": "note", "pattern": "Câu không có trợ động từ → mượn do / does / did.", "example": { "en": "They live near here, don't they?", "vi": "Họ sống gần đây, phải không?" } },
+        { "kind": "note", "pattern": "Đặc biệt: I am → aren't I? · Let's → shall we?", "example": { "en": "Let's go for a walk, shall we?", "vi": "Mình đi dạo nhé?" } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Câu hỏi đuôi theo trợ động từ",
+      "headers": ["Trợ động từ", "Ví dụ"],
+      "cells": [
+        ["be", "It's cold today, isn't it?"],
+        ["did", "You saw the match, didn't you?"],
+        ["will", "He'll be here soon, won't he?"],
+        ["can", "You can't swim, can you?"],
+        ["have (hoàn thành)", "You've met Lan, haven't you?"]
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "Câu hỏi gián tiếp",
+      "rows": [
+        { "kind": "question", "pattern": "Could you tell me + từ để hỏi + S + V?", "example": { "en": "Where is the station? → Could you tell me where the station is?", "vi": "Bạn có thể cho tôi biết nhà ga ở đâu không?" } },
+        { "kind": "question", "pattern": "Do you know + từ để hỏi + S + V? (bỏ do / does / did)", "example": { "en": "What time does it start? → Do you know what time it starts?", "vi": "Bạn có biết mấy giờ bắt đầu không?" } },
+        { "kind": "question", "pattern": "Câu hỏi Yes/No: Do you know + if / whether + S + V?", "example": { "en": "Is the shop open? → Do you know if the shop is open?", "vi": "Bạn có biết cửa hàng có mở cửa không?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "She's a doctor, isn't it?", "right": "She's a doctor, isn't she?", "noteVi": "Đại từ ở đuôi phải khớp chủ ngữ (she)." },
+        { "wrong": "I'm late, amn't I?", "right": "I'm late, aren't I?", "noteVi": "I am → đuôi là aren't I." },
+        { "wrong": "Could you tell me where is the station?", "right": "Could you tell me where the station is?", "noteVi": "Câu hỏi gián tiếp: S + V, không đảo." },
+        { "wrong": "Do you know what time does it start?", "right": "Do you know what time it starts?", "noteVi": "Bỏ does, động từ chia như câu kể (starts)." }
+      ]
+    },
+    { "type": "tip", "textVi": "Người Việt hay dùng 'phải không?' cho mọi câu, nên dễ viết sai đuôi. Nhớ: nhìn trợ động từ ở câu chính, đảo khẳng định ↔ phủ định, rồi thay chủ ngữ bằng đại từ." }
+  ],
+  "exercises": [
+    { "id": "qt-01", "type": "mcq", "prompt": "You're from Hue, ___?", "options": ["aren't you", "are you", "don't you"], "answer": "aren't you", "explanationVi": "Câu khẳng định với are → đuôi phủ định aren't you." },
+    { "id": "qt-02", "type": "mcq", "prompt": "She doesn't like spicy food, ___?", "options": ["does she", "doesn't she", "is she"], "answer": "does she", "explanationVi": "Câu phủ định với doesn't → đuôi khẳng định does she." },
+    { "id": "qt-03", "type": "mcq", "prompt": "I'm right, ___?", "options": ["aren't I", "amn't I", "am not I"], "answer": "aren't I", "explanationVi": "Trường hợp đặc biệt: I am → aren't I." },
+    { "id": "qt-04", "type": "mcq", "prompt": "Let's order pizza, ___?", "options": ["shall we", "don't we", "do we"], "answer": "shall we", "explanationVi": "Let's … → đuôi shall we." },
+    { "id": "qt-05", "type": "mcq", "prompt": "Excuse me, could you tell me ___?", "options": ["where the bank is", "where is the bank", "where does the bank is"], "answer": "where the bank is", "explanationVi": "Câu hỏi gián tiếp: từ để hỏi + S + V, không đảo." },
+    { "id": "qt-06", "type": "fill", "prompt": "They went to the beach yesterday, ___ they?", "answers": ["didn't"], "explanationVi": "Quá khứ đơn khẳng định (went) → mượn did, đuôi phủ định didn't." },
+    { "id": "qt-07", "type": "fill", "prompt": "He won't be late, ___ he?", "answers": ["will"], "explanationVi": "won't (phủ định) → đuôi khẳng định will." },
+    { "id": "qt-08", "type": "fill", "prompt": "You can drive, ___ you?", "answers": ["can't"], "explanationVi": "can (khẳng định) → đuôi phủ định can't." },
+    { "id": "qt-09", "type": "order", "promptVi": "Bạn đã gặp Lan rồi, phải không?", "answer": "You have met Lan, haven't you?", "distractors": ["didn't", "don't"], "explanationVi": "Hiện tại hoàn thành (have met) → đuôi haven't you." },
+    { "id": "qt-10", "type": "order", "promptVi": "Bạn có biết mấy giờ bộ phim bắt đầu không?", "answer": "Do you know what time the film starts?", "distractors": ["does", "start"], "explanationVi": "Câu hỏi gián tiếp: bỏ does, động từ chia như câu kể (starts)." },
+    { "id": "qt-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi gián tiếp, bắt đầu bằng Could you tell me", "source": "Where is the post office?", "answer": "Could you tell me where the post office is?", "distractors": ["does"], "explanationVi": "where + S (the post office) + V (is), không đảo." },
+    { "id": "qt-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi gián tiếp, bắt đầu bằng Do you know", "source": "Is the museum open today?", "answer": "Do you know if the museum is open today?", "distractors": ["does", "are"], "explanationVi": "Câu hỏi Yes/No → if + S + V." },
+    { "id": "qt-13", "type": "error", "sentence": "She's a nurse, [isn't it]?", "correction": "isn't she", "explanationVi": "Đại từ ở đuôi phải khớp chủ ngữ she." },
+    { "id": "qt-14", "type": "error", "sentence": "Do you know where [does she live]?", "correction": "she lives", "explanationVi": "Câu hỏi gián tiếp: bỏ does, S + V (she lives)." }
+  ]
+}

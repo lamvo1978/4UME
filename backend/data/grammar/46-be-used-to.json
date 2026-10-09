@@ -1,0 +1,66 @@
+{
+  "slug": "be-used-to",
+  "version": 1,
+  "titleVi": "Used to, be used to và get used to",
+  "titleEn": "Used to, be used to, get used to",
+  "level": "B1",
+  "order": 46,
+  "summaryVi": "used to + V: từng (nay không còn). be used to + V-ing / danh từ: đã quen với. get used to + V-ing / danh từ: dần quen với.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Ba cấu trúc dễ nhầm",
+      "headers": ["Cấu trúc", "Nghĩa", "Ví dụ"],
+      "cells": [
+        ["used to + V", "từng (thói quen / trạng thái cũ)", "I used to live alone."],
+        ["be used to + V-ing / danh từ", "đã quen với", "I'm used to living alone."],
+        ["get used to + V-ing / danh từ", "dần quen với", "I'm getting used to living alone."]
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "be used to",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + am / is / are / was / were + used to + V-ing / danh từ", "example": { "en": "She is used to working at night.", "vi": "Cô ấy đã quen làm việc ban đêm." } },
+        { "kind": "negative", "pattern": "S + be + not + used to + V-ing / danh từ", "example": { "en": "I'm not used to the cold.", "vi": "Tôi chưa quen với cái lạnh." } },
+        { "kind": "question", "pattern": "Be + S + used to + V-ing / danh từ?", "example": { "en": "Are you used to the food here?", "vi": "Bạn đã quen đồ ăn ở đây chưa?" } }
+      ]
+    },
+    {
+      "type": "formula",
+      "title": "get used to",
+      "rows": [
+        { "kind": "affirmative", "pattern": "get chia theo thì: will get / got / am getting + used to + V-ing / danh từ", "example": { "en": "Don't worry. You'll soon get used to the noise.", "vi": "Đừng lo. Bạn sẽ sớm quen với tiếng ồn thôi." } },
+        { "kind": "negative", "pattern": "S + can't / didn't + get used to + V-ing / danh từ", "example": { "en": "I can't get used to getting up so early.", "vi": "Tôi không tài nào quen được việc dậy sớm thế." } },
+        { "kind": "question", "pattern": "Did / Have + S + get / got used to …?", "example": { "en": "Did you get used to the weather in London?", "vi": "Bạn có quen được thời tiết ở London không?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I am used to get up early.", "right": "I am used to getting up early.", "noteVi": "to ở đây là giới từ → sau nó là V-ing." },
+        { "wrong": "I used to driving on the right.", "right": "I'm used to driving on the right.", "noteVi": "Muốn nói 'đã quen' phải có be." },
+        { "wrong": "I'm not use to spicy food.", "right": "I'm not used to spicy food.", "noteVi": "be used to luôn viết used (có d)." },
+        { "wrong": "She is getting used to live in Hanoi.", "right": "She is getting used to living in Hanoi.", "noteVi": "get used to + V-ing." }
+      ]
+    },
+    { "type": "tip", "textVi": "Phép thử nhanh: dịch được là 'từng' → used to + V. Dịch được là 'quen với' → be / get used to + V-ing. Có be là trạng thái đã quen; có get là quá trình đang / sẽ quen." }
+  ],
+  "exercises": [
+    { "id": "bu-01", "type": "mcq", "prompt": "I've lived in Hanoi for years, so I'm used to ___ in heavy traffic.", "options": ["drive", "driving", "drove"], "answer": "driving", "explanationVi": "be used to + V-ing." },
+    { "id": "bu-02", "type": "mcq", "prompt": "When I was a child, I ___ play in the rice fields.", "options": ["used to", "was used to", "got used to"], "answer": "used to", "explanationVi": "Thói quen trong quá khứ + V nguyên mẫu (play) → used to." },
+    { "id": "bu-03", "type": "mcq", "prompt": "It took me a few months to ___ the cold weather in Canada.", "options": ["get used to", "used to", "use to"], "answer": "get used to", "explanationVi": "Mất vài tháng → quá trình dần quen → get used to." },
+    { "id": "bu-04", "type": "mcq", "prompt": "She isn't used to ___ up so early.", "options": ["getting", "get", "got"], "answer": "getting", "explanationVi": "be used to + V-ing." },
+    { "id": "bu-05", "type": "mcq", "prompt": "Chọn câu có nghĩa 'Tôi đã quen sống một mình.'", "options": ["I used to live alone.", "I'm used to living alone.", "I'm used to live alone."], "answer": "I'm used to living alone.", "explanationVi": "đã quen → be used to + V-ing. 'I used to live alone' nghĩa là 'Tôi từng sống một mình'." },
+    { "id": "bu-06", "type": "fill", "prompt": "Don't worry, you'll soon get used ___ the noise.", "answers": ["to"], "explanationVi": "get used to + danh từ." },
+    { "id": "bu-07", "type": "fill", "prompt": "I'm not used to ___ (work) at night.", "answers": ["working"], "explanationVi": "be used to + V-ing." },
+    { "id": "bu-08", "type": "fill", "prompt": "When I first moved to Saigon, the heat was hard to bear, but I soon ___ (get) used to it.", "answers": ["got"], "explanationVi": "Việc đã xảy ra trong quá khứ → get chia quá khứ: got used to." },
+    { "id": "bu-09", "type": "order", "promptVi": "Cô ấy đã quen với việc dậy sớm.", "answer": "She is used to getting up early.", "distractors": ["get", "uses"], "explanationVi": "be used to + V-ing." },
+    { "id": "bu-10", "type": "order", "promptVi": "Bạn đã quen với đồ ăn ở đây chưa?", "answer": "Are you used to the food here yet?", "distractors": ["use", "Do"], "explanationVi": "Câu hỏi: Be + S + used to + danh từ?" },
+    { "id": "bu-11", "type": "transform", "instructionVi": "Viết lại dùng be used to", "source": "Living in a big city isn't strange for me any more.", "answer": "I am used to living in a big city.", "distractors": ["live", "use"], "explanationVi": "Không còn lạ nữa = đã quen → am used to + V-ing." },
+    { "id": "bu-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "He is used to the cold weather.", "answer": "He isn't used to the cold weather.", "distractors": ["doesn't", "use"], "explanationVi": "Phủ định của be used to: isn't used to (không dùng doesn't)." },
+    { "id": "bu-13", "type": "error", "sentence": "I'm used to [get] up at 5 a.m.", "correction": "getting", "explanationVi": "be used to + V-ing." },
+    { "id": "bu-14", "type": "error", "sentence": "Are you [use] to the noise yet?", "correction": "used", "explanationVi": "be used to luôn viết used (có d)." }
+  ]
+}

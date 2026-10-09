@@ -1,0 +1,54 @@
+{
+  "slug": "there-is-are",
+  "version": 3,
+  "titleVi": "There is / There are",
+  "titleEn": "There is / there are",
+  "level": "A1",
+  "order": 10,
+  "summaryVi": "Dùng để nói 'có' cái gì ở đâu. There is + danh từ số ít / không đếm được; there are + danh từ số nhiều.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "There is (There's) + a/an + N số ít / N không đếm được", "example": { "en": "There is a park near my house.", "vi": "Có một công viên gần nhà tôi." } },
+        { "kind": "affirmative", "pattern": "There are + N số nhiều", "example": { "en": "There are two cats in the garden.", "vi": "Có hai con mèo trong vườn." } },
+        { "kind": "negative", "pattern": "There isn't any + N không đếm được · There aren't any + N số nhiều", "example": { "en": "There isn't any milk.", "vi": "Không có chút sữa nào." } },
+        { "kind": "question", "pattern": "Is there ...? / Are there any ...?", "example": { "en": "Are there any shops here?", "vi": "Ở đây có cửa hàng nào không?" } },
+        { "kind": "short-answer", "pattern": "Yes, there is/are. / No, there isn't/aren't.", "example": { "en": "Yes, there are.", "vi": "Có." } },
+        { "kind": "question", "pattern": "How many + N số nhiều + are there?", "example": { "en": "How many students are there in your class?", "vi": "Lớp bạn có bao nhiêu học sinh?" } }
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Danh sách nhiều thứ: chia theo danh từ đầu tiên.", "example": { "en": "There is a table and four chairs.", "vi": "Có một cái bàn và bốn cái ghế." } },
+        { "textVi": "Khẳng định dùng some, phủ định và câu hỏi dùng any (trừ câu mời / đề nghị: Would you like some tea?).", "example": { "en": "There are some apples. Are there any bananas?", "vi": "Có vài quả táo. Có quả chuối nào không?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Have a book on the table.", "right": "There is a book on the table.", "noteVi": "'Có' (tồn tại) dùng there is, không dùng have." },
+        { "wrong": "There is three people.", "right": "There are three people.", "noteVi": "people là số nhiều → are." },
+        { "wrong": "There are some water.", "right": "There is some water.", "noteVi": "water không đếm được → is." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "te-01", "type": "mcq", "prompt": "There ___ a bank on this street.", "options": ["is", "are", "have"], "answer": "is", "explanationVi": "a bank là số ít → there is." },
+    { "id": "te-02", "type": "mcq", "prompt": "There ___ many people at the party.", "options": ["is", "are", "has"], "answer": "are", "explanationVi": "people số nhiều → there are." },
+    { "id": "te-03", "type": "mcq", "prompt": "There ___ some juice in the fridge.", "options": ["is", "are", "be"], "answer": "is", "explanationVi": "juice không đếm được → there is." },
+    { "id": "te-04", "type": "mcq", "prompt": "Are there ___ eggs?", "options": ["much", "any", "a"], "answer": "any", "explanationVi": "Câu hỏi dùng any." },
+    { "id": "te-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Have a cat in my room.", "There is a cat in my room.", "It has a cat in my room."], "answer": "There is a cat in my room.", "explanationVi": "Nói 'có' cái gì ở đâu dùng there is / are." },
+    { "id": "te-06", "type": "fill", "prompt": "There ___ (be) thirty students in my class.", "answers": ["are"], "explanationVi": "thirty students số nhiều → are." },
+    { "id": "te-07", "type": "fill", "prompt": "___ (be) there a hospital near here?", "answers": ["Is"], "explanationVi": "a hospital số ít → Is there...?" },
+    { "id": "te-08", "type": "fill", "prompt": "There aren't ___ chairs in the room. (some / any)", "answers": ["any"], "explanationVi": "Phủ định dùng any." },
+    { "id": "te-09", "type": "order", "promptVi": "Có hai quyển sách trên bàn.", "answer": "There are two books on the table.", "distractors": ["is"], "explanationVi": "two books số nhiều → are." },
+    { "id": "te-10", "type": "order", "promptVi": "Trong phòng bạn có bao nhiêu cửa sổ?", "answer": "How many windows are there in your room?", "distractors": ["is"], "explanationVi": "How many + N số nhiều + are there...?" },
+    { "id": "te-11", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "There is some bread.", "answer": "There isn't any bread.", "distractors": ["some"], "explanationVi": "Phủ định: isn't + any." },
+    { "id": "te-12", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "There are some shops near here.", "answer": "Are there any shops near here?", "distractors": ["some", "Is"], "explanationVi": "Đảo are lên trước there, some → any." },
+    { "id": "te-13", "type": "error", "sentence": "There [is] five apples in the bag.", "correction": "are", "explanationVi": "five apples số nhiều → are." },
+    { "id": "te-14", "type": "error", "sentence": "[Have] a supermarket near my house.", "correction": "There is", "explanationVi": "Nói 'có' cái gì ở đâu dùng There is, không dùng Have." }
+  ]
+}

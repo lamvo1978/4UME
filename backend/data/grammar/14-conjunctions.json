@@ -1,0 +1,55 @@
+{
+  "slug": "conjunctions",
+  "version": 3,
+  "titleVi": "Liên từ and, but, or, so, because",
+  "titleEn": "Conjunctions",
+  "level": "A1",
+  "order": 14,
+  "summaryVi": "Liên từ nối hai ý: and (thêm), but (trái ngược), or (lựa chọn), so (kết quả), because (nguyên nhân).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Năm liên từ cơ bản",
+      "headers": ["Liên từ", "Nghĩa", "Ví dụ"],
+      "cells": [
+        ["and", "và (thêm ý)", "I like tea and coffee."],
+        ["but", "nhưng (trái ngược)", "It's cheap but good."],
+        ["or", "hoặc (lựa chọn)", "Tea or coffee?"],
+        ["so", "nên (kết quả)", "It was late, so I went home."],
+        ["because", "vì (nguyên nhân)", "I went home because it was late."]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "so đứng trước kết quả, because đứng trước nguyên nhân.", "example": { "en": "I was tired, so I slept. = I slept because I was tired.", "vi": "Tôi mệt nên đã ngủ. = Tôi ngủ vì tôi mệt." } },
+        { "textVi": "Trong câu phủ định, muốn nói 'không... cũng không...' cho hai thứ thì dùng or.", "example": { "en": "I don't eat meat or fish.", "vi": "Tôi không ăn thịt, cũng không ăn cá." } },
+        { "textVi": "Thường có dấu phẩy trước so và but khi nối hai mệnh đề.", "example": { "en": "She is rich, but she isn't happy.", "vi": "Cô ấy giàu nhưng không hạnh phúc." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Because it rained, so we stayed home.", "right": "Because it rained, we stayed home. / It rained, so we stayed home.", "noteVi": "Không dùng because và so trong cùng một câu." },
+        { "wrong": "I don't like cats and dogs.", "right": "I don't like cats or dogs.", "noteVi": "Không thích cả hai → câu phủ định dùng or." }
+      ]
+    },
+    { "type": "tip", "textVi": "Tiếng Việt hay nói 'Vì... nên...', nhưng tiếng Anh chỉ chọn MỘT: because hoặc so." }
+  ],
+  "exercises": [
+    { "id": "cj-01", "type": "mcq", "prompt": "I wanted to go out, ___ it was raining.", "options": ["and", "but", "so"], "answer": "but", "explanationVi": "Hai ý trái ngược → but." },
+    { "id": "cj-02", "type": "mcq", "prompt": "She was hungry, ___ she made a sandwich.", "options": ["because", "so", "or"], "answer": "so", "explanationVi": "Làm bánh là kết quả → so." },
+    { "id": "cj-03", "type": "mcq", "prompt": "He stayed in bed ___ he was ill.", "options": ["so", "because", "but"], "answer": "because", "explanationVi": "bị ốm là nguyên nhân → because." },
+    { "id": "cj-04", "type": "mcq", "prompt": "Would you like tea ___ coffee? – Coffee, please.", "options": ["and", "or", "but"], "answer": "or", "explanationVi": "Lựa chọn một trong hai → or." },
+    { "id": "cj-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Because I was late, so I took a taxi.", "I was late, so I took a taxi.", "So I was late, I took a taxi."], "answer": "I was late, so I took a taxi.", "explanationVi": "Không dùng because và so cùng lúc; đi taxi là kết quả." },
+    { "id": "cj-06", "type": "fill", "prompt": "I like apples ___ bananas. (và)", "answers": ["and"], "explanationVi": "Thêm ý → and." },
+    { "id": "cj-07", "type": "fill", "prompt": "She doesn't drink tea ___ coffee. (and / or)", "answers": ["or"], "explanationVi": "Không uống cả hai → câu phủ định dùng or." },
+    { "id": "cj-08", "type": "fill", "prompt": "The shop was closed, ___ we went home. (nên)", "answers": ["so"], "explanationVi": "Kết quả → so." },
+    { "id": "cj-09", "type": "order", "promptVi": "Tôi học chăm vì tôi muốn đỗ kỳ thi.", "answer": "I study hard because I want to pass the exam.", "distractors": ["so"], "explanationVi": "because + nguyên nhân." },
+    { "id": "cj-10", "type": "order", "promptVi": "Căn nhà nhỏ nhưng đẹp.", "answer": "The house is small but beautiful.", "distractors": ["so"], "explanationVi": "nhỏ – đẹp trái ngược → but." },
+    { "id": "cj-11", "type": "transform", "instructionVi": "Viết lại dùng 'so'", "source": "I was tired because I worked all day.", "answer": "I worked all day, so I was tired.", "distractors": ["because"], "explanationVi": "so đứng trước kết quả (mệt)." },
+    { "id": "cj-12", "type": "error", "sentence": "It was cold, [because] I wore a coat.", "correction": "so", "explanationVi": "Mặc áo khoác là kết quả → so." },
+    { "id": "cj-13", "type": "error", "sentence": "He is very rich, [and] he isn't happy.", "correction": "but", "explanationVi": "giàu – không hạnh phúc là trái ngược → but." }
+  ]
+}

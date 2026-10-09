@@ -1,0 +1,56 @@
+{
+  "slug": "relative-clauses",
+  "version": 3,
+  "titleVi": "Mệnh đề quan hệ",
+  "titleEn": "Relative clauses",
+  "level": "B1",
+  "order": 41,
+  "summaryVi": "who, which, that, where, whose nối thêm thông tin cho danh từ đứng trước: người (who), vật (which), nơi chốn (where), sở hữu (whose).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Đại từ quan hệ",
+      "headers": ["Từ", "Thay cho", "Ví dụ"],
+      "cells": [
+        ["who", "người", "The man who lives next door is a doctor."],
+        ["which", "vật, con vật", "The book which I bought is great."],
+        ["that", "người hoặc vật (mệnh đề xác định)", "The car that he drives is new."],
+        ["where", "nơi chốn", "This is the town where I grew up."],
+        ["whose", "sở hữu (của ai)", "That's the girl whose father is a pilot."]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Mệnh đề xác định: cần thiết để biết ta nói về ai / cái gì, không có dấu phẩy.", "example": { "en": "Students who study hard usually pass.", "vi": "Học sinh chăm học thường đỗ." } },
+        { "textVi": "Mệnh đề không xác định: chỉ thêm thông tin, có dấu phẩy, không dùng that.", "example": { "en": "My mother, who is 60, still works.", "vi": "Mẹ tôi, năm nay 60 tuổi, vẫn đi làm." } },
+        { "textVi": "Khi who / which / that làm tân ngữ trong mệnh đề xác định, có thể lược bỏ.", "example": { "en": "The film (that) we watched was boring.", "vi": "Bộ phim chúng tôi xem chán lắm." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "The woman which called you is my aunt.", "right": "The woman who called you is my aunt.", "noteVi": "Người dùng who." },
+        { "wrong": "Hanoi, that is the capital, is busy.", "right": "Hanoi, which is the capital, is busy.", "noteVi": "Có dấu phẩy thì không dùng that." },
+        { "wrong": "The book which I read it was good.", "right": "The book which I read was good.", "noteVi": "Không lặp lại đại từ (it) trong mệnh đề quan hệ." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "rc-01", "type": "mcq", "prompt": "The girl ___ is singing is my sister.", "options": ["who", "which", "where"], "answer": "who", "explanationVi": "Thay cho người → who." },
+    { "id": "rc-02", "type": "mcq", "prompt": "I lost the watch ___ my dad gave me.", "options": ["who", "which", "whose"], "answer": "which", "explanationVi": "Thay cho vật → which." },
+    { "id": "rc-03", "type": "mcq", "prompt": "This is the restaurant ___ we had our first date.", "options": ["which", "who", "where"], "answer": "where", "explanationVi": "Nơi chốn → where." },
+    { "id": "rc-04", "type": "mcq", "prompt": "I have a friend ___ brother is a famous actor.", "options": ["who", "whose", "which"], "answer": "whose", "explanationVi": "Sở hữu (anh trai của người bạn) → whose." },
+    { "id": "rc-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Da Lat, that is in the mountains, is cool.", "Da Lat, which is in the mountains, is cool.", "Da Lat, where is in the mountains, is cool."], "answer": "Da Lat, which is in the mountains, is cool.", "explanationVi": "Mệnh đề có dấu phẩy không dùng that; Da Lat là chủ ngữ của 'is' → which." },
+    { "id": "rc-06", "type": "fill", "prompt": "The teacher ___ taught me English moved to Canada. (who / which)", "answers": ["who", "that"], "explanationVi": "Thay cho người → who (hoặc that)." },
+    { "id": "rc-07", "type": "fill", "prompt": "Is this the house ___ you were born? (which / where)", "answers": ["where"], "explanationVi": "Nơi chốn → where." },
+    { "id": "rc-08", "type": "fill", "prompt": "He's the man ___ car was stolen. (who / whose)", "answers": ["whose"], "explanationVi": "Xe của người đàn ông → whose." },
+    { "id": "rc-09", "type": "order", "promptVi": "Người phụ nữ sống cạnh nhà tôi là bác sĩ.", "answer": "The woman who lives next door is a doctor.", "distractors": ["which"], "explanationVi": "Người → who." },
+    { "id": "rc-10", "type": "order", "promptVi": "Đây là quyển sách mà tôi đã kể với bạn.", "answer": "This is the book which I told you about.", "distractors": ["who"], "explanationVi": "Vật → which." },
+    { "id": "rc-11", "type": "transform", "instructionVi": "Nối hai câu dùng 'who'", "source": "I met a man. He speaks five languages.", "answer": "I met a man who speaks five languages.", "distractors": ["he"], "explanationVi": "who thay cho he, không giữ lại he." },
+    { "id": "rc-12", "type": "transform", "instructionVi": "Nối hai câu dùng 'where'", "source": "This is the park. We play football there.", "answer": "This is the park where we play football.", "distractors": ["which"], "explanationVi": "where thay cho there (nơi chốn)." },
+    { "id": "rc-13", "type": "error", "sentence": "The man [which] fixed my car was very kind.", "correction": "who", "explanationVi": "Thay cho người → who." },
+    { "id": "rc-14", "type": "error", "sentence": "I know a girl [who] mother is a famous singer.", "correction": "whose", "explanationVi": "Mẹ của cô gái (sở hữu) → whose." }
+  ]
+}

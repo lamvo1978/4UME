@@ -1,0 +1,392 @@
+const BASE = import.meta.env.VITE_API_URL ?? "";
+const TOKEN_KEY = "fourume.admin.token";
+
+export class ApiError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export const tokenStore = {
+  get: () => localStorage.getItem(TOKEN_KEY),
+  set: (t: string) => localStorage.setItem(TOKEN_KEY, t),
+  clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
+/** Called on 401 so the app can drop back to the login screen. */
+let onUnauthorized: () => void = () => {};
+export function setUnauthorizedHandler(fn: () => void) {
+  onUnauthorized = fn;
+}
+
+export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers: Record<string, string> = init.body instanceof FormData ? {} : { "Content-Type": "application/json" };
+  const token = tokenStore.get();
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } });
+  if (res.status === 401 && token) onUnauthorized();
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new ApiError(body?.error ?? `Lỗi máy chủ (${res.status})`, res.status);
+  }
+  return res.status === 204 ? (undefined as T) : res.json();
+}
+
+export type AdminIdentity = { id: string; email: string; displayName: string; role: string };
+
+export type OverviewDay = { date: string; learners: number; newUsers: number; newWords: number; reviews: number; grammarItems: number };
+export type Overview = {
+  words: number;
+  decks: number;
+  grammarLessons: number;
+  wordsMissingImage: number;
+  wordsMissingExample: number;
+  wordsMissingIpa: number;
+  users: number;
+  activeUsers7Days: number;
+  activeToday: number;
+  newUsers7Days: number;
+  admins: number;
+  lockedUsers: number;
+  activity: OverviewDay[];
+  recentUsers: { id: string; displayName: string; email: string; createdAt: string }[];
+  recentChanges: AuditEntry[];
+};
+
+export type UserFilter = "" | "admin" | "locked" | "active" | "inactive";
+export type UserQuery = { q?: string; filter?: UserFilter; sort?: string; page?: number; pageSize?: number };
+export type AdminUser = {
+  id: string;
+  email: string;
+  displayName: string;
+  role: "user" | "admin";
+  createdAt: string;
+  lockedAt: string | null;
+  lastStudyDate: string | null;
+  currentStreak: number;
+  knownWords: number;
+  grammarPassed: number;
+};
+export type CreateUser = { email: string; displayName: string; password: string; role: AdminUser["role"] };
+export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean };
+export type AdminUserDetail = {
+  user: AdminUser;
+  bestStreak: number;
+  streakFreezes: number;
+  totalStudyDays: number;
+  hardWords: number;
+  grammarTotal: number;
+  settings: {
+    dailyGoal: number;
+    reminderEnabled: boolean;
+    reminderTime: string;
+    notifyRescue: boolean;
+    notifyWeekly: boolean;
+    notifyNews: boolean;
+    timeZone: string | null;
+  };
+  devices: { platform: string; appVersion: string | null; createdAt: string; lastSeenAt: string }[];
+  days: StudyDay[];
+  isSelf: boolean;
+  /** Owner account: can never be locked or lose admin rights. */
+  isProtected: boolean;
+};
+
+/** Mirrors backend NotificationConfig; times are local "HH:mm", weeklyDay 0 = Sunday. */
+export type NotificationConfig = {
+  rescueTime: string;
+  quietStart: string;
+  quietEnd: string;
+  maxPerDay: number;
+  rescueMinStreak: number;
+  comebackDaysLocal: number[];
+  comebackDaysPush: number[];
+  weeklyDay: number;
+  weeklyTime: string;
+  freezeNoticeTime: string;
+};
+export type AdminSettings = {
+  notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
+};
+
+export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
+
+export type VocabularyMeta = { partsOfSpeech: string[]; levels: string[]; decks: { id: string; titleVi: string }[] };
+
+export type AdminDeck = {
+  id: string;
+  titleVi: string;
+  icon: string;
+  sortOrder: number;
+  published: boolean;
+  wordCount: number;
+  hiddenWords: number;
+  levels: string | null;
+};
+export type SaveDeck = { id?: string; titleVi: string; icon: string; published: boolean };
+
+export type AdminWord = {
+  id: string;
+  deckId: string;
+  deckTitleVi: string;
+  word: string;
+  ipa: string;
+  pos: string;
+  level: string;
+  meaningVi: string;
+  example: string;
+  exampleVi: string;
+  imageUrl: string | null;
+  sortOrder: number;
+  published: boolean;
+  editedAt: string | null;
+  learners: number;
+};
+export type SaveWord = Pick<
+  AdminWord,
+  "deckId" | "word" | "ipa" | "pos" | "level" | "meaningVi" | "example" | "exampleVi" | "imageUrl" | "published"
+>;
+export type WordFilters = {
+  q?: string;
+  deckId?: string;
+  level?: string;
+  pos?: string;
+  missing?: string;
+  published?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export type MediaItem = {
+  id: string;
+  url: string;
+  originalName: string;
+  width: number;
+  height: number;
+  bytes: number;
+  createdAt: string;
+  usedBy: number;
+};
+
+export type Bilingual = { en: string; vi: string };
+export type SectionItem = {
+  textVi?: string;
+  example?: Bilingual | null;
+  en?: string;
+  vi?: string;
+  wrong?: string;
+  right?: string;
+  noteVi?: string;
+};
+export type FormulaRow = { kind: string; pattern: string; example?: Bilingual | null };
+/** One theory block (docs/grammar-lesson-schema.md); which fields apply depends on `type`. */
+export type GrammarSection = {
+  type: string;
+  title?: string | null;
+  textVi?: string;
+  items?: SectionItem[];
+  rows?: FormulaRow[];
+  headers?: string[];
+  cells?: string[][];
+  words?: string[];
+};
+export type GrammarExercise = {
+  id: string;
+  type: string;
+  prompt?: string;
+  promptVi?: string;
+  instructionVi?: string;
+  source?: string;
+  sentence?: string;
+  options?: string[];
+  answer?: string;
+  answers?: string[];
+  distractors?: string[];
+  correction?: string;
+  explanationVi: string;
+};
+export type GrammarLesson = {
+  slug: string;
+  version: number;
+  titleVi: string;
+  titleEn?: string | null;
+  level: string;
+  order: number;
+  summaryVi: string;
+  quizSize?: number | null;
+  published?: boolean | null;
+  sections: GrammarSection[];
+  exercises: GrammarExercise[];
+};
+export type AdminGrammarSummary = {
+  slug: string;
+  titleVi: string;
+  titleEn: string | null;
+  level: string;
+  sortOrder: number;
+  published: boolean;
+  quizSize: number;
+  sectionCount: number;
+  exerciseCount: number;
+  version: number;
+  updatedAt: string;
+  editedAt: string | null;
+  learners: number;
+};
+export type AdminGrammarDetail = {
+  lesson: GrammarLesson;
+  learners: number;
+  updatedAt: string;
+  editedAt: string | null;
+  problems: string[];
+};
+
+/** A spreadsheet row; a missing column is null (keeps the stored value), an empty cell is "". */
+export type ImportWordRow = {
+  line: number;
+  id: string | null;
+  word: string | null;
+  pos: string | null;
+  level: string | null;
+  deck: string | null;
+  meaningVi: string | null;
+  ipa: string | null;
+  example: string | null;
+  exampleVi: string | null;
+  imageUrl: string | null;
+  published: string | null;
+};
+export type ImportStatus = "create" | "update" | "unchanged" | "duplicate" | "error";
+export type ImportWordRowResult = {
+  line: number;
+  word: string;
+  pos: string;
+  status: ImportStatus;
+  id: string | null;
+  messages: string[];
+  changes: string[];
+};
+export type ImportWordsResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  duplicates: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportWordRowResult[];
+};
+export type ExportWord = {
+  id: string;
+  word: string;
+  pos: string;
+  level: string;
+  deck: string;
+  deckTitleVi: string;
+  meaningVi: string;
+  ipa: string;
+  example: string;
+  exampleVi: string;
+  imageUrl: string | null;
+  published: boolean;
+};
+export type ImportGrammarRow = { slug: string; titleVi: string; status: ImportStatus; currentVersion: number | null; problems: string[] };
+export type ImportGrammarResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportGrammarRow[];
+};
+
+export type AuditEntry = {
+  id: string;
+  at: string;
+  userName: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  summary: string;
+  restorable: boolean;
+};
+export type AuditDetail = {
+  entry: AuditEntry;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  exists: boolean;
+};
+export type AuditFilters = { entityType?: string; entityId?: string; q?: string; page?: number; pageSize?: number };
+
+const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });
+
+function query(params: Record<string, string | number | undefined>) {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== "") qs.set(k, String(v));
+  return qs.toString();
+}
+
+export const api = {
+  login: (email: string, password: string) =>
+    request<{ accessToken: string }>("/api/auth/login", json("POST", { email, password })),
+  me: () => request<AdminIdentity>("/api/admin/me"),
+  overview: () => request<Overview>("/api/admin/overview"),
+
+  users: (q: UserQuery) => request<Paged<AdminUser>>(`/api/admin/users?${query(q)}`),
+  user: (id: string) => request<AdminUserDetail>(`/api/admin/users/${id}`),
+  createUser: (u: CreateUser) => request<AdminUserDetail>("/api/admin/users", json("POST", u)),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<void>("/api/me/password", json("POST", { currentPassword, newPassword })),
+  setUserRole: (id: string, role: AdminUser["role"]) => request<AdminUserDetail>(`/api/admin/users/${id}/role`, json("PUT", { role })),
+  setUserLocked: (id: string, locked: boolean) => request<AdminUserDetail>(`/api/admin/users/${id}/lock`, json("PUT", { locked })),
+
+  settings: () => request<AdminSettings>("/api/admin/settings"),
+  saveNotificationSettings: (c: NotificationConfig) => request<AdminSettings>("/api/admin/settings/notifications", json("PUT", c)),
+  resetNotificationSettings: () => request<AdminSettings>("/api/admin/settings/notifications/reset", { method: "POST" }),
+
+  meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
+
+  decks: () => request<AdminDeck[]>("/api/admin/decks"),
+  createDeck: (d: SaveDeck) => request<AdminDeck>("/api/admin/decks", json("POST", d)),
+  updateDeck: (id: string, d: SaveDeck) => request<AdminDeck>(`/api/admin/decks/${id}`, json("PUT", d)),
+  reorderDecks: (ids: string[]) => request<void>("/api/admin/decks/order", json("PUT", { ids })),
+  deleteDeck: (id: string) => request<void>(`/api/admin/decks/${id}`, { method: "DELETE" }),
+
+  words: (f: WordFilters) => request<Paged<AdminWord>>(`/api/admin/words?${query(f)}`),
+  word: (id: string) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}`),
+  createWord: (w: SaveWord) => request<AdminWord>("/api/admin/words", json("POST", w)),
+  updateWord: (id: string, w: SaveWord) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}`, json("PUT", w)),
+  deleteWord: (id: string) => request<void>(`/api/admin/words/${encodeURIComponent(id)}`, { method: "DELETE" }),
+  exportWords: (f: WordFilters) => request<ExportWord[]>(`/api/admin/words/export?${query({ ...f, page: undefined, pageSize: undefined })}`),
+  importWords: (rows: ImportWordRow[], updateExisting: boolean, commit: boolean) =>
+    request<ImportWordsResult>("/api/admin/words/import", json("POST", { rows, updateExisting, commit })),
+
+  grammarLessons: () => request<AdminGrammarSummary[]>("/api/admin/grammar"),
+  grammarLesson: (slug: string) => request<AdminGrammarDetail>(`/api/admin/grammar/${slug}`),
+  createGrammar: (l: GrammarLesson) => request<AdminGrammarDetail>("/api/admin/grammar", json("POST", l)),
+  updateGrammar: (slug: string, l: GrammarLesson) => request<AdminGrammarDetail>(`/api/admin/grammar/${slug}`, json("PUT", l)),
+  validateGrammar: (l: GrammarLesson) => request<{ problems: string[] }>("/api/admin/grammar/validate", json("POST", l)),
+  reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
+  deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
+  exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  importGrammar: (lessons: unknown[], commit: boolean) =>
+    request<ImportGrammarResult>("/api/admin/grammar/import", json("POST", { lessons, commit })),
+
+  audit: (f: AuditFilters) => request<Paged<AuditEntry>>(`/api/admin/audit?${query(f)}`),
+  auditEntry: (id: string) => request<AuditDetail>(`/api/admin/audit/${id}`),
+  restoreAudit: (id: string) => request<{ entityType: string; entityId: string }>(`/api/admin/audit/${id}/restore`, { method: "POST" }),
+
+  media: () => request<MediaItem[]>("/api/admin/media"),
+  uploadMedia: (file: File, crop = true) => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("crop", String(crop));
+    return request<MediaItem>("/api/admin/media", { method: "POST", body: form });
+  },
+  deleteMedia: (id: string) => request<void>(`/api/admin/media/${id}`, { method: "DELETE" }),
+};
+
+/** Uploaded images are "/media/…" paths on the API host. */
+export const mediaSrc = (url: string) => (url.startsWith("/") ? `${BASE}${url}` : url);

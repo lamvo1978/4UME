@@ -1,0 +1,54 @@
+{
+  "slug": "used-to",
+  "version": 3,
+  "titleVi": "Used to: thói quen trong quá khứ",
+  "titleEn": "Used to",
+  "level": "A2",
+  "order": 31,
+  "summaryVi": "used to + V: việc từng thường xảy ra hoặc trạng thái từng đúng trong quá khứ nhưng nay không còn nữa.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Thói quen trong quá khứ, nay không còn.", "example": { "en": "I used to play football every day.", "vi": "Tôi từng chơi bóng đá mỗi ngày." } },
+        { "textVi": "Trạng thái trong quá khứ, nay đã khác.", "example": { "en": "There used to be a cinema here.", "vi": "Ở đây từng có một rạp chiếu phim." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + used to + V nguyên mẫu", "example": { "en": "She used to live in Hue.", "vi": "Cô ấy từng sống ở Huế." } },
+        { "kind": "negative", "pattern": "S + didn't use to + V", "example": { "en": "I didn't use to like vegetables.", "vi": "Hồi trước tôi không thích rau." } },
+        { "kind": "question", "pattern": "Did + S + use to + V?", "example": { "en": "Did you use to have long hair?", "vi": "Trước đây bạn có để tóc dài không?" } },
+        { "kind": "note", "pattern": "Sau did / didn't viết use to (không có d).", "example": { "en": "Did he use to smoke?", "vi": "Anh ấy từng hút thuốc à?" } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I use to play tennis when I was young.", "right": "I used to play tennis when I was young.", "noteVi": "Câu khẳng định viết used to." },
+        { "wrong": "Did you used to live here?", "right": "Did you use to live here?", "noteVi": "Sau did dùng use to." },
+        { "wrong": "I used to playing games.", "right": "I used to play games.", "noteVi": "used to + V nguyên mẫu." }
+      ]
+    },
+    { "type": "tip", "textVi": "Không dùng used to cho việc chỉ xảy ra một lần: 'I went to Paris in 2015' (không phải 'I used to go to Paris in 2015')." },
+    { "type": "tip", "textVi": "Đừng nhầm used to + V (từng làm) với be / get used to + V-ing (đã quen / dần quen với việc gì): 'I used to live alone' = trước đây tôi sống một mình; 'I'm used to living alone' = tôi đã quen sống một mình." }
+  ],
+  "exercises": [
+    { "id": "ut-01", "type": "mcq", "prompt": "When I was a child, I ___ afraid of the dark.", "options": ["use to be", "used to be", "used to being"], "answer": "used to be", "explanationVi": "Khẳng định: used to + V nguyên mẫu." },
+    { "id": "ut-02", "type": "mcq", "prompt": "___ you use to walk to school?", "options": ["Do", "Did", "Were"], "answer": "Did", "explanationVi": "Câu hỏi: Did + S + use to + V?" },
+    { "id": "ut-03", "type": "mcq", "prompt": "He ___ eat meat, but now he does.", "options": ["didn't use to", "didn't used to", "not used to"], "answer": "didn't use to", "explanationVi": "Phủ định: didn't use to." },
+    { "id": "ut-04", "type": "mcq", "prompt": "There ___ a big tree in front of my house.", "options": ["used to be", "used to have", "use to is"], "answer": "used to be", "explanationVi": "There used to be: ở đây từng có." },
+    { "id": "ut-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I used to go to Da Lat last summer.", "I went to Da Lat last summer.", "I use to go to Da Lat last summer."], "answer": "I went to Da Lat last summer.", "explanationVi": "Việc xảy ra một lần → quá khứ đơn, không dùng used to." },
+    { "id": "ut-06", "type": "fill", "prompt": "My father ___ (smoke), but he stopped five years ago. (dùng used to)", "answers": ["used to smoke"], "explanationVi": "used to + V: từng hút thuốc." },
+    { "id": "ut-07", "type": "fill", "prompt": "We ___ (not / have) a car when I was young. (dùng used to)", "answers": ["didn't use to have", "did not use to have"], "explanationVi": "Phủ định: didn't use to + V." },
+    { "id": "ut-08", "type": "order", "promptVi": "Cô ấy từng sống ở Hà Nội.", "answer": "She used to live in Hanoi.", "distractors": ["living"], "explanationVi": "used to + V nguyên mẫu." },
+    { "id": "ut-09", "type": "order", "promptVi": "Hồi nhỏ bạn có từng chơi game không?", "answer": "Did you use to play games as a child?", "distractors": ["used"], "explanationVi": "Sau did dùng use to." },
+    { "id": "ut-10", "type": "transform", "instructionVi": "Viết lại dùng used to", "source": "I played the piano when I was young, but I don't now.", "answer": "I used to play the piano.", "distractors": ["played"], "explanationVi": "Thói quen trong quá khứ nay không còn → used to." },
+    { "id": "ut-11", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "He used to like coffee.", "answer": "He didn't use to like coffee.", "distractors": ["used"], "explanationVi": "didn't + use to." },
+    { "id": "ut-12", "type": "error", "sentence": "Did she [used] to work here?", "correction": "use", "explanationVi": "Sau did dùng use to." },
+    { "id": "ut-13", "type": "error", "sentence": "I used to [going] swimming every weekend.", "correction": "go", "explanationVi": "used to + V nguyên mẫu." },
+    { "id": "ut-14", "type": "error", "sentence": "When I was a child, I [use] to hate milk.", "correction": "used", "explanationVi": "Khẳng định: used to." }
+  ]
+}

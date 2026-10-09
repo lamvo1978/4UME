@@ -1,0 +1,58 @@
+{
+  "slug": "comparatives",
+  "version": 3,
+  "titleVi": "So sánh hơn và so sánh nhất",
+  "titleEn": "Comparatives and superlatives",
+  "level": "A2",
+  "order": 21,
+  "summaryVi": "So sánh hơn: tính từ ngắn + -er + than, tính từ dài: more + adj + than. So sánh nhất: the + -est / the most + adj.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Cách tạo",
+      "headers": ["Loại tính từ", "So sánh hơn", "So sánh nhất"],
+      "cells": [
+        ["1 âm tiết: + er / est", "tall → taller", "the tallest"],
+        ["Tận cùng e: + r / st", "nice → nicer", "the nicest"],
+        ["1 âm tiết, tận cùng 1 nguyên âm + 1 phụ âm (trừ w, x, y): gấp đôi phụ âm", "big → bigger", "the biggest"],
+        ["2 âm tiết tận cùng y: y → ier / iest", "happy → happier", "the happiest"],
+        ["Đa số tính từ 2 âm tiết khác và từ 3 âm tiết trở lên: more / most", "beautiful → more beautiful", "the most beautiful"],
+        ["Bất quy tắc", "good → better · bad → worse · far → farther / further · many / much → more", "the best · the worst · the farthest / furthest · the most"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + be + adj-er / more adj + than + N", "example": { "en": "My bag is heavier than yours.", "vi": "Túi của tôi nặng hơn túi của bạn." } },
+        { "kind": "affirmative", "pattern": "S + be + the + adj-est / the most adj (+ in / of ...)", "example": { "en": "It's the most expensive hotel in the city.", "vi": "Đó là khách sạn đắt nhất thành phố." } },
+        { "kind": "note", "pattern": "So sánh bằng: as + adj + as", "example": { "en": "She is as tall as her mother.", "vi": "Cô ấy cao bằng mẹ." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "more taller", "right": "taller", "noteVi": "Không dùng more với tính từ đã thêm -er." },
+        { "wrong": "gooder / the goodest", "right": "better / the best", "noteVi": "good là bất quy tắc." },
+        { "wrong": "She is taller that me.", "right": "She is taller than me.", "noteVi": "So sánh hơn dùng than." },
+        { "wrong": "He is tallest in the class.", "right": "He is the tallest in the class.", "noteVi": "So sánh nhất cần the." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "co-01", "type": "mcq", "prompt": "An elephant is ___ than a horse.", "options": ["big", "bigger", "biggest"], "answer": "bigger", "explanationVi": "So sánh hơn: big → bigger (gấp đôi g)." },
+    { "id": "co-02", "type": "mcq", "prompt": "This is ___ book I have ever read.", "options": ["the most interesting", "more interesting", "the interestingest"], "answer": "the most interesting", "explanationVi": "Tính từ dài: the most + adj." },
+    { "id": "co-03", "type": "mcq", "prompt": "Today is ___ than yesterday.", "options": ["badder", "worse", "worst"], "answer": "worse", "explanationVi": "bad → worse → the worst." },
+    { "id": "co-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["My phone is more cheaper than yours.", "My phone is cheaper than yours.", "My phone is cheaper that yours."], "answer": "My phone is cheaper than yours.", "explanationVi": "cheap → cheaper + than; không dùng thêm more." },
+    { "id": "co-05", "type": "mcq", "prompt": "Mai is as ___ as her sister.", "options": ["tall", "taller", "tallest"], "answer": "tall", "explanationVi": "So sánh bằng: as + adj nguyên mẫu + as." },
+    { "id": "co-06", "type": "fill", "prompt": "Hanoi is ___ (cold) than Ho Chi Minh City in winter.", "answers": ["colder"], "explanationVi": "cold → colder." },
+    { "id": "co-07", "type": "fill", "prompt": "She is the ___ (happy) person I know.", "answers": ["happiest"], "explanationVi": "happy → happiest (y → iest)." },
+    { "id": "co-08", "type": "fill", "prompt": "This exercise is ___ (difficult) than the last one.", "answers": ["more difficult"], "explanationVi": "Tính từ dài: more difficult." },
+    { "id": "co-09", "type": "fill", "prompt": "He is the ___ (good) player in our team.", "answers": ["best"], "explanationVi": "good → better → the best." },
+    { "id": "co-10", "type": "order", "promptVi": "Mùa hè nóng hơn mùa xuân.", "answer": "Summer is hotter than spring.", "distractors": ["more"], "explanationVi": "hot → hotter (gấp đôi t)." },
+    { "id": "co-11", "type": "order", "promptVi": "Đây là ngọn núi cao nhất Việt Nam.", "answer": "This is the highest mountain in Vietnam.", "distractors": ["of"], "explanationVi": "the + adj-est + in + nơi chốn." },
+    { "id": "co-12", "type": "error", "sentence": "My brother is [tallest] than me.", "correction": "taller", "explanationVi": "Có than → so sánh hơn: taller." },
+    { "id": "co-13", "type": "error", "sentence": "It was the [baddest] day of my life.", "correction": "worst", "explanationVi": "bad → worse → the worst." },
+    { "id": "co-14", "type": "transform", "instructionVi": "Viết lại dùng so sánh hơn với 'than'", "source": "Tom is not as old as Peter.", "answer": "Peter is older than Tom.", "distractors": ["more"], "explanationVi": "Tom không già bằng Peter = Peter già hơn Tom." }
+  ]
+}

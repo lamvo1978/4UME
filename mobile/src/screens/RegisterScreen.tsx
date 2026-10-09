@@ -1,7 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { useAuth } from "../auth/AuthContext";
+import { KeyboardScreen } from "../components/KeyboardScreen";
 import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
 
@@ -28,7 +29,7 @@ export function RegisterScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.root}>
+    <KeyboardScreen style={styles.root} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Tạo tài khoản</Text>
       <Text style={styles.brand}>4UME</Text>
       <TextInput
@@ -62,12 +63,13 @@ export function RegisterScreen({ navigation }: Props) {
       <Pressable onPress={() => navigation.navigate("Login")}>
         <Text style={styles.link}>Đã có tài khoản? Đăng nhập</Text>
       </Pressable>
-    </View>
+    </KeyboardScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg, padding: spacing.lg, justifyContent: "center", gap: spacing.sm },
+  root: { backgroundColor: colors.bg },
+  content: { padding: spacing.lg, justifyContent: "center", gap: spacing.sm },
   title: { fontSize: 28, fontWeight: "700", color: colors.ink },
   brand: { color: colors.accent, fontWeight: "700", marginBottom: spacing.md },
   input: {

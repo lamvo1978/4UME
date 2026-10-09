@@ -1,0 +1,63 @@
+{
+  "slug": "modals-deduction",
+  "version": 1,
+  "titleVi": "Suy đoán với must, can't, might",
+  "titleEn": "Modals of deduction",
+  "level": "B1",
+  "order": 43,
+  "summaryVi": "Đoán về hiện tại dựa trên dấu hiệu: must (chắc chắn đúng), can't (chắc chắn không), might / may / could (có thể).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Mức độ chắc chắn",
+      "headers": ["Động từ", "Nghĩa", "Ví dụ"],
+      "cells": [
+        ["must + V", "chắc chắn là (gần 100%)", "She's been working all day. She must be tired."],
+        ["might / may / could + V", "có thể là (khoảng 50%)", "He isn't answering. He might be in a meeting."],
+        ["can't + V", "chắc chắn không (gần 100%)", "You've just eaten. You can't be hungry."]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + must / might / may / could + V nguyên mẫu", "example": { "en": "The lights are on. They must be at home.", "vi": "Đèn đang sáng. Chắc chắn họ đang ở nhà." } },
+        { "kind": "affirmative", "pattern": "Đoán việc đang diễn ra: S + must / might + be + V-ing", "example": { "en": "He must be working late.", "vi": "Chắc anh ấy đang làm muộn." } },
+        { "kind": "negative", "pattern": "S + can't + V (chắc chắn không) · S + might not / may not + V (có thể không)", "example": { "en": "She might not know the answer.", "vi": "Có thể cô ấy không biết câu trả lời." } },
+        { "kind": "note", "pattern": "Phủ định của must (suy đoán) là can't, KHÔNG phải mustn't.", "example": { "en": "That can't be Tom. He's in Japan.", "vi": "Không thể là Tom được. Anh ấy đang ở Nhật mà." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Có bằng chứng rõ → must / can't.", "example": { "en": "The ground is wet. It must be raining.", "vi": "Mặt đất ướt. Chắc chắn trời đang mưa." } },
+        { "textVi": "Chưa chắc, chỉ phỏng đoán → might / may / could.", "example": { "en": "I'm not sure where my keys are. They could be in the car.", "vi": "Tôi không chắc chìa khoá ở đâu. Có thể nó ở trong xe." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "His car isn't here. He mustn't be at home.", "right": "His car isn't here. He can't be at home.", "noteVi": "mustn't nghĩa là 'cấm'. Chắc chắn không → can't." },
+        { "wrong": "She must to be rich.", "right": "She must be rich.", "noteVi": "Sau must không có to." },
+        { "wrong": "He must is busy.", "right": "He must be busy.", "noteVi": "Sau động từ khuyết thiếu dùng V nguyên mẫu (be)." }
+      ]
+    },
+    { "type": "tip", "textVi": "Đừng nhầm must (suy đoán) với have to (bắt buộc): 'You must be hungry' = chắc là bạn đói rồi; 'You have to eat' = bạn phải ăn. Muốn đoán về QUÁ KHỨ, dùng must have + V3: 'She must have forgotten.' (chắc cô ấy quên rồi)." }
+  ],
+  "exercises": [
+    { "id": "md-01", "type": "mcq", "prompt": "She's been working for 12 hours. She ___ be exhausted.", "options": ["must", "can't", "mustn't"], "answer": "must", "explanationVi": "Làm 12 tiếng → chắc chắn mệt → must." },
+    { "id": "md-02", "type": "mcq", "prompt": "That ___ be Tom at the door. He's in Japan this week.", "options": ["must", "can't", "might"], "answer": "can't", "explanationVi": "Tom đang ở Nhật → chắc chắn không phải → can't." },
+    { "id": "md-03", "type": "mcq", "prompt": "I'm not sure where Lan is. She ___ be in the library.", "options": ["might", "must", "can't"], "answer": "might", "explanationVi": "not sure → chỉ phỏng đoán → might." },
+    { "id": "md-04", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["His car isn't here. He mustn't be at home.", "His car isn't here. He can't be at home.", "His car isn't here. He can't is at home."], "answer": "His car isn't here. He can't be at home.", "explanationVi": "Chắc chắn không → can't + V nguyên mẫu (be). mustn't nghĩa là 'cấm'." },
+    { "id": "md-05", "type": "mcq", "prompt": "\"You must be Anna's sister.\" Người nói muốn nói gì?", "options": ["Tôi đoán chắc bạn là chị / em gái của Anna.", "Bạn bắt buộc phải là chị / em gái của Anna.", "Có lẽ bạn không phải chị / em gái của Anna."], "answer": "Tôi đoán chắc bạn là chị / em gái của Anna.", "explanationVi": "must ở đây là suy đoán chắc chắn, không phải bắt buộc." },
+    { "id": "md-06", "type": "fill", "prompt": "You've just had a big lunch. You ___ be hungry already! (chắc chắn không)", "answers": ["can't", "cannot"], "explanationVi": "Chắc chắn không → can't." },
+    { "id": "md-07", "type": "fill", "prompt": "It's 2 a.m. and nobody is answering the phone. They ___ be asleep. (chắc chắn)", "answers": ["must"], "explanationVi": "Có bằng chứng rõ → must." },
+    { "id": "md-08", "type": "fill", "prompt": "I don't know where my keys are. They ___ be in the car. (có thể)", "answers": ["might", "may", "could"], "explanationVi": "Không chắc → might / may / could." },
+    { "id": "md-09", "type": "order", "promptVi": "Chắc hẳn anh ấy đang làm việc muộn.", "answer": "He must be working late.", "distractors": ["to", "works"], "explanationVi": "Đoán việc đang diễn ra: must + be + V-ing." },
+    { "id": "md-10", "type": "order", "promptVi": "Điều đó không thể là sự thật.", "answer": "That can't be true.", "distractors": ["isn't", "not"], "explanationVi": "Chắc chắn không → can't + be." },
+    { "id": "md-11", "type": "transform", "instructionVi": "Viết lại dùng must (suy đoán)", "source": "I'm sure she is at home.", "answer": "She must be at home.", "distractors": ["is", "to"], "explanationVi": "I'm sure ... is → must be." },
+    { "id": "md-12", "type": "transform", "instructionVi": "Viết lại dùng can't (suy đoán)", "source": "I'm sure this isn't your bag.", "answer": "This can't be your bag.", "distractors": ["isn't", "not"], "explanationVi": "I'm sure ... isn't → can't be." },
+    { "id": "md-13", "type": "error", "sentence": "His car isn't here, so I'm sure he [mustn't] be at home.", "correction": "can't", "explanationVi": "Chắc chắn không → can't. mustn't nghĩa là 'cấm'." },
+    { "id": "md-14", "type": "error", "sentence": "She [must to] be very tired after the long trip.", "correction": "must", "explanationVi": "Sau must dùng V nguyên mẫu, không có to." }
+  ]
+}

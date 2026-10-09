@@ -1,0 +1,55 @@
+{
+  "slug": "present-perfect-vs-past",
+  "version": 3,
+  "titleVi": "Hiện tại hoàn thành hay quá khứ đơn?",
+  "titleEn": "Present perfect vs past simple",
+  "level": "B1",
+  "order": 33,
+  "summaryVi": "Có thời điểm cụ thể đã kết thúc (yesterday, in 2010, ago) → quá khứ đơn. Không nói khi nào, hoặc kéo dài đến nay → hiện tại hoàn thành.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "So sánh",
+      "headers": ["", "Quá khứ đơn", "Hiện tại hoàn thành"],
+      "cells": [
+        ["Thời điểm", "đã xác định, đã kết thúc", "không xác định / đến nay"],
+        ["Dấu hiệu", "yesterday, last week, ago, in 2010, when...", "ever, never, just, already, yet, for, since"],
+        ["Ví dụ", "I lost my keys yesterday.", "I've lost my keys. (giờ vẫn chưa tìm thấy)"]
+      ]
+    },
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Hỏi trải nghiệm bằng hiện tại hoàn thành, kể chi tiết bằng quá khứ đơn.", "example": { "en": "Have you been to Hue? – Yes, I went there last year.", "vi": "Bạn đến Huế chưa? – Rồi, tôi đi năm ngoái." } },
+        { "textVi": "Người đã mất / thời kỳ đã hết → quá khứ đơn.", "example": { "en": "Shakespeare wrote many plays.", "vi": "Shakespeare đã viết nhiều vở kịch." } },
+        { "textVi": "Khoảng thời gian chưa kết thúc (today, this week) → hiện tại hoàn thành. Nhưng nếu thời điểm cụ thể đã qua (this morning khi đã sang buổi chiều) → quá khứ đơn.", "example": { "en": "I've drunk three cups of coffee today.", "vi": "Hôm nay tôi đã uống ba cốc cà phê." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I have visited Paris in 2018.", "right": "I visited Paris in 2018.", "noteVi": "in 2018 là thời điểm cụ thể → quá khứ đơn." },
+        { "wrong": "When have you arrived?", "right": "When did you arrive?", "noteVi": "Hỏi When về một việc trong quá khứ → quá khứ đơn, không dùng hiện tại hoàn thành." },
+        { "wrong": "I know her for five years.", "right": "I have known her for five years.", "noteVi": "Kéo dài đến nay → hiện tại hoàn thành." }
+      ]
+    },
+    { "type": "tip", "textVi": "Tự hỏi: 'Có nói rõ KHI NÀO trong quá khứ không?' Có → quá khứ đơn. Không → thường là hiện tại hoàn thành (trừ khi người hoặc thời kỳ đó đã kết thúc, như ví dụ Shakespeare)." }
+  ],
+  "exercises": [
+    { "id": "pv-01", "type": "mcq", "prompt": "I ___ to London two years ago.", "options": ["have been", "went", "have gone"], "answer": "went", "explanationVi": "two years ago → quá khứ đơn." },
+    { "id": "pv-02", "type": "mcq", "prompt": "She ___ at this company since 2020.", "options": ["worked", "has worked", "works"], "answer": "has worked", "explanationVi": "since 2020 → kéo dài đến nay → hiện tại hoàn thành." },
+    { "id": "pv-03", "type": "mcq", "prompt": "When ___ you start learning English?", "options": ["have", "did", "has"], "answer": "did", "explanationVi": "Hỏi When về một việc đã xảy ra trong quá khứ → quá khứ đơn." },
+    { "id": "pv-04", "type": "mcq", "prompt": "I ___ my wallet. I can't find it anywhere.", "options": ["lose", "have lost", "was losing"], "answer": "have lost", "explanationVi": "Kết quả còn ở hiện tại (vẫn chưa tìm thấy) → hiện tại hoàn thành." },
+    { "id": "pv-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I have seen that film last week.", "I saw that film last week.", "I have saw that film last week."], "answer": "I saw that film last week.", "explanationVi": "last week → quá khứ đơn." },
+    { "id": "pv-06", "type": "mcq", "prompt": "Have you ever tried pho? – Yes, I ___ it in Hanoi last year.", "options": ["have tried", "tried", "try"], "answer": "tried", "explanationVi": "Kể chi tiết có thời điểm (last year) → quá khứ đơn." },
+    { "id": "pv-07", "type": "fill", "prompt": "We ___ (move) to Saigon in 2015.", "answers": ["moved"], "explanationVi": "in 2015 → quá khứ đơn." },
+    { "id": "pv-08", "type": "fill", "prompt": "I ___ (know) Lan since we were children.", "answers": ["have known", "'ve known"], "explanationVi": "since → hiện tại hoàn thành." },
+    { "id": "pv-09", "type": "fill", "prompt": "He ___ (not / call) me yesterday.", "answers": ["didn't call", "did not call"], "explanationVi": "yesterday → quá khứ đơn." },
+    { "id": "pv-10", "type": "order", "promptVi": "Tôi đã gặp anh ấy hai ngày trước.", "answer": "I met him two days ago.", "distractors": ["have"], "explanationVi": "ago → quá khứ đơn." },
+    { "id": "pv-11", "type": "order", "promptVi": "Hôm nay cô ấy đã uống hai cốc cà phê.", "answer": "She has drunk two cups of coffee today.", "distractors": ["drink"], "explanationVi": "today chưa kết thúc → hiện tại hoàn thành." },
+    { "id": "pv-12", "type": "error", "sentence": "I [finish] the project last Friday.", "correction": "finished", "explanationVi": "last Friday → quá khứ đơn: finished." },
+    { "id": "pv-13", "type": "error", "sentence": "We have known each other [since] five years.", "correction": "for", "explanationVi": "five years là khoảng thời gian → for." },
+    { "id": "pv-14", "type": "error", "sentence": "She [lives] here for three years now.", "correction": "has lived", "explanationVi": "for three years (đến nay) → has lived." }
+  ]
+}

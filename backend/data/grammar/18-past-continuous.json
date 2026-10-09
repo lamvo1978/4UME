@@ -1,0 +1,53 @@
+{
+  "slug": "past-continuous",
+  "version": 3,
+  "titleVi": "Thì quá khứ tiếp diễn",
+  "titleEn": "Past continuous",
+  "level": "A2",
+  "order": 18,
+  "summaryVi": "was / were + V-ing: việc đang diễn ra tại một thời điểm trong quá khứ, thường bị một việc khác (quá khứ đơn) xen vào.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Việc đang diễn ra tại một thời điểm xác định trong quá khứ.", "example": { "en": "At 8 p.m. yesterday, I was having dinner.", "vi": "Lúc 8 giờ tối qua, tôi đang ăn tối." } },
+        { "textVi": "Việc đang diễn ra thì việc khác xen vào (when + quá khứ đơn).", "example": { "en": "I was cooking when the phone rang.", "vi": "Tôi đang nấu ăn thì điện thoại reo." } },
+        { "textVi": "Hai việc cùng diễn ra song song (while).", "example": { "en": "While she was reading, he was sleeping.", "vi": "Trong khi cô ấy đọc sách thì anh ấy ngủ." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + was / were + V-ing", "example": { "en": "They were playing cards.", "vi": "Họ đang chơi bài." } },
+        { "kind": "negative", "pattern": "S + wasn't / weren't + V-ing", "example": { "en": "I wasn't sleeping.", "vi": "Lúc đó tôi không ngủ." } },
+        { "kind": "question", "pattern": "Was / Were + S + V-ing?", "example": { "en": "Were you working at 9?", "vi": "Lúc 9 giờ bạn có đang làm việc không?" } },
+        { "kind": "note", "pattern": "when thường + quá khứ đơn (việc ngắn) · while + quá khứ tiếp diễn (việc dài). when cũng có thể đi với quá khứ tiếp diễn.", "example": { "en": "While I was walking, I saw an old friend.", "vi": "Khi đang đi bộ, tôi gặp một người bạn cũ." } }
+      ]
+    },
+    { "type": "signals", "words": ["at 7 p.m. yesterday", "at this time last week", "while", "all evening"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I was watch TV.", "right": "I was watching TV.", "noteVi": "was / were + V-ing." },
+        { "wrong": "When I was walking, it was starting to rain.", "right": "When / While I was walking, it started to rain.", "noteVi": "Việc xen vào (ngắn) dùng quá khứ đơn." },
+        { "wrong": "They was sleeping.", "right": "They were sleeping.", "noteVi": "They đi với were." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pg-01", "type": "mcq", "prompt": "At 10 p.m. last night, I ___ a book.", "options": ["read", "was reading", "am reading"], "answer": "was reading", "explanationVi": "Đang diễn ra tại một thời điểm trong quá khứ." },
+    { "id": "pg-02", "type": "mcq", "prompt": "She was taking a shower when the doorbell ___.", "options": ["was ringing", "rang", "rings"], "answer": "rang", "explanationVi": "Việc ngắn xen vào → quá khứ đơn." },
+    { "id": "pg-03", "type": "mcq", "prompt": "___ they were playing outside, it started to snow.", "options": ["While", "So", "Because"], "answer": "While", "explanationVi": "while + việc kéo dài (quá khứ tiếp diễn): trong khi họ đang chơi thì trời đổ tuyết." },
+    { "id": "pg-04", "type": "mcq", "prompt": "What ___ you doing at 6 this morning?", "options": ["was", "were", "did"], "answer": "were", "explanationVi": "you + were + V-ing." },
+    { "id": "pg-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I was walk home when I saw her.", "I was walking home when I saw her.", "I walking home when I saw her."], "answer": "I was walking home when I saw her.", "explanationVi": "was + V-ing cho việc đang diễn ra." },
+    { "id": "pg-06", "type": "fill", "prompt": "We ___ (watch) TV when the lights went out.", "answers": ["were watching"], "explanationVi": "We + were + V-ing." },
+    { "id": "pg-07", "type": "fill", "prompt": "When the teacher came in, he ___ (not / listen) to music – he was reading.", "answers": ["wasn't listening", "was not listening"], "explanationVi": "He + wasn't + V-ing." },
+    { "id": "pg-08", "type": "fill", "prompt": "I was driving when I ___ (see) the accident.", "answers": ["saw"], "explanationVi": "Việc ngắn xen vào → quá khứ đơn: saw." },
+    { "id": "pg-09", "type": "order", "promptVi": "Lúc 7 giờ tối qua họ đang ăn tối.", "answer": "They were having dinner at 7 p.m. last night.", "distractors": ["was"], "explanationVi": "They + were + V-ing." },
+    { "id": "pg-10", "type": "order", "promptVi": "Tôi đang ngủ thì bạn gọi.", "answer": "I was sleeping when you called.", "distractors": ["while"], "explanationVi": "Việc dài: was sleeping; việc xen vào: called." },
+    { "id": "pg-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "She was working late.", "answer": "Was she working late?", "distractors": ["Did"], "explanationVi": "Đảo was lên trước chủ ngữ." },
+    { "id": "pg-12", "type": "error", "sentence": "The children [was] playing in the garden.", "correction": "were", "explanationVi": "children số nhiều → were." },
+    { "id": "pg-13", "type": "error", "sentence": "While I [walk] to school, I met my teacher.", "correction": "was walking", "explanationVi": "while + việc kéo dài → was walking." }
+  ]
+}

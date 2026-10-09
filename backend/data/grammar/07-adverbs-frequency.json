@@ -1,0 +1,60 @@
+{
+  "slug": "adverbs-frequency",
+  "version": 3,
+  "titleVi": "Trạng từ chỉ tần suất",
+  "titleEn": "Adverbs of frequency",
+  "level": "A1",
+  "order": 7,
+  "summaryVi": "always, usually, often, sometimes, rarely, never cho biết việc xảy ra thường xuyên đến mức nào. Đứng trước động từ thường, sau to be.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Mức độ thường xuyên",
+      "headers": ["Trạng từ", "Nghĩa", "Mức độ"],
+      "cells": [
+        ["always", "luôn luôn", "100%"],
+        ["usually", "thường xuyên", "~90%"],
+        ["often", "hay, thường", "~70%"],
+        ["sometimes", "thỉnh thoảng", "~50%"],
+        ["rarely / seldom", "hiếm khi", "~10%"],
+        ["never", "không bao giờ", "0%"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + trạng từ + động từ thường", "example": { "en": "I usually walk to work.", "vi": "Tôi thường đi bộ đi làm." } },
+        { "kind": "affirmative", "pattern": "S + am / is / are + trạng từ", "example": { "en": "She is always late.", "vi": "Cô ấy luôn đến muộn." } },
+        { "kind": "negative", "pattern": "S + don't / doesn't + trạng từ + V", "example": { "en": "He doesn't often cook.", "vi": "Anh ấy không hay nấu ăn." } },
+        { "kind": "question", "pattern": "Do / Does + S + trạng từ + V?", "example": { "en": "Do you ever eat sushi?", "vi": "Bạn có bao giờ ăn sushi không?" } },
+        { "kind": "note", "pattern": "How often ...? → every day, once a week, twice a month...", "example": { "en": "How often do you swim? – Twice a week.", "vi": "Bạn bơi bao lâu một lần? – Hai lần một tuần." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I go always to bed late.", "right": "I always go to bed late.", "noteVi": "Trạng từ đứng trước động từ thường." },
+        { "wrong": "He always is busy.", "right": "He is always busy.", "noteVi": "Trạng từ đứng sau to be." },
+        { "wrong": "She doesn't never eat meat.", "right": "She never eats meat.", "noteVi": "never đã mang nghĩa phủ định, không dùng thêm not." }
+      ]
+    },
+    { "type": "tip", "textVi": "Nhớ: 'trước động từ thường, sau to be'. sometimes, usually, often có thể đứng đầu câu (Sometimes I walk to school.); always và never thì không." }
+  ],
+  "exercises": [
+    { "id": "af-01", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["She always is happy.", "She is always happy.", "Always she is happy."], "answer": "She is always happy.", "explanationVi": "Trạng từ đứng sau to be." },
+    { "id": "af-02", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I usually have breakfast at 7.", "I have usually breakfast at 7.", "I have breakfast usually at 7."], "answer": "I usually have breakfast at 7.", "explanationVi": "Trạng từ đứng trước động từ thường." },
+    { "id": "af-03", "type": "mcq", "prompt": "He hates fish. He ___ eats it.", "options": ["always", "often", "never"], "answer": "never", "explanationVi": "Ghét cá → không bao giờ ăn." },
+    { "id": "af-04", "type": "mcq", "prompt": "___ do you go to the cinema? – Once a month.", "options": ["How often", "How many", "How long"], "answer": "How often", "explanationVi": "Hỏi tần suất dùng How often." },
+    { "id": "af-05", "type": "mcq", "prompt": "She doesn't ___ drink coffee.", "options": ["never", "often", "always not"], "answer": "often", "explanationVi": "doesn't + often + V. Không dùng never sau doesn't." },
+    { "id": "af-06", "type": "fill", "prompt": "I ___ (never / be) late for class.", "answers": ["am never", "'m never"], "explanationVi": "never đứng sau to be: am never." },
+    { "id": "af-07", "type": "fill", "prompt": "My dad ___ (usually / read) the news in the morning.", "answers": ["usually reads"], "explanationVi": "Trạng từ trước động từ; dad = he → reads." },
+    { "id": "af-08", "type": "fill", "prompt": "We go swimming ___ a week. (hai lần)", "answers": ["twice", "two times"], "explanationVi": "Hai lần = twice." },
+    { "id": "af-09", "type": "order", "promptVi": "Tôi luôn nấu bữa tối.", "answer": "I always cook dinner.", "distractors": ["cooks"], "explanationVi": "Trạng từ đứng trước động từ thường." },
+    { "id": "af-10", "type": "order", "promptVi": "Họ luôn luôn bận rộn.", "answer": "They are always busy.", "explanationVi": "Trạng từ đứng sau to be." },
+    { "id": "af-11", "type": "order", "promptVi": "Anh ấy hiếm khi xem tivi.", "answer": "He rarely watches TV.", "distractors": ["watch"], "explanationVi": "rarely trước động từ; he → watches." },
+    { "id": "af-12", "type": "transform", "instructionVi": "Thêm 'always' vào đúng vị trí", "source": "She is tired after work.", "answer": "She is always tired after work.", "distractors": ["does"], "explanationVi": "always đứng sau to be." },
+    { "id": "af-13", "type": "error", "sentence": "She [don't] often cook at home.", "correction": "doesn't", "explanationVi": "She → doesn't: She doesn't often cook at home." },
+    { "id": "af-14", "type": "error", "sentence": "How [many] do you visit your grandparents?", "correction": "often", "explanationVi": "Hỏi tần suất: How often." }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "slug": "possessive-s",
+  "version": 1,
+  "titleVi": "Sở hữu cách 's",
+  "titleEn": "Possessive 's",
+  "level": "A1",
+  "order": 3,
+  "summaryVi": "Thêm 's hoặc ' sau danh từ chỉ người để nói vật thuộc về ai (Lan's bag). Với đồ vật thường dùng of (the end of the film); hỏi chủ sở hữu bằng Whose...?",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Một người, một con vật + 's.", "example": { "en": "Lan's bag is on the chair.", "vi": "Túi của Lan ở trên ghế." } },
+        { "textVi": "Danh từ số nhiều tận cùng -s: chỉ thêm dấu '.", "example": { "en": "My parents' house is near the sea.", "vi": "Nhà bố mẹ tôi ở gần biển." } },
+        { "textVi": "Danh từ số nhiều bất quy tắc (không tận cùng -s): thêm 's.", "example": { "en": "The children's toys are everywhere.", "vi": "Đồ chơi của bọn trẻ vương khắp nơi." } },
+        { "textVi": "Với đồ vật, nơi chốn: thường dùng the ... of ...", "example": { "en": "I don't understand the end of the film.", "vi": "Tôi không hiểu đoạn kết của bộ phim." } },
+        { "textVi": "Hỏi vật thuộc về ai: Whose + danh từ...?", "example": { "en": "Whose phone is this? – It's Minh's.", "vi": "Điện thoại này của ai? – Của Minh." } }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Cách thêm 's",
+      "headers": ["Người sở hữu", "Cách viết", "Ví dụ"],
+      "cells": [
+        ["Một người", "+ 's", "my brother's car"],
+        ["Nhiều người, tận cùng -s", "+ '", "my brothers' room"],
+        ["Nhiều người, bất quy tắc", "+ 's", "the children's toys, the women's team"],
+        ["Hai người cùng sở hữu", "'s ở người sau", "Tom and Anna's house"],
+        ["Tên riêng tận cùng -s", "+ 's (hoặc chỉ ')", "James's car / James' car"]
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "Người sở hữu + 's + vật", "example": { "en": "This is Hoa's room.", "vi": "Đây là phòng của Hoa." } },
+        { "kind": "question", "pattern": "Whose + danh từ + is / are ...?", "example": { "en": "Whose keys are on the table?", "vi": "Chìa khóa trên bàn là của ai?" } },
+        { "kind": "note", "pattern": "Đã rõ vật gì thì 's có thể đứng một mình.", "example": { "en": "Is this your pen? – No, it's Nam's.", "vi": "Đây là bút của bạn à? – Không, của Nam." } },
+        { "kind": "note", "pattern": "Đồ vật: the + phần + of + the + vật", "example": { "en": "Write your name at the top of the page.", "vi": "Viết tên ở đầu trang." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "the bag of Lan", "right": "Lan's bag", "noteVi": "Với người, dùng 's; không dịch từng chữ \"túi của Lan\"." },
+        { "wrong": "my parents's house", "right": "my parents' house", "noteVi": "Số nhiều tận cùng -s chỉ thêm dấu '." },
+        { "wrong": "the childrens' toys", "right": "the children's toys", "noteVi": "children không tận cùng -s nên thêm 's." },
+        { "wrong": "Who's bag is this?", "right": "Whose bag is this?", "noteVi": "Who's = Who is. Hỏi \"của ai\" dùng Whose." }
+      ]
+    },
+    { "type": "tip", "textVi": "Mẹo: tiếng Việt nói \"vật của người\", tiếng Anh đảo lại \"người's vật\": túi của Lan → Lan's bag. Lưu ý 's cũng có thể là is (Lan's tired = Lan is tired): sau 's là danh từ thì đó là sở hữu." }
+  ],
+  "exercises": [
+    { "id": "po-01", "type": "mcq", "prompt": "This is ___ bike.", "options": ["Tom's", "Toms", "Tom"], "answer": "Tom's", "explanationVi": "Một người sở hữu → tên + 's: Tom's bike." },
+    { "id": "po-02", "type": "mcq", "prompt": "My ___ names are Mai and Lan.", "options": ["sisters'", "sister's", "sisters's"], "answer": "sisters'", "explanationVi": "Hai tên → hai chị em (sisters). Số nhiều tận cùng -s chỉ thêm '." },
+    { "id": "po-03", "type": "mcq", "prompt": "Mai and Lan are sisters. ___ mother is a doctor.", "options": ["Mai and Lan's", "Mai's and Lan's", "Mai and Lan"], "answer": "Mai and Lan's", "explanationVi": "Hai người cùng có một mẹ → chỉ thêm 's vào người sau." },
+    { "id": "po-04", "type": "mcq", "prompt": "___ car is this? – It's my dad's.", "options": ["Whose", "Who's", "Who"], "answer": "Whose", "explanationVi": "Hỏi vật thuộc về ai → Whose + danh từ. Who's = Who is." },
+    { "id": "po-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["I don't like the end of the film.", "I don't like the film of the end.", "I don't like the end's film."], "answer": "I don't like the end of the film.", "explanationVi": "Với đồ vật dùng the + phần + of + vật: the end of the film." },
+    { "id": "po-06", "type": "fill", "prompt": "Is this ___ (Nam) phone?", "answers": ["Nam's"], "explanationVi": "Một người → Nam's." },
+    { "id": "po-07", "type": "fill", "prompt": "My ___ (parents) house is near the sea.", "answers": ["parents'"], "explanationVi": "parents tận cùng -s → chỉ thêm dấu ': parents'." },
+    { "id": "po-08", "type": "fill", "prompt": "The ___ (men) toilet is on the left.", "answers": ["men's"], "explanationVi": "men là số nhiều bất quy tắc, không tận cùng -s → thêm 's." },
+    { "id": "po-09", "type": "order", "promptVi": "Đây là xe đạp của anh trai tôi.", "answer": "This is my brother's bike.", "distractors": ["brothers"], "explanationVi": "Một anh trai → brother's + vật." },
+    { "id": "po-10", "type": "order", "promptVi": "Điện thoại của ai ở trên bàn?", "answer": "Whose phone is on the table?", "distractors": ["Who's"], "explanationVi": "Whose + danh từ + is ...?" },
+    { "id": "po-11", "type": "transform", "instructionVi": "Viết lại dùng sở hữu cách", "source": "The house of my grandparents is old.", "answer": "My grandparents' house is old.", "distractors": ["grandparents's"], "explanationVi": "grandparents tận cùng -s → chỉ thêm ': grandparents'." },
+    { "id": "po-12", "type": "transform", "instructionVi": "Đặt câu hỏi với Whose", "source": "This is Lan's umbrella.", "answer": "Whose umbrella is this?", "distractors": ["Who's"], "explanationVi": "Whose + danh từ + is + this?" },
+    { "id": "po-13", "type": "error", "sentence": "My three kids are ready, but where are the [childrens'] shoes?", "correction": "children's", "explanationVi": "children không tận cùng -s → children's." },
+    { "id": "po-14", "type": "error", "sentence": "[Who's] jacket is this?", "correction": "Whose", "explanationVi": "Who's = Who is. Hỏi của ai dùng Whose." }
+  ]
+}

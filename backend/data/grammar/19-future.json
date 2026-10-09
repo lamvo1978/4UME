@@ -1,0 +1,62 @@
+{
+  "slug": "future",
+  "version": 3,
+  "titleVi": "Tương lai: will và be going to",
+  "titleEn": "Future: will and be going to",
+  "level": "A2",
+  "order": 19,
+  "summaryVi": "will: quyết định ngay lúc nói, dự đoán theo ý kiến, lời hứa. be going to: kế hoạch đã định trước, dự đoán có căn cứ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "title": "Khi nào dùng will",
+      "items": [
+        { "textVi": "Quyết định ngay lúc nói.", "example": { "en": "It's cold. I'll close the window.", "vi": "Lạnh quá. Để tôi đóng cửa sổ." } },
+        { "textVi": "Dự đoán dựa trên ý kiến (think, hope, probably).", "example": { "en": "I think it will rain tomorrow.", "vi": "Tôi nghĩ mai trời sẽ mưa." } },
+        { "textVi": "Lời hứa, đề nghị, yêu cầu.", "example": { "en": "I'll help you with your homework.", "vi": "Mình sẽ giúp bạn làm bài tập." } }
+      ]
+    },
+    {
+      "type": "usage",
+      "title": "Khi nào dùng be going to",
+      "items": [
+        { "textVi": "Kế hoạch, dự định đã quyết từ trước.", "example": { "en": "We're going to visit Da Lat next month.", "vi": "Tháng sau chúng tôi sẽ đi Đà Lạt." } },
+        { "textVi": "Dự đoán có căn cứ ở hiện tại.", "example": { "en": "Look at those clouds! It's going to rain.", "vi": "Nhìn mây kìa! Trời sắp mưa rồi." } }
+      ]
+    },
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + will ('ll) + V  ·  S + am/is/are + going to + V", "example": { "en": "She will call you. / She is going to call you.", "vi": "Cô ấy sẽ gọi bạn." } },
+        { "kind": "negative", "pattern": "S + will not (won't) + V  ·  S + am/is/are + not + going to + V", "example": { "en": "I won't tell anyone.", "vi": "Tôi sẽ không nói với ai." } },
+        { "kind": "question", "pattern": "Will + S + V?  ·  Am/Is/Are + S + going to + V?", "example": { "en": "Are you going to buy it?", "vi": "Bạn có định mua nó không?" } }
+      ]
+    },
+    { "type": "signals", "words": ["tomorrow", "next week", "next year", "soon", "in 2030", "I think", "probably", "Look!"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I will to go.", "right": "I will go.", "noteVi": "Sau will dùng V nguyên mẫu, không có to." },
+        { "wrong": "She going to travel.", "right": "She is going to travel.", "noteVi": "Không được bỏ am / is / are." },
+        { "wrong": "Will you to come?", "right": "Will you come?", "noteVi": "Sau will không có to." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "fu-01", "type": "mcq", "prompt": "The phone is ringing. – I ___ answer it.", "options": ["'ll", "am going", "going to"], "answer": "'ll", "explanationVi": "Quyết định ngay lúc nói → will." },
+    { "id": "fu-02", "type": "mcq", "prompt": "Look at that car! It ___ crash!", "options": ["is going", "is going to", "goes to"], "answer": "is going to", "explanationVi": "Dự đoán có căn cứ trước mắt → be going to." },
+    { "id": "fu-03", "type": "mcq", "prompt": "We have bought the tickets. We ___ see the concert on Friday.", "options": ["are going", "are going to", "goes"], "answer": "are going to", "explanationVi": "Kế hoạch đã sắp xếp (đã mua vé) → be going to." },
+    { "id": "fu-04", "type": "mcq", "prompt": "I think Vietnam ___ win the match.", "options": ["will", "is going", "wins"], "answer": "will", "explanationVi": "Dự đoán theo ý kiến (I think) → will." },
+    { "id": "fu-05", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["She will to call you.", "She will call you.", "She will calls you."], "answer": "She will call you.", "explanationVi": "will + V nguyên mẫu." },
+    { "id": "fu-06", "type": "fill", "prompt": "Don't worry, I ___ (not / tell) anyone your secret. (dùng will)", "answers": ["won't tell", "will not tell"], "explanationVi": "Lời hứa → won't + V." },
+    { "id": "fu-07", "type": "fill", "prompt": "My sister ___ (study) in Australia next year. (dùng be going to)", "answers": ["is going to study", "'s going to study"], "explanationVi": "She + is going to + V." },
+    { "id": "fu-08", "type": "fill", "prompt": "___ you help me carry this box? (dùng will)", "answers": ["Will"], "explanationVi": "Lời yêu cầu: Will you...?" },
+    { "id": "fu-09", "type": "order", "promptVi": "Chúng tôi định mua một căn nhà mới.", "answer": "We are going to buy a new house.", "distractors": ["goes"], "explanationVi": "Dự định → be going to." },
+    { "id": "fu-10", "type": "order", "promptVi": "Tôi nghĩ cô ấy sẽ thích món quà này.", "answer": "I think she will like this gift.", "distractors": ["to"], "explanationVi": "I think + will + V." },
+    { "id": "fu-11", "type": "transform", "instructionVi": "Chuyển sang câu hỏi", "source": "They are going to move house.", "answer": "Are they going to move house?", "distractors": ["Do"], "explanationVi": "Đảo are lên trước chủ ngữ." },
+    { "id": "fu-12", "type": "transform", "instructionVi": "Chuyển sang câu phủ định", "source": "He will come to the party.", "answer": "He won't come to the party.", "distractors": ["doesn't"], "explanationVi": "will not = won't." },
+    { "id": "fu-13", "type": "error", "sentence": "He will [visits] his grandmother tomorrow.", "correction": "visit", "explanationVi": "Sau will dùng V nguyên mẫu, không thêm s." },
+    { "id": "fu-14", "type": "error", "sentence": "She [going] to start a new job next week.", "correction": "is going", "explanationVi": "Thiếu is: She is going to..." }
+  ]
+}
