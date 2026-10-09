@@ -1,0 +1,31 @@
+{
+  "slug": "meeting-a-new-neighbor",
+  "version": 1,
+  "titleEn": "Meeting a New Neighbor",
+  "titleVi": "Chào hỏi người hàng xóm mới",
+  "kind": "dialogue",
+  "level": "A1",
+  "topic": "Làm quen",
+  "order": 1,
+  "summaryVi": "Tom vừa chuyển đến căn hộ mới và gặp Lisa ở hành lang. Hai người giới thiệu bản thân, công việc và hẹn uống trà.",
+  "speakers": [
+    { "key": "lisa", "name": "Lisa", "voice": "en-US-JennyNeural" },
+    { "key": "tom", "name": "Tom", "voice": "en-US-GuyNeural" }
+  ],
+  "lines": [
+    { "speaker": "lisa", "en": "Hi! Are you new here?", "vi": "Chào bạn! Bạn mới đến đây à?" },
+    { "speaker": "tom", "en": "Yes, I am. I moved in yesterday. I'm Tom.", "vi": "Vâng, đúng rồi. Tôi chuyển đến hôm qua. Tôi là Tom." },
+    { "speaker": "lisa", "en": "Nice to meet you, Tom. I'm Lisa. I live in number twelve.", "vi": "Rất vui được gặp bạn, Tom. Tôi là Lisa. Tôi sống ở phòng số mười hai." },
+    { "speaker": "tom", "en": "Nice to meet you too. I'm in number fourteen, next to you.", "vi": "Tôi cũng rất vui được gặp bạn. Tôi ở phòng mười bốn, cạnh nhà bạn." },
+    { "speaker": "lisa", "en": "Great! Where are you from?", "vi": "Tuyệt quá! Bạn đến từ đâu?" },
+    { "speaker": "tom", "en": "I'm from Canada. And you?", "vi": "Tôi đến từ Canada. Còn bạn?" },
+    { "speaker": "lisa", "en": "I'm from here. I was born in this city.", "vi": "Tôi là người ở đây. Tôi sinh ra ở thành phố này." },
+    { "speaker": "tom", "en": "What do you do, Lisa?", "vi": "Bạn làm nghề gì vậy, Lisa?" },
+    { "speaker": "lisa", "en": "I'm a teacher. I teach music at a primary school. What about you?", "vi": "Tôi là giáo viên. Tôi dạy nhạc ở một trường tiểu học. Còn bạn thì sao?" },
+    { "speaker": "tom", "en": "I'm a cook. I work at a small restaurant on Green Street.", "vi": "Tôi là đầu bếp. Tôi làm ở một nhà hàng nhỏ trên phố Green." },
+    { "speaker": "lisa", "en": "Oh, I love that street! Do you need any help with your boxes?", "vi": "Ồ, tôi rất thích con phố đó! Bạn có cần giúp chuyển mấy cái thùng không?" },
+    { "speaker": "tom", "en": "That's very kind, but I'm okay. Thank you.", "vi": "Bạn thật tốt bụng, nhưng tôi ổn. Cảm ơn bạn." },
+    { "speaker": "lisa", "en": "Well, come for tea this weekend. Saturday afternoon?", "vi": "Vậy cuối tuần này sang uống trà nhé. Chiều thứ Bảy được không?" },
+    { "speaker": "tom", "en": "Saturday is perfect. See you then, Lisa!", "vi": "Thứ Bảy thì tuyệt. Hẹn gặp bạn lúc đó nhé, Lisa!" }
+  ]
+}

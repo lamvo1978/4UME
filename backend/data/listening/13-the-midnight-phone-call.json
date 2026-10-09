@@ -1,0 +1,29 @@
+{
+  "slug": "the-midnight-phone-call",
+  "version": 1,
+  "titleEn": "The Midnight Phone Call",
+  "titleVi": "Cuộc gọi lúc nửa đêm",
+  "kind": "story",
+  "level": "B1",
+  "topic": "Câu chuyện",
+  "order": 13,
+  "summaryVi": "Nửa đêm, điện thoại của David reo liên tục từ một số lạ. Anh lo lắng điều tồi tệ, nhưng sự thật lại khiến anh bật cười.",
+  "speakers": [
+    { "key": "narrator", "name": "Narrator", "voice": "en-US-DavisNeural" }
+  ],
+  "lines": [
+    { "speaker": "narrator", "en": "David had just fallen asleep when his phone started ringing.", "vi": "David vừa mới chìm vào giấc ngủ thì điện thoại bắt đầu reo." },
+    { "speaker": "narrator", "en": "He looked at the screen. It was twelve fifteen, and the number was unknown.", "vi": "Anh nhìn màn hình. Lúc đó là mười hai giờ mười lăm, và đó là một số lạ." },
+    { "speaker": "narrator", "en": "He decided to ignore it, but it rang again. And again.", "vi": "Anh quyết định mặc kệ, nhưng nó lại reo. Rồi lại reo nữa." },
+    { "speaker": "narrator", "en": "His heart started beating faster. Had something happened to his parents?", "vi": "Tim anh bắt đầu đập nhanh hơn. Có chuyện gì xảy ra với bố mẹ anh chăng?" },
+    { "speaker": "narrator", "en": "Finally, he answered. \"Hello? Who is this?\"", "vi": "Cuối cùng, anh nghe máy. \"A lô? Ai vậy?\"" },
+    { "speaker": "narrator", "en": "A cheerful voice shouted, \"Happy birthday, Danny! We're all here!\"", "vi": "Một giọng nói vui vẻ hét lên: \"Chúc mừng sinh nhật, Danny! Tụi mình đến đủ cả rồi!\"" },
+    { "speaker": "narrator", "en": "In the background, David could hear music and people singing.", "vi": "Phía sau, David nghe thấy tiếng nhạc và tiếng mọi người hát." },
+    { "speaker": "narrator", "en": "\"I'm sorry,\" he said, \"but my name is David, and my birthday is in March.\"", "vi": "\"Xin lỗi,\" anh nói, \"nhưng tên tôi là David, và sinh nhật tôi vào tháng Ba.\"" },
+    { "speaker": "narrator", "en": "There was a long silence. Then the whole party started laughing.", "vi": "Có một khoảng lặng dài. Rồi cả bữa tiệc phá lên cười." },
+    { "speaker": "narrator", "en": "It turned out that they had written down the wrong number for their friend.", "vi": "Hoá ra họ đã ghi nhầm số điện thoại của người bạn." },
+    { "speaker": "narrator", "en": "\"Well,\" said the voice, \"you're awake now. Do you want us to sing for you anyway?\"", "vi": "\"Thôi thì,\" giọng nói ấy bảo, \"giờ anh cũng tỉnh rồi. Anh có muốn tụi tôi hát tặng anh luôn không?\"" },
+    { "speaker": "narrator", "en": "Before David could answer, twenty strangers sang \"Happy Birthday\" to him.", "vi": "Trước khi David kịp trả lời, hai mươi người lạ đã hát bài \"Chúc mừng sinh nhật\" cho anh." },
+    { "speaker": "narrator", "en": "He couldn't stop smiling. It was the strangest, and the nicest, wrong number he had ever received.", "vi": "Anh không thể ngừng cười. Đó là cuộc gọi nhầm số kỳ lạ nhất, và dễ thương nhất, mà anh từng nhận." }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "buying-shoes",
+  "version": 1,
+  "titleEn": "Buying Shoes",
+  "titleVi": "Mua giày ở cửa hàng",
+  "kind": "dialogue",
+  "level": "A2",
+  "topic": "Mua sắm",
+  "order": 6,
+  "summaryVi": "Jack muốn mua giày chạy bộ. Nghe cách hỏi cỡ, màu, thử giày, hỏi giá và giảm giá.",
+  "speakers": [
+    { "key": "staff", "name": "Shop assistant", "voice": "en-GB-SoniaNeural" },
+    { "key": "jack", "name": "Jack", "voice": "en-US-DavisNeural" }
+  ],
+  "lines": [
+    { "speaker": "staff", "en": "Hello! Are you looking for anything special?", "vi": "Xin chào! Anh đang tìm món gì đặc biệt không ạ?" },
+    { "speaker": "jack", "en": "Yes, I need some running shoes. My old ones are broken.", "vi": "Vâng, tôi cần một đôi giày chạy bộ. Đôi cũ của tôi hỏng rồi." },
+    { "speaker": "staff", "en": "Sure. These are very popular. They're light and comfortable.", "vi": "Vâng. Mẫu này rất được ưa chuộng. Chúng nhẹ và thoải mái." },
+    { "speaker": "jack", "en": "They look nice. Do you have them in blue?", "vi": "Trông đẹp đấy. Có màu xanh dương không?" },
+    { "speaker": "staff", "en": "We have blue and black. What size are you?", "vi": "Chúng tôi có màu xanh dương và đen. Anh đi cỡ bao nhiêu?" },
+    { "speaker": "jack", "en": "I'm usually a forty-two.", "vi": "Tôi thường đi cỡ bốn mươi hai." },
+    { "speaker": "staff", "en": "Here you are. Try them on.", "vi": "Đây ạ. Anh thử đi." },
+    { "speaker": "jack", "en": "Hmm, they're a little tight. Can I try a bigger size?", "vi": "Hừm, hơi chật một chút. Tôi thử cỡ lớn hơn được không?" },
+    { "speaker": "staff", "en": "Of course. Here's a forty-three.", "vi": "Tất nhiên rồi. Đây là cỡ bốn mươi ba." },
+    { "speaker": "jack", "en": "Much better. They feel great. How much are they?", "vi": "Tốt hơn nhiều. Đi rất thích. Đôi này giá bao nhiêu?" },
+    { "speaker": "staff", "en": "They're eighty dollars, but there's a twenty percent discount this week.", "vi": "Giá tám mươi đô-la, nhưng tuần này được giảm hai mươi phần trăm." },
+    { "speaker": "jack", "en": "So that's sixty-four dollars? Great, I'll take them.", "vi": "Vậy là sáu mươi tư đô-la phải không? Tuyệt, tôi lấy đôi này." },
+    { "speaker": "staff", "en": "Would you like some socks too? They're on sale.", "vi": "Anh có muốn mua thêm tất không? Đang giảm giá đấy ạ." },
+    { "speaker": "jack", "en": "No, thanks. Just the shoes, please.", "vi": "Không, cảm ơn. Chỉ đôi giày thôi." },
+    { "speaker": "staff", "en": "No problem. You can pay at the counter over there.", "vi": "Không sao ạ. Anh thanh toán ở quầy đằng kia nhé." }
+  ]
+}

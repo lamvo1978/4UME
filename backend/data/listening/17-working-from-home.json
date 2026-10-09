@@ -1,0 +1,33 @@
+{
+  "slug": "working-from-home",
+  "version": 1,
+  "titleEn": "Asking to Work from Home",
+  "titleVi": "Bàn chuyện làm việc từ xa với sếp",
+  "kind": "dialogue",
+  "level": "B2",
+  "topic": "Công việc",
+  "order": 17,
+  "summaryVi": "Minh đề xuất với sếp được làm việc tại nhà hai ngày mỗi tuần. Nghe cách đưa ra lý lẽ, xử lý lo ngại và thoả thuận thử nghiệm.",
+  "speakers": [
+    { "key": "minh", "name": "Minh", "voice": "en-US-GuyNeural" },
+    { "key": "rachel", "name": "Rachel", "voice": "en-GB-SoniaNeural" }
+  ],
+  "lines": [
+    { "speaker": "minh", "en": "Rachel, have you got a few minutes? There's something I'd like to discuss.", "vi": "Rachel, chị có vài phút không? Em có chuyện muốn trao đổi." },
+    { "speaker": "rachel", "en": "Sure, Minh. Come in. What's on your mind?", "vi": "Được chứ, Minh. Vào đi. Em đang nghĩ gì vậy?" },
+    { "speaker": "minh", "en": "I was wondering whether I could work from home two days a week.", "vi": "Em đang băn khoăn liệu em có thể làm việc ở nhà hai ngày mỗi tuần không." },
+    { "speaker": "rachel", "en": "I see. Can you tell me a bit more about why?", "vi": "Chị hiểu. Em có thể nói rõ hơn lý do không?" },
+    { "speaker": "minh", "en": "My commute takes nearly two hours a day. If I worked from home, I could spend that time on actual work.", "vi": "Mỗi ngày em mất gần hai tiếng đi lại. Nếu làm ở nhà, em có thể dành khoảng thời gian đó cho công việc thực sự." },
+    { "speaker": "minh", "en": "Also, most of my tasks, like writing reports and analyzing data, need long periods of concentration.", "vi": "Thêm nữa, phần lớn việc của em như viết báo cáo hay phân tích dữ liệu cần tập trung trong thời gian dài." },
+    { "speaker": "rachel", "en": "That makes sense. My main concern is communication. The team relies on you quite a lot.", "vi": "Nghe hợp lý. Mối lo chính của chị là việc trao đổi. Cả nhóm khá phụ thuộc vào em." },
+    { "speaker": "minh", "en": "I understand. I'd be available on chat and video calls during normal office hours.", "vi": "Em hiểu ạ. Em sẽ luôn có mặt trên chat và gọi video trong giờ hành chính." },
+    { "speaker": "minh", "en": "And I'd make sure my home days don't clash with our weekly meetings.", "vi": "Và em sẽ đảm bảo những ngày làm ở nhà không trùng với các buổi họp hằng tuần." },
+    { "speaker": "rachel", "en": "Which days were you thinking of?", "vi": "Em định chọn những ngày nào?" },
+    { "speaker": "minh", "en": "Tuesdays and Thursdays. We usually have our planning meetings on Mondays and Wednesdays.", "vi": "Thứ Ba và thứ Năm ạ. Mình thường họp kế hoạch vào thứ Hai và thứ Tư." },
+    { "speaker": "rachel", "en": "Alright. I'm open to the idea, but I'd like to try it for a month first and see how it goes.", "vi": "Được rồi. Chị sẵn lòng cân nhắc, nhưng chị muốn thử trong một tháng trước để xem thế nào." },
+    { "speaker": "minh", "en": "That sounds completely fair.", "vi": "Như vậy là hoàn toàn hợp lý ạ." },
+    { "speaker": "rachel", "en": "At the end of the month, let's sit down and look at the results together. If deadlines slip, we'll need to rethink it.", "vi": "Cuối tháng, mình ngồi lại cùng xem kết quả. Nếu công việc bị trễ hạn, mình sẽ phải tính lại." },
+    { "speaker": "minh", "en": "Of course. Thanks for being so flexible, Rachel. I really appreciate it.", "vi": "Tất nhiên rồi ạ. Cảm ơn chị đã linh hoạt như vậy, Rachel. Em thực sự rất cảm kích." },
+    { "speaker": "rachel", "en": "No problem. Send me a short email summarizing what we agreed, and we'll start next week.", "vi": "Không có gì. Em gửi chị một email ngắn tóm tắt những gì mình đã thống nhất, rồi tuần sau mình bắt đầu." }
+  ]
+}

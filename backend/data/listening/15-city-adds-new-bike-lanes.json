@@ -1,0 +1,29 @@
+{
+  "slug": "city-adds-new-bike-lanes",
+  "version": 1,
+  "titleEn": "City Adds New Bike Lanes",
+  "titleVi": "Thành phố mở thêm làn xe đạp",
+  "kind": "news",
+  "level": "B1",
+  "topic": "Giao thông",
+  "order": 15,
+  "summaryVi": "Bản tin (tự soạn) về một thành phố mở thêm 40 km làn xe đạp. Nghe ý kiến ủng hộ, lo ngại của người dân và kế hoạch tiếp theo.",
+  "speakers": [
+    { "key": "anchor", "name": "Presenter", "voice": "en-US-AriaNeural" },
+    { "key": "reporter", "name": "Reporter", "voice": "en-GB-RyanNeural" }
+  ],
+  "lines": [
+    { "speaker": "anchor", "en": "Good evening. The city has opened forty kilometers of new bike lanes this month.", "vi": "Xin chào quý vị. Tháng này thành phố đã mở thêm bốn mươi ki-lô-mét làn đường dành cho xe đạp." },
+    { "speaker": "anchor", "en": "Our reporter, James, has more.", "vi": "Phóng viên James của chúng tôi có thêm thông tin." },
+    { "speaker": "reporter", "en": "Thank you. The new lanes connect the main train station with three large universities and the city center.", "vi": "Cảm ơn chị. Các làn đường mới nối ga tàu chính với ba trường đại học lớn và trung tâm thành phố." },
+    { "speaker": "reporter", "en": "They are separated from car traffic by low concrete walls, which makes cycling much safer.", "vi": "Chúng được tách khỏi làn ô tô bằng những bức tường bê tông thấp, giúp việc đạp xe an toàn hơn nhiều." },
+    { "speaker": "reporter", "en": "City officials say the goal is to reduce traffic jams and air pollution.", "vi": "Lãnh đạo thành phố cho biết mục tiêu là giảm ùn tắc giao thông và ô nhiễm không khí." },
+    { "speaker": "reporter", "en": "Since the lanes opened, the number of cyclists on these roads has almost doubled.", "vi": "Kể từ khi các làn đường mở cửa, số người đạp xe trên những tuyến đường này đã tăng gần gấp đôi." },
+    { "speaker": "reporter", "en": "Many students are happy. One told us she now saves about thirty dollars a month on bus tickets.", "vi": "Nhiều sinh viên tỏ ra vui mừng. Một bạn cho biết giờ mỗi tháng bạn ấy tiết kiệm được khoảng ba mươi đô-la tiền vé xe buýt." },
+    { "speaker": "reporter", "en": "However, not everyone agrees. Some shop owners are worried because there are fewer parking spaces for cars.", "vi": "Tuy nhiên, không phải ai cũng đồng tình. Một số chủ cửa hàng lo lắng vì có ít chỗ đỗ ô tô hơn." },
+    { "speaker": "reporter", "en": "They believe fewer customers will visit their stores.", "vi": "Họ cho rằng sẽ có ít khách hàng ghé cửa hàng của họ hơn." },
+    { "speaker": "reporter", "en": "The city plans to build three new parking areas nearby and will review the project after six months.", "vi": "Thành phố dự định xây ba bãi đỗ xe mới gần đó và sẽ đánh giá lại dự án sau sáu tháng." },
+    { "speaker": "reporter", "en": "If it is successful, another sixty kilometers of lanes could be added next year.", "vi": "Nếu thành công, năm tới có thể sẽ có thêm sáu mươi ki-lô-mét làn đường nữa." },
+    { "speaker": "anchor", "en": "Thank you, James. And remember, if you cycle, always wear a helmet.", "vi": "Cảm ơn anh, James. Và xin nhớ, nếu đạp xe, hãy luôn đội mũ bảo hiểm." }
+  ]
+}

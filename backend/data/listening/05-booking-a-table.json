@@ -1,0 +1,33 @@
+{
+  "slug": "booking-a-table",
+  "version": 1,
+  "titleEn": "Booking a Table by Phone",
+  "titleVi": "Đặt bàn nhà hàng qua điện thoại",
+  "kind": "dialogue",
+  "level": "A2",
+  "topic": "Ăn uống",
+  "order": 5,
+  "summaryVi": "Sarah gọi điện đặt bàn cho sinh nhật mẹ. Nhà hàng hết chỗ lúc 7 giờ nên hai bên thống nhất giờ khác và chỗ ngồi gần cửa sổ.",
+  "speakers": [
+    { "key": "host", "name": "Restaurant", "voice": "en-US-GuyNeural" },
+    { "key": "sarah", "name": "Sarah", "voice": "en-US-JennyNeural" }
+  ],
+  "lines": [
+    { "speaker": "host", "en": "Good afternoon, Bella Cucina. How can I help you?", "vi": "Xin chào, nhà hàng Bella Cucina xin nghe. Tôi có thể giúp gì cho chị?" },
+    { "speaker": "sarah", "en": "Hi, I'd like to book a table for Friday evening, please.", "vi": "Chào anh, tôi muốn đặt một bàn vào tối thứ Sáu." },
+    { "speaker": "host", "en": "Of course. For how many people?", "vi": "Vâng ạ. Cho bao nhiêu người ạ?" },
+    { "speaker": "sarah", "en": "For four people. It's my mother's birthday.", "vi": "Bốn người. Hôm đó là sinh nhật mẹ tôi." },
+    { "speaker": "host", "en": "How lovely. What time would you like?", "vi": "Thật tuyệt. Chị muốn đặt lúc mấy giờ?" },
+    { "speaker": "sarah", "en": "Seven o'clock, if possible.", "vi": "Bảy giờ, nếu được." },
+    { "speaker": "host", "en": "I'm sorry, we're fully booked at seven. We have a table at six thirty or at eight.", "vi": "Xin lỗi chị, lúc bảy giờ chúng tôi kín chỗ rồi. Chúng tôi còn bàn lúc sáu rưỡi hoặc tám giờ." },
+    { "speaker": "sarah", "en": "Hmm, six thirty is a bit early. Eight o'clock is fine.", "vi": "Hừm, sáu rưỡi hơi sớm. Tám giờ được ạ." },
+    { "speaker": "host", "en": "Great. Can I have your name, please?", "vi": "Tuyệt ạ. Cho tôi xin tên của chị?" },
+    { "speaker": "sarah", "en": "It's Sarah Miller. That's M-I-L-L-E-R.", "vi": "Sarah Miller. Đánh vần là M-I-L-L-E-R." },
+    { "speaker": "host", "en": "Thank you, Ms. Miller. And a phone number?", "vi": "Cảm ơn chị Miller. Còn số điện thoại ạ?" },
+    { "speaker": "sarah", "en": "It's 0412 555 019. Could we sit near the window?", "vi": "Số 0412 555 019. Chúng tôi có thể ngồi gần cửa sổ không?" },
+    { "speaker": "host", "en": "I'll put a note on the booking. Would you like a small birthday cake? It's free for birthdays.", "vi": "Tôi sẽ ghi chú vào phiếu đặt bàn. Chị có muốn một chiếc bánh sinh nhật nhỏ không? Miễn phí cho dịp sinh nhật ạ." },
+    { "speaker": "sarah", "en": "Oh, that's wonderful! Yes, please. She loves chocolate.", "vi": "Ôi, tuyệt vời quá! Có ạ. Mẹ tôi rất thích sô-cô-la." },
+    { "speaker": "host", "en": "Perfect. So that's a table for four, Friday at eight. See you then!", "vi": "Hoàn hảo. Vậy là một bàn bốn người, tám giờ tối thứ Sáu. Hẹn gặp chị!" },
+    { "speaker": "sarah", "en": "Thank you so much. Goodbye!", "vi": "Cảm ơn anh rất nhiều. Tạm biệt!" }
+  ]
+}

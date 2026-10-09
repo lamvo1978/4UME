@@ -1,0 +1,33 @@
+{
+  "slug": "ordering-at-a-cafe",
+  "version": 1,
+  "titleEn": "Ordering at a Café",
+  "titleVi": "Gọi đồ uống ở quán cà phê",
+  "kind": "dialogue",
+  "level": "A1",
+  "topic": "Ăn uống",
+  "order": 2,
+  "summaryVi": "Ben gọi một ly cà phê và một chiếc bánh ở quán. Nghe cách hỏi cỡ ly, uống tại chỗ hay mang đi và trả tiền.",
+  "speakers": [
+    { "key": "staff", "name": "Barista", "voice": "en-GB-SoniaNeural" },
+    { "key": "ben", "name": "Ben", "voice": "en-GB-RyanNeural" }
+  ],
+  "lines": [
+    { "speaker": "staff", "en": "Good morning! What can I get for you?", "vi": "Chào buổi sáng! Tôi có thể lấy gì cho anh?" },
+    { "speaker": "ben", "en": "Good morning. Can I have a coffee with milk, please?", "vi": "Chào buổi sáng. Cho tôi một ly cà phê sữa nhé?" },
+    { "speaker": "staff", "en": "Sure. Small, medium or large?", "vi": "Vâng. Cỡ nhỏ, vừa hay lớn ạ?" },
+    { "speaker": "ben", "en": "Medium, please.", "vi": "Cỡ vừa nhé." },
+    { "speaker": "staff", "en": "Hot or iced?", "vi": "Nóng hay đá ạ?" },
+    { "speaker": "ben", "en": "Iced, please. It's very hot today.", "vi": "Đá nhé. Hôm nay trời nóng quá." },
+    { "speaker": "staff", "en": "It is! Anything to eat?", "vi": "Đúng vậy! Anh có ăn gì không ạ?" },
+    { "speaker": "ben", "en": "Yes. How much is the chocolate cake?", "vi": "Có. Bánh sô-cô-la bao nhiêu tiền vậy?" },
+    { "speaker": "staff", "en": "It's three dollars.", "vi": "Ba đô-la ạ." },
+    { "speaker": "ben", "en": "Okay, one chocolate cake too.", "vi": "Được, cho tôi thêm một bánh sô-cô-la." },
+    { "speaker": "staff", "en": "Is that for here or to go?", "vi": "Anh dùng ở đây hay mang đi ạ?" },
+    { "speaker": "ben", "en": "For here, please.", "vi": "Dùng ở đây nhé." },
+    { "speaker": "staff", "en": "That's seven fifty in total.", "vi": "Tổng cộng bảy đô năm mươi xu ạ." },
+    { "speaker": "ben", "en": "Here you are. Can I pay by card?", "vi": "Gửi bạn. Tôi trả bằng thẻ được không?" },
+    { "speaker": "staff", "en": "Of course. Please take a seat. I'll bring it to you.", "vi": "Tất nhiên rồi. Mời anh ngồi. Tôi sẽ mang ra cho anh." },
+    { "speaker": "ben", "en": "Thank you very much.", "vi": "Cảm ơn bạn nhiều." }
+  ]
+}

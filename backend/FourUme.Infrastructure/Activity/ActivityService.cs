@@ -17,23 +17,25 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
             var today = clock.Today;
             await ApplyFreezesAsync(userId, today, ct);
 
-            var (newWords, reviews, grammar) = kind switch
+            var (newWords, reviews, grammar, listens) = kind switch
             {
-                ActivityKind.NewWord => (1, 0, 0),
-                ActivityKind.Review => (0, 1, 0),
-                ActivityKind.Grammar => (0, 0, 1),
-                _ => (0, 0, 0),
+                ActivityKind.NewWord => (1, 0, 0, 0),
+                ActivityKind.Review => (0, 1, 0, 0),
+                ActivityKind.Grammar => (0, 0, 1, 0),
+                ActivityKind.Listening => (0, 0, 0, 1),
+                _ => (0, 0, 0, 0),
             };
 
             // Upsert keeps concurrent answers from racing on the unique (UserId, Date) index;
             // xmax = 0 is true only for the request that inserted the row (first activity today).
             var inserted = await db.Database.SqlQuery<bool>($"""
-                INSERT INTO "StudyDays" ("Id", "UserId", "Date", "NewWords", "Reviews", "GrammarItems", "Frozen", "UpdatedAt")
-                VALUES ({Guid.NewGuid()}, {userId}, {today}, {newWords}, {reviews}, {grammar}, FALSE, {DateTimeOffset.UtcNow})
+                INSERT INTO "StudyDays" ("Id", "UserId", "Date", "NewWords", "Reviews", "GrammarItems", "Listens", "Frozen", "UpdatedAt")
+                VALUES ({Guid.NewGuid()}, {userId}, {today}, {newWords}, {reviews}, {grammar}, {listens}, FALSE, {DateTimeOffset.UtcNow})
                 ON CONFLICT ("UserId", "Date") DO UPDATE SET
                     "NewWords" = "StudyDays"."NewWords" + EXCLUDED."NewWords",
                     "Reviews" = "StudyDays"."Reviews" + EXCLUDED."Reviews",
                     "GrammarItems" = "StudyDays"."GrammarItems" + EXCLUDED."GrammarItems",
+                    "Listens" = "StudyDays"."Listens" + EXCLUDED."Listens",
                     "Frozen" = FALSE,
                     "UpdatedAt" = EXCLUDED."UpdatedAt"
                 RETURNING (xmax = 0) AS "Value"
@@ -71,7 +73,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
         var days = await db.StudyDays.AsNoTracking()
             .Where(d => d.UserId == userId && d.Date >= from)
             .OrderBy(d => d.Date)
-            .Select(d => new StudyDayDto(d.Date, d.NewWords, d.Reviews, d.GrammarItems, d.Frozen))
+            .Select(d => new StudyDayDto(d.Date, d.NewWords, d.Reviews, d.GrammarItems, d.Frozen, d.Listens))
             .ToListAsync(ct);
 
         var dates = await LoadDatesAsync(userId, ct);
@@ -177,8 +179,8 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
         {
             var date = last.Value.AddDays(i);
             await db.Database.ExecuteSqlAsync($"""
-                INSERT INTO "StudyDays" ("Id", "UserId", "Date", "NewWords", "Reviews", "GrammarItems", "Frozen", "UpdatedAt")
-                VALUES ({Guid.NewGuid()}, {userId}, {date}, 0, 0, 0, TRUE, {DateTimeOffset.UtcNow})
+                INSERT INTO "StudyDays" ("Id", "UserId", "Date", "NewWords", "Reviews", "GrammarItems", "Listens", "Frozen", "UpdatedAt")
+                VALUES ({Guid.NewGuid()}, {userId}, {date}, 0, 0, 0, 0, TRUE, {DateTimeOffset.UtcNow})
                 ON CONFLICT ("UserId", "Date") DO NOTHING
                 """, ct);
         }

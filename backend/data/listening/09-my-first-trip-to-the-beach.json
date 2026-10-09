@@ -1,0 +1,28 @@
+{
+  "slug": "my-first-trip-to-the-beach",
+  "version": 1,
+  "titleEn": "My First Trip to the Beach",
+  "titleVi": "Chuyến đi biển đầu tiên",
+  "kind": "story",
+  "level": "A2",
+  "topic": "Du lịch",
+  "order": 9,
+  "summaryVi": "Emma kể lại lần đầu tiên được thấy biển khi còn nhỏ: chuyến tàu dài, cảm giác sợ sóng và bài học từ người bố.",
+  "speakers": [
+    { "key": "emma", "name": "Emma", "voice": "en-AU-NatashaNeural" }
+  ],
+  "lines": [
+    { "speaker": "emma", "en": "I grew up in a small town far from the sea.", "vi": "Tôi lớn lên ở một thị trấn nhỏ, xa biển." },
+    { "speaker": "emma", "en": "When I was eight years old, my parents took me to the beach for the first time.", "vi": "Năm tôi tám tuổi, bố mẹ đưa tôi đi biển lần đầu tiên." },
+    { "speaker": "emma", "en": "We went by train. The trip was six hours long, but I didn't sleep at all.", "vi": "Chúng tôi đi bằng tàu hoả. Chuyến đi dài sáu tiếng, nhưng tôi không ngủ chút nào." },
+    { "speaker": "emma", "en": "I was too excited. I looked out of the window the whole time.", "vi": "Tôi háo hức quá. Tôi nhìn ra cửa sổ suốt cả chặng đường." },
+    { "speaker": "emma", "en": "When we arrived, I saw the sea. It was so big and so blue!", "vi": "Khi đến nơi, tôi nhìn thấy biển. Biển thật rộng và thật xanh!" },
+    { "speaker": "emma", "en": "I ran to the water, but then I stopped. The waves were loud and I felt scared.", "vi": "Tôi chạy ra phía nước, nhưng rồi dừng lại. Sóng ồn ào quá và tôi thấy sợ." },
+    { "speaker": "emma", "en": "My father held my hand. \"Let's go slowly,\" he said. \"Just one step at a time.\"", "vi": "Bố nắm tay tôi. \"Mình đi từ từ thôi,\" bố nói. \"Mỗi lần một bước thôi con.\"" },
+    { "speaker": "emma", "en": "First the water touched my feet. Then my knees. It was cold, but it was fun.", "vi": "Đầu tiên nước chạm vào chân tôi. Rồi đến đầu gối. Nước lạnh, nhưng rất vui." },
+    { "speaker": "emma", "en": "By the end of the day, I didn't want to leave the water.", "vi": "Đến cuối ngày, tôi chẳng muốn rời khỏi nước nữa." },
+    { "speaker": "emma", "en": "We built a sandcastle and ate fresh fish for dinner.", "vi": "Chúng tôi xây lâu đài cát và ăn cá tươi cho bữa tối." },
+    { "speaker": "emma", "en": "Now I live near the sea, and I swim almost every week.", "vi": "Giờ tôi sống gần biển và gần như tuần nào cũng đi bơi." },
+    { "speaker": "emma", "en": "But I still remember my father's words: one step at a time.", "vi": "Nhưng tôi vẫn nhớ lời bố: mỗi lần một bước thôi." }
+  ]
+}

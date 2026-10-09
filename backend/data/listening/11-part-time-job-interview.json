@@ -1,0 +1,34 @@
+{
+  "slug": "part-time-job-interview",
+  "version": 1,
+  "titleEn": "A Part-Time Job Interview",
+  "titleVi": "Phỏng vấn xin việc làm thêm",
+  "kind": "dialogue",
+  "level": "B1",
+  "topic": "Công việc",
+  "order": 11,
+  "summaryVi": "Huy phỏng vấn xin làm thêm ở một hiệu sách. Nghe các câu hỏi phỏng vấn thường gặp: kinh nghiệm, điểm mạnh, thời gian làm việc.",
+  "speakers": [
+    { "key": "manager", "name": "Ms. Carter", "voice": "en-GB-SoniaNeural" },
+    { "key": "huy", "name": "Huy", "voice": "en-US-GuyNeural" }
+  ],
+  "lines": [
+    { "speaker": "manager", "en": "Thanks for coming in, Huy. Please, have a seat.", "vi": "Cảm ơn em đã đến, Huy. Mời em ngồi." },
+    { "speaker": "huy", "en": "Thank you for having me, Ms. Carter.", "vi": "Cảm ơn chị đã cho em cơ hội, chị Carter." },
+    { "speaker": "manager", "en": "So, why would you like to work at our bookshop?", "vi": "Vậy tại sao em muốn làm việc ở hiệu sách của chúng tôi?" },
+    { "speaker": "huy", "en": "I've been a customer here for two years. I love books, and I enjoy recommending them to my friends.", "vi": "Em đã là khách ở đây hai năm rồi. Em yêu sách và thích giới thiệu sách cho bạn bè." },
+    { "speaker": "manager", "en": "That's a good start. Have you ever worked in a shop before?", "vi": "Khởi đầu tốt đấy. Em đã từng làm ở cửa hàng nào chưa?" },
+    { "speaker": "huy", "en": "Yes, I worked at a coffee shop last summer. I served customers and handled the cash register.", "vi": "Có ạ, hè năm ngoái em làm ở một quán cà phê. Em phục vụ khách và giữ máy tính tiền." },
+    { "speaker": "manager", "en": "What would you say is your biggest strength?", "vi": "Em nghĩ điểm mạnh lớn nhất của mình là gì?" },
+    { "speaker": "huy", "en": "I'm patient and I stay calm when it gets busy. My old manager said I was good with difficult customers.", "vi": "Em kiên nhẫn và giữ được bình tĩnh khi đông khách. Quản lý cũ nói em xử lý tốt với những khách khó tính." },
+    { "speaker": "manager", "en": "And a weakness?", "vi": "Còn điểm yếu?" },
+    { "speaker": "huy", "en": "Sometimes I spend too long on small details. I'm learning to manage my time better.", "vi": "Đôi khi em mất quá nhiều thời gian cho những chi tiết nhỏ. Em đang học cách quản lý thời gian tốt hơn." },
+    { "speaker": "manager", "en": "That's honest. We need someone on weekends and two evenings a week. Is that possible for you?", "vi": "Thật thà đấy. Chúng tôi cần người làm cuối tuần và hai buổi tối mỗi tuần. Em sắp xếp được không?" },
+    { "speaker": "huy", "en": "Weekends are fine. In the evenings, I'm free on Tuesdays and Thursdays because of my classes.", "vi": "Cuối tuần thì được ạ. Buổi tối em rảnh thứ Ba và thứ Năm vì còn lịch học." },
+    { "speaker": "manager", "en": "That works for us. Do you have any questions for me?", "vi": "Như vậy là phù hợp. Em có câu hỏi nào cho chị không?" },
+    { "speaker": "huy", "en": "Yes. Would there be any training at the beginning?", "vi": "Dạ có. Lúc mới vào có được đào tạo không ạ?" },
+    { "speaker": "manager", "en": "Yes, you'd work with an experienced colleague for the first week.", "vi": "Có, tuần đầu em sẽ làm cùng một đồng nghiệp có kinh nghiệm." },
+    { "speaker": "manager", "en": "We'll let you know by Friday. It was nice to meet you, Huy.", "vi": "Chúng tôi sẽ báo cho em trước thứ Sáu. Rất vui được gặp em, Huy." },
+    { "speaker": "huy", "en": "Thank you. I look forward to hearing from you.", "vi": "Em cảm ơn chị. Em mong sớm nhận được tin." }
+  ]
+}

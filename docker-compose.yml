@@ -29,6 +29,7 @@ services:
       Jwt__Audience: 4UME
       Vocabulary__Path: /app/data/vocabulary.json
       Grammar__Path: /app/data/grammar
+      Listening__Path: /app/data/listening
       # Comma-separated emails granted the admin role at startup (accounts must already exist).
       Admin__Emails: lamvo1978@gmail.com
       Media__Path: /app/media
@@ -37,6 +38,9 @@ services:
       StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
       # Without a key, sign-up and reset codes are only printed in the API log.
       Email__ResendKey: ${RESEND_API_KEY:-}
+      # Azure Speech (free F0) for listening audio; without it the app reads scripts with the device voice.
+      Speech__Key: ${AZURE_SPEECH_KEY:-}
+      Speech__Region: ${AZURE_SPEECH_REGION:-}
     volumes:
       - fourume_media:/app/media
     ports:

@@ -1,0 +1,29 @@
+{
+  "slug": "tips-for-better-sleep",
+  "version": 1,
+  "titleEn": "Scientists' Tips for Better Sleep",
+  "titleVi": "Mẹo ngủ ngon từ các nhà khoa học",
+  "kind": "news",
+  "level": "B1",
+  "topic": "Sức khoẻ",
+  "order": 16,
+  "summaryVi": "Bản tin (tự soạn) tổng hợp những lời khuyên phổ biến để ngủ ngon hơn: giờ giấc đều đặn, ánh sáng, cà phê và điện thoại trước khi ngủ.",
+  "speakers": [
+    { "key": "anchor", "name": "Presenter", "voice": "en-AU-WilliamNeural" }
+  ],
+  "lines": [
+    { "speaker": "anchor", "en": "Do you often wake up feeling tired? You are not alone.", "vi": "Bạn có hay thức dậy mà vẫn thấy mệt không? Bạn không phải là người duy nhất." },
+    { "speaker": "anchor", "en": "Surveys suggest that about one in three adults doesn't get enough sleep.", "vi": "Các cuộc khảo sát cho thấy khoảng một phần ba người trưởng thành ngủ không đủ giấc." },
+    { "speaker": "anchor", "en": "Sleep researchers say that small changes in our daily habits can make a big difference.", "vi": "Các nhà nghiên cứu giấc ngủ cho rằng những thay đổi nhỏ trong thói quen hằng ngày có thể tạo ra khác biệt lớn." },
+    { "speaker": "anchor", "en": "First, try to go to bed and wake up at the same time every day, even at weekends.", "vi": "Thứ nhất, hãy cố gắng đi ngủ và thức dậy vào cùng một giờ mỗi ngày, kể cả cuối tuần." },
+    { "speaker": "anchor", "en": "This helps your body clock know when it is time to rest.", "vi": "Điều này giúp đồng hồ sinh học của bạn biết khi nào là lúc nghỉ ngơi." },
+    { "speaker": "anchor", "en": "Second, get some natural light in the morning. A short walk outside is enough.", "vi": "Thứ hai, hãy đón chút ánh sáng tự nhiên vào buổi sáng. Một cuộc đi bộ ngắn ngoài trời là đủ." },
+    { "speaker": "anchor", "en": "Third, be careful with coffee. Caffeine can stay in your body for six hours or more.", "vi": "Thứ ba, cẩn thận với cà phê. Caffeine có thể tồn tại trong cơ thể sáu tiếng hoặc lâu hơn." },
+    { "speaker": "anchor", "en": "So a cup of coffee at four in the afternoon may still keep you awake at ten.", "vi": "Vì vậy một tách cà phê lúc bốn giờ chiều vẫn có thể khiến bạn tỉnh táo lúc mười giờ tối." },
+    { "speaker": "anchor", "en": "Fourth, put your phone away at least thirty minutes before bed.", "vi": "Thứ tư, cất điện thoại đi ít nhất ba mươi phút trước khi ngủ." },
+    { "speaker": "anchor", "en": "The bright screen and endless messages keep your brain busy when it should be slowing down.", "vi": "Màn hình sáng và tin nhắn không ngừng khiến não bộ bận rộn đúng lúc nó cần chậm lại." },
+    { "speaker": "anchor", "en": "Finally, keep your bedroom cool, dark and quiet.", "vi": "Cuối cùng, hãy giữ phòng ngủ mát mẻ, tối và yên tĩnh." },
+    { "speaker": "anchor", "en": "And if you can't fall asleep after twenty minutes, get up and read a book until you feel sleepy.", "vi": "Và nếu sau hai mươi phút vẫn chưa ngủ được, hãy dậy đọc sách cho đến khi thấy buồn ngủ." },
+    { "speaker": "anchor", "en": "Good sleep is not a luxury. It is one of the best things you can do for your health.", "vi": "Ngủ ngon không phải là điều xa xỉ. Đó là một trong những điều tốt nhất bạn có thể làm cho sức khoẻ của mình." }
+  ]
+}

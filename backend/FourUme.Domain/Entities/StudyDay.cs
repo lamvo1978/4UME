@@ -10,6 +10,8 @@ public class StudyDay
     public int NewWords { get; set; }
     public int Reviews { get; set; }
     public int GrammarItems { get; set; }
+    /// <summary>Listening pieces finished (only recorded while the admin lets listening count toward the streak).</summary>
+    public int Listens { get; set; }
     public bool Frozen { get; set; }
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

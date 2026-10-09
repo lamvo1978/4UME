@@ -83,7 +83,7 @@ public class AdminUserService(
         var days = await db.StudyDays.AsNoTracking()
             .Where(d => d.UserId == id && d.Date >= from)
             .OrderBy(d => d.Date)
-            .Select(d => new StudyDayDto(d.Date, d.NewWords, d.Reviews, d.GrammarItems, d.Frozen))
+            .Select(d => new StudyDayDto(d.Date, d.NewWords, d.Reviews, d.GrammarItems, d.Frozen, d.Listens))
             .ToListAsync(ct);
         var lastStudy = await db.StudyDays.AsNoTracking().Where(d => d.UserId == id && !d.Frozen).MaxAsync(d => (DateOnly?)d.Date, ct);
         var known = await db.WordProgresses.CountAsync(p => p.UserId == id && p.Status == WordStatus.Known, ct);

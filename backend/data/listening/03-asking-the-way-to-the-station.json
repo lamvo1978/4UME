@@ -1,0 +1,31 @@
+{
+  "slug": "asking-the-way-to-the-station",
+  "version": 1,
+  "titleEn": "Asking the Way to the Station",
+  "titleVi": "Hỏi đường tới ga tàu",
+  "kind": "dialogue",
+  "level": "A1",
+  "topic": "Du lịch",
+  "order": 3,
+  "summaryVi": "Một du khách hỏi đường tới ga tàu. Nghe các cụm chỉ đường: đi thẳng, rẽ trái, đối diện, mất bao lâu.",
+  "speakers": [
+    { "key": "amy", "name": "Amy", "voice": "en-AU-NatashaNeural" },
+    { "key": "man", "name": "Local man", "voice": "en-US-DavisNeural" }
+  ],
+  "lines": [
+    { "speaker": "amy", "en": "Excuse me. Can you help me, please?", "vi": "Xin lỗi. Anh có thể giúp tôi được không?" },
+    { "speaker": "man", "en": "Sure. What do you need?", "vi": "Được chứ. Cô cần gì?" },
+    { "speaker": "amy", "en": "Where is the train station?", "vi": "Ga tàu ở đâu vậy?" },
+    { "speaker": "man", "en": "It's not far. Go straight on this street.", "vi": "Không xa đâu. Cô đi thẳng con phố này." },
+    { "speaker": "amy", "en": "Straight on. Okay.", "vi": "Đi thẳng. Được rồi." },
+    { "speaker": "man", "en": "Then turn left at the bank.", "vi": "Sau đó rẽ trái ở chỗ ngân hàng." },
+    { "speaker": "amy", "en": "Turn left at the bank. And then?", "vi": "Rẽ trái ở ngân hàng. Rồi sao nữa?" },
+    { "speaker": "man", "en": "Walk past the park. The station is opposite the big hotel.", "vi": "Đi qua công viên. Ga tàu nằm đối diện khách sạn lớn." },
+    { "speaker": "amy", "en": "How long does it take on foot?", "vi": "Đi bộ mất bao lâu ạ?" },
+    { "speaker": "man", "en": "About ten minutes.", "vi": "Khoảng mười phút." },
+    { "speaker": "amy", "en": "Is there a bus?", "vi": "Có xe buýt không ạ?" },
+    { "speaker": "man", "en": "Yes, the number five bus. But walking is faster at this time.", "vi": "Có, xe buýt số năm. Nhưng giờ này đi bộ nhanh hơn." },
+    { "speaker": "amy", "en": "Great. Thank you so much!", "vi": "Tuyệt quá. Cảm ơn anh rất nhiều!" },
+    { "speaker": "man", "en": "You're welcome. Have a good trip!", "vi": "Không có gì. Chúc cô chuyến đi vui vẻ!" }
+  ]
+}

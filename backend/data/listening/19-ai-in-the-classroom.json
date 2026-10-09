@@ -1,0 +1,30 @@
+{
+  "slug": "ai-in-the-classroom",
+  "version": 1,
+  "titleEn": "AI in the Classroom",
+  "titleVi": "Công nghệ AI trong lớp học",
+  "kind": "news",
+  "level": "B2",
+  "topic": "Giáo dục",
+  "order": 19,
+  "summaryVi": "Bản tin (tự soạn) về việc trường học dùng trợ lý AI: lợi ích cho giáo viên và học sinh, cùng những lo ngại về gian lận và tư duy độc lập.",
+  "speakers": [
+    { "key": "anchor", "name": "Presenter", "voice": "en-GB-RyanNeural" },
+    { "key": "reporter", "name": "Reporter", "voice": "en-US-JennyNeural" }
+  ],
+  "lines": [
+    { "speaker": "anchor", "en": "More and more schools are introducing artificial intelligence into their classrooms. But is it helping students learn?", "vi": "Ngày càng nhiều trường học đưa trí tuệ nhân tạo vào lớp học. Nhưng liệu nó có giúp học sinh học tốt hơn?" },
+    { "speaker": "anchor", "en": "Our education reporter, Kate, has been finding out.", "vi": "Phóng viên giáo dục Kate của chúng tôi đã tìm hiểu." },
+    { "speaker": "reporter", "en": "At one secondary school I visited, every student now has access to an AI tutor on their laptop.", "vi": "Tại một trường trung học tôi đến thăm, giờ đây mọi học sinh đều có thể dùng một gia sư AI trên máy tính xách tay." },
+    { "speaker": "reporter", "en": "Instead of simply giving answers, the tutor asks questions that guide students toward solving problems themselves.", "vi": "Thay vì chỉ đưa ra đáp án, gia sư này đặt câu hỏi để dẫn dắt học sinh tự giải quyết vấn đề." },
+    { "speaker": "reporter", "en": "Teachers told me it saves them hours each week, particularly when it comes to marking simple exercises.", "vi": "Các giáo viên cho biết nó giúp họ tiết kiệm hàng giờ mỗi tuần, đặc biệt là khi chấm những bài tập đơn giản." },
+    { "speaker": "reporter", "en": "That gives them more time to work with students who are struggling.", "vi": "Nhờ đó họ có thêm thời gian kèm những học sinh đang gặp khó khăn." },
+    { "speaker": "reporter", "en": "Students seem enthusiastic, too. One fifteen-year-old said she finally feels comfortable asking questions she'd be embarrassed to ask in front of the class.", "vi": "Học sinh cũng có vẻ hào hứng. Một em mười lăm tuổi nói rằng cuối cùng em đã thấy thoải mái khi hỏi những câu mà em ngại hỏi trước cả lớp." },
+    { "speaker": "reporter", "en": "However, not everyone is convinced.", "vi": "Tuy nhiên, không phải ai cũng bị thuyết phục." },
+    { "speaker": "reporter", "en": "Some parents worry that children will rely on technology rather than developing their own thinking skills.", "vi": "Một số phụ huynh lo rằng trẻ sẽ phụ thuộc vào công nghệ thay vì phát triển kỹ năng tư duy của chính mình." },
+    { "speaker": "reporter", "en": "Others point out that it has become much harder to tell whether homework was actually written by the student.", "vi": "Những người khác chỉ ra rằng giờ đây khó hơn nhiều để biết bài tập về nhà có thực sự do học sinh tự làm hay không." },
+    { "speaker": "reporter", "en": "In response, several schools have moved more writing tasks into the classroom, where teachers can see the work being done.", "vi": "Để đối phó, một số trường đã chuyển nhiều bài viết vào làm trên lớp, nơi giáo viên có thể quan sát quá trình làm bài." },
+    { "speaker": "reporter", "en": "Experts I spoke to agree on one thing: AI should support teachers, not replace them.", "vi": "Các chuyên gia tôi trò chuyện đều đồng ý một điều: AI nên hỗ trợ giáo viên chứ không thay thế họ." },
+    { "speaker": "anchor", "en": "Thank you, Kate. A debate that is clearly far from over.", "vi": "Cảm ơn chị, Kate. Một cuộc tranh luận rõ ràng là còn lâu mới kết thúc." }
+  ]
+}

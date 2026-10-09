@@ -8,9 +8,11 @@ public enum ActivityKind
     Studied,
     Review,
     Grammar,
+    /// <summary>Finished a listening piece (recorded only while the admin lets it count).</summary>
+    Listening,
 }
 
-public record StudyDayDto(DateOnly Date, int NewWords, int Reviews, int GrammarItems, bool Frozen);
+public record StudyDayDto(DateOnly Date, int NewWords, int Reviews, int GrammarItems, bool Frozen, int Listens = 0);
 
 public record StreakDto(
     int Current,

@@ -42,6 +42,8 @@ services:
       StockImages__PexelsKey: ${PEXELS_API_KEY:-}
       StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
       Email__ResendKey: ${RESEND_API_KEY:-}
+      Speech__Key: ${AZURE_SPEECH_KEY:-}
+      Speech__Region: ${AZURE_SPEECH_REGION:-}
       Email__ReplyTo: ${EMAIL_REPLY_TO:-}
     volumes:
       - media:/app/media

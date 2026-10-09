@@ -1,0 +1,31 @@
+{
+  "slug": "making-plans-for-the-movies",
+  "version": 1,
+  "titleEn": "Making Plans for the Movies",
+  "titleVi": "Hẹn bạn đi xem phim",
+  "kind": "dialogue",
+  "level": "A2",
+  "topic": "Giải trí",
+  "order": 7,
+  "summaryVi": "Linh và Mark chọn phim, giờ chiếu và chỗ gặp nhau. Nghe cách rủ rê, từ chối nhẹ nhàng và đề xuất phương án khác.",
+  "speakers": [
+    { "key": "linh", "name": "Linh", "voice": "en-US-AriaNeural" },
+    { "key": "mark", "name": "Mark", "voice": "en-US-GuyNeural" }
+  ],
+  "lines": [
+    { "speaker": "linh", "en": "Hey Mark, are you free on Saturday?", "vi": "Này Mark, thứ Bảy cậu rảnh không?" },
+    { "speaker": "mark", "en": "In the afternoon, yes. Why?", "vi": "Buổi chiều thì rảnh. Sao thế?" },
+    { "speaker": "linh", "en": "Do you want to go to the movies? There's a new space film.", "vi": "Cậu có muốn đi xem phim không? Có một bộ phim mới về vũ trụ." },
+    { "speaker": "mark", "en": "Hmm, I'm not a big fan of space films. Is there a comedy?", "vi": "Hừm, tớ không mê phim vũ trụ lắm. Có phim hài không?" },
+    { "speaker": "linh", "en": "Let me check. Yes, there's a comedy about a family on holiday.", "vi": "Để tớ xem. Có, có một phim hài về một gia đình đi nghỉ." },
+    { "speaker": "mark", "en": "That sounds fun. What time is it on?", "vi": "Nghe vui đấy. Mấy giờ chiếu?" },
+    { "speaker": "linh", "en": "At two fifteen or at four forty.", "vi": "Lúc hai giờ mười lăm hoặc bốn giờ bốn mươi." },
+    { "speaker": "mark", "en": "Four forty is better. I have football practice until three.", "vi": "Bốn giờ bốn mươi tiện hơn. Tớ tập bóng đá đến ba giờ." },
+    { "speaker": "linh", "en": "Okay. Shall we meet at the cinema at four thirty?", "vi": "Được. Mình gặp nhau ở rạp lúc bốn rưỡi nhé?" },
+    { "speaker": "mark", "en": "Let's meet a bit earlier and get some popcorn. Four fifteen?", "vi": "Gặp sớm hơn chút để mua bỏng ngô đi. Bốn giờ mười lăm nhé?" },
+    { "speaker": "linh", "en": "Good idea. I'll buy the tickets online tonight.", "vi": "Ý hay đấy. Tối nay tớ sẽ mua vé trên mạng." },
+    { "speaker": "mark", "en": "Great. I'll pay you back on Saturday.", "vi": "Tuyệt. Thứ Bảy tớ trả lại tiền cho cậu." },
+    { "speaker": "linh", "en": "No problem. See you at the front door of the cinema.", "vi": "Không sao. Hẹn gặp cậu ở cửa trước của rạp nhé." },
+    { "speaker": "mark", "en": "See you there. Don't be late!", "vi": "Hẹn gặp ở đó. Đừng đến muộn nhé!" }
+  ]
+}

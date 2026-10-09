@@ -1,0 +1,33 @@
+{
+  "slug": "at-the-doctors-sore-throat",
+  "version": 1,
+  "titleEn": "At the Doctor's: A Sore Throat",
+  "titleVi": "Khám bệnh vì đau họng",
+  "kind": "dialogue",
+  "level": "B1",
+  "topic": "Sức khoẻ",
+  "order": 12,
+  "summaryVi": "Anna đi khám vì đau họng và sốt nhẹ. Nghe cách mô tả triệu chứng, câu hỏi của bác sĩ và lời dặn dùng thuốc.",
+  "speakers": [
+    { "key": "doctor", "name": "Doctor", "voice": "en-US-DavisNeural" },
+    { "key": "anna", "name": "Anna", "voice": "en-US-JennyNeural" }
+  ],
+  "lines": [
+    { "speaker": "doctor", "en": "Good morning, Anna. What seems to be the problem?", "vi": "Chào buổi sáng, Anna. Cháu bị làm sao vậy?" },
+    { "speaker": "anna", "en": "I've had a sore throat for three days, and it's getting worse.", "vi": "Cháu bị đau họng ba ngày nay rồi, và ngày càng nặng hơn." },
+    { "speaker": "doctor", "en": "I see. Do you have a fever?", "vi": "Bác hiểu rồi. Cháu có sốt không?" },
+    { "speaker": "anna", "en": "A little. It was thirty-seven point eight last night.", "vi": "Hơi sốt ạ. Tối qua ba mươi bảy phẩy tám độ." },
+    { "speaker": "doctor", "en": "Any cough or headache?", "vi": "Có ho hay đau đầu không?" },
+    { "speaker": "anna", "en": "No cough, but I've got a headache, and it hurts when I swallow.", "vi": "Không ho, nhưng cháu bị đau đầu, và nuốt thì đau." },
+    { "speaker": "doctor", "en": "Let me have a look. Open your mouth and say \"ah\".", "vi": "Để bác xem nào. Cháu há miệng và nói \"a\"." },
+    { "speaker": "doctor", "en": "Your throat is quite red and a bit swollen. It looks like an infection.", "vi": "Họng cháu khá đỏ và hơi sưng. Có vẻ là bị nhiễm trùng." },
+    { "speaker": "anna", "en": "Is it serious?", "vi": "Có nghiêm trọng không ạ?" },
+    { "speaker": "doctor", "en": "No, don't worry. Most people get better in about a week.", "vi": "Không, đừng lo. Phần lớn mọi người sẽ khỏi trong khoảng một tuần." },
+    { "speaker": "doctor", "en": "I'll give you something for the pain and the fever. Take one tablet three times a day, after meals.", "vi": "Bác sẽ kê thuốc giảm đau và hạ sốt. Mỗi ngày uống ba lần, mỗi lần một viên, sau bữa ăn." },
+    { "speaker": "anna", "en": "Should I stay home from work?", "vi": "Cháu có nên nghỉ làm ở nhà không ạ?" },
+    { "speaker": "doctor", "en": "Yes, rest for two or three days. Drink plenty of warm water and try honey with lemon.", "vi": "Có, nghỉ hai ba ngày. Uống nhiều nước ấm và thử dùng mật ong chanh." },
+    { "speaker": "doctor", "en": "If the fever goes above thirty-nine, or you still feel bad after five days, come back and see me.", "vi": "Nếu sốt trên ba mươi chín độ, hoặc sau năm ngày vẫn còn mệt, hãy quay lại gặp bác." },
+    { "speaker": "anna", "en": "Okay. Thank you, doctor.", "vi": "Vâng. Cháu cảm ơn bác sĩ." },
+    { "speaker": "doctor", "en": "You're welcome. Get well soon!", "vi": "Không có gì. Chúc cháu mau khoẻ!" }
+  ]
+}

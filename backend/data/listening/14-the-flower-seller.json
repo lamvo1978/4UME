@@ -1,0 +1,29 @@
+{
+  "slug": "the-flower-seller",
+  "version": 1,
+  "titleEn": "The Flower Seller",
+  "titleVi": "Người bán hoa trên phố",
+  "kind": "story",
+  "level": "B1",
+  "topic": "Câu chuyện",
+  "order": 14,
+  "summaryVi": "Mỗi sáng Lan đi qua một bà cụ bán hoa ở góc phố. Một ngày bà vắng mặt, và Lan nhận ra những bông hoa nhỏ đã thay đổi cuộc sống của cô thế nào.",
+  "speakers": [
+    { "key": "lan", "name": "Lan", "voice": "en-GB-SoniaNeural" }
+  ],
+  "lines": [
+    { "speaker": "lan", "en": "Every morning on my way to work, I pass the same street corner.", "vi": "Mỗi sáng trên đường đi làm, tôi đều đi qua cùng một góc phố." },
+    { "speaker": "lan", "en": "For years, an old woman has been selling flowers there from a small bicycle.", "vi": "Nhiều năm nay, một bà cụ bán hoa ở đó trên chiếc xe đạp nhỏ." },
+    { "speaker": "lan", "en": "At first, I never stopped. I was always in a hurry, checking my phone.", "vi": "Lúc đầu, tôi chưa bao giờ dừng lại. Lúc nào tôi cũng vội vàng, cắm mặt vào điện thoại." },
+    { "speaker": "lan", "en": "But one day, she smiled at me and said, \"You look tired. Take one, it's free.\"", "vi": "Nhưng một hôm, bà mỉm cười với tôi và nói: \"Trông cháu mệt quá. Cầm lấy một bông đi, không lấy tiền đâu.\"" },
+    { "speaker": "lan", "en": "She handed me a single yellow daisy.", "vi": "Bà đưa cho tôi một bông cúc vàng." },
+    { "speaker": "lan", "en": "I put it in a glass on my desk, and somehow my whole day felt lighter.", "vi": "Tôi cắm nó vào một chiếc cốc trên bàn làm việc, và không hiểu sao cả ngày hôm đó tôi thấy nhẹ nhõm hơn." },
+    { "speaker": "lan", "en": "After that, I started buying flowers from her every Monday.", "vi": "Từ đó, thứ Hai nào tôi cũng mua hoa của bà." },
+    { "speaker": "lan", "en": "We talked about the weather, her grandchildren, and which flowers last the longest.", "vi": "Chúng tôi nói chuyện về thời tiết, về các cháu của bà, và loại hoa nào để được lâu nhất." },
+    { "speaker": "lan", "en": "Then, one Monday in winter, the corner was empty.", "vi": "Rồi một ngày thứ Hai mùa đông, góc phố trống trơn." },
+    { "speaker": "lan", "en": "She wasn't there the next day, or the day after. I was surprised by how much I missed her.", "vi": "Hôm sau bà cũng không có ở đó, hôm sau nữa cũng vậy. Tôi ngạc nhiên vì mình nhớ bà đến thế." },
+    { "speaker": "lan", "en": "A week later, she came back. She had been in hospital with a bad cold.", "vi": "Một tuần sau, bà quay lại. Bà đã phải nằm viện vì cảm nặng." },
+    { "speaker": "lan", "en": "\"My customers kept asking about me,\" she laughed. \"I didn't know I had so many friends.\"", "vi": "\"Khách của bà cứ hỏi thăm bà mãi,\" bà cười. \"Bà không biết là mình có nhiều bạn đến thế.\"" },
+    { "speaker": "lan", "en": "I still buy flowers every Monday. But now I know they were never really about the flowers.", "vi": "Tôi vẫn mua hoa vào mỗi thứ Hai. Nhưng giờ tôi biết, điều quan trọng chưa bao giờ thực sự là những bông hoa." }
+  ]
+}

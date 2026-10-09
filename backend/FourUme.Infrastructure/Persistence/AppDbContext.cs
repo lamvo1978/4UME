@@ -14,6 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<GrammarAttempt> GrammarAttempts => Set<GrammarAttempt>();
     public DbSet<GrammarLesson> GrammarLessons => Set<GrammarLesson>();
     public DbSet<GrammarProgress> GrammarProgresses => Set<GrammarProgress>();
+    public DbSet<ListeningLesson> ListeningLessons => Set<ListeningLesson>();
+    public DbSet<ListeningProgress> ListeningProgresses => Set<ListeningProgress>();
     public DbSet<StudyDay> StudyDays => Set<StudyDay>();
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
@@ -144,6 +146,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.SectionsJson).HasColumnType("jsonb").IsRequired();
             e.Property(x => x.ExercisesJson).HasColumnType("jsonb").IsRequired();
             e.HasIndex(x => x.SortOrder);
+        });
+
+        modelBuilder.Entity<ListeningLesson>(e =>
+        {
+            e.HasKey(x => x.Slug);
+            e.Property(x => x.Slug).HasMaxLength(80);
+            e.Property(x => x.TitleEn).HasMaxLength(200).IsRequired();
+            e.Property(x => x.TitleVi).HasMaxLength(200).IsRequired();
+            e.Property(x => x.SummaryVi).HasMaxLength(1000).IsRequired();
+            e.Property(x => x.Kind).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.Topic).HasMaxLength(80);
+            e.Property(x => x.SpeakersJson).HasColumnType("jsonb").IsRequired();
+            e.Property(x => x.LinesJson).HasColumnType("jsonb").IsRequired();
+            e.Property(x => x.AudioUrl).HasMaxLength(300);
+            e.Property(x => x.AudioHash).HasMaxLength(64);
+            e.Property(x => x.TimingsJson).HasColumnType("jsonb");
+            e.HasIndex(x => x.SortOrder);
+        });
+
+        modelBuilder.Entity<ListeningProgress>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.LessonSlug }).IsUnique();
+            e.HasIndex(x => x.LessonSlug);
+            e.Property(x => x.LessonSlug).HasMaxLength(80).IsRequired();
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<AuditLog>(e =>

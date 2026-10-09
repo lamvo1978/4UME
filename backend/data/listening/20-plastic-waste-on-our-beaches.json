@@ -1,0 +1,30 @@
+{
+  "slug": "plastic-waste-on-our-beaches",
+  "version": 1,
+  "titleEn": "Plastic Waste on Our Beaches",
+  "titleVi": "Rác thải nhựa và các bãi biển",
+  "kind": "news",
+  "level": "B2",
+  "topic": "Môi trường",
+  "order": 20,
+  "summaryVi": "Bản tin (tự soạn) về một nhóm tình nguyện dọn rác ở bãi biển: họ thu được gì, rác đến từ đâu và mỗi người có thể làm gì.",
+  "speakers": [
+    { "key": "anchor", "name": "Presenter", "voice": "en-AU-NatashaNeural" },
+    { "key": "reporter", "name": "Reporter", "voice": "en-US-DavisNeural" }
+  ],
+  "lines": [
+    { "speaker": "anchor", "en": "Last weekend, more than five hundred volunteers gathered along the coast for a beach clean-up.", "vi": "Cuối tuần qua, hơn năm trăm tình nguyện viên đã tập trung dọc bờ biển để dọn rác." },
+    { "speaker": "anchor", "en": "Tom reports on what they found.", "vi": "Tom tường thuật về những gì họ tìm thấy." },
+    { "speaker": "reporter", "en": "Armed with gloves and bags, the volunteers spent four hours cleaning a three-kilometer stretch of sand.", "vi": "Với găng tay và túi đựng, các tình nguyện viên đã mất bốn tiếng để dọn sạch một dải cát dài ba ki-lô-mét." },
+    { "speaker": "reporter", "en": "By the end of the day, they had collected nearly two tonnes of rubbish.", "vi": "Đến cuối ngày, họ đã thu gom được gần hai tấn rác." },
+    { "speaker": "reporter", "en": "Around eighty percent of it was plastic: bottles, food packaging, fishing nets, and thousands of tiny fragments.", "vi": "Khoảng tám mươi phần trăm trong số đó là nhựa: chai lọ, bao bì thực phẩm, lưới đánh cá và hàng nghìn mảnh vụn nhỏ." },
+    { "speaker": "reporter", "en": "Organizers say those small pieces are the most worrying, because they are almost impossible to remove completely.", "vi": "Ban tổ chức cho biết những mảnh nhỏ đó đáng lo ngại nhất, vì gần như không thể loại bỏ hết." },
+    { "speaker": "reporter", "en": "They break down further over time, and are often swallowed by fish and seabirds.", "vi": "Theo thời gian chúng còn vỡ nhỏ hơn nữa, và thường bị cá và chim biển nuốt phải." },
+    { "speaker": "reporter", "en": "Interestingly, much of the waste didn't come from beach visitors at all.", "vi": "Điều đáng chú ý là phần lớn rác hoàn toàn không phải do khách đi biển để lại." },
+    { "speaker": "reporter", "en": "It was carried by rivers from towns and cities many kilometers inland.", "vi": "Nó được các dòng sông mang theo từ những thị trấn và thành phố cách bờ biển nhiều ki-lô-mét." },
+    { "speaker": "reporter", "en": "That's why the organizers are calling for better waste collection, not just more clean-ups.", "vi": "Đó là lý do ban tổ chức kêu gọi cải thiện việc thu gom rác thải, chứ không chỉ tổ chức thêm các buổi dọn dẹp." },
+    { "speaker": "reporter", "en": "They also suggest a few simple steps for individuals: carry a reusable bottle, refuse plastic bags, and choose products with less packaging.", "vi": "Họ cũng gợi ý vài việc đơn giản cho mỗi người: mang theo bình nước dùng lại, từ chối túi ni-lông và chọn sản phẩm ít bao bì." },
+    { "speaker": "reporter", "en": "As one volunteer put it, \"Cleaning the beach feels great, but the real goal is to have nothing left to clean.\"", "vi": "Như một tình nguyện viên nói: \"Dọn bãi biển thì rất vui, nhưng mục tiêu thực sự là không còn gì để dọn nữa.\"" },
+    { "speaker": "anchor", "en": "Wise words. The next clean-up is planned for early next month, and everyone is welcome to join.", "vi": "Thật chí lý. Buổi dọn dẹp tiếp theo dự kiến vào đầu tháng sau, và mọi người đều được chào đón tham gia." }
+  ]
+}

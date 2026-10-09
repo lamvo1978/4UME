@@ -1,0 +1,28 @@
+{
+  "slug": "weekend-weather-forecast",
+  "version": 1,
+  "titleEn": "The Weekend Weather Forecast",
+  "titleVi": "Dự báo thời tiết cuối tuần",
+  "kind": "news",
+  "level": "A2",
+  "topic": "Thời tiết",
+  "order": 10,
+  "summaryVi": "Bản tin thời tiết cuối tuần: thứ Bảy nắng đẹp, Chủ nhật có mưa giông. Nghe các từ về nhiệt độ, gió và lời khuyên.",
+  "speakers": [
+    { "key": "anchor", "name": "Presenter", "voice": "en-US-JennyNeural" }
+  ],
+  "lines": [
+    { "speaker": "anchor", "en": "Good evening, and here is the weather for this weekend.", "vi": "Xin chào quý vị, sau đây là thời tiết cuối tuần này." },
+    { "speaker": "anchor", "en": "Saturday will be a beautiful day across most of the country.", "vi": "Thứ Bảy sẽ là một ngày đẹp trời ở hầu hết cả nước." },
+    { "speaker": "anchor", "en": "It will be sunny and warm, with temperatures between twenty-eight and thirty-two degrees.", "vi": "Trời nắng và ấm, nhiệt độ từ hai mươi tám đến ba mươi hai độ." },
+    { "speaker": "anchor", "en": "There will be a light wind from the east, so it is a great day for the beach.", "vi": "Sẽ có gió nhẹ hướng đông, nên đây là một ngày tuyệt vời để đi biển." },
+    { "speaker": "anchor", "en": "Don't forget your sun cream and a bottle of water.", "vi": "Đừng quên kem chống nắng và một chai nước nhé." },
+    { "speaker": "anchor", "en": "On Sunday, the weather will change.", "vi": "Sang Chủ nhật, thời tiết sẽ thay đổi." },
+    { "speaker": "anchor", "en": "The morning will be cloudy, and in the afternoon there will be heavy rain and thunderstorms.", "vi": "Buổi sáng trời nhiều mây, và buổi chiều sẽ có mưa to kèm giông." },
+    { "speaker": "anchor", "en": "In the north, the wind will be strong, up to fifty kilometers per hour.", "vi": "Ở phía bắc, gió sẽ mạnh, lên tới năm mươi ki-lô-mét một giờ." },
+    { "speaker": "anchor", "en": "If you are driving, please be careful on wet roads.", "vi": "Nếu đang lái xe, xin hãy cẩn thận trên đường trơn ướt." },
+    { "speaker": "anchor", "en": "The rain will stop on Monday morning, and the new week will start cooler and fresh.", "vi": "Mưa sẽ tạnh vào sáng thứ Hai, và tuần mới sẽ bắt đầu với thời tiết mát mẻ, dễ chịu." },
+    { "speaker": "anchor", "en": "So, go out and enjoy the sun on Saturday, and stay dry on Sunday.", "vi": "Vậy hãy ra ngoài tận hưởng nắng vào thứ Bảy, và nhớ giữ khô ráo vào Chủ nhật nhé." },
+    { "speaker": "anchor", "en": "That's all from me. Have a lovely weekend!", "vi": "Bản tin của tôi đến đây là hết. Chúc quý vị cuối tuần vui vẻ!" }
+  ]
+}

@@ -13,6 +13,8 @@ public interface IAppDbContext
     DbSet<GrammarAttempt> GrammarAttempts { get; }
     DbSet<GrammarLesson> GrammarLessons { get; }
     DbSet<GrammarProgress> GrammarProgresses { get; }
+    DbSet<ListeningLesson> ListeningLessons { get; }
+    DbSet<ListeningProgress> ListeningProgresses { get; }
     DbSet<StudyDay> StudyDays { get; }
     DbSet<AppSetting> AppSettings { get; }
     DbSet<DeviceToken> DeviceTokens { get; }

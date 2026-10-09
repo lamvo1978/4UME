@@ -3,6 +3,7 @@ using System.Security.Claims;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
+using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 
 namespace FourUme.Api;
@@ -64,6 +65,10 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveNotificationsAsync(c, ct)));
         admin.MapPost("/settings/notifications/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetNotificationsAsync(ct)));
+        admin.MapPut("/settings/listening", async (ListeningConfig c, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveListeningAsync(c, ct)));
+        admin.MapPost("/settings/listening/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetListeningAsync(ct)));
 
         admin.MapGet("/vocabulary/meta", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMetaAsync(ct)));
 
@@ -124,6 +129,36 @@ public static class AdminEndpoints
             await s.DeleteLessonAsync(slug, ct);
             return Results.NoContent();
         });
+
+        admin.MapGet("/listening", async (IAdminListeningService s, CancellationToken ct) => Results.Ok(await s.GetLessonsAsync(ct)));
+        admin.MapGet("/listening/export", async (IAdminListeningService s, CancellationToken ct) =>
+            Results.Json(await s.ExportLessonsAsync(ct), GrammarJson.Options));
+        admin.MapPost("/listening/import", async (ImportListeningRequest r, IAdminListeningService s, CancellationToken ct) =>
+            Results.Ok(await s.ImportLessonsAsync(r, ct)));
+        admin.MapGet("/listening/speech", async (IAdminListeningService s, CancellationToken ct) =>
+            Results.Ok(await s.GetSpeechStatusAsync(ct)));
+        admin.MapPost("/listening/speech/preview", async (VoicePreviewRequest r, IAdminListeningService s, CancellationToken ct) =>
+            Results.File(await s.PreviewVoiceAsync(r, ct), "audio/mpeg"));
+        admin.MapPost("/listening/validate", (ListeningLessonDocument doc) =>
+            Results.Ok(new ListeningValidationDto(ListeningRules.Validate(ListeningRules.Normalize(doc)))));
+        admin.MapPut("/listening/order", async (ReorderRequest r, IAdminListeningService s, CancellationToken ct) =>
+        {
+            await s.ReorderLessonsAsync(r, ct);
+            return Results.NoContent();
+        });
+        admin.MapGet("/listening/{slug}", async (string slug, IAdminListeningService s, CancellationToken ct) =>
+            await s.GetLessonAsync(slug, ct) is { } l ? Results.Ok(l) : Results.NotFound(new { error = "Không tìm thấy bài." }));
+        admin.MapPost("/listening", async (ListeningLessonDocument doc, IAdminListeningService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateLessonAsync(doc, ct)));
+        admin.MapPut("/listening/{slug}", async (string slug, ListeningLessonDocument doc, IAdminListeningService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateLessonAsync(slug, doc, ct)));
+        admin.MapDelete("/listening/{slug}", async (string slug, IAdminListeningService s, CancellationToken ct) =>
+        {
+            await s.DeleteLessonAsync(slug, ct);
+            return Results.NoContent();
+        });
+        admin.MapPost("/listening/{slug}/audio", async (string slug, IAdminListeningService s, CancellationToken ct) =>
+            Results.Ok(await s.GenerateAudioAsync(slug, ct)));
 
         admin.MapGet("/media", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMediaAsync(ct)));
         // Form read manually (not IFormFile binding) so the JWT-only API doesn't need antiforgery tokens.

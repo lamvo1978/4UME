@@ -24,6 +24,7 @@ public static class AuditEntities
     public const string Word = "word";
     public const string Deck = "deck";
     public const string Grammar = "grammar";
+    public const string Listening = "listening";
     public const string Media = "media";
     public const string User = "user";
     public const string Settings = "settings";
@@ -37,4 +38,6 @@ public static class AuditActions
     public const string Restore = "restore";
     public const string Import = "import";
     public const string Reorder = "reorder";
+    /// <summary>Generated media (e.g. listening audio); no snapshot.</summary>
+    public const string Generate = "generate";
 }

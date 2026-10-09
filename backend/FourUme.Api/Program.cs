@@ -7,6 +7,7 @@ using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
 using FourUme.Application.Grammar;
+using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
@@ -136,6 +137,13 @@ using (var scope = app.Services.CreateScope())
         grammarPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "grammar"));
     }
     await GrammarSeeder.SeedAsync(db, grammarPath, logger);
+
+    var listeningPath = builder.Configuration["Listening:Path"];
+    if (string.IsNullOrWhiteSpace(listeningPath))
+    {
+        listeningPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "listening"));
+    }
+    await ListeningSeeder.SeedAsync(db, listeningPath, logger);
     await app.BootstrapAdminsAsync(logger);
 }
 
@@ -284,8 +292,8 @@ app.MapDelete("/api/me/devices/{token}", async (string token, ClaimsPrincipal pr
     return Results.NoContent();
 }).RequireAuthorization();
 
-app.MapGet("/api/config", async (INotificationService notifications) =>
-    Results.Ok(new AppConfigDto(await notifications.GetConfigAsync())));
+app.MapGet("/api/config", async (INotificationService notifications, IListeningService listening) =>
+    Results.Ok(new AppConfigDto(await notifications.GetConfigAsync(), await listening.GetConfigAsync())));
 
 app.MapGet("/api/vocabulary/decks", async (ClaimsPrincipal principal, IVocabularyService vocab, string? level) =>
 {
@@ -382,6 +390,31 @@ app.MapPost("/api/review/practice/answer", async (ReviewAnswerRequest request, C
     {
         return Results.BadRequest(new { error = ex.Message });
     }
+}).RequireAuthorization();
+
+app.MapGet("/api/listening", async (ClaimsPrincipal principal, IListeningService listening, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await listening.GetLessonsAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+app.MapGet("/api/listening/{slug}", async (string slug, ClaimsPrincipal principal, IListeningService listening, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return await listening.GetLessonAsync(userId.Value, slug, ct) is { } lesson
+        ? Results.Ok(lesson)
+        : Results.NotFound(new { error = "Không tìm thấy bài." });
+}).RequireAuthorization();
+
+app.MapPut("/api/listening/{slug}/progress", async (string slug, UpdateListeningProgressRequest request, ClaimsPrincipal principal, IListeningService listening, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return await listening.UpdateProgressAsync(userId.Value, slug, request, ct) is { } progress
+        ? Results.Ok(progress)
+        : Results.NotFound(new { error = "Không tìm thấy bài." });
 }).RequireAuthorization();
 
 app.MapGet("/api/grammar/lessons", async (ClaimsPrincipal principal, IGrammarService grammar) =>

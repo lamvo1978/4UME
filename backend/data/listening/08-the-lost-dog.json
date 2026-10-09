@@ -1,0 +1,28 @@
+{
+  "slug": "the-lost-dog",
+  "version": 1,
+  "titleEn": "The Lost Dog",
+  "titleVi": "Chú chó lạc đường",
+  "kind": "story",
+  "level": "A2",
+  "topic": "Câu chuyện",
+  "order": 8,
+  "summaryVi": "Một buổi chiều mưa, Nam gặp một chú chó nhỏ bị lạc. Cậu tìm cách đưa chú chó về nhà và nhận được một bất ngờ dễ thương.",
+  "speakers": [
+    { "key": "narrator", "name": "Narrator", "voice": "en-GB-RyanNeural" }
+  ],
+  "lines": [
+    { "speaker": "narrator", "en": "It was a rainy afternoon in October.", "vi": "Đó là một buổi chiều mưa tháng Mười." },
+    { "speaker": "narrator", "en": "Nam was walking home from school when he heard a small sound.", "vi": "Nam đang đi bộ từ trường về nhà thì nghe thấy một tiếng động nhỏ." },
+    { "speaker": "narrator", "en": "Under a bench, there was a little brown dog. It was wet and cold.", "vi": "Dưới một chiếc ghế dài có một chú chó nhỏ màu nâu. Nó ướt sũng và lạnh cóng." },
+    { "speaker": "narrator", "en": "The dog had a red collar with a name on it: Coco.", "vi": "Chú chó đeo một chiếc vòng cổ màu đỏ có ghi tên: Coco." },
+    { "speaker": "narrator", "en": "There was also a phone number, but the numbers were hard to read.", "vi": "Trên đó còn có một số điện thoại, nhưng các con số rất khó đọc." },
+    { "speaker": "narrator", "en": "Nam took Coco home and gave her some water and a towel.", "vi": "Nam đưa Coco về nhà, cho nó uống nước và lau khô bằng khăn." },
+    { "speaker": "narrator", "en": "His mother said, \"Somebody is looking for this dog. Let's help.\"", "vi": "Mẹ cậu nói: \"Chắc có ai đó đang tìm chú chó này. Mình giúp đi con.\"" },
+    { "speaker": "narrator", "en": "They took a photo of Coco and put it on the neighborhood group online.", "vi": "Họ chụp ảnh Coco và đăng lên nhóm khu phố trên mạng." },
+    { "speaker": "narrator", "en": "One hour later, the phone rang. It was an old woman from the next street.", "vi": "Một giờ sau, điện thoại reo. Đó là một bà cụ ở con phố bên cạnh." },
+    { "speaker": "narrator", "en": "She was crying with happiness. \"Coco ran away when she heard the thunder,\" she said.", "vi": "Bà khóc vì vui mừng. \"Coco chạy mất khi nghe tiếng sấm,\" bà nói." },
+    { "speaker": "narrator", "en": "That evening, the woman came to Nam's house with a big box of cookies.", "vi": "Tối hôm đó, bà cụ đến nhà Nam với một hộp bánh quy to." },
+    { "speaker": "narrator", "en": "Now, every Sunday, Nam walks Coco in the park. They are best friends.", "vi": "Giờ đây, Chủ nhật nào Nam cũng dắt Coco đi dạo trong công viên. Họ là đôi bạn thân." }
+  ]
+}

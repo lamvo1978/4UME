@@ -21,6 +21,6 @@ public record NotificationConfig
     public string FreezeNoticeTime { get; init; } = "08:00";
 }
 
-public record AppConfigDto(NotificationConfig Notifications);
+public record AppConfigDto(NotificationConfig Notifications, Listening.ListeningConfig Listening);
 
 public record RegisterDeviceRequest(string Token, string Platform, string? AppVersion);

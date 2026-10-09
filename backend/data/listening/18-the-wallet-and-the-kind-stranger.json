@@ -1,0 +1,30 @@
+{
+  "slug": "the-wallet-and-the-kind-stranger",
+  "version": 1,
+  "titleEn": "The Wallet and the Kind Stranger",
+  "titleVi": "Chiếc ví và người lạ tốt bụng",
+  "kind": "story",
+  "level": "B2",
+  "topic": "Câu chuyện",
+  "order": 18,
+  "summaryVi": "Sophie đánh rơi ví ở một thành phố xa lạ ngay trước chuyến tàu đêm. Một người lạ đã giúp cô, và nhiều năm sau cô có cơ hội làm điều tương tự.",
+  "speakers": [
+    { "key": "sophie", "name": "Sophie", "voice": "en-US-AriaNeural" }
+  ],
+  "lines": [
+    { "speaker": "sophie", "en": "A few years ago, I was travelling alone through a city where I didn't speak the language.", "vi": "Vài năm trước, tôi đi du lịch một mình qua một thành phố mà tôi không biết tiếng." },
+    { "speaker": "sophie", "en": "I had about an hour before my night train, so I stopped at a café to charge my phone.", "vi": "Tôi còn khoảng một tiếng trước chuyến tàu đêm, nên ghé vào một quán cà phê để sạc điện thoại." },
+    { "speaker": "sophie", "en": "When I went to pay, my stomach dropped. My wallet was gone.", "vi": "Khi ra trả tiền, tôi chết lặng. Ví của tôi đã biến mất." },
+    { "speaker": "sophie", "en": "My cards, my cash, and, worst of all, my train ticket had all been inside it.", "vi": "Thẻ, tiền mặt, và tệ nhất là vé tàu của tôi đều nằm trong đó." },
+    { "speaker": "sophie", "en": "I must have looked terrified, because a man at the next table asked if I was alright.", "vi": "Hẳn trông tôi hoảng sợ lắm, vì một người đàn ông ở bàn bên hỏi tôi có ổn không." },
+    { "speaker": "sophie", "en": "He spoke a little English, and somehow I managed to explain what had happened.", "vi": "Ông nói được chút tiếng Anh, và bằng cách nào đó tôi đã kể được chuyện vừa xảy ra." },
+    { "speaker": "sophie", "en": "Without hesitating, he paid for my coffee and walked with me back along the street I had come from.", "vi": "Không chút do dự, ông trả tiền cà phê cho tôi và cùng tôi đi ngược lại con phố tôi vừa đi qua." },
+    { "speaker": "sophie", "en": "We didn't find the wallet, but he refused to give up.", "vi": "Chúng tôi không tìm thấy chiếc ví, nhưng ông nhất định không bỏ cuộc." },
+    { "speaker": "sophie", "en": "He took me to the station, spoke to the staff, and bought me a new ticket with his own money.", "vi": "Ông đưa tôi đến nhà ga, nói chuyện với nhân viên, và mua cho tôi một vé mới bằng tiền của mình." },
+    { "speaker": "sophie", "en": "When I asked for his address so I could pay him back, he just shook his head.", "vi": "Khi tôi xin địa chỉ để gửi trả tiền, ông chỉ lắc đầu." },
+    { "speaker": "sophie", "en": "\"Someday, someone will need help,\" he said. \"Pay it back to them.\"", "vi": "\"Một ngày nào đó, sẽ có người cần giúp đỡ,\" ông nói. \"Hãy trả lại cho họ.\"" },
+    { "speaker": "sophie", "en": "Last winter, I saw a young student crying at a bus stop in my hometown. She had lost her purse.", "vi": "Mùa đông năm ngoái, tôi thấy một cô sinh viên trẻ đang khóc ở trạm xe buýt quê tôi. Cô bị mất ví." },
+    { "speaker": "sophie", "en": "I didn't think twice. I bought her a ticket home and told her the same thing he had told me.", "vi": "Tôi chẳng cần nghĩ ngợi. Tôi mua cho cô vé về nhà và nói với cô đúng điều ông đã nói với tôi." },
+    { "speaker": "sophie", "en": "I never learned his name, but in a way, his kindness is still travelling around the world.", "vi": "Tôi chưa bao giờ biết tên ông, nhưng theo một cách nào đó, lòng tốt của ông vẫn đang đi khắp thế giới." }
+  ]
+}

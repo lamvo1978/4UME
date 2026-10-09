@@ -2,6 +2,7 @@ using System.Text.Json;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
+using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,11 @@ public class AdminAuditService(
     IAppDbContext db,
     IAdminContentService content,
     IAdminGrammarService grammar,
+    IAdminListeningService listening,
     IAdminSettingsService settings) : IAdminAuditService
 {
     /// <summary>User role / lock changes are deliberately not restorable: they are redone from the user page.</summary>
-    private static readonly string[] RestorableTypes = [AuditEntities.Word, AuditEntities.Deck, AuditEntities.Grammar, AuditEntities.Settings];
+    private static readonly string[] RestorableTypes = [AuditEntities.Word, AuditEntities.Deck, AuditEntities.Grammar, AuditEntities.Listening, AuditEntities.Settings];
 
     public async Task<PagedResult<AuditEntryDto>> GetEntriesAsync(AuditQuery query, CancellationToken ct = default)
     {
@@ -69,8 +71,14 @@ public class AdminAuditService(
             case AuditEntities.Grammar:
                 await grammar.RestoreLessonAsync(Read<GrammarLessonDocument>(json), ct);
                 break;
+            case AuditEntities.Listening:
+                await listening.RestoreLessonAsync(Read<ListeningLessonDocument>(json), ct);
+                break;
             case AuditEntities.Settings when log.EntityId == NotificationConfig.SettingKey:
                 await settings.RestoreNotificationsAsync(Read<NotificationConfig>(json), ct);
+                break;
+            case AuditEntities.Settings when log.EntityId == ListeningConfig.SettingKey:
+                await settings.RestoreListeningAsync(Read<ListeningConfig>(json), ct);
                 break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");
@@ -93,6 +101,7 @@ public class AdminAuditService(
         AuditEntities.Word => await db.Words.AnyAsync(w => w.Id == id, ct),
         AuditEntities.Deck => await db.Decks.AnyAsync(d => d.Id == id, ct),
         AuditEntities.Grammar => await db.GrammarLessons.AnyAsync(l => l.Slug == id, ct),
+        AuditEntities.Listening => await db.ListeningLessons.AnyAsync(l => l.Slug == id, ct),
         AuditEntities.Media => Guid.TryParse(id, out var g) && await db.MediaFiles.AnyAsync(m => m.Id == g, ct),
         AuditEntities.User => Guid.TryParse(id, out var u) && await db.Users.AnyAsync(x => x.Id == u, ct),
         AuditEntities.Settings => true,

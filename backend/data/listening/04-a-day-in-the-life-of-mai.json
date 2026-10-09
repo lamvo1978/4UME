@@ -1,0 +1,28 @@
+{
+  "slug": "a-day-in-the-life-of-mai",
+  "version": 1,
+  "titleEn": "A Day in the Life of Mai",
+  "titleVi": "Một ngày của Mai",
+  "kind": "story",
+  "level": "A1",
+  "topic": "Cuộc sống hằng ngày",
+  "order": 4,
+  "summaryVi": "Mai kể về một ngày bình thường của cô: thức dậy, đi làm bằng xe máy, ăn trưa với đồng nghiệp và buổi tối ở nhà.",
+  "speakers": [
+    { "key": "mai", "name": "Mai", "voice": "en-US-AriaNeural" }
+  ],
+  "lines": [
+    { "speaker": "mai", "en": "Hello! My name is Mai. I am twenty-five years old.", "vi": "Xin chào! Tên tôi là Mai. Tôi hai mươi lăm tuổi." },
+    { "speaker": "mai", "en": "I live in a small apartment in Da Nang.", "vi": "Tôi sống trong một căn hộ nhỏ ở Đà Nẵng." },
+    { "speaker": "mai", "en": "I get up at six o'clock every morning.", "vi": "Mỗi sáng tôi thức dậy lúc sáu giờ." },
+    { "speaker": "mai", "en": "First, I drink a glass of water. Then I go for a short walk by the beach.", "vi": "Đầu tiên, tôi uống một cốc nước. Sau đó tôi đi dạo một chút bên bờ biển." },
+    { "speaker": "mai", "en": "I have breakfast at seven. I usually eat bread and an egg.", "vi": "Tôi ăn sáng lúc bảy giờ. Tôi thường ăn bánh mì và một quả trứng." },
+    { "speaker": "mai", "en": "I work in an office. I go to work by motorbike.", "vi": "Tôi làm việc ở văn phòng. Tôi đi làm bằng xe máy." },
+    { "speaker": "mai", "en": "My work starts at eight. I answer emails and talk to customers.", "vi": "Công việc của tôi bắt đầu lúc tám giờ. Tôi trả lời email và nói chuyện với khách hàng." },
+    { "speaker": "mai", "en": "At twelve, I have lunch with my friends from work. We like noodle soup.", "vi": "Mười hai giờ, tôi ăn trưa với các bạn đồng nghiệp. Chúng tôi thích món mì nước." },
+    { "speaker": "mai", "en": "I finish work at five. Sometimes I go to the gym after work.", "vi": "Tôi tan làm lúc năm giờ. Thỉnh thoảng tôi đến phòng tập sau giờ làm." },
+    { "speaker": "mai", "en": "In the evening, I cook dinner and call my mother.", "vi": "Buổi tối, tôi nấu bữa tối và gọi điện cho mẹ." },
+    { "speaker": "mai", "en": "After dinner, I study English for thirty minutes.", "vi": "Sau bữa tối, tôi học tiếng Anh ba mươi phút." },
+    { "speaker": "mai", "en": "I go to bed at eleven. It is a simple day, but I am happy.", "vi": "Tôi đi ngủ lúc mười một giờ. Đó là một ngày đơn giản, nhưng tôi thấy vui." }
+  ]
+}
