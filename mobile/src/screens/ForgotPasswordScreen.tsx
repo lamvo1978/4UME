@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, Text, TextInput } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { authStyles as styles } from "../components/authStyles";
 import { CODE_LENGTH, CodeInput } from "../components/CodeInput";
+import { AuthHeader, AuthInput } from "../components/AuthField";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { RootStackParamList } from "../navigation/types";
-import { colors } from "../theme";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ForgotPassword">;
 
@@ -57,20 +57,18 @@ export function ForgotPasswordScreen({ navigation, route }: Props) {
     const ready = code.length === CODE_LENGTH && password.length > 0;
     return (
       <KeyboardScreen style={styles.root} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Đặt mật khẩu mới</Text>
-        <Text style={styles.brand}>4UME</Text>
+        <AuthHeader title="Đặt mật khẩu mới" />
         <Text style={styles.hint}>
           Mã 6 số đã được gửi tới <Text style={styles.strong}>{email.trim()}</Text>. Nếu không thấy, hãy xem cả mục Spam
           hoặc Quảng cáo.
         </Text>
         <CodeInput value={code} onChangeText={setCode} resendAfter={sent} onResend={() => sendCode(true)} resending={resending} />
-        <TextInput
-          style={styles.input}
+        <AuthInput
+          icon="lock-closed-outline"
           secureTextEntry
           autoComplete="new-password"
           textContentType="newPassword"
           placeholder="Mật khẩu mới (tối thiểu 6 ký tự)"
-          placeholderTextColor={colors.muted}
           value={password}
           onChangeText={setPassword}
         />
@@ -92,16 +90,14 @@ export function ForgotPasswordScreen({ navigation, route }: Props) {
 
   return (
     <KeyboardScreen style={styles.root} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Quên mật khẩu</Text>
-      <Text style={styles.brand}>4UME</Text>
+      <AuthHeader title="Quên mật khẩu" />
       <Text style={styles.hint}>Nhập email bạn đã dùng để tạo tài khoản, chúng tôi sẽ gửi mã để đặt mật khẩu mới.</Text>
-      <TextInput
-        style={styles.input}
+      <AuthInput
+        icon="mail-outline"
         autoCapitalize="none"
         keyboardType="email-address"
         autoComplete="email"
         placeholder="Email"
-        placeholderTextColor={colors.muted}
         value={email}
         onChangeText={setEmail}
       />

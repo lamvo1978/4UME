@@ -21,6 +21,10 @@ export function configureSpeech(rate: number, auto: boolean) {
   speechSettings.auto = auto;
 }
 
+export function speechRate() {
+  return speechSettings.rate;
+}
+
 export function speak(text: string, rate = speechSettings.rate) {
   Speech.stop();
   void ensureAudioMode().then(() => Speech.speak(text, { language: "en-US", rate }));

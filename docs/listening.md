@@ -1,6 +1,8 @@
-# Góc nghe — kế hoạch
+# Góc nghe
 
-> Trạng thái (10/10/2026): **lên kế hoạch**, làm trên nhánh `feature/listening` (nhánh `main` giữ bản đang chạy trên VPS).
+> Trạng thái (10/10/2026): **đã làm xong** backend, web admin và app trên nhánh `feature/listening` (nhánh `main` giữ bản đang chạy trên VPS). Còn chờ: key Azure để tạo âm thanh, thử trên bản build thật, gộp vào `main`.
+>
+> Khi chưa có âm thanh, app đọc script bằng giọng có sẵn của điện thoại (từng câu, vẫn tô sáng câu đang đọc).
 
 ## Mục đích
 
@@ -20,20 +22,17 @@ Nghe **thư giãn cho quen tai**: hội thoại ngắn, câu chuyện, bản tin
 
 ## Người học thấy gì (app)
 
-**Tab *Học* → mục mới "Nghe"** (cạnh *Từ vựng*, *Ngữ pháp*):
+**Tab riêng *Nghe*** ở thanh dưới (Trang chủ · Học · Ôn tập · **Nghe** · Hồ sơ):
 
 - Danh sách bài: tên tiếng Anh + tiếng Việt, loại (hội thoại / câu chuyện / bản tin), cấp độ, thời lượng, dấu ✓ đã nghe, ♥ đã thích.
 - Lọc theo cấp độ và loại. Bài mới / chưa nghe lên trước.
 
 **Màn nghe một bài:**
 
-- Trình phát: phát / dừng, tua lại 5 giây, thanh thời gian kéo được, tốc độ **0,75× / 1× / 1,25×**.
-- Ba chế độ hiển thị, nhớ lựa chọn cho lần sau:
-  1. **Chỉ nghe** — ẩn script (thử thách nhẹ).
-  2. **Script** — hiện câu tiếng Anh.
-  3. **Script + dịch** — thêm câu tiếng Việt dưới mỗi câu.
+- Trình phát: phát / dừng, câu trước / câu sau, **lặp một câu**, tốc độ **0,75× / 1× / 1,25×**.
+- Ba chế độ hiển thị: **Anh + Việt**, **Chỉ tiếng Anh**, **Ẩn script** (chỉ nghe).
 - Câu đang đọc **tô sáng** và tự cuộn theo; bấm một câu để nghe lại từ câu đó. Hội thoại ghi tên người nói (màu riêng mỗi người).
-- Bấm một từ trong script → hiện nghĩa nếu từ có trong kho 7.544 từ (kèm nút phát âm, nút mở flashcard). Khớp cả dạng biến đổi đơn giản (`goes`, `went`… → `go`) — làm sau nếu cần.
+- **Nhấn giữ** một từ trong script → hiện nghĩa nếu từ có trong kho từ (kèm phiên âm, ví dụ, nút phát âm). Khớp cả dạng biến đổi (`went` → `go`). Bấm thường vào câu thì nghe lại câu đó.
 - Nghe tới ~90% bài thì tính **Đã nghe** (nếu admin bật, đồng thời tính là đã học hôm nay).
 - Nút ♥ thích bài; nhớ vị trí đang nghe để quay lại nghe tiếp.
 - **Màn hình khoá / chuyển app**: tiếp tục phát, hiện tên bài, phát / dừng, tua.
@@ -116,6 +115,15 @@ Giọng dự kiến: `en-US-JennyNeural`, `en-US-GuyNeural`, `en-US-AriaNeural`,
    AZURE_SPEECH_KEY=...
    AZURE_SPEECH_REGION=southeastasia
    ```
+
+5. Chạy lại API:
+   - Máy dev: `docker compose up -d api` (ở thư mục gốc repo).
+   - VPS (sau khi đã gộp vào `main` và cập nhật): `cd /opt/4ume/deploy/vps && docker compose up -d api`.
+6. Web admin → *Bài nghe*: khung vàng "Chưa bật giọng đọc Azure" biến mất, hiện số ký tự đã dùng trong tháng. Mở từng bài → tab **Âm thanh** → **Tạo âm thanh** (bài 15 câu mất khoảng 1 phút). 20 bài mẫu dùng khoảng 34.000 / 500.000 ký tự của tháng.
+
+## Chạy app với API trên máy dev
+
+`mobile/.env.local` (git bỏ qua) trỏ app vào API thật `https://api.4ume.io.vn`. Expo nhúng nội dung file này vào app, nên muốn thử với API trên máy (cổng 5088) thì **đổi tên** file (ví dụ thành `.env.local.off`) rồi chạy `npx expo start --go -c`; đổi tên lại để dùng API thật.
 
 ## Phát nền trên điện thoại
 

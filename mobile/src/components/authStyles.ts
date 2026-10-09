@@ -4,21 +4,9 @@ import { colors, spacing } from "../theme";
 /** Shared look of the sign-in, sign-up and password reset screens. */
 export const authStyles = StyleSheet.create({
   root: { backgroundColor: colors.bg },
-  content: { padding: spacing.lg, justifyContent: "center", gap: spacing.sm },
-  title: { fontSize: 28, fontWeight: "700", color: colors.ink },
-  brand: { color: colors.accent, fontWeight: "700", marginBottom: spacing.md },
-  hint: { color: colors.muted, fontSize: 15, lineHeight: 21, marginBottom: spacing.sm },
+  content: { padding: spacing.lg, paddingBottom: spacing.xl * 2, justifyContent: "center", gap: 12 },
+  hint: { color: colors.muted, fontSize: 15, lineHeight: 21, marginBottom: spacing.sm, textAlign: "center" },
   strong: { color: colors.ink, fontWeight: "600" },
-  input: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    fontSize: 16,
-    color: colors.ink,
-  },
   primary: {
     backgroundColor: colors.accent,
     paddingVertical: 16,

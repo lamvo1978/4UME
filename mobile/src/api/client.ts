@@ -52,7 +52,41 @@ export type NotificationConfig = {
   freezeNoticeTime: string;
 };
 
-export type AppConfig = { notifications: NotificationConfig };
+export type ListeningConfig = { countsTowardStreak: boolean };
+
+export type AppConfig = { notifications: NotificationConfig; listening?: ListeningConfig };
+
+export type ListeningKind = "dialogue" | "story" | "news";
+export type ListeningProgress = { positionMs: number; completed: boolean; timesCompleted: number; liked: boolean };
+/** `hasAudio` is false until the admin generates the recording; the app then reads the script with the device voice. */
+export type ListeningSummary = {
+  slug: string;
+  titleEn: string;
+  titleVi: string;
+  kind: ListeningKind;
+  level: string;
+  topic: string | null;
+  summaryVi: string;
+  lineCount: number;
+  hasAudio: boolean;
+  durationMs: number | null;
+  progress: ListeningProgress;
+};
+export type ListeningLine = { speaker: string; en: string; vi: string; startMs: number | null; endMs: number | null };
+export type ListeningDetail = {
+  slug: string;
+  titleEn: string;
+  titleVi: string;
+  kind: ListeningKind;
+  level: string;
+  topic: string | null;
+  summaryVi: string;
+  audioUrl: string | null;
+  durationMs: number | null;
+  speakers: { key: string; name: string }[];
+  lines: ListeningLine[];
+  progress: ListeningProgress;
+};
 
 /** Counts are cumulative: items due by the end of that local day, overdue included. */
 export type ReviewForecastDay = { date: string; words: number; grammar: number };
@@ -338,6 +372,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ wordId, mistakes }),
     }),
+  listeningLessons: () => request<ListeningSummary[]>("/api/listening"),
+  listeningLesson: (slug: string) => request<ListeningDetail>(`/api/listening/${slug}`),
+  saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>
+    request<ListeningProgress>(`/api/listening/${slug}/progress`, { method: "PUT", body: JSON.stringify(changes) }),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

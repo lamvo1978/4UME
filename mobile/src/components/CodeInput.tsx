@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { colors, spacing } from "../theme";
-import { authStyles } from "./authStyles";
 
 type Props = {
   value: string;
@@ -27,7 +26,7 @@ export function CodeInput({ value, onChangeText, resendAfter, onResend, resendin
   return (
     <View style={styles.wrap}>
       <TextInput
-        style={[authStyles.input, styles.code]}
+        style={styles.code}
         value={value}
         onChangeText={(t) => onChangeText(t.replace(/\D/g, "").slice(0, CODE_LENGTH))}
         keyboardType="number-pad"
@@ -49,7 +48,18 @@ export function CodeInput({ value, onChangeText, resendAfter, onResend, resendin
 
 const styles = StyleSheet.create({
   wrap: { gap: spacing.sm },
-  code: { fontSize: 28, letterSpacing: 10, textAlign: "center", fontWeight: "700" },
+  code: {
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderRadius: 14,
+    paddingVertical: 14,
+    fontSize: 28,
+    letterSpacing: 10,
+    textAlign: "center",
+    fontWeight: "700",
+    color: colors.ink,
+  },
   resend: { textAlign: "center", color: colors.accent, fontWeight: "600" },
   resendWaiting: { color: colors.muted, fontWeight: "400" },
 });

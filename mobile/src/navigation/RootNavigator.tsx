@@ -17,6 +17,8 @@ import { colors, shadow } from "../theme";
 import { FlashcardScreen } from "../screens/FlashcardScreen";
 import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 import { GrammarLessonScreen } from "../screens/GrammarLessonScreen";
+import { ListeningListScreen } from "../screens/ListeningListScreen";
+import { ListeningPlayerScreen } from "../screens/ListeningPlayerScreen";
 import { GrammarReviewScreen } from "../screens/GrammarReviewScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoginScreen } from "../screens/LoginScreen";
@@ -93,6 +95,11 @@ function MainTabs() {
           options={{ title: "Ôn tập", tabBarIcon: tabIcon("repeat", "repeat-outline") }}
         />
         <Tab.Screen
+          name="Listen"
+          component={ListeningListScreen}
+          options={{ title: "Nghe", tabBarIcon: tabIcon("headset", "headset-outline") }}
+        />
+        <Tab.Screen
           name="Profile"
           component={ProfileScreen}
           options={{ title: "Hồ sơ", tabBarIcon: tabIcon("person", "person-outline") }}
@@ -149,9 +156,9 @@ export function RootNavigator() {
         {!user ? (
           <>
             <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Đăng nhập" }} />
-            <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Tạo tài khoản" }} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: "Quên mật khẩu" }} />
+            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "" }} />
+            <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "" }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: "" }} />
           </>
         ) : (
           <>
@@ -182,6 +189,11 @@ export function RootNavigator() {
               component={GrammarLessonScreen}
               options={({ route }) => ({ title: route.params.titleVi })}
             />
+            <Stack.Screen
+              name="Listening"
+              component={ListeningPlayerScreen}
+              options={({ route }) => ({ title: route.params.titleVi })}
+            />
           </>
         )}
       </Stack.Navigator>
@@ -196,12 +208,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 8,
+    paddingHorizontal: 8,
     ...shadow.card,
     shadowOffset: { width: 0, height: -4 },
   },
-  tabItem: { paddingTop: 2 },
-  tabLabel: { fontSize: 12, fontWeight: "600", marginTop: 2 },
-  tabIcon: { width: 60, height: 32 },
-  iconPill: { width: 60, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  tabItem: { paddingTop: 2, paddingHorizontal: 0 },
+  tabLabel: { fontSize: 11, fontWeight: "600", marginTop: 2 },
+  tabIcon: { width: 52, height: 32 },
+  iconPill: { width: 52, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   iconPillActive: { backgroundColor: colors.accentSoft },
 });

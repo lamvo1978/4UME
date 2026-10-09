@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, Text, TextInput } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { authStyles as styles } from "../components/authStyles";
 import { CODE_LENGTH, CodeInput } from "../components/CodeInput";
+import { AuthHeader, AuthInput } from "../components/AuthField";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { RootStackParamList } from "../navigation/types";
-import { colors } from "../theme";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
@@ -69,8 +69,7 @@ export function RegisterScreen({ navigation }: Props) {
   if (sent) {
     return (
       <KeyboardScreen style={styles.root} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Nhập mã xác nhận</Text>
-        <Text style={styles.brand}>4UME</Text>
+        <AuthHeader title="Nhập mã xác nhận" />
         <Text style={styles.hint}>
           Mã 6 số đã được gửi tới <Text style={styles.strong}>{email.trim()}</Text>. Nếu không thấy, hãy xem cả mục Spam
           hoặc Quảng cáo.
@@ -98,32 +97,28 @@ export function RegisterScreen({ navigation }: Props) {
 
   return (
     <KeyboardScreen style={styles.root} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Tạo tài khoản</Text>
-      <Text style={styles.brand}>4UME</Text>
-      <TextInput
-        style={styles.input}
+      <AuthHeader title="Tạo tài khoản" subtitle="Vài giây thôi là bắt đầu học được rồi" />
+      <AuthInput
+        icon="person-outline"
         placeholder="Tên hiển thị"
-        placeholderTextColor={colors.muted}
         value={displayName}
         onChangeText={setDisplayName}
       />
-      <TextInput
-        style={styles.input}
+      <AuthInput
+        icon="mail-outline"
         autoCapitalize="none"
         keyboardType="email-address"
         autoComplete="email"
         placeholder="Email"
-        placeholderTextColor={colors.muted}
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.input}
+      <AuthInput
+        icon="lock-closed-outline"
         secureTextEntry
         autoComplete="new-password"
         textContentType="newPassword"
         placeholder="Mật khẩu (tối thiểu 6 ký tự)"
-        placeholderTextColor={colors.muted}
         value={password}
         onChangeText={setPassword}
       />

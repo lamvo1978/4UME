@@ -13,6 +13,7 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
   Flashcard: { deckId: string; titleVi: string };
   GrammarLesson: { slug: string; titleVi: string };
+  Listening: { slug: string; titleVi: string };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;
@@ -26,5 +27,6 @@ export type MainTabParamList = {
   Home: undefined;
   Study: { tab?: HubTab } | undefined;
   Practice: { tab?: HubTab } | undefined;
+  Listen: undefined;
   Profile: undefined;
 };
