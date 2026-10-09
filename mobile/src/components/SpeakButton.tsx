@@ -1,9 +1,19 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { setAudioModeAsync } from "expo-audio";
 import * as Speech from "expo-speech";
 import { Pressable, StyleSheet } from "react-native";
 import { colors } from "../theme";
 
 const speechSettings = { rate: 0.9, auto: true };
+
+// iOS mutes the app's audio when the ring/silent switch is on; learners expect pronunciation anyway.
+let audioMode: Promise<void> | null = null;
+function ensureAudioMode() {
+  audioMode ??= setAudioModeAsync({ playsInSilentMode: true, interruptionMode: "duckOthers" }).catch(() => {
+    audioMode = null;
+  });
+  return audioMode;
+}
 
 /** Kept in sync with the user's settings by AuthProvider. */
 export function configureSpeech(rate: number, auto: boolean) {
@@ -13,7 +23,7 @@ export function configureSpeech(rate: number, auto: boolean) {
 
 export function speak(text: string, rate = speechSettings.rate) {
   Speech.stop();
-  Speech.speak(text, { language: "en-US", rate });
+  void ensureAudioMode().then(() => Speech.speak(text, { language: "en-US", rate }));
 }
 
 /** Speaks only when "Tự động phát âm" is on; use for audio the learner didn't ask for. */
