@@ -196,6 +196,8 @@ export type MediaItem = {
   createdAt: string;
   usedBy: number;
   credit: ImageCredit | null;
+  /** First few words using the image; `usedBy` has the full count. */
+  words: { id: string; word: string; level: string; deckTitle: string }[];
 };
 
 export type Bilingual = { en: string; vi: string };

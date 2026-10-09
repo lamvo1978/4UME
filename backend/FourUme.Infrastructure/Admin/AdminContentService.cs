@@ -284,8 +284,12 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
             .OrderByDescending(m => m.CreatedAt)
             .Select(m => new AdminMediaDto(m.Id, m.Url, m.OriginalName, m.Width, m.Height, m.Bytes, m.CreatedAt,
                 db.Words.Count(w => w.ImageUrl == m.Url),
-                m.Source == null ? null : new ImageCreditDto(m.Source, m.Author, m.AuthorUrl, m.SourceUrl)))
+                m.Source == null ? null : new ImageCreditDto(m.Source, m.Author, m.AuthorUrl, m.SourceUrl),
+                db.Words.Where(w => w.ImageUrl == m.Url).OrderBy(w => w.Text).Take(MediaWordsShown)
+                    .Select(w => new MediaWordDto(w.Id, w.Text, w.Level, w.Deck.TitleVi)).ToList()))
             .ToListAsync(ct);
+
+    private const int MediaWordsShown = 3;
 
     public async Task<AdminMediaDto> UploadMediaAsync(Stream content, string originalName, bool squareCrop, Guid uploadedBy, CancellationToken ct = default)
     {
@@ -303,7 +307,7 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         db.MediaFiles.Add(media);
         auditor.Record(AuditEntities.Media, media.Id.ToString(), AuditActions.Create, media.OriginalName, null, Auditor.Snapshot(media));
         await db.SaveChangesAsync(ct);
-        return new AdminMediaDto(media.Id, media.Url, media.OriginalName, media.Width, media.Height, media.Bytes, media.CreatedAt, 0, null);
+        return new AdminMediaDto(media.Id, media.Url, media.OriginalName, media.Width, media.Height, media.Bytes, media.CreatedAt, 0, null, []);
     }
 
     public async Task DeleteMediaAsync(Guid id, CancellationToken ct = default)

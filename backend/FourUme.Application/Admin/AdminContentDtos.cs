@@ -87,7 +87,11 @@ public record AdminMediaDto(
     long Bytes,
     DateTimeOffset CreatedAt,
     int UsedBy,
-    ImageCreditDto? Credit);
+    ImageCreditDto? Credit,
+    /// <summary>First few words using the image (UsedBy has the full count).</summary>
+    IReadOnlyList<MediaWordDto> Words);
+
+public record MediaWordDto(string Id, string Word, string Level, string DeckTitle);
 
 /// <summary>Thrown when a request conflicts with existing data (maps to HTTP 409).</summary>
 public class ContentConflictException(string message) : Exception(message);

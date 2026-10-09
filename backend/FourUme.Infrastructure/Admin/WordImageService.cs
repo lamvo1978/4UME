@@ -211,7 +211,7 @@ public class WordImageService(
 
     private static AdminMediaDto ToDto(MediaFile m, int usedBy) =>
         new(m.Id, m.Url, m.OriginalName, m.Width, m.Height, m.Bytes, m.CreatedAt, usedBy,
-            m.Source is null ? null : new ImageCreditDto(m.Source, m.Author, m.AuthorUrl, m.SourceUrl));
+            m.Source is null ? null : new ImageCreditDto(m.Source, m.Author, m.AuthorUrl, m.SourceUrl), []);
 
     private static string Truncate(string s, int max) => s.Length > max ? s[..max] : s;
 }

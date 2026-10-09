@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Alert,
+  Anchor,
   Badge,
   Button,
   CopyButton,
@@ -19,6 +20,7 @@ import {
 import { IconCheck, IconCopy, IconPhotoUp, IconTrash } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { api, mediaSrc, type MediaItem } from "../api";
 import { ImageCreditText } from "../components/ImageCredit";
 import { notifyError, notifySaved } from "../lib";
@@ -106,33 +108,50 @@ export function MediaPage() {
                   {m.originalName}
                 </Text>
               )}
-              <Group justify="space-between" gap={4}>
-                {m.usedBy > 0 ? (
-                  <Badge size="xs" variant="light">
-                    {m.usedBy} từ
-                  </Badge>
-                ) : (
-                  <Badge size="xs" color="gray" variant="light">
-                    Chưa dùng
-                  </Badge>
-                )}
+              {m.usedBy > 0 ? (
+                <Stack gap={2}>
+                  {m.words.map((w) => (
+                    <Group key={w.id} gap={4} wrap="nowrap">
+                      <Anchor component={Link} to={`/words/${encodeURIComponent(w.id)}`} fz="xs" fw={700} truncate>
+                        {w.word}
+                      </Anchor>
+                      <Badge size="xs" variant="light" style={{ flexShrink: 0 }}>
+                        {w.level}
+                      </Badge>
+                      <Text fz="xs" c="dimmed" truncate title={w.deckTitle}>
+                        {w.deckTitle}
+                      </Text>
+                    </Group>
+                  ))}
+                  {m.usedBy > m.words.length ? (
+                    <Text fz="xs" c="dimmed">
+                      +{m.usedBy - m.words.length} từ khác
+                    </Text>
+                  ) : null}
+                </Stack>
+              ) : (
+                <Badge size="xs" color="gray" variant="light">
+                  Chưa dùng
+                </Badge>
+              )}
+              <Group gap={4} justify="space-between" wrap="nowrap">
                 <Text fz={10} c="dimmed">
                   {m.width}×{m.height} · {kb(m.bytes)}
                 </Text>
-              </Group>
-              <Group gap={4} justify="flex-end">
-                <CopyButton value={m.url}>
-                  {({ copied, copy }) => (
-                    <Tooltip label={copied ? "Đã chép" : "Chép đường dẫn"}>
-                      <ActionIcon variant="subtle" onClick={copy}>
-                        {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                      </ActionIcon>
-                    </Tooltip>
-                  )}
-                </CopyButton>
-                <ActionIcon variant="subtle" color="red" disabled={m.usedBy > 0} onClick={() => remove(m)} aria-label="Xoá">
-                  <IconTrash size={16} />
-                </ActionIcon>
+                <Group gap={4} wrap="nowrap">
+                  <CopyButton value={m.url}>
+                    {({ copied, copy }) => (
+                      <Tooltip label={copied ? "Đã chép" : "Chép đường dẫn"}>
+                        <ActionIcon variant="subtle" onClick={copy}>
+                          {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </CopyButton>
+                  <ActionIcon variant="subtle" color="red" disabled={m.usedBy > 0} onClick={() => remove(m)} aria-label="Xoá">
+                    <IconTrash size={16} />
+                  </ActionIcon>
+                </Group>
               </Group>
             </Stack>
           </Paper>
