@@ -61,7 +61,7 @@ public static class AdminUserRules
     /// <summary>Owner accounts that can never be locked or lose admin rights, so the admin can't be taken over or emptied.</summary>
     public static readonly IReadOnlySet<string> ProtectedEmails = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
-        "admin@4ume.com",
+        "admin@4ume.io.vn",
     };
 
     public static bool IsProtected(string email) => ProtectedEmails.Contains(email);

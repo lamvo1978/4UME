@@ -20,7 +20,7 @@
 - Tài khoản admin đầu tiên được cấp qua biến môi trường `Admin__Emails` (danh sách email) khi khởi động, **chỉ khi chưa có admin nào**. Đã có admin thì biến này bị bỏ qua, nên một email lỡ để trong cấu hình không tự lấy lại quyền đã bị thu.
 - Mọi API `/api/admin/*` kiểm tra trong database ở **mỗi request**: `Role = admin` và chưa bị khoá. Thu quyền / khoá có hiệu lực ngay, không đợi token hết hạn.
 - **Khoá tài khoản**: không đăng nhập được ("Tài khoản đã bị khoá."), token cũ bị từ chối (401) ở mọi API kể cả app (kiểm tra có cache 30 giây; khoá qua admin xoá cache ngay). App tự đăng xuất khi gặp 401. Khoá cũng thu luôn quyền admin; muốn cấp lại phải mở khoá trước.
-- **Tài khoản quản trị gốc** `admin@4ume.com` (khai báo cứng trong `AdminUserRules.ProtectedEmails`): không ai khoá, thu quyền được (API trả 400, trang chi tiết ẩn nút), tự xoá qua app cũng bị chặn. Mỗi lần API khởi động, nếu tài khoản này bị sửa thẳng trong database (mất quyền / bị khoá) thì tự khôi phục. Vẫn đổi mật khẩu bình thường.
+- **Tài khoản quản trị gốc** `admin@4ume.io.vn` (khai báo cứng trong `AdminUserRules.ProtectedEmails`): không ai khoá, thu quyền được (API trả 400, trang chi tiết ẩn nút), tự xoá qua app cũng bị chặn. Mỗi lần API khởi động, nếu tài khoản này bị sửa thẳng trong database (mất quyền / bị khoá) thì tự khôi phục. Vẫn đổi mật khẩu bình thường.
 - Admin không tự đổi quyền / tự khoá chính mình (tránh mất hết admin). Cấp quyền admin phải gõ lại email người nhận để xác nhận.
 - Mọi lần cấp / thu quyền, khoá / mở khoá đều ghi lịch sử (xem được, không khôi phục).
 
@@ -192,7 +192,7 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 3. ✅ **Ngữ pháp**: danh sách + lọc cấp độ + sắp xếp, form thông tin, form 7 loại khối lý thuyết, form 5 loại bài tập (đổi loại, nhân bản, bấm chọn từ sai), xem trước lý thuyết + làm thử câu đang chọn, kiểm tra trực tiếp qua `/grammar/validate`, tải JSON từng bài. Nhập JSON để sang giai đoạn 4.
 4. ✅ **Nhập / xuất** (Excel, CSV, JSON) và **lịch sử thay đổi** (bảng `AuditLogs`, trang Lịch sử, ngăn lịch sử trong trang sửa, khôi phục). Thư viện đọc / ghi Excel (`read-excel-file`, `write-excel-file`, `papaparse`, đều MIT) chỉ tải khi dùng tới.
 5. ✅ **Người dùng**, **tổng quan** và **cài đặt hệ thống**: danh sách + chi tiết người dùng, cấp / thu quyền, khoá (chặn cả token cũ, app tự đăng xuất khi 401), tổng quan có biểu đồ 14 ngày, trang cài đặt thông báo có kiểm tra + lịch sử + khôi phục mặc định.
-6. ✅ **Deploy**: `docker-compose.prod.yml` (Postgres + API + Caddy tự xin SSL, web admin build sẵn trong image Caddy), `.env.example`, sao lưu / khôi phục (`deploy/backup.sh`, `deploy/restore.sh`), API tắt Swagger và bắt buộc khoá JWT riêng ở Production, tự tạo `admin@4ume.com` trên database mới. Hướng dẫn: [deploy.md](deploy.md). Đã chạy thử toàn bộ trên máy với tên miền `*.localhost`.
+6. ✅ **Deploy**: `docker-compose.prod.yml` (Postgres + API + Caddy tự xin SSL, web admin build sẵn trong image Caddy), `.env.example`, sao lưu / khôi phục (`deploy/backup.sh`, `deploy/restore.sh`), API tắt Swagger và bắt buộc khoá JWT riêng ở Production, tự tạo `admin@4ume.io.vn` trên database mới. Hướng dẫn: [deploy.md](deploy.md). Đã chạy thử toàn bộ trên máy với tên miền `*.localhost`.
 
 ## Câu hỏi còn mở
 

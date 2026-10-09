@@ -3,7 +3,7 @@
 ## Trạng thái hiện tại
 
 - 4UME đang chạy trên VPS `ubuntu22` (`103.53.231.27`), cạnh PetHubPro — xem [deploy-vps.md](deploy-vps.md).
-  - Web admin: `https://admin.4ume.io.vn` — đã đăng nhập `admin@4ume.com` thành công.
+  - Web admin: `https://admin.4ume.io.vn` — đã đăng nhập `admin@4ume.io.vn` thành công.
   - API cho app: `https://api.4ume.io.vn`
   - Mã nguồn + `.env`: `/opt/4ume/deploy/vps` · container `fourume-postgres-1`, `fourume-api-1`, `fourume-admin-1`.
 - DNS `4ume.io.vn` quản lý trên Cloudflare (mua ở PA Việt Nam, nameserver `tiffany` / `zeus.ns.cloudflare.com`). Bản ghi A `api`, `admin` → IP VPS, **DNS only** (mây xám).
@@ -12,7 +12,7 @@
 
 ## Nên làm sớm
 
-- [ ] Đổi mật khẩu `admin@4ume.com` (nút chìa khoá trên web admin) nếu chưa đổi.
+- [x] Đổi mật khẩu tài khoản quản trị gốc. Email gốc đổi từ `admin@4ume.com` sang `admin@4ume.io.vn` (migration `RenameOwnerEmail` tự đổi khi API cập nhật; mật khẩu giữ nguyên).
 - [ ] Xoá mật khẩu tạm trong `.env` trên VPS:
   ```bash
   cd /opt/4ume/deploy/vps
@@ -38,7 +38,7 @@ crontab -l
 
 Định kỳ chép `/opt/4ume/backups/` ra ngoài VPS. Khôi phục: `deploy/restore.sh backups/<thời-gian>`.
 
-> Nếu muốn **xoá sạch dữ liệu thử nghiệm** trước khi dùng thật: `cd /opt/4ume/deploy/vps && docker compose down -v && docker compose up -d` (tạo lại database mới; đặt lại `ADMIN_INITIAL_PASSWORD` trong `.env` trước khi chạy để có lại tài khoản `admin@4ume.com`, xong thì xoá đi).
+> Nếu muốn **xoá sạch dữ liệu thử nghiệm** trước khi dùng thật: `cd /opt/4ume/deploy/vps && docker compose down -v && docker compose up -d` (tạo lại database mới; đặt lại `ADMIN_INITIAL_PASSWORD` trong `.env` trước khi chạy để có lại tài khoản `admin@4ume.io.vn`, xong thì xoá đi).
 
 ## 2. Build app điện thoại
 

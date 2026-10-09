@@ -40,7 +40,7 @@ services:
       Jwt__Issuer: 4UME
       Jwt__Audience: 4UME
       Media__Path: /app/media
-      # Creates admin@4ume.com on a fresh database (ignored once the account exists).
+      # Creates admin@4ume.io.vn on a fresh database (ignored once the account exists).
       Admin__InitialPassword: ${ADMIN_INITIAL_PASSWORD:-}
     volumes:
       - media:/app/media

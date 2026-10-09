@@ -57,7 +57,7 @@ openssl rand -hex 32   # chạy 2 lần, dán vào POSTGRES_PASSWORD và JWT_KEY
 nano .env
 ```
 
-Điền trong `.env`: `API_DOMAIN`, `ADMIN_DOMAIN`, `ACME_EMAIL` (email nhận thông báo SSL), `POSTGRES_PASSWORD`, `JWT_KEY`, và `ADMIN_INITIAL_PASSWORD` (mật khẩu tạm cho `admin@4ume.com`).
+Điền trong `.env`: `API_DOMAIN`, `ADMIN_DOMAIN`, `ACME_EMAIL` (email nhận thông báo SSL), `POSTGRES_PASSWORD`, `JWT_KEY`, và `ADMIN_INITIAL_PASSWORD` (mật khẩu tạm cho `admin@4ume.io.vn`).
 
 > Giữ `.env` cẩn thận: mất `JWT_KEY` thì mọi người phải đăng nhập lại; mất `POSTGRES_PASSWORD` thì phải đặt lại mật khẩu database.
 
@@ -70,7 +70,7 @@ docker compose -f docker-compose.prod.yml logs -f caddy api   # Ctrl+C để tho
 
 Thấy `certificate obtained successfully` (Caddy) và `Now listening` (API) là xong.
 
-**6. Đăng nhập lần đầu:** mở `https://admin.<tên miền>`, đăng nhập `admin@4ume.com` + mật khẩu tạm, **đổi mật khẩu** (nút chìa khoá cạnh tên). Sau đó xoá giá trị `ADMIN_INITIAL_PASSWORD` trong `.env` (tài khoản đã có thì dòng này không còn tác dụng, xoá cho gọn và an toàn).
+**6. Đăng nhập lần đầu:** mở `https://admin.<tên miền>`, đăng nhập `admin@4ume.io.vn` + mật khẩu tạm, **đổi mật khẩu** (nút chìa khoá cạnh tên). Sau đó xoá giá trị `ADMIN_INITIAL_PASSWORD` trong `.env` (tài khoản đã có thì dòng này không còn tác dụng, xoá cho gọn và an toàn).
 
 ## Chuyển dữ liệu từ máy cá nhân lên (tuỳ chọn)
 
@@ -85,7 +85,7 @@ scp -r backups/<thời-gian> <user>@<ip-vps>:~/4ume/backups/
 deploy/restore.sh backups/<thời-gian>
 ```
 
-`restore.sh` **thay toàn bộ** dữ liệu trên VPS bằng bản sao lưu (phải gõ `restore` để xác nhận). Tài khoản `admin@4ume.com` trên máy sẽ thay tài khoản tạo ở bước 6, dùng mật khẩu trên máy.
+`restore.sh` **thay toàn bộ** dữ liệu trên VPS bằng bản sao lưu (phải gõ `restore` để xác nhận). Tài khoản `admin@4ume.io.vn` trên máy sẽ thay tài khoản tạo ở bước 6, dùng mật khẩu trên máy.
 
 ## Sao lưu
 
@@ -142,4 +142,4 @@ dc exec postgres psql -U fourume -d fourume   # vào database
 | Khoá JWT | Khoá mẫu | Bắt buộc khoá riêng ≥ 32 ký tự (API từ chối khởi động nếu dùng khoá mẫu) |
 | Postgres | Mở cổng 5432, mật khẩu `fourume` | Không mở cổng, mật khẩu ngẫu nhiên |
 | Web admin | `npm run dev` (:5173) | File tĩnh qua Caddy, HTTPS |
-| Admin đầu tiên | `Admin__Emails` cấp quyền cho tài khoản có sẵn | `ADMIN_INITIAL_PASSWORD` tạo `admin@4ume.com` |
+| Admin đầu tiên | `Admin__Emails` cấp quyền cho tài khoản có sẵn | `ADMIN_INITIAL_PASSWORD` tạo `admin@4ume.io.vn` |

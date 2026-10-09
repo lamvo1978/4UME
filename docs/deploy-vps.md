@@ -42,7 +42,7 @@ git clone https://github.com/lamvo1978/4UME.git /opt/4ume
 cd /opt/4ume/deploy/vps
 cp .env.example .env
 openssl rand -hex 32   # chạy 2 lần, dán vào POSTGRES_PASSWORD và JWT_KEY
-nano .env              # điền thêm ADMIN_INITIAL_PASSWORD (mật khẩu tạm cho admin@4ume.com)
+nano .env              # điền thêm ADMIN_INITIAL_PASSWORD (mật khẩu tạm cho admin@4ume.io.vn)
 chmod 600 .env
 ```
 
@@ -105,7 +105,7 @@ docker exec pethubpro-edge-nginx nginx -t && docker exec pethubpro-edge-nginx ng
 
 ### 6. Đăng nhập lần đầu
 
-Mở `https://admin.4ume.io.vn`, đăng nhập `admin@4ume.com` + mật khẩu tạm, **đổi mật khẩu** (nút chìa khoá cạnh tên). Sau đó xoá giá trị `ADMIN_INITIAL_PASSWORD` trong `.env` (tài khoản đã có thì dòng này không còn tác dụng).
+Mở `https://admin.4ume.io.vn`, đăng nhập `admin@4ume.io.vn` + mật khẩu tạm, **đổi mật khẩu** (nút chìa khoá cạnh tên). Sau đó xoá giá trị `ADMIN_INITIAL_PASSWORD` trong `.env` (tài khoản đã có thì dòng này không còn tác dụng).
 
 ## Chuyển dữ liệu từ máy cá nhân lên (tuỳ chọn)
 
@@ -120,7 +120,7 @@ scp -r backups/<thời-gian> lamvhx@<ip-vps>:/opt/4ume/backups/
 cd /opt/4ume && deploy/restore.sh backups/<thời-gian>
 ```
 
-`restore.sh` **thay toàn bộ** dữ liệu 4UME trên VPS (phải gõ `restore` để xác nhận). Tài khoản `admin@4ume.com` trên máy sẽ thay tài khoản tạo ở bước 6.
+`restore.sh` **thay toàn bộ** dữ liệu 4UME trên VPS (phải gõ `restore` để xác nhận). Tài khoản `admin@4ume.io.vn` trên máy sẽ thay tài khoản tạo ở bước 6.
 
 ## Cập nhật phiên bản mới
 
