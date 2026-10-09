@@ -23,28 +23,18 @@ Internet ─▶ pethubpro-edge-nginx (80/443, SSL) ──┬─▶ PetHubPro (nh
 
 ## Cài lần đầu
 
-### 1. DNS
+### 1. DNS (Cloudflare)
 
-Tạo 2 bản ghi **A** trỏ về IP của VPS: `api.4ume.io.vn` và `admin.4ume.io.vn`. Kiểm tra: `ping api.4ume.io.vn` ra đúng IP.
+Tên miền `4ume.io.vn` quản lý DNS trên Cloudflare. Trong **DNS → Records**, tạo 2 bản ghi:
 
-### 2. Chứng chỉ SSL
+| Type | Name | Content | Proxy status |
+|---|---|---|---|
+| A | `api` | IP của VPS | **DNS only** (mây xám) |
+| A | `admin` | IP của VPS | **DNS only** (mây xám) |
 
-Xin một chứng chỉ wildcard cho `4ume.io.vn` (giống cách đang làm cho PetHubPro — certbot `manual`, xác minh bằng bản ghi TXT):
+Để mây xám: SSL do nginx trên VPS lo, đơn giản và không bị Cloudflare giới hạn upload / timeout. Kiểm tra: `ping api.4ume.io.vn` ra đúng IP.
 
-```bash
-sudo certbot certonly --manual --preferred-challenges dns -d '4ume.io.vn' -d '*.4ume.io.vn'
-```
-
-Certbot hiện 1–2 giá trị TXT cho `_acme-challenge.4ume.io.vn`: thêm vào DNS, đợi khoảng 1 phút rồi mới bấm Enter. Sau đó chép chứng chỉ sang thư mục nginx đọc:
-
-```bash
-sudo mkdir -p /opt/pethubpro/certs/4ume.io.vn
-sudo cp -L /etc/letsencrypt/live/4ume.io.vn/fullchain.pem /etc/letsencrypt/live/4ume.io.vn/privkey.pem /opt/pethubpro/certs/4ume.io.vn/
-```
-
-> Chứng chỉ `manual` **không tự gia hạn** (hạn 90 ngày). Xem mục *Gia hạn SSL* bên dưới.
-
-### 3. Lấy mã nguồn và cấu hình
+### 2. Lấy mã nguồn và cấu hình
 
 ```bash
 sudo mkdir -p /opt/4ume && sudo chown $USER: /opt/4ume
@@ -57,6 +47,41 @@ chmod 600 .env
 ```
 
 > Giữ `.env` cẩn thận (nên chép một bản ra ngoài): mất `JWT_KEY` thì mọi người phải đăng nhập lại; mất `POSTGRES_PASSWORD` thì phải đặt lại mật khẩu database.
+
+### 3. Chứng chỉ SSL (tự gia hạn qua Cloudflare)
+
+**Tạo API token**: Cloudflare → *My Profile → API Tokens → Create Token* → mẫu **Edit zone DNS** → *Zone Resources*: `Include – Specific zone – 4ume.io.vn` → tạo và chép token (chỉ hiện một lần).
+
+Trên VPS, cài plugin Cloudflare cho certbot (chọn theo cách certbot đã được cài — xem `which certbot`: `/snap/bin/certbot` là snap, `/usr/bin/certbot` là apt):
+
+```bash
+# certbot cài bằng snap:
+sudo snap set certbot trust-plugin-with-root=ok && sudo snap install certbot-dns-cloudflare
+# certbot cài bằng apt:
+sudo apt install -y python3-certbot-dns-cloudflare
+```
+
+Lưu token và cài hook chép chứng chỉ sang nginx:
+
+```bash
+sudo mkdir -p /root/.secrets
+echo 'dns_cloudflare_api_token = <TOKEN>' | sudo tee /root/.secrets/cloudflare-4ume.ini >/dev/null
+sudo chmod 600 /root/.secrets/cloudflare-4ume.ini
+sudo install -m 755 /opt/4ume/deploy/vps/cert-hook.sh /usr/local/sbin/4ume-cert-hook
+```
+
+Xin chứng chỉ wildcard (certbot nhớ `--deploy-hook` cho các lần gia hạn sau):
+
+```bash
+sudo certbot certonly --dns-cloudflare \
+  --dns-cloudflare-credentials /root/.secrets/cloudflare-4ume.ini \
+  --dns-cloudflare-propagation-seconds 30 \
+  --deploy-hook /usr/local/sbin/4ume-cert-hook \
+  -d '4ume.io.vn' -d '*.4ume.io.vn'
+ls /opt/pethubpro/certs/4ume.io.vn/     # hook đã chép fullchain.pem, privkey.pem
+```
+
+Từ giờ certbot tự gia hạn (timer có sẵn của certbot), hook tự chép chứng chỉ mới và reload nginx. Thử: `sudo certbot renew --dry-run`.
 
 ### 4. Chạy 4UME
 
@@ -126,15 +151,9 @@ Nên định kỳ chép `backups/` ra ngoài VPS. Khôi phục: `deploy/restore.
 
 ## Gia hạn SSL
 
-Chứng chỉ `manual` hết hạn sau 90 ngày (xem: `sudo certbot certificates`). Trước hạn khoảng 2 tuần:
+Tự động (bước 3). Kiểm tra hạn: `sudo certbot certificates`; thử gia hạn: `sudo certbot renew --dry-run`. Nếu token Cloudflare bị xoá / hết hạn thì tạo token mới và ghi đè `/root/.secrets/cloudflare-4ume.ini`.
 
-```bash
-sudo certbot certonly --manual --preferred-challenges dns -d '4ume.io.vn' -d '*.4ume.io.vn'
-sudo cp -L /etc/letsencrypt/live/4ume.io.vn/fullchain.pem /etc/letsencrypt/live/4ume.io.vn/privkey.pem /opt/pethubpro/certs/4ume.io.vn/
-docker exec pethubpro-edge-nginx nginx -t && docker exec pethubpro-edge-nginx nginx -s reload
-```
-
-> Chứng chỉ PetHubPro hiện tại cũng là `manual` (hết hạn 19/11/2026). Nếu DNS của tên miền nằm trên Cloudflare, có thể chuyển cả hai sang plugin `certbot-dns-cloudflare` để **tự gia hạn**, không phải làm tay nữa.
+> Chứng chỉ PetHubPro hiện tại là `manual` (hết hạn 19/11/2026), **không** tự gia hạn. Nếu chuyển DNS `pethubpro.io.vn` sang Cloudflare thì làm tương tự để nó cũng tự gia hạn.
 
 ## App điện thoại
 
