@@ -19,7 +19,7 @@
   sed -i 's/^ADMIN_INITIAL_PASSWORD=.*/ADMIN_INITIAL_PASSWORD=/' .env
   ```
 - [ ] **Chứng chỉ PetHubPro hết hạn 19/11/2026** và đang là `manual` (không tự gia hạn). Gia hạn tay trước hạn, hoặc chuyển DNS `pethubpro.io.vn` sang Cloudflare và làm giống 4UME để tự gia hạn.
-- [ ] Reboot VPS để dùng kernel mới (`5.15.0-198`) — chọn giờ ít người dùng PetHubPro / tablepos. Khi `apt` hỏi *Which services should be restarted?* thì chọn **none** (tránh restart Docker giữa giờ).
+- [x] Reboot VPS lên kernel `5.15.0-198` (09/10/2026) — mọi container PetHubPro + 4UME tự chạy lại. Lần sau khi `apt` hỏi *Which services should be restarted?* thì chọn **none** (tránh restart Docker giữa giờ), reboot vào giờ ít người dùng.
 
 ## 1. Sao lưu tự động (khi dừng thử nghiệm, có dữ liệu thật)
 
