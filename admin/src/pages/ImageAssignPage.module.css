@@ -1,0 +1,7 @@
+.finderItem:hover {
+  background: var(--mantine-color-gray-0);
+}
+
+.finderItem + .finderItem {
+  border-top: 1px solid var(--mantine-color-gray-2);
+}

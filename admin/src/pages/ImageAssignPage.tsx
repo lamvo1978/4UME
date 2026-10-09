@@ -15,18 +15,22 @@ import {
   Skeleton,
   Stack,
   Text,
+  TextInput,
   Title,
   Tooltip,
+  UnstyledButton,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowRight,
   IconCheck,
   IconExternalLink,
+  IconPhoto,
   IconPhotoSearch,
   IconPlayerPause,
   IconPlayerPlay,
   IconRefresh,
+  IconSearch,
   IconTrash,
   IconVolume,
   IconWand,
@@ -39,6 +43,7 @@ import { Select } from "../components/AppSelect";
 import { ImageCreditText } from "../components/ImageCredit";
 import { StockSearchPanel } from "../components/StockSearchPanel";
 import { notifyError, notifySaved, posLabel, speak } from "../lib";
+import classes from "./ImageAssignPage.module.css";
 
 const REVIEW_PAGE = 24;
 const QUEUE_PAGE = 50;
@@ -157,16 +162,80 @@ export function ImageAssignPage() {
 
 type Filters = { level?: string; deckId?: string; pos?: string };
 
+/** Finds any word (whatever the filters) to give it an image out of queue order. */
+function WordFinder({ onSelect }: { onSelect: (word: AdminWord) => void }) {
+  const [text, setText] = useState("");
+  const [q] = useDebouncedValue(text.trim(), 300);
+  const found = useQuery({
+    queryKey: ["words", { q, finder: true }],
+    queryFn: () => api.words({ q, pageSize: 8 }),
+    enabled: q.length > 0,
+  });
+
+  return (
+    <Stack gap={4}>
+      <TextInput
+        placeholder="Tìm từ vựng, ví dụ: go"
+        leftSection={<IconSearch size={16} />}
+        value={text}
+        onChange={(e) => setText(e.currentTarget.value)}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="none"
+        spellCheck={false}
+      />
+      {q && found.data ? (
+        found.data.items.length === 0 ? (
+          <Text fz="xs" c="dimmed" px={4}>
+            Không có từ nào khớp "{q}".
+          </Text>
+        ) : (
+          <Paper withBorder radius="md">
+            {found.data.items.map((w) => (
+              <UnstyledButton
+                key={w.id}
+                w="100%"
+                px="sm"
+                py={6}
+                className={classes.finderItem}
+                onClick={() => {
+                  onSelect(w);
+                  setText("");
+                }}
+              >
+                <Group gap={6} wrap="nowrap">
+                  <Text fz="sm" fw={700} truncate>
+                    {w.word}
+                  </Text>
+                  <Badge size="xs" variant="light" style={{ flexShrink: 0 }}>
+                    {w.level}
+                  </Badge>
+                  <Text fz="xs" c="dimmed" truncate style={{ flex: 1 }}>
+                    {posLabel(w.pos)} · {w.meaningVi}
+                  </Text>
+                  {w.imageUrl ? <IconPhoto size={14} color="var(--mantine-color-dimmed)" style={{ flexShrink: 0 }} /> : null}
+                </Group>
+              </UnstyledButton>
+            ))}
+          </Paper>
+        )
+      ) : null}
+    </Stack>
+  );
+}
+
 /** Words without an image, one at a time with stock photo results for it. */
 function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop: boolean; onChanged: () => void }) {
   const [skipped, setSkipped] = useState<string[]>([]);
   const [page, setPage] = useState(1);
+  const [chosen, setChosen] = useState<AdminWord | null>(null);
   const query: WordFilters = { ...filters, missing: "image", published: "true", page, pageSize: QUEUE_PAGE };
   const words = useQuery({ queryKey: ["words", query], queryFn: () => api.words(query), placeholderData: keepPreviousData });
 
   const queue = (words.data?.items ?? []).filter((w) => !skipped.includes(w.id));
-  const current = queue[0];
+  const current = chosen ?? queue[0];
   const total = words.data?.total ?? 0;
+  const finder = <WordFinder onSelect={setChosen} />;
 
   if (words.isLoading) return <Skeleton h={320} radius="lg" />;
   if (words.error) return <Alert color="red">{(words.error as Error).message}</Alert>;
@@ -191,6 +260,7 @@ function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop:
               Xem lại {skipped.length} từ đã bỏ qua
             </Button>
           ) : null}
+          <div style={{ width: "100%", maxWidth: 360 }}>{finder}</div>
         </Stack>
       </Paper>
     );
@@ -199,6 +269,7 @@ function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop:
     try {
       await api.setWordStockImage(word.id, { source, id });
       notifySaved(`Đã gắn ảnh cho "${word.word}"`);
+      if (chosen?.id === word.id) setChosen(null);
       onChanged();
     } catch (e) {
       notifyError(e);
@@ -208,6 +279,17 @@ function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop:
   const info = (
     <Paper p="md" radius="lg" shadow="xs">
       <Stack gap={6}>
+        {finder}
+        {chosen ? (
+          <Alert color="blue" p="xs" mt={4}>
+            <Group justify="space-between" wrap="nowrap" gap="xs">
+              <Text fz="xs">{chosen.imageUrl ? "Từ này đã có ảnh, chọn ảnh mới sẽ thay ảnh cũ." : "Từ bạn vừa tìm."}</Text>
+              <Button size="compact-xs" variant="subtle" onClick={() => setChosen(null)}>
+                Về hàng đợi
+              </Button>
+            </Group>
+          </Alert>
+        ) : null}
         <Group justify="space-between" wrap="nowrap">
           <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
             <Title order={3} lineClamp={1}>
@@ -229,7 +311,11 @@ function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop:
           </Text>
         ) : null}
         <Group gap="xs" mt="xs">
-          <Button variant="default" onClick={() => setSkipped((s) => [...s, current.id])} rightSection={<IconArrowRight size={16} />}>
+          <Button
+            variant="default"
+            onClick={() => (chosen ? setChosen(null) : setSkipped((s) => [...s, current.id]))}
+            rightSection={<IconArrowRight size={16} />}
+          >
             Bỏ qua
           </Button>
           <Button
@@ -251,6 +337,9 @@ function PickQueue({ filters, desktop, onChanged }: { filters: Filters; desktop:
 
   const search = (
     <Paper p="md" radius="lg" shadow="xs">
+      <Text fz="sm" c="dimmed" mb="xs">
+        Tìm ảnh cho <b>{current.word}</b> — đổi từ khoá bên dưới nếu ảnh chưa hợp.
+      </Text>
       <StockSearchPanel key={current.id} initialQuery={current.word} onPick={(img) => pick(current, img.source, img.id)} />
     </Paper>
   );
