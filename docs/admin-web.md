@@ -60,6 +60,12 @@
 - Cắt khung vuông trước khi lưu; server tự thu nhỏ (tối đa 800px) và chuyển sang WebP.
 - Dán URL ảnh có sẵn cũng được.
 - Thư viện ảnh: xem ảnh đã upload, ảnh chưa dùng, thay ảnh cho từ.
+- **Ảnh từ Pexels / Pixabay** (cần API key miễn phí, xem bên dưới):
+  - Nút **Tìm ảnh** trong trang sửa từ: tìm theo từ (sửa được từ khoá), bấm ảnh → máy chủ tải ảnh lớn về, cắt vuông, lưu WebP vào thư viện. Cùng một ảnh chỉ tải một lần.
+  - Trang **Gắn ảnh** (`/image-assign`): lọc cấp độ / bộ / loại từ (mặc định danh từ), hiện từng từ chưa có ảnh kèm kết quả tìm, bấm 1 ảnh là gắn và sang từ sau; từ khó tả bằng ảnh thì *Bỏ qua*.
+  - **Tự gán ảnh**: chạy từng lượt 8 từ, lấy ảnh đầu tiên (Pexels trước, hết lượt / không có thì Pixabay), dừng / tiếp tục được. Ảnh tự gán có cờ `ImagePending` (**chưa duyệt**): **app không hiện** cho tới khi duyệt ở tab *Duyệt ảnh tự gán* (duyệt, đổi ảnh, bỏ ảnh, duyệt cả trang) hoặc trong trang sửa từ. Gán / đổi ảnh bằng tay thì không cần duyệt.
+  - Mỗi ảnh lưu nguồn, tác giả, link ảnh gốc (hiện "Ảnh: tác giả / Pexels" ở thư viện, trang sửa từ). Kết quả tìm cache 24 giờ (Pixabay yêu cầu); Pexels 200 lượt / giờ, Pixabay 100 lượt / phút. Ảnh luôn tải về máy chủ, không nhúng link của Pexels / Pixabay.
+  - API key: `StockImages__PexelsKey`, `StockImages__PixabayKey` — trong compose lấy từ `PEXELS_API_KEY`, `PIXABAY_API_KEY` của `.env`. Thiếu key thì trang báo chưa cấu hình; có một key thì chỉ dùng nguồn đó.
 
 ### 5. Ngữ pháp
 
@@ -166,6 +172,7 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 | Bộ từ | `GET/POST /api/admin/decks`, `PUT/DELETE /api/admin/decks/{id}`, `PUT /api/admin/decks/order` |
 | Từ vựng | `GET /api/admin/words?q=&deck=&level=&missing=image`, `GET/PUT/DELETE /api/admin/words/{id}`, `POST /api/admin/words`, `POST /api/admin/words/import` (xem trước + xác nhận), `GET /api/admin/words/export` |
 | Hình ảnh | `POST /api/admin/media` (multipart), `GET /api/admin/media`, `DELETE /api/admin/media/{id}` |
+| Ảnh Pexels / Pixabay | `GET /api/admin/stock-images?q=&page=`, `POST /api/admin/stock-images/import` (`{source, id}` → ảnh trong thư viện), `PUT /api/admin/words/{id}/image` (`{source, id}`, gán + duyệt), `POST /api/admin/words/{id}/image/approve`, `DELETE /api/admin/words/{id}/image`, `POST /api/admin/words/auto-images` (`{level, deckId, pos, after, batch}` → một lượt tự gán) |
 | Ngữ pháp | `GET/POST /api/admin/grammar`, `GET/PUT/DELETE /api/admin/grammar/{slug}`, `POST /api/admin/grammar/validate`, `PUT /api/admin/grammar/order`, `GET /api/admin/grammar/export`, `POST /api/admin/grammar/import` (xem trước + xác nhận) |
 | Người dùng | `GET /api/admin/users?q=&filter=&sort=&page=`, `POST /api/admin/users` (`{email, displayName, password, role}`), `GET /api/admin/users/{id}`, `PUT /api/admin/users/{id}/role` (`{role}`), `PUT /api/admin/users/{id}/lock` (`{locked}`) |
 | Thông báo | `GET/POST /api/admin/notifications`, `GET /api/admin/notifications/stats` (chưa làm) |
@@ -178,7 +185,8 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 - Bảng mới `Decks` (`Id`, `TitleVi`, `Icon`, `SortOrder`, `Published`, `EditedAt`); `Word.DeckId` trỏ tới bảng này, bỏ `DeckTitleVi` lặp lại. Biểu tượng bộ là tên Ionicons, app hiển thị trực tiếp.
 - `Word`: thêm `Published`, `EditedAt`. Mã từ (`slug-loạitừ`) không đổi sau khi tạo; loại từ đổi được (không trùng cặp chữ + loại từ, từ mới trùng mã thì thêm hậu tố `-2`, `-3`…).
 - `GrammarLesson`: thêm `EditedAt`. Slug không đổi sau khi tạo. Bài **ẩn** lưu được dạng nháp (chỉ cần tên, slug, cấp độ, số câu mỗi lượt); bài **đang hiện** phải qua đủ `GrammarValidator`. Không xoá được bài đã có người học.
-- Bảng mới `MediaFiles` (đường dẫn, kích thước, người upload, thời gian).
+- Bảng mới `MediaFiles` (đường dẫn, kích thước, người upload, thời gian; ảnh Pexels / Pixabay thêm `Source`, `SourceId`, `SourceUrl`, `Author`, `AuthorUrl`).
+- `Word.ImagePending`: ảnh tự gán chưa duyệt; app trả `imageUrl = null` cho tới khi duyệt.
 - Bảng mới `AuditLogs` (người sửa, loại, mã, nội dung trước / sau dạng JSON, thời gian).
 - **Database là nguồn dữ liệu chính** từ khi có admin: `vocabulary.json` và `data/grammar/*.json` chỉ dùng để nạp lần đầu (seeder chỉ thêm cái còn thiếu, không ghi đè từ / bộ / bài ngữ pháp có `EditedAt`, tức đã sửa qua admin; đổi thứ tự cũng tính là sửa).
 - Ảnh xử lý bằng SkiaSharp (giấy phép MIT): xoay theo EXIF, cắt vuông giữa (tuỳ chọn), tối đa 800px, WebP chất lượng 82. `ImageUrl` lưu đường dẫn tương đối `/media/…`; app tự ghép với địa chỉ API.

@@ -23,7 +23,8 @@ import { IconArrowLeft, IconCheck, IconDeviceFloppy, IconHistory, IconTrash, Ico
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, type SaveWord } from "../api";
+import { api, type AdminWord, type SaveWord } from "../api";
+import { ImageCreditText } from "../components/ImageCredit";
 import { Select } from "../components/AppSelect";
 import { ImageField } from "../components/ImageField";
 import { WordPreview } from "../components/WordPreview";
@@ -104,6 +105,7 @@ export function WordEditPage() {
 
   const set = <K extends keyof SaveWord>(key: K, value: SaveWord[K]) => setForm((f) => (f ? { ...f, [key]: value } : f));
   const learners = existing.data?.learners ?? 0;
+  const savedImage = existing.data?.imageUrl ? existing.data : null;
 
   function back() {
     if (dirty && !window.confirm("Bạn có thay đổi chưa lưu. Rời trang?")) return;
@@ -212,7 +214,22 @@ export function WordEditPage() {
           onChange={(v) => v && set("deckId", v)}
           allowDeselect={false}
         />
-        <ImageField value={form.imageUrl} onChange={(u) => set("imageUrl", u)} />
+        <ImageField
+          value={form.imageUrl}
+          onChange={(u) => set("imageUrl", u)}
+          searchText={form.word}
+          footer={
+            savedImage && form.imageUrl === savedImage.imageUrl ? (
+              <ImageStatus
+                word={savedImage}
+                onApproved={(w) => {
+                  queryClient.setQueryData(["word", w.id], w);
+                  queryClient.invalidateQueries({ queryKey: ["words"] });
+                }}
+              />
+            ) : null
+          }
+        />
         <Switch
           size="md"
           label="Hiện trong app"
@@ -361,6 +378,43 @@ export function WordEditPage() {
           </Stack>
         )}
       </Modal>
+    </Stack>
+  );
+}
+
+/** Credit for stock photos, plus the approve button for auto-picked ones (the app hides those until approved). */
+function ImageStatus({ word, onApproved }: { word: AdminWord; onApproved: (w: AdminWord) => void }) {
+  const [approving, setApproving] = useState(false);
+  if (!word.imagePending && !word.imageCredit) return null;
+  return (
+    <Stack gap={6} mt="xs">
+      {word.imageCredit ? <ImageCreditText credit={word.imageCredit} /> : null}
+      {word.imagePending ? (
+        <Alert color="yellow" p="xs">
+          <Group justify="space-between" gap="xs">
+            <Text fz="sm">Ảnh tự gán, chưa duyệt: app chưa hiện ảnh này.</Text>
+            <Button
+              size="compact-sm"
+              color="green"
+              leftSection={<IconCheck size={14} />}
+              loading={approving}
+              onClick={async () => {
+                setApproving(true);
+                try {
+                  onApproved(await api.approveWordImage(word.id));
+                  notifySaved("Đã duyệt ảnh");
+                } catch (e) {
+                  notifyError(e);
+                } finally {
+                  setApproving(false);
+                }
+              }}
+            >
+              Duyệt ảnh
+            </Button>
+          </Group>
+        </Alert>
+      ) : null}
     </Stack>
   );
 }

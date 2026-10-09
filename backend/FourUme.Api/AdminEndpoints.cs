@@ -143,6 +143,19 @@ public static class AdminEndpoints
             return Results.NoContent();
         });
 
+        admin.MapGet("/stock-images", async (string? q, int? page, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.SearchAsync(q ?? "", page ?? 1, ct)));
+        admin.MapPost("/stock-images/import", async (StockImageRef r, HttpContext http, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.ImportAsync(r, Admin(http).Id, ct)));
+        admin.MapPost("/words/auto-images", async (AutoImageRequest r, HttpContext http, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.AutoAssignAsync(r, Admin(http).Id, ct)));
+        admin.MapPut("/words/{id}/image", async (string id, StockImageRef r, HttpContext http, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.AssignAsync(id, r, Admin(http).Id, ct)));
+        admin.MapPost("/words/{id}/image/approve", async (string id, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.ApproveAsync(id, ct)));
+        admin.MapDelete("/words/{id}/image", async (string id, IWordImageService s, CancellationToken ct) =>
+            Results.Ok(await s.RemoveAsync(id, ct)));
+
         admin.MapGet("/audit", async ([AsParameters] AuditQuery q, IAdminAuditService s, CancellationToken ct) =>
             Results.Ok(await s.GetEntriesAsync(q, ct)));
         admin.MapGet("/audit/{id:guid}", async (Guid id, IAdminAuditService s, CancellationToken ct) =>

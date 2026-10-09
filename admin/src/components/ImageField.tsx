@@ -14,21 +14,34 @@ import {
   TextInput,
   UnstyledButton,
 } from "@mantine/core";
-import { IconLink, IconPhoto, IconPhotoUp, IconTrash } from "@tabler/icons-react";
+import { IconLink, IconPhoto, IconPhotoSearch, IconPhotoUp, IconTrash } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type DragEvent } from "react";
+import { useState, type DragEvent, type ReactNode } from "react";
 import { api, mediaSrc } from "../api";
 import { notifyError } from "../lib";
+import { StockSearchPanel } from "./StockSearchPanel";
 
 /**
- * Word image picker: upload (drag & drop on desktop, camera/library on phones), pick from the
- * media library, or paste a URL. Uploads are centre-cropped to a square by the server.
+ * Word image picker: search Pexels / Pixabay, upload (drag & drop on desktop, camera/library on phones),
+ * pick from the media library, or paste a URL. Images are centre-cropped to a square by the server.
  */
-export function ImageField({ value, onChange }: { value: string | null; onChange: (url: string | null) => void }) {
+export function ImageField({
+  value,
+  onChange,
+  searchText,
+  footer,
+}: {
+  value: string | null;
+  onChange: (url: string | null) => void;
+  /** Starting query for the stock photo search (the word itself). */
+  searchText: string;
+  footer?: ReactNode;
+}) {
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
   const [crop, setCrop] = useState(true);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [urlOpen, setUrlOpen] = useState(false);
   const [url, setUrl] = useState("");
   const [dragging, setDragging] = useState(false);
@@ -81,10 +94,13 @@ export function ImageField({ value, onChange }: { value: string | null; onChange
           )}
           <Stack gap={6} style={{ flex: 1 }}>
             <Group gap={6}>
+              <Button size="sm" leftSection={<IconPhotoSearch size={16} />} onClick={() => setSearchOpen(true)}>
+                Tìm ảnh
+              </Button>
               <FileButton onChange={upload} accept="image/png,image/jpeg,image/webp">
                 {(props) => (
-                  <Button {...props} size="sm" leftSection={<IconPhotoUp size={16} />} loading={uploading}>
-                    Tải ảnh lên
+                  <Button {...props} size="sm" variant="light" leftSection={<IconPhotoUp size={16} />} loading={uploading}>
+                    Tải lên
                   </Button>
                 )}
               </FileButton>
@@ -106,7 +122,26 @@ export function ImageField({ value, onChange }: { value: string | null; onChange
             </Text>
           </Stack>
         </Group>
+        {footer}
       </Box>
+
+      <Modal opened={searchOpen} onClose={() => setSearchOpen(false)} title="Tìm ảnh trên Pexels / Pixabay" size="xl">
+        {searchOpen ? (
+          <StockSearchPanel
+            initialQuery={searchText}
+            onPick={async (img) => {
+              try {
+                const media = await api.importStock({ source: img.source, id: img.id });
+                onChange(media.url);
+                queryClient.invalidateQueries({ queryKey: ["media"] });
+                setSearchOpen(false);
+              } catch (e) {
+                notifyError(e);
+              }
+            }}
+          />
+        ) : null}
+      </Modal>
 
       <Modal opened={urlOpen} onClose={() => setUrlOpen(false)} title="Dán đường dẫn ảnh">
         <Stack>

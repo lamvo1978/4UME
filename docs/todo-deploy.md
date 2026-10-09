@@ -21,6 +21,17 @@
 - [ ] **Chứng chỉ PetHubPro hết hạn 19/11/2026** và đang là `manual` (không tự gia hạn). Gia hạn tay trước hạn, hoặc chuyển DNS `pethubpro.io.vn` sang Cloudflare và làm giống 4UME để tự gia hạn.
 - [x] Reboot VPS lên kernel `5.15.0-198` (09/10/2026) — mọi container PetHubPro + 4UME tự chạy lại. Lần sau khi `apt` hỏi *Which services should be restarted?* thì chọn **none** (tránh restart Docker giữa giờ), reboot vào giờ ít người dùng.
 
+## Ảnh Pexels / Pixabay (trang Gắn ảnh)
+
+Đăng ký 2 API key miễn phí (xem [admin-web.md](admin-web.md#4-hình-ảnh)):
+
+- Pexels: https://www.pexels.com/api/ → *Get Started* → đăng nhập → điền mô tả dự án → nhận key.
+- Pixabay: đăng ký tài khoản https://pixabay.com → https://pixabay.com/api/docs/ → key hiện ở mục *Parameters* (`key`).
+
+Trên máy dev: tạo `.env` ở thư mục gốc dự án (git bỏ qua) với 2 dòng `PEXELS_API_KEY=…`, `PIXABAY_API_KEY=…`, rồi `docker compose up -d api`.
+
+Trên VPS: thêm 2 dòng đó vào `/opt/4ume/deploy/vps/.env`, rồi `cd /opt/4ume/deploy/vps && docker compose up -d`.
+
 ## 1. Sao lưu tự động (khi dừng thử nghiệm, có dữ liệu thật)
 
 Chạy thử một lần:

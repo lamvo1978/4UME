@@ -78,7 +78,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
                 return new
                 {
                     Dto = new WordDto(
-                        w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.ImageUrl,
+                        w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicImageUrl,
                         p?.Status ?? WordStatus.New, WordForms.Describe(w.Text, w.Pos)),
                     w.SortOrder,
                     UpdatedAt = p?.UpdatedAt ?? DateTimeOffset.MinValue
@@ -114,7 +114,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
             {
                 var w = words[h.Id];
                 return new WordSearchResultDto(
-                    new WordDto(w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.ImageUrl,
+                    new WordDto(w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicImageUrl,
                         status.GetValueOrDefault(h.Id, WordStatus.New), WordForms.Describe(w.Text, w.Pos)),
                     w.DeckId,
                     w.Deck.TitleVi,

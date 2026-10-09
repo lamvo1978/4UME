@@ -30,6 +30,7 @@ const PAGE_SIZE = 50;
 
 const MISSING = [
   { value: "image", label: "Chưa có hình" },
+  { value: "image-review", label: "Ảnh chưa duyệt" },
   { value: "example", label: "Thiếu câu ví dụ" },
   { value: "ipa", label: "Thiếu phiên âm" },
 ];
@@ -300,6 +301,11 @@ function StatusBadges({ word }: { word: AdminWord }) {
       {word.editedAt ? (
         <Badge color="orange" variant="light" size="sm">
           Đã sửa
+        </Badge>
+      ) : null}
+      {word.imagePending ? (
+        <Badge color="yellow" variant="light" size="sm">
+          Ảnh chưa duyệt
         </Badge>
       ) : null}
     </Stack>

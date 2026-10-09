@@ -20,6 +20,7 @@ import { IconCheck, IconCopy, IconPhotoUp, IconTrash } from "@tabler/icons-react
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api, mediaSrc, type MediaItem } from "../api";
+import { ImageCreditText } from "../components/ImageCredit";
 import { notifyError, notifySaved } from "../lib";
 
 const kb = (bytes: number) => `${Math.round(bytes / 1024)} KB`;
@@ -98,9 +99,13 @@ export function MediaPage() {
           <Paper key={m.id} radius="lg" shadow="xs" p={6}>
             <Image src={mediaSrc(m.url)} radius="md" style={{ aspectRatio: "1" }} fit="cover" alt={m.originalName} />
             <Stack gap={2} p={6}>
-              <Text fz="xs" truncate title={m.originalName}>
-                {m.originalName}
-              </Text>
+              {m.credit ? (
+                <ImageCreditText credit={m.credit} />
+              ) : (
+                <Text fz="xs" truncate title={m.originalName}>
+                  {m.originalName}
+                </Text>
+              )}
               <Group justify="space-between" gap={4}>
                 {m.usedBy > 0 ? (
                   <Badge size="xs" variant="light">

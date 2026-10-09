@@ -144,6 +144,32 @@ export type AdminWord = {
   published: boolean;
   editedAt: string | null;
   learners: number;
+  /** Picked automatically and not approved yet; the app hides it. */
+  imagePending: boolean;
+  imageCredit: ImageCredit | null;
+};
+export type ImageCredit = { source: string; author: string | null; authorUrl: string | null; sourceUrl: string | null };
+export type StockImage = {
+  source: string;
+  id: string;
+  previewUrl: string;
+  width: number;
+  height: number;
+  author: string;
+  authorUrl: string | null;
+  pageUrl: string;
+  description: string | null;
+};
+export type StockSearch = { query: string; items: StockImage[]; sources: string[]; errors: string[] };
+export type StockRef = { source: string; id: string };
+export type AutoImageRequest = { level?: string; deckId?: string; pos?: string; after?: string; batch?: number };
+export type AutoImageResult = {
+  assigned: number;
+  items: { wordId: string; word: string; imageUrl: string | null; source: string | null }[];
+  next: string | null;
+  remaining: number;
+  warning: string | null;
+  stopped: boolean;
 };
 export type SaveWord = Pick<
   AdminWord,
@@ -169,6 +195,7 @@ export type MediaItem = {
   bytes: number;
   createdAt: string;
   usedBy: number;
+  credit: ImageCredit | null;
 };
 
 export type Bilingual = { en: string; vi: string };
@@ -386,7 +413,17 @@ export const api = {
     return request<MediaItem>("/api/admin/media", { method: "POST", body: form });
   },
   deleteMedia: (id: string) => request<void>(`/api/admin/media/${id}`, { method: "DELETE" }),
+
+  searchStock: (q: string, page = 1) => request<StockSearch>(`/api/admin/stock-images?${query({ q, page })}`),
+  importStock: (ref: StockRef) => request<MediaItem>("/api/admin/stock-images/import", json("POST", ref)),
+  setWordStockImage: (id: string, ref: StockRef) =>
+    request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image`, json("PUT", ref)),
+  approveWordImage: (id: string) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image/approve`, { method: "POST" }),
+  removeWordImage: (id: string) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image`, { method: "DELETE" }),
+  autoImages: (r: AutoImageRequest) => request<AutoImageResult>("/api/admin/words/auto-images", json("POST", r)),
 };
+
+export const stockLabel = (source: string) => (source === "pexels" ? "Pexels" : source === "pixabay" ? "Pixabay" : source);
 
 /** Uploaded images are "/media/…" paths on the API host. */
 export const mediaSrc = (url: string) => (url.startsWith("/") ? `${BASE}${url}` : url);

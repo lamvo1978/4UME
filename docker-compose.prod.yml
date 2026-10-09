@@ -39,6 +39,8 @@ services:
       Media__Path: /app/media
       # Creates admin@4ume.io.vn on a fresh database (ignored once the account exists).
       Admin__InitialPassword: ${ADMIN_INITIAL_PASSWORD:-}
+      StockImages__PexelsKey: ${PEXELS_API_KEY:-}
+      StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
     volumes:
       - media:/app/media
     depends_on:

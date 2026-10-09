@@ -166,6 +166,7 @@ public partial class AdminContentService
                 word.MeaningVi = v.MeaningVi;
                 word.Example = v.Example;
                 word.ExampleVi = v.ExampleVi;
+                if (v.ImageUrl != word.ImageUrl) word.ImagePending = false;
                 word.ImageUrl = v.ImageUrl;
                 word.Published = v.Published;
                 word.EditedAt = now;

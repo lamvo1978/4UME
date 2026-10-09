@@ -50,6 +50,14 @@ public static class DependencyInjection
         services.AddScoped<Auditor>();
         services.AddSingleton<IUserAccess, UserAccess>();
         services.Configure<MediaOptions>(configuration.GetSection(MediaOptions.SectionName));
+        services.Configure<StockImageOptions>(configuration.GetSection(StockImageOptions.SectionName));
+        services.AddMemoryCache();
+        services.AddHttpClient<StockImageClient>(c =>
+        {
+            c.Timeout = TimeSpan.FromSeconds(20);
+            c.DefaultRequestHeaders.UserAgent.ParseAdd("4UME/1.0 (+https://admin.4ume.io.vn)");
+        });
+        services.AddScoped<IWordImageService, WordImageService>();
         return services;
     }
 }

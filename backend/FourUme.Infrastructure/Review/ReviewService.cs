@@ -153,7 +153,7 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
     {
         var dto = new WordDto(
             word.Id, word.Text, word.Ipa, word.Pos, word.Level, word.MeaningVi, word.Example, word.ExampleVi,
-            word.ImageUrl, WordStatus.Known, WordForms.Describe(word.Text, word.Pos));
+            word.PublicImageUrl, WordStatus.Known, WordForms.Describe(word.Text, word.Pos));
 
         return new ReviewItemDto(level, dto,
             BuildOptions(word, pool, p => p.Text),

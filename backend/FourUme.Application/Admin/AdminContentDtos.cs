@@ -30,7 +30,7 @@ public record SaveDeckRequest(string? Id, string TitleVi, string Icon, bool Publ
 
 public record ReorderRequest(IReadOnlyList<string> Ids);
 
-/// <param name="Missing">"image", "example" or "ipa".</param>
+/// <param name="Missing">"image", "image-review" (auto-picked, not approved), "example" or "ipa".</param>
 /// <param name="Published">null = all, true = visible only, false = hidden only.</param>
 public record AdminWordQuery(
     string? Q,
@@ -43,6 +43,8 @@ public record AdminWordQuery(
     int PageSize = 50);
 
 /// <param name="Learners">Users with progress on this word; such words can only be hidden, not deleted.</param>
+/// <param name="ImagePending">Picked automatically and not yet approved; the app hides it.</param>
+/// <param name="ImageCredit">Source and author of a stock image.</param>
 public record AdminWordDto(
     string Id,
     string DeckId,
@@ -58,7 +60,11 @@ public record AdminWordDto(
     int SortOrder,
     bool Published,
     DateTimeOffset? EditedAt,
-    int Learners);
+    int Learners,
+    bool ImagePending,
+    ImageCreditDto? ImageCredit);
+
+public record ImageCreditDto(string Source, string? Author, string? AuthorUrl, string? SourceUrl);
 
 public record SaveWordRequest(
     string DeckId,
@@ -72,7 +78,16 @@ public record SaveWordRequest(
     string? ImageUrl,
     bool Published);
 
-public record AdminMediaDto(Guid Id, string Url, string OriginalName, int Width, int Height, long Bytes, DateTimeOffset CreatedAt, int UsedBy);
+public record AdminMediaDto(
+    Guid Id,
+    string Url,
+    string OriginalName,
+    int Width,
+    int Height,
+    long Bytes,
+    DateTimeOffset CreatedAt,
+    int UsedBy,
+    ImageCreditDto? Credit);
 
 /// <summary>Thrown when a request conflicts with existing data (maps to HTTP 409).</summary>
 public class ContentConflictException(string message) : Exception(message);

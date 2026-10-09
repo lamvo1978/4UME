@@ -32,6 +32,9 @@ services:
       # Comma-separated emails granted the admin role at startup (accounts must already exist).
       Admin__Emails: lamvo1978@gmail.com
       Media__Path: /app/media
+      # Stock photo search in the admin; put the keys in .env next to this file (git-ignored).
+      StockImages__PexelsKey: ${PEXELS_API_KEY:-}
+      StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
     volumes:
       - fourume_media:/app/media
     ports:

@@ -8,6 +8,7 @@ import { DecksPage } from "./pages/DecksPage";
 import { GrammarEditPage } from "./pages/GrammarEditPage";
 import { GrammarPage } from "./pages/GrammarPage";
 import { HistoryPage } from "./pages/HistoryPage";
+import { ImageAssignPage } from "./pages/ImageAssignPage";
 import { MediaPage } from "./pages/MediaPage";
 import { WordEditPage } from "./pages/WordEditPage";
 import { WordsPage } from "./pages/WordsPage";
@@ -55,6 +56,7 @@ export function App() {
         <Route path="words/:id" element={<WordEditPage />} />
         <Route path="decks" element={<DecksPage />} />
         <Route path="images" element={<MediaPage />} />
+        <Route path="image-assign" element={<ImageAssignPage />} />
         <Route path="grammar" element={<GrammarPage />} />
         <Route path="grammar/new" element={<GrammarEditPage key="new" />} />
         <Route path="grammar/:slug" element={<GrammarEditPage />} />

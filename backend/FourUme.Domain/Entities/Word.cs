@@ -13,6 +13,10 @@ public class Word
     public string Example { get; set; } = string.Empty;
     public string ExampleVi { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
+    /// <summary>Set when the image was picked automatically; the app hides it until an admin approves it.</summary>
+    public bool ImagePending { get; set; }
+    /// <summary>The image learners see (pending auto-picked images are hidden).</summary>
+    public string? PublicImageUrl => ImagePending ? null : ImageUrl;
     public int SortOrder { get; set; }
     /// <summary>Hidden words drop out of decks and search but stay in review for people who learned them.</summary>
     public bool Published { get; set; } = true;

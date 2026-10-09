@@ -88,6 +88,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Text).HasMaxLength(120).IsRequired();
             e.Property(x => x.Level).HasMaxLength(8).IsRequired();
             e.Property(x => x.ImageUrl).HasMaxLength(500);
+            e.HasIndex(x => x.ImagePending).HasFilter("\"ImagePending\"");
             e.Property(x => x.Published).HasDefaultValue(true);
             e.HasOne(x => x.Deck).WithMany(x => x.Words).HasForeignKey(x => x.DeckId).OnDelete(DeleteBehavior.Restrict);
         });
@@ -99,6 +100,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.FileName).HasMaxLength(120).IsRequired();
             e.Property(x => x.Url).HasMaxLength(500).IsRequired();
             e.Property(x => x.OriginalName).HasMaxLength(255).IsRequired();
+            e.Property(x => x.Source).HasMaxLength(16);
+            e.Property(x => x.SourceId).HasMaxLength(40);
+            e.Property(x => x.SourceUrl).HasMaxLength(500);
+            e.Property(x => x.Author).HasMaxLength(120);
+            e.Property(x => x.AuthorUrl).HasMaxLength(500);
+            e.HasIndex(x => new { x.Source, x.SourceId });
         });
 
         modelBuilder.Entity<WordProgress>(e =>

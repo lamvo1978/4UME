@@ -13,5 +13,13 @@ public class MediaFile
     public int Height { get; set; }
     public long Bytes { get; set; }
     public Guid? UploadedBy { get; set; }
+    /// <summary>"pexels" or "pixabay" for stock photos; null for uploads.</summary>
+    public string? Source { get; set; }
+    /// <summary>Photo id at the source, so the same stock photo is downloaded only once.</summary>
+    public string? SourceId { get; set; }
+    /// <summary>Photo page at the source (credit link).</summary>
+    public string? SourceUrl { get; set; }
+    public string? Author { get; set; }
+    public string? AuthorUrl { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

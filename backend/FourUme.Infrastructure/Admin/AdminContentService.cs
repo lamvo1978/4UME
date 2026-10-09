@@ -163,6 +163,7 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         return query.Missing switch
         {
             "image" => words.Where(w => w.ImageUrl == null || w.ImageUrl == ""),
+            "image-review" => words.Where(w => w.ImagePending),
             "example" => words.Where(w => w.Example == "" || w.ExampleVi == ""),
             "ipa" => words.Where(w => w.Ipa == ""),
             _ => words,
@@ -235,7 +236,11 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         words.Select(w => new AdminWordDto(
             w.Id, w.DeckId, w.Deck.TitleVi, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi,
             w.ImageUrl, w.SortOrder, w.Published, w.EditedAt,
-            db.WordProgresses.Count(p => p.WordId == w.Id)));
+            db.WordProgresses.Count(p => p.WordId == w.Id),
+            w.ImagePending,
+            db.MediaFiles.Where(m => m.Url == w.ImageUrl && m.Source != null)
+                .Select(m => new ImageCreditDto(m.Source!, m.Author, m.AuthorUrl, m.SourceUrl))
+                .FirstOrDefault()));
 
     /// <summary>
     /// Validates and copies the editable fields. The id is fixed once created (progress references it),
@@ -265,7 +270,9 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         word.MeaningVi = Required(r.MeaningVi, "Nghĩa tiếng Việt", 500);
         word.Example = r.Example?.Trim() ?? "";
         word.ExampleVi = r.ExampleVi?.Trim() ?? "";
-        word.ImageUrl = string.IsNullOrEmpty(image) ? null : image;
+        var imageUrl = string.IsNullOrEmpty(image) ? null : image;
+        if (imageUrl != word.ImageUrl) word.ImagePending = false;
+        word.ImageUrl = imageUrl;
         word.Published = r.Published;
         word.EditedAt = DateTimeOffset.UtcNow;
     }
@@ -276,7 +283,8 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         await db.MediaFiles.AsNoTracking()
             .OrderByDescending(m => m.CreatedAt)
             .Select(m => new AdminMediaDto(m.Id, m.Url, m.OriginalName, m.Width, m.Height, m.Bytes, m.CreatedAt,
-                db.Words.Count(w => w.ImageUrl == m.Url)))
+                db.Words.Count(w => w.ImageUrl == m.Url),
+                m.Source == null ? null : new ImageCreditDto(m.Source, m.Author, m.AuthorUrl, m.SourceUrl)))
             .ToListAsync(ct);
 
     public async Task<AdminMediaDto> UploadMediaAsync(Stream content, string originalName, bool squareCrop, Guid uploadedBy, CancellationToken ct = default)
@@ -295,7 +303,7 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         db.MediaFiles.Add(media);
         auditor.Record(AuditEntities.Media, media.Id.ToString(), AuditActions.Create, media.OriginalName, null, Auditor.Snapshot(media));
         await db.SaveChangesAsync(ct);
-        return new AdminMediaDto(media.Id, media.Url, media.OriginalName, media.Width, media.Height, media.Bytes, media.CreatedAt, 0);
+        return new AdminMediaDto(media.Id, media.Url, media.OriginalName, media.Width, media.Height, media.Bytes, media.CreatedAt, 0, null);
     }
 
     public async Task DeleteMediaAsync(Guid id, CancellationToken ct = default)
