@@ -1,12 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Publishing for one runtime keeps only that platform's native libraries (SkiaSharp ships ~450 MB for all).
+ARG TARGETARCH
 WORKDIR /src
 COPY backend/FourUme.sln ./
 COPY backend/FourUme.Domain ./FourUme.Domain
 COPY backend/FourUme.Application ./FourUme.Application
 COPY backend/FourUme.Infrastructure ./FourUme.Infrastructure
 COPY backend/FourUme.Api ./FourUme.Api
-RUN dotnet restore FourUme.Api/FourUme.Api.csproj
-RUN dotnet publish FourUme.Api/FourUme.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
+RUN RID=linux-$([ "$TARGETARCH" = "arm64" ] && echo arm64 || echo x64) \
+    && dotnet restore FourUme.Api/FourUme.Api.csproj -r $RID \
+    && dotnet publish FourUme.Api/FourUme.Api.csproj -c Release -r $RID --self-contained false --no-restore \
+       -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Backs up the database and uploaded images into backups/<timestamp>/ and keeps the last KEEP backups.
-#   deploy/backup.sh                                  # production stack (docker-compose.prod.yml)
+#   deploy/backup.sh                                  # production stack (deploy/vps if set up, else docker-compose.prod.yml)
 #   COMPOSE_FILE=docker-compose.yml deploy/backup.sh  # local dev stack, e.g. to move data to the VPS
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-export COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
+source deploy/compose-file.sh
 KEEP="${KEEP:-14}"
 dest="backups/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$dest"

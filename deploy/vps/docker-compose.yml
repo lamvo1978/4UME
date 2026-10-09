@@ -1,0 +1,71 @@
+# 4UME on the shared VPS behind the existing edge nginx (pethubpro-edge-nginx).
+# Images are built by GitHub Actions (.github/workflows/images.yml); this host only pulls them.
+#   cd /opt/4ume/deploy/vps && docker compose pull && docker compose up -d
+#
+# The API and admin join the edge network under the aliases 4ume-api / 4ume-admin (see 4ume.conf).
+# Postgres stays on the private default network only.
+
+name: fourume
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fourume
+      POSTGRES_USER: fourume
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fourume -d fourume"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging: *logging
+
+  api:
+    image: ghcr.io/lamvo1978/4ume-api:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fourume;Username=fourume;Password=${POSTGRES_PASSWORD}
+      Jwt__Key: ${JWT_KEY:?set JWT_KEY in .env}
+      Jwt__Issuer: 4UME
+      Jwt__Audience: 4UME
+      Media__Path: /app/media
+      # Creates admin@4ume.com on a fresh database (ignored once the account exists).
+      Admin__InitialPassword: ${ADMIN_INITIAL_PASSWORD:-}
+    volumes:
+      - media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      default:
+      edge:
+        aliases: [4ume-api]
+    logging: *logging
+
+  admin:
+    image: ghcr.io/lamvo1978/4ume-admin:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    networks:
+      edge:
+        aliases: [4ume-admin]
+    logging: *logging
+
+networks:
+  edge:
+    name: pethubpro_net
+    external: true
+
+volumes:
+  pg_data:
+  media:

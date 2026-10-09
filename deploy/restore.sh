@@ -4,7 +4,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-export COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
+source deploy/compose-file.sh
 src="${1:?usage: deploy/restore.sh backups/<timestamp>}"
 [ -f "$src/db.dump" ] || { echo "Missing $src/db.dump" >&2; exit 1; }
 

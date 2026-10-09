@@ -1,5 +1,8 @@
 # Triển khai lên VPS
 
+> **VPS hiện tại (dùng chung với PetHubPro, `4ume.io.vn`)**: làm theo [deploy-vps.md](deploy-vps.md).
+> Tài liệu dưới đây dành cho một **VPS trống**, khi 4UME tự giữ cổng 80/443 bằng Caddy.
+
 Một VPS Ubuntu chạy 3 container bằng `docker-compose.prod.yml`:
 
 | Container | Việc |
