@@ -137,7 +137,13 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         var size = Math.Clamp(query.PageSize, 1, ContentRules.MaxPageSize);
         var words = Filter(db.Words.AsNoTracking(), query);
         var total = await words.CountAsync(ct);
-        var items = await Project(words.OrderBy(w => w.Deck.SortOrder).ThenBy(w => w.SortOrder).Skip((page - 1) * size).Take(size))
+        var term = query.Q?.Trim();
+        // The search also matches meanings ("ngoan" contains "go"), so the word itself comes first, then words starting with it.
+        var ordered = string.IsNullOrEmpty(term)
+            ? words.OrderBy(w => w.Deck.SortOrder)
+            : words.OrderBy(w => EF.Functions.ILike(w.Text, term) ? 0 : EF.Functions.ILike(w.Text, term + "%") ? 1 : 2)
+                .ThenBy(w => w.Deck.SortOrder);
+        var items = await Project(ordered.ThenBy(w => w.SortOrder).Skip((page - 1) * size).Take(size))
             .ToListAsync(ct);
         return new PagedResult<AdminWordDto>(items, total, page, size);
     }
@@ -163,6 +169,7 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         return query.Missing switch
         {
             "image" => words.Where(w => w.ImageUrl == null || w.ImageUrl == ""),
+            "has-image" => words.Where(w => w.ImageUrl != null && w.ImageUrl != ""),
             "image-review" => words.Where(w => w.ImagePending),
             "example" => words.Where(w => w.Example == "" || w.ExampleVi == ""),
             "ipa" => words.Where(w => w.Ipa == ""),

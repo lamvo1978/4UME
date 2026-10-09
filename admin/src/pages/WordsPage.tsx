@@ -29,6 +29,7 @@ import { notifyError, notifySaved, posLabel } from "../lib";
 const PAGE_SIZE = 50;
 
 const MISSING = [
+  { value: "has-image", label: "Đã có hình" },
   { value: "image", label: "Chưa có hình" },
   { value: "image-review", label: "Ảnh chưa duyệt" },
   { value: "example", label: "Thiếu câu ví dụ" },
@@ -177,7 +178,7 @@ export function WordsPage() {
             value={filters.pos ?? null}
             onChange={(v) => setFilter("pos", v)}
           />
-          <Select placeholder="Cần bổ sung" clearable data={MISSING} value={filters.missing ?? null} onChange={(v) => setFilter("missing", v)} />
+          <Select placeholder="Hình ảnh / bổ sung" clearable data={MISSING} value={filters.missing ?? null} onChange={(v) => setFilter("missing", v)} />
           <Select placeholder="Hiển thị" clearable data={VISIBILITY} value={filters.published ?? null} onChange={(v) => setFilter("published", v)} />
         </SimpleGrid>
       </Paper>

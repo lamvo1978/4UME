@@ -30,7 +30,7 @@ public record SaveDeckRequest(string? Id, string TitleVi, string Icon, bool Publ
 
 public record ReorderRequest(IReadOnlyList<string> Ids);
 
-/// <param name="Missing">"image", "image-review" (auto-picked, not approved), "example" or "ipa".</param>
+/// <param name="Missing">"image", "has-image", "image-review" (auto-picked, not approved), "example" or "ipa".</param>
 /// <param name="Published">null = all, true = visible only, false = hidden only.</param>
 public record AdminWordQuery(
     string? Q,
