@@ -37,7 +37,7 @@ Chi tiết: [docs/admin-web.md](docs/admin-web.md)
 
 ## Triển khai lên VPS
 
-- VPS dùng chung với PetHubPro (`api.4ume.io.vn`, `admin.4ume.io.vn`): image build trên GitHub Actions, `deploy/vps/` — [docs/deploy-vps.md](docs/deploy-vps.md)
+- VPS dùng chung với PetHubPro (`api.4ume.io.vn`, `admin.4ume.io.vn`): image build trên GitHub Actions, `deploy/vps/` — [docs/deploy-vps.md](docs/deploy-vps.md) · việc còn lại (sao lưu, build app): [docs/todo-deploy.md](docs/todo-deploy.md)
 - VPS trống: `docker-compose.prod.yml` + Caddy (HTTPS tự động) — [docs/deploy.md](docs/deploy.md)
 
 ## Mobile
