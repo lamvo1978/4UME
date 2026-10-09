@@ -2,6 +2,9 @@ namespace FourUme.Application.Auth;
 
 public interface IAuthService
 {
+    Task<SendCodeResponse> SendRegisterCodeAsync(SendCodeRequest request, CancellationToken ct = default);
+    Task<SendCodeResponse> SendResetCodeAsync(SendCodeRequest request, CancellationToken ct = default);
+    Task<AuthResponse> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default);
     Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default);
     Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default);
     Task<MeResponse> GetMeAsync(Guid userId, CancellationToken ct = default);

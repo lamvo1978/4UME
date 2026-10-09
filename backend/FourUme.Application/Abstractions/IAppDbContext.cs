@@ -18,5 +18,6 @@ public interface IAppDbContext
     DbSet<DeviceToken> DeviceTokens { get; }
     DbSet<NotificationLog> NotificationLogs { get; }
     DbSet<AuditLog> AuditLogs { get; }
+    DbSet<EmailCode> EmailCodes { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -35,6 +35,8 @@ services:
       # Stock photo search in the admin; put the keys in .env next to this file (git-ignored).
       StockImages__PexelsKey: ${PEXELS_API_KEY:-}
       StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
+      # Without a key, sign-up and reset codes are only printed in the API log.
+      Email__ResendKey: ${RESEND_API_KEY:-}
     volumes:
       - fourume_media:/app/media
     ports:

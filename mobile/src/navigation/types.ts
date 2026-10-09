@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
+  ForgotPassword: { email?: string } | undefined;
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
   Flashcard: { deckId: string; titleVi: string };
   GrammarLesson: { slug: string; titleVi: string };

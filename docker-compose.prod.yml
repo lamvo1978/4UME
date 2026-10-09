@@ -41,6 +41,8 @@ services:
       Admin__InitialPassword: ${ADMIN_INITIAL_PASSWORD:-}
       StockImages__PexelsKey: ${PEXELS_API_KEY:-}
       StockImages__PixabayKey: ${PIXABAY_API_KEY:-}
+      Email__ResendKey: ${RESEND_API_KEY:-}
+      Email__ReplyTo: ${EMAIL_REPLY_TO:-}
     volumes:
       - media:/app/media
     depends_on:

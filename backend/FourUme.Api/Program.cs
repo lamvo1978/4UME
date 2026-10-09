@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 using FourUme.Api;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
@@ -15,6 +16,7 @@ using FourUme.Infrastructure.Auth;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Media;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -67,6 +69,18 @@ builder.Services.AddCors(options =>
         policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 });
 
+// Each mailed code costs money and can be aimed at someone else's inbox, so cap sends per client IP
+// (Cloudflare passes the visitor's address in CF-Connecting-IP).
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (ctx, ct) =>
+        await ctx.HttpContext.Response.WriteAsJsonAsync(new { error = "Bạn thao tác quá nhanh, vui lòng thử lại sau ít phút." }, ct);
+    options.AddPolicy(EmailCodeLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+        http.Request.Headers["CF-Connecting-IP"].FirstOrDefault() ?? http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(15) }));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -87,6 +101,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -127,6 +142,42 @@ using (var scope = app.Services.CreateScope())
 app.MapAdminEndpoints();
 
 app.MapGet("/", () => Results.Ok(new { app = "4UME", status = "ok" }));
+
+app.MapPost("/api/auth/register/code", async (SendCodeRequest request, IAuthService auth) =>
+{
+    try
+    {
+        return Results.Ok(await auth.SendRegisterCodeAsync(request));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireRateLimiting(EmailCodeLimit);
+
+app.MapPost("/api/auth/password/code", async (SendCodeRequest request, IAuthService auth) =>
+{
+    try
+    {
+        return Results.Ok(await auth.SendResetCodeAsync(request));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireRateLimiting(EmailCodeLimit);
+
+app.MapPost("/api/auth/password/reset", async (ResetPasswordRequest request, IAuthService auth) =>
+{
+    try
+    {
+        return Results.Ok(await auth.ResetPasswordAsync(request));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+});
 
 app.MapPost("/api/auth/register", async (RegisterRequest request, IAuthService auth) =>
 {
@@ -422,4 +473,7 @@ static Guid? GetUserId(ClaimsPrincipal principal)
 }
 
 // Make Program visible for tests if needed
-public partial class Program;
+public partial class Program
+{
+    private const string EmailCodeLimit = "email-code";
+}

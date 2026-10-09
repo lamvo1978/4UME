@@ -15,6 +15,7 @@ import { StreakCelebration } from "../components/streak/StreakCelebration";
 import { onReminderTap, ReminderScreen } from "../notifications/reminders";
 import { colors, shadow } from "../theme";
 import { FlashcardScreen } from "../screens/FlashcardScreen";
+import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 import { GrammarLessonScreen } from "../screens/GrammarLessonScreen";
 import { GrammarReviewScreen } from "../screens/GrammarReviewScreen";
 import { HomeScreen } from "../screens/HomeScreen";
@@ -150,6 +151,7 @@ export function RootNavigator() {
             <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Đăng nhập" }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Tạo tài khoản" }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: "Quên mật khẩu" }} />
           </>
         ) : (
           <>

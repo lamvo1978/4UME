@@ -12,6 +12,7 @@ using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
 using FourUme.Domain.Entities;
 using FourUme.Infrastructure.Auth;
+using FourUme.Infrastructure.Email;
 using FourUme.Infrastructure.Grammar;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Review;
@@ -36,6 +37,9 @@ public static class DependencyInjection
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddSingleton<PasswordHasher<User>>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<EmailCodeService>();
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+        services.AddHttpClient<IEmailSender, ResendEmailSender>(c => c.Timeout = TimeSpan.FromSeconds(15));
         services.AddScoped<IVocabularyService, VocabularyService>();
         services.AddScoped<IGrammarService, GrammarService>();
         services.AddScoped<IReviewService, ReviewService>();

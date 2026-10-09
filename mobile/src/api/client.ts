@@ -21,6 +21,8 @@ export type AuthUser = {
   displayName: string;
 };
 
+export type SendCodeResult = { resendAfterSeconds: number; expiresInMinutes: number };
+
 export type UserSettings = {
   /** New words per day; also the flashcard batch size. */
   dailyGoal: number;
@@ -276,10 +278,19 @@ export const api = {
   saveToken: (token: string) => AsyncStorage.setItem(TOKEN_KEY, token),
   clearToken: () => AsyncStorage.removeItem(TOKEN_KEY),
   getToken: () => AsyncStorage.getItem(TOKEN_KEY),
-  register: (email: string, password: string, displayName: string) =>
+  sendRegisterCode: (email: string) =>
+    request<SendCodeResult>("/api/auth/register/code", { method: "POST", body: JSON.stringify({ email }) }),
+  register: (email: string, password: string, displayName: string, code: string) =>
     request<AuthUser>("/api/auth/register", {
       method: "POST",
-      body: JSON.stringify({ email, password, displayName }),
+      body: JSON.stringify({ email, password, displayName, code }),
+    }),
+  sendResetCode: (email: string) =>
+    request<SendCodeResult>("/api/auth/password/code", { method: "POST", body: JSON.stringify({ email }) }),
+  resetPassword: (email: string, code: string, newPassword: string) =>
+    request<AuthUser>("/api/auth/password/reset", {
+      method: "POST",
+      body: JSON.stringify({ email, code, newPassword }),
     }),
   login: (email: string, password: string) =>
     request<AuthUser>("/api/auth/login", {

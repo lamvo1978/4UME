@@ -21,7 +21,9 @@ type AuthState = {
   celebration: number | null;
   dismissCelebration: () => void;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, displayName: string) => Promise<void>;
+  register: (email: string, password: string, displayName: string, code: string) => Promise<void>;
+  /** Sets the new password and signs in. */
+  resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshMe: () => Promise<void>;
   updateSettings: (changes: SettingsChange) => Promise<void>;
@@ -135,6 +137,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, [setMe]);
 
+  const signIn = useCallback(
+    async (auth: AuthUser) => {
+      await api.saveToken(auth.accessToken);
+      setUser(auth);
+      setMe(await api.me());
+    },
+    [setMe]
+  );
+
   const value = useMemo<AuthState>(
     () => ({
       ready,
@@ -143,16 +154,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       celebration,
       dismissCelebration: () => setCelebration(null),
       async login(email, password) {
-        const auth = await api.login(email, password);
-        await api.saveToken(auth.accessToken);
-        setUser(auth);
-        setMe(await api.me());
+        await signIn(await api.login(email, password));
       },
-      async register(email, password, displayName) {
-        const auth = await api.register(email, password, displayName);
-        await api.saveToken(auth.accessToken);
-        setUser(auth);
-        setMe(await api.me());
+      async register(email, password, displayName, code) {
+        await signIn(await api.register(email, password, displayName, code));
+      },
+      async resetPassword(email, code, newPassword) {
+        await signIn(await api.resetPassword(email, code, newPassword));
       },
       async logout() {
         await api.clearToken();
@@ -164,7 +172,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refreshMe,
       updateSettings,
     }),
-    [ready, user, me, celebration, setMe, refreshMe, updateSettings]
+    [ready, user, me, celebration, setMe, signIn, refreshMe, updateSettings]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

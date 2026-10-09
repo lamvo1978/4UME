@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
     public DbSet<NotificationLog> NotificationLogs => Set<NotificationLog>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<EmailCode> EmailCodes => Set<EmailCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +33,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.ReminderTime).HasMaxLength(5).IsRequired();
             e.Property(x => x.TimeZone).HasMaxLength(64);
             e.Property(x => x.Role).HasMaxLength(16).IsRequired().HasDefaultValue(UserRoles.User);
+        });
+
+        modelBuilder.Entity<EmailCode>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.Email, x.Purpose }).IsUnique();
+            e.Property(x => x.Email).HasMaxLength(256).IsRequired();
+            e.Property(x => x.Purpose).HasMaxLength(32).IsRequired();
+            e.Property(x => x.CodeHash).HasMaxLength(128).IsRequired();
         });
 
         modelBuilder.Entity<AppSetting>(e =>

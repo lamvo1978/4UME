@@ -1,6 +1,7 @@
 namespace FourUme.Application.Auth;
 
-public record RegisterRequest(string Email, string Password, string DisplayName);
+/// <summary><paramref name="Code"/> is the one mailed by <c>/api/auth/register/code</c>.</summary>
+public record RegisterRequest(string Email, string Password, string DisplayName, string? Code = null);
 public record LoginRequest(string Email, string Password);
 public record AuthResponse(string AccessToken, Guid UserId, string Email, string DisplayName);
 
@@ -46,6 +47,19 @@ public record UpdateSettingsRequest(
 
 public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 public record DeleteAccountRequest(string Password);
+
+public record SendCodeRequest(string Email);
+public record SendCodeResponse(int ResendAfterSeconds, int ExpiresInMinutes);
+public record ResetPasswordRequest(string Email, string Code, string NewPassword);
+
+public static class EmailCodeRules
+{
+    public static readonly TimeSpan Lifetime = TimeSpan.FromMinutes(10);
+    public static readonly TimeSpan ResendAfter = TimeSpan.FromSeconds(60);
+    public static readonly TimeSpan SendWindow = TimeSpan.FromHours(1);
+    public const int MaxSendsPerWindow = 5;
+    public const int MaxAttempts = 5;
+}
 
 public static class UserSettingsRules
 {

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using FourUme.Application.Abstractions;
@@ -18,22 +19,52 @@ public class AuthService(
     IAppDbContext db,
     IOptions<JwtOptions> jwtOptions,
     PasswordHasher<User> passwordHasher,
-    IActivityService activity) : IAuthService
+    IActivityService activity,
+    EmailCodeService codes) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
+    public async Task<SendCodeResponse> SendRegisterCodeAsync(SendCodeRequest request, CancellationToken ct = default)
+    {
+        var email = NormalizeEmail(request.Email);
+        if (await db.Users.AnyAsync(u => u.Email == email, ct))
+            throw new InvalidOperationException("Email đã được dùng.");
+        return await codes.SendAsync(email, EmailCodePurposes.Register, ct);
+    }
+
+    public async Task<SendCodeResponse> SendResetCodeAsync(SendCodeRequest request, CancellationToken ct = default)
+    {
+        var email = NormalizeEmail(request.Email);
+        var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, ct)
+            ?? throw new InvalidOperationException("Không có tài khoản nào dùng email này.");
+        if (user.LockedAt is not null) throw new InvalidOperationException("Tài khoản đã bị khoá.");
+        return await codes.SendAsync(email, EmailCodePurposes.ResetPassword, ct);
+    }
+
+    public async Task<AuthResponse> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default)
+    {
+        var email = NormalizeEmail(request.Email);
+        RequirePassword(request.NewPassword);
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email, ct)
+            ?? throw new InvalidOperationException("Không có tài khoản nào dùng email này.");
+        if (user.LockedAt is not null) throw new InvalidOperationException("Tài khoản đã bị khoá.");
+
+        await codes.ConsumeAsync(email, EmailCodePurposes.ResetPassword, request.Code, ct);
+        user.PasswordHash = passwordHasher.HashPassword(user, request.NewPassword);
+        await db.SaveChangesAsync(ct);
+        return CreateResponse(user);
+    }
+
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
-        var email = request.Email.Trim().ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 6)
-        {
-            throw new InvalidOperationException("Email và mật khẩu (tối thiểu 6 ký tự) là bắt buộc.");
-        }
+        var email = NormalizeEmail(request.Email);
+        RequirePassword(request.Password);
 
         if (await db.Users.AnyAsync(u => u.Email == email, ct))
         {
             throw new InvalidOperationException("Email đã được dùng.");
         }
+        await codes.ConsumeAsync(email, EmailCodePurposes.Register, request.Code, ct);
 
         var user = new User
         {
@@ -131,10 +162,7 @@ public class AuthService(
     {
         var user = await FindUserAsync(userId, ct);
         VerifyPassword(user, request.CurrentPassword, "Mật khẩu hiện tại không đúng.");
-        if (string.IsNullOrEmpty(request.NewPassword) || request.NewPassword.Length < UserSettingsRules.MinPasswordLength)
-        {
-            throw new InvalidOperationException($"Mật khẩu mới cần tối thiểu {UserSettingsRules.MinPasswordLength} ký tự.");
-        }
+        RequirePassword(request.NewPassword);
 
         user.PasswordHash = passwordHasher.HashPassword(user, request.NewPassword);
         await db.SaveChangesAsync(ct);
@@ -153,6 +181,20 @@ public class AuthService(
     private async Task<User> FindUserAsync(Guid userId, CancellationToken ct) =>
         await db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct)
             ?? throw new InvalidOperationException("Không tìm thấy người dùng.");
+
+    private static string NormalizeEmail(string? raw)
+    {
+        var email = (raw ?? "").Trim().ToLowerInvariant();
+        if (email.Length > 256 || !MailAddress.TryCreate(email, out var parsed) || parsed.Address != email || !parsed.Host.Contains('.'))
+            throw new InvalidOperationException("Email không hợp lệ.");
+        return email;
+    }
+
+    private static void RequirePassword(string? password)
+    {
+        if (string.IsNullOrEmpty(password) || password.Length < UserSettingsRules.MinPasswordLength)
+            throw new InvalidOperationException($"Mật khẩu cần tối thiểu {UserSettingsRules.MinPasswordLength} ký tự.");
+    }
 
     private void VerifyPassword(User user, string? password, string error)
     {
