@@ -360,6 +360,10 @@ function query(params: Record<string, string | number | undefined>) {
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string }>("/api/auth/login", json("POST", { email, password })),
+  sendResetCode: (email: string) =>
+    request<{ resendAfterSeconds: number; expiresInMinutes: number }>("/api/auth/password/code", json("POST", { email })),
+  resetPassword: (email: string, code: string, newPassword: string) =>
+    request<{ accessToken: string }>("/api/auth/password/reset", json("POST", { email, code, newPassword })),
   me: () => request<AdminIdentity>("/api/admin/me"),
   overview: () => request<Overview>("/api/admin/overview"),
 

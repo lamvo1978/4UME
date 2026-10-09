@@ -5,6 +5,8 @@ type AuthState = {
   ready: boolean;
   admin: AdminIdentity | null;
   login: (email: string, password: string) => Promise<void>;
+  /** Sets the new password with the mailed code, then signs in. */
+  resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -32,8 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setReady(true));
   }, [logout]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const { accessToken } = await api.login(email, password);
+  const signIn = useCallback(async (accessToken: string) => {
     tokenStore.set(accessToken);
     try {
       setAdmin(await api.me());
@@ -44,7 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  return <AuthContext.Provider value={{ ready, admin, login, logout }}>{children}</AuthContext.Provider>;
+  const login = useCallback(
+    async (email: string, password: string) => signIn((await api.login(email, password)).accessToken),
+    [signIn]
+  );
+
+  const resetPassword = useCallback(
+    async (email: string, code: string, newPassword: string) =>
+      signIn((await api.resetPassword(email, code, newPassword)).accessToken),
+    [signIn]
+  );
+
+  return <AuthContext.Provider value={{ ready, admin, login, resetPassword, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
