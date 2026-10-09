@@ -23,6 +23,7 @@ import { api, type AdminSettings, type NotificationConfig } from "../api";
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { WEEKDAY_NAMES } from "../history/meta";
+import { mobileActionBarStyle } from "../layout/mobileActionBar";
 import { fullTime, notifyError, notifySaved } from "../lib";
 import { DayTimeline } from "../settings/DayTimeline";
 import { LIMITS, validate } from "../settings/notificationRules";
@@ -282,7 +283,7 @@ export function SettingsPage() {
       </Section>
 
       {!desktop ? (
-        <Paper shadow="md" p="sm" style={{ position: "fixed", left: 0, right: 0, bottom: 64, zIndex: 50, borderRadius: 0 }}>
+        <Paper shadow="md" p="sm" style={mobileActionBarStyle}>
           <Group gap="sm" wrap="nowrap">
             {actions}
           </Group>

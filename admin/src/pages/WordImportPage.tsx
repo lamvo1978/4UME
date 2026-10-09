@@ -22,6 +22,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type ImportStatus, type ImportWordsResult } from "../api";
+import { mobileActionBarStyle } from "../layout/mobileActionBar";
 import { IMPORT_STATUS, notifyError, posLabel } from "../lib";
 import { downloadTemplate, parseWordFile, type ParsedSheet } from "../sheets";
 
@@ -332,7 +333,7 @@ export function WordImportPage() {
             p="sm"
             radius={desktop ? "lg" : 0}
             shadow="md"
-            style={desktop ? { position: "sticky", bottom: 16 } : { position: "fixed", left: 0, right: 0, bottom: 64, zIndex: 50 }}
+            style={desktop ? { position: "sticky", bottom: 16 } : mobileActionBarStyle}
           >
             <Group justify="space-between" wrap="nowrap" gap="sm">
               <Text fz="sm" c="dimmed" visibleFrom="sm">

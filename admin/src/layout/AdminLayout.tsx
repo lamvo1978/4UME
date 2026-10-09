@@ -76,7 +76,12 @@ export function AdminLayout() {
         </Group>
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main
+        // Mantine grows the footer by the iPhone home-indicator inset but not the page padding.
+        style={{
+          paddingBottom: "calc(var(--app-shell-footer-offset, 0rem) + var(--app-shell-padding) + env(safe-area-inset-bottom))",
+        }}
+      >
         <Outlet />
       </AppShell.Main>
 

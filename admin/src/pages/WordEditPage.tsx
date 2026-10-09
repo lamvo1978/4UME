@@ -29,6 +29,7 @@ import { Select } from "../components/AppSelect";
 import { ImageField } from "../components/ImageField";
 import { WordPreview } from "../components/WordPreview";
 import { HistoryDrawer } from "../history/HistoryDrawer";
+import { mobileActionBarStyle } from "../layout/mobileActionBar";
 import { notifyError, notifySaved, posLabel, speak } from "../lib";
 
 const EMPTY: SaveWord = {
@@ -327,7 +328,7 @@ export function WordEditPage() {
         <Paper
           shadow="md"
           p="sm"
-          style={{ position: "fixed", left: 0, right: 0, bottom: 64, zIndex: 50, borderRadius: 0 }}
+          style={mobileActionBarStyle}
         >
           <Group gap="sm" wrap="nowrap">
             {actions}

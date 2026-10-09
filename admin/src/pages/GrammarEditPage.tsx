@@ -61,6 +61,7 @@ import {
 import { SectionBodyEditor, SectionCard } from "../grammar/SectionEditor";
 import { TheoryPreview } from "../grammar/TheoryPreview";
 import { HistoryDrawer } from "../history/HistoryDrawer";
+import { mobileActionBarStyle } from "../layout/mobileActionBar";
 import { notifyError, notifySaved } from "../lib";
 
 const slugify = (s: string) =>
@@ -563,7 +564,7 @@ export function GrammarEditPage() {
       </Tabs>
 
       {!desktop ? (
-        <Paper shadow="md" p="sm" style={{ position: "fixed", left: 0, right: 0, bottom: 64, zIndex: 50, borderRadius: 0 }}>
+        <Paper shadow="md" p="sm" style={mobileActionBarStyle}>
           <Group gap="sm" wrap="nowrap">
             {actions}
           </Group>
