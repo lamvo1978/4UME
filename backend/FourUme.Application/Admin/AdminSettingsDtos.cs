@@ -1,4 +1,5 @@
 using FourUme.Application.About;
+using FourUme.Application.Premium;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Pronunciation;
@@ -45,4 +46,9 @@ public interface IAdminSettingsService
     Task<AdminAboutDto> SaveAboutAsync(AboutContent content, CancellationToken ct = default);
     Task<AdminAboutDto> ResetAboutAsync(CancellationToken ct = default);
     Task RestoreAboutAsync(AboutContent content, CancellationToken ct = default);
+    Task<AdminPremiumPerksDto> GetPremiumPerksAsync(CancellationToken ct = default);
+    /// <summary>Validates with <see cref="PremiumPerkRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminPremiumPerksDto> SavePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default);
+    Task<AdminPremiumPerksDto> ResetPremiumPerksAsync(CancellationToken ct = default);
+    Task RestorePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default);
 }

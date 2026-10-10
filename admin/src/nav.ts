@@ -9,6 +9,7 @@ import {
   IconPhoto,
   IconPhotoSearch,
   IconSettings,
+  IconSparkles,
   IconUsers,
   IconWriting,
   type Icon,
@@ -27,6 +28,7 @@ export const NAV: NavItem[] = [
   { to: "/history", label: "Lịch sử", icon: IconHistory },
   { to: "/users", label: "Người dùng", icon: IconUsers },
   { to: "/notifications", label: "Thông báo", icon: IconBell },
+  { to: "/premium", label: "Quyền lợi Premium", icon: IconSparkles },
   { to: "/about", label: "Giới thiệu app", icon: IconInfoCircle },
   { to: "/settings", label: "Cài đặt", icon: IconSettings },
 ];

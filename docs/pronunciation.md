@@ -22,7 +22,7 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học.
 - Premium do admin bật tay: *Người dùng → chi tiết → thẻ Premium → Bật / Gia hạn (1, 3, 6 tháng, 1 năm) / Tắt*. Gia hạn cộng thêm vào hạn đang có. Chưa có thanh toán trong app.
 - Danh sách người dùng có bộ lọc **Premium** và huy hiệu vương miện.
-- App: dòng gói ngay dưới tên trên **Hồ sơ** mở màn **Premium** (so sánh lượt chấm, số lượt còn hôm nay). Chưa có nút mua; màn này **không** hướng dẫn thanh toán ngoài app (Apple không cho phép khi bán quyền lợi số mà không qua In‑App Purchase).
+- App: dòng gói ngay dưới tên trên **Hồ sơ** mở màn **Premium** (danh sách quyền lợi sửa trên admin *Quyền lợi Premium*, so sánh lượt chấm, số lượt còn hôm nay). Chưa có nút mua; màn này **không** hướng dẫn thanh toán ngoài app (Apple không cho phép khi bán quyền lợi số mà không qua In‑App Purchase).
 
 ## Cài đặt (web admin → Cài đặt → Kiểm tra giọng đọc)
 
@@ -51,4 +51,4 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
   - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
   - Cần: tài khoản AdMob, app đã lên store, trang chính sách quyền riêng tư, khai báo quảng cáo trong App Privacy / Data safety, hộp thoại App Tracking Transparency trên iOS, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc…).
   - Doanh thu banner ở Việt Nam thấp (ước khoảng 0,1–0,5 USD / 1.000 lượt hiển thị); cần cỡ vài trăm người dùng mỗi ngày mới đủ tiền VPS.
-  - Khi có quảng cáo: thêm dòng "Không quảng cáo" vào màn *Premium*, và mục quảng cáo trong màn *Giới thiệu & bản quyền*.
+  - Khi có quảng cáo: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong admin *Quyền lợi Premium*, và thêm mục quảng cáo trong màn *Giới thiệu & bản quyền*.

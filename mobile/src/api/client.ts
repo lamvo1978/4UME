@@ -300,6 +300,9 @@ export type AboutContent = {
   sections: { title: string; items: { icon: string; title: string; body: string; url: string | null }[] }[];
 };
 
+/** Benefits on the Premium screen, edited in the admin web; hidden ones are already filtered out. */
+export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean };
+
 export type PronunciationStatus = {
   enabled: boolean;
   premium: boolean;
@@ -462,6 +465,7 @@ export const api = {
     }),
   pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
   about: () => request<AboutContent>("/api/about"),
+  premiumPerks: () => request<{ perks: PremiumPerk[] }>("/api/premium-perks").then((r) => r.perks),
   assessPronunciation,
   placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
   /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */

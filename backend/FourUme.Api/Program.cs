@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.RateLimiting;
 using FourUme.Api;
 using FourUme.Application.About;
+using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
@@ -299,6 +300,8 @@ app.MapGet("/api/config", async (INotificationService notifications, IListeningS
     Results.Ok(new AppConfigDto(await notifications.GetConfigAsync(), await listening.GetConfigAsync())));
 
 app.MapGet("/api/about", async (IAboutService about, CancellationToken ct) => Results.Ok(AboutRules.Visible(await about.GetAsync(ct))));
+app.MapGet("/api/premium-perks", async (IPremiumPerksService perks, CancellationToken ct) =>
+    Results.Ok(PremiumPerkRules.Visible(await perks.GetAsync(ct))));
 
 app.MapGet("/api/vocabulary/decks", async (ClaimsPrincipal principal, IVocabularyService vocab, string? level) =>
 {

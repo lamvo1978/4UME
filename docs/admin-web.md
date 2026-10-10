@@ -151,6 +151,15 @@ Nội dung màn *Hồ sơ → Cài đặt → Giới thiệu & bản quyền* tr
 - **Trích dẫn CEFR-J cố định** trong app (giấy phép yêu cầu đúng nguyên văn), admin không sửa / ẩn được.
 - Lưu trong `AppSettings` (khoá `about`), có *Mặc định* và lịch sử như trang Cài đặt. App đọc `GET /api/about` (công khai, đã lọc phần ẩn) mỗi lần mở màn; lỗi mạng thì chỉ hiện câu giới thiệu mặc định + trích dẫn CEFR-J.
 
+### 11. Quyền lợi Premium
+
+Danh sách *Quyền lợi Premium* trên màn Premium trong app (trang `/premium`):
+
+- Mỗi dòng: biểu tượng (danh sách cố định `PremiumPerkRules.Icons`), tiêu đề, mô tả ngắn; thêm / xoá / đổi thứ tự (tối đa 12 dòng). `{n}` trong tiêu đề hoặc mô tả được thay bằng số lượt chấm Premium mỗi ngày.
+- Công tắc **Đang hiện trong app** và **Nhãn "Sắp có"** cho từng dòng. Trang cảnh báo khi có quyền lợi *Sắp có* đang hiện: App Store / Google Play có thể từ chối nếu màn mua liệt kê tính năng chưa có, nên tắt nhãn hoặc ẩn dòng trước khi mở bán.
+- Mặc định: chấm phát âm chi tiết, và các dòng *Sắp có* (không quảng cáo, thống kê âm hay sai, thêm lượt đóng băng, nghe không cần mạng), ủng hộ 4UME. Ba gợi ý ẩn sẵn: luyện nói cả câu, bộ từ chuyên đề, huy hiệu Premium.
+- Lưu trong `AppSettings` (khoá `premium`), có *Mặc định* và lịch sử. App đọc `GET /api/premium-perks` (công khai, chỉ dòng đang hiện); lỗi mạng thì ẩn khung quyền lợi.
+
 ## Responsive
 
 | | Máy tính (≥ 1024px) | Điện thoại |
@@ -194,6 +203,7 @@ Nội dung màn *Hồ sơ → Cài đặt → Giới thiệu & bản quyền* tr
 | Thông báo | `GET/POST /api/admin/notifications`, `GET /api/admin/notifications/stats` (chưa làm) |
 | Cài đặt hệ thống | `GET /api/admin/settings`, `PUT /api/admin/settings/notifications`, `POST /api/admin/settings/notifications/reset` |
 | Giới thiệu app | `GET/PUT /api/admin/about`, `POST /api/admin/about/reset`; app: `GET /api/about` |
+| Quyền lợi Premium | `GET/PUT /api/admin/premium-perks`, `POST /api/admin/premium-perks/reset`; app: `GET /api/premium-perks` |
 | Lịch sử | `GET /api/admin/audit?entityType=&entityId=&q=&page=`, `GET /api/admin/audit/{id}` (trước / sau), `POST /api/admin/audit/{id}/restore` |
 
 ### Thay đổi dữ liệu

@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using FourUme.Application.About;
+using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
@@ -82,6 +83,11 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveAboutAsync(c, ct)));
         admin.MapPost("/about/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetAboutAsync(ct)));
+        admin.MapGet("/premium-perks", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetPremiumPerksAsync(ct)));
+        admin.MapPut("/premium-perks", async (PremiumPerks p, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SavePremiumPerksAsync(p, ct)));
+        admin.MapPost("/premium-perks/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetPremiumPerksAsync(ct)));
 
         admin.MapGet("/vocabulary/meta", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMetaAsync(ct)));
 

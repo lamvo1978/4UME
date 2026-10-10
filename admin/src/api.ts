@@ -149,6 +149,9 @@ export type AboutItem = { icon: string; title: string; body: string; url: string
 export type AboutSection = { title: string; items: AboutItem[]; visible: boolean };
 export type AboutContent = { tagline: string; sections: AboutSection[] };
 export type AdminAbout = { value: AboutContent; defaults: AboutContent; updatedAt: string | null };
+export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean; visible: boolean };
+export type PremiumPerks = { perks: PremiumPerk[] };
+export type AdminPremiumPerks = { value: PremiumPerks; defaults: PremiumPerks; updatedAt: string | null };
 
 export const isPremium = (u: Pick<AdminUser, "premiumUntil">) => !!u.premiumUntil && new Date(u.premiumUntil) > new Date();
 
@@ -510,6 +513,9 @@ export const api = {
   about: () => request<AdminAbout>("/api/admin/about"),
   saveAbout: (c: AboutContent) => request<AdminAbout>("/api/admin/about", json("PUT", c)),
   resetAbout: () => request<AdminAbout>("/api/admin/about/reset", { method: "POST" }),
+  premiumPerks: () => request<AdminPremiumPerks>("/api/admin/premium-perks"),
+  savePremiumPerks: (p: PremiumPerks) => request<AdminPremiumPerks>("/api/admin/premium-perks", json("PUT", p)),
+  resetPremiumPerks: () => request<AdminPremiumPerks>("/api/admin/premium-perks/reset", { method: "POST" }),
 
   meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
 

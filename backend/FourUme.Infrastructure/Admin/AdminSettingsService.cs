@@ -4,6 +4,7 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Premium;
 using FourUme.Application.Pronunciation;
 using FourUme.Domain.Entities;
 using FourUme.Infrastructure.Pronunciation;
@@ -18,8 +19,10 @@ public class AdminSettingsService(
     IPronunciationService pronunciation,
     AzurePronunciationClient azure,
     IAboutService about,
+    IPremiumPerksService premiumPerks,
     Auditor auditor) : IAdminSettingsService
 {
+    private const string PremiumSummary = "Quyền lợi Premium";
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
     private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
@@ -116,6 +119,38 @@ public class AdminSettingsService(
         var problems = AboutRules.Validate(next);
         if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
         await WriteAsync(AboutContent.SettingKey, AboutSummary, action, await about.GetAsync(ct), next, ct);
+    }
+
+    public async Task<AdminPremiumPerksDto> GetPremiumPerksAsync(CancellationToken ct = default)
+    {
+        var updated = await db.AppSettings.AsNoTracking()
+            .Where(s => s.Key == PremiumPerks.SettingKey)
+            .Select(s => (DateTimeOffset?)s.UpdatedAt)
+            .FirstOrDefaultAsync(ct);
+        return new AdminPremiumPerksDto(await premiumPerks.GetAsync(ct), PremiumPerks.Default(), updated);
+    }
+
+    public async Task<AdminPremiumPerksDto> SavePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default)
+    {
+        await ApplyPremiumPerksAsync(perks, AuditActions.Update, ct);
+        return await GetPremiumPerksAsync(ct);
+    }
+
+    public async Task<AdminPremiumPerksDto> ResetPremiumPerksAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(PremiumPerks.SettingKey, PremiumSummary, await premiumPerks.GetAsync(ct), PremiumPerks.Default(), ct);
+        return await GetPremiumPerksAsync(ct);
+    }
+
+    public Task RestorePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default) =>
+        ApplyPremiumPerksAsync(perks, AuditActions.Restore, ct);
+
+    private async Task ApplyPremiumPerksAsync(PremiumPerks perks, string action, CancellationToken ct)
+    {
+        var next = PremiumPerkRules.Normalize(perks);
+        var problems = PremiumPerkRules.Validate(next);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(PremiumPerks.SettingKey, PremiumSummary, action, await premiumPerks.GetAsync(ct), next, ct);
     }
 
     private async Task ApplyNotificationsAsync(NotificationConfig config, string action, CancellationToken ct)

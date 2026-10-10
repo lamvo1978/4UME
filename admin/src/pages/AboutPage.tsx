@@ -62,7 +62,7 @@ const CEFRJ_CITATION =
 const newItem = (): AboutItem => ({ icon: "information-circle-outline", title: "", body: "", url: null, visible: true });
 const newSection = (): AboutSection => ({ title: "", items: [newItem()], visible: true });
 
-function move<T>(list: T[], from: number, to: number) {
+export function move<T>(list: T[], from: number, to: number) {
   if (to < 0 || to >= list.length) return list;
   const next = [...list];
   const [x] = next.splice(from, 1);
@@ -341,7 +341,7 @@ export function AboutPage() {
   );
 }
 
-function Order({
+export function Order({
   index,
   count,
   onMove,

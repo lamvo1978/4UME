@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { api, PronunciationStatus } from "../api/client";
+import { api, PremiumPerk, PronunciationStatus } from "../api/client";
 import { scoreColor, scoreSoft, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -28,9 +28,13 @@ const ALWAYS_FREE: { icon: ComponentProps<typeof Ionicons>["name"]; text: string
   { icon: "mic-outline", text: "Ghi âm và tự so sánh với giọng mẫu, không giới hạn" },
 ];
 
+const perkIcon = (name: string): ComponentProps<typeof Ionicons>["name"] =>
+  name in Ionicons.glyphMap ? (name as ComponentProps<typeof Ionicons>["name"]) : "sparkles-outline";
+
 export function PremiumScreen() {
   const insets = useSafeAreaInsets();
   const [status, setStatus] = useState<PronunciationStatus | null>(null);
+  const [perks, setPerks] = useState<PremiumPerk[]>([]);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -38,6 +42,10 @@ export function PremiumScreen() {
       .pronunciationStatus()
       .then(setStatus)
       .catch(() => setFailed(true));
+    api
+      .premiumPerks()
+      .then(setPerks)
+      .catch(() => setPerks([]));
   }, []);
 
   if (!status) {
@@ -73,6 +81,28 @@ export function PremiumScreen() {
           </View>
         ) : null}
       </View>
+
+      {perks.length > 0 ? (
+        <>
+          <Text style={[styles.sectionTitle, styles.sectionGap]}>Quyền lợi Premium</Text>
+          <View style={styles.card}>
+            {perks.map((perk, i) => (
+              <View key={`${perk.title}-${i}`} style={[styles.perkRow, i > 0 && styles.freeRowBorder]}>
+                <View style={styles.perkIcon}>
+                  <Ionicons name={perkIcon(perk.icon)} size={18} color={colors.accent} />
+                </View>
+                <View style={styles.flex}>
+                  <View style={styles.perkHead}>
+                    <Text style={styles.perkTitle}>{perk.title.replace("{n}", String(status.premiumDailyLimit))}</Text>
+                    {perk.soon ? <Text style={styles.soonTag}>Sắp có</Text> : null}
+                  </View>
+                  {perk.body ? <Text style={styles.perkBody}>{perk.body}</Text> : null}
+                </View>
+              </View>
+            ))}
+          </View>
+        </>
+      ) : null}
 
       <View style={styles.sectionHead}>
         <Text style={styles.sectionTitle}>Kết quả chấm trông thế này</Text>
@@ -292,5 +322,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   freeText: { flex: 1, fontSize: 14, lineHeight: 20, color: colors.ink },
+  perkRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm, paddingTop: spacing.xs },
+  perkIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.flameSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  perkHead: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 6 },
+  perkTitle: { fontSize: 15, fontWeight: "700", color: colors.ink, flexShrink: 1 },
+  perkBody: { marginTop: 2, fontSize: 13, lineHeight: 18, color: colors.muted },
+  soonTag: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors.flameDeep,
+    borderWidth: 1,
+    borderColor: colors.flame,
+    borderRadius: 99,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
   soon: { marginTop: spacing.lg, fontSize: 12, color: colors.muted, textAlign: "center" },
 });

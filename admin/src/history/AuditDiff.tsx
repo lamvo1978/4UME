@@ -1,5 +1,5 @@
 import { Image, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { mediaSrc, type AboutSection, type AuditDetail } from "../api";
+import { mediaSrc, type AboutSection, type AuditDetail, type PremiumPerk } from "../api";
 import { sectionLabel } from "../grammar/meta";
 import { kindLabel } from "../listening/meta";
 import { posLabel } from "../lib";
@@ -18,6 +18,7 @@ function format(key: string, value: unknown): string {
   if (key === "kind" && typeof value === "string") return kindLabel(value);
   if (key === "weeklyDay" && typeof value === "number") return WEEKDAY_NAMES[value] ?? String(value);
   if (key === "sections" && Array.isArray(value)) return aboutSections(value as AboutSection[]);
+  if (key === "perks" && Array.isArray(value)) return premiumPerks(value as PremiumPerk[]);
   if (Array.isArray(value)) return value.length ? `ngày ${value.join(", ")}` : "tắt";
   return String(value);
 }
@@ -31,6 +32,12 @@ function aboutSections(sections: AboutSection[]): string {
       return `${s.title}${s.visible ? "" : " (ẩn)"}: ${items}`;
     })
     .join("\n");
+}
+
+/** One line per perk, with its "Sắp có" / hidden flags. */
+function premiumPerks(perks: PremiumPerk[]): string {
+  if (!perks.length) return "—";
+  return perks.map((p) => `${p.title}${p.soon ? " (sắp có)" : ""}${p.visible ? "" : " (ẩn)"}`).join("\n");
 }
 
 /** Field-by-field view of an audit entry: changed fields for edits, all fields for creations and deletions. */
