@@ -1,5 +1,7 @@
+using FourUme.Application.About;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
+using FourUme.Infrastructure.About;
 using FourUme.Application.Admin;
 using FourUme.Infrastructure.Admin;
 using FourUme.Infrastructure.Media;
@@ -63,6 +65,7 @@ public static class DependencyInjection
         services.AddSingleton<ListeningAudioJobs>();
         services.AddSingleton<AzurePronunciationClient>();
         services.AddScoped<IPronunciationService, PronunciationService>();
+        services.AddScoped<IAboutService, AboutService>();
         services.Configure<GeminiOptions>(configuration.GetSection(GeminiOptions.SectionName));
         services.AddHttpClient(GeminiDraftService.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(90));
         services.AddScoped<IListeningDraftService, GeminiDraftService>();

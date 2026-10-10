@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FourUme.Application.About;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Listening;
@@ -16,11 +17,13 @@ public class AdminSettingsService(
     IListeningService listening,
     IPronunciationService pronunciation,
     AzurePronunciationClient azure,
+    IAboutService about,
     Auditor auditor) : IAdminSettingsService
 {
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
     private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
+    private const string AboutSummary = "Nội dung Giới thiệu & bản quyền";
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     public async Task<AdminSettingsDto> GetAsync(CancellationToken ct = default)
@@ -82,6 +85,38 @@ public class AdminSettingsService(
 
     public Task RestorePronunciationAsync(PronunciationConfig config, CancellationToken ct = default) =>
         ApplyPronunciationAsync(config, AuditActions.Restore, ct);
+
+    public async Task<AdminAboutDto> GetAboutAsync(CancellationToken ct = default)
+    {
+        var updated = await db.AppSettings.AsNoTracking()
+            .Where(s => s.Key == AboutContent.SettingKey)
+            .Select(s => (DateTimeOffset?)s.UpdatedAt)
+            .FirstOrDefaultAsync(ct);
+        return new AdminAboutDto(await about.GetAsync(ct), AboutContent.Default(), updated);
+    }
+
+    public async Task<AdminAboutDto> SaveAboutAsync(AboutContent content, CancellationToken ct = default)
+    {
+        await ApplyAboutAsync(content, AuditActions.Update, ct);
+        return await GetAboutAsync(ct);
+    }
+
+    public async Task<AdminAboutDto> ResetAboutAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(AboutContent.SettingKey, AboutSummary, await about.GetAsync(ct), AboutContent.Default(), ct);
+        return await GetAboutAsync(ct);
+    }
+
+    public Task RestoreAboutAsync(AboutContent content, CancellationToken ct = default) =>
+        ApplyAboutAsync(content, AuditActions.Restore, ct);
+
+    private async Task ApplyAboutAsync(AboutContent content, string action, CancellationToken ct)
+    {
+        var next = AboutRules.Normalize(content);
+        var problems = AboutRules.Validate(next);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(AboutContent.SettingKey, AboutSummary, action, await about.GetAsync(ct), next, ct);
+    }
 
     private async Task ApplyNotificationsAsync(NotificationConfig config, string action, CancellationToken ct)
     {

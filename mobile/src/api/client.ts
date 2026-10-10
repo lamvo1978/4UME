@@ -294,6 +294,12 @@ export type ReviewAnswerResult = {
 };
 
 /** Detailed (Azure) checks left today; `remaining` is 0 also when the feature is off or the monthly budget is spent. */
+/** Content of the About screen, edited in the admin web. Hidden sections/items are already filtered out. */
+export type AboutContent = {
+  tagline: string;
+  sections: { title: string; items: { icon: string; title: string; body: string; url: string | null }[] }[];
+};
+
 export type PronunciationStatus = {
   enabled: boolean;
   premium: boolean;
@@ -455,6 +461,7 @@ export const api = {
       body: JSON.stringify({ wordId, mistakes }),
     }),
   pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
+  about: () => request<AboutContent>("/api/about"),
   assessPronunciation,
   placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
   /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */

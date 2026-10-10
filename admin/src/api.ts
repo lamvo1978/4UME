@@ -144,6 +144,12 @@ export type AdminSettings = {
   };
 };
 
+/** The app's "Giới thiệu & bản quyền" screen; the CEFR-J citation is fixed in the app and not part of it. */
+export type AboutItem = { icon: string; title: string; body: string; url: string | null; visible: boolean };
+export type AboutSection = { title: string; items: AboutItem[]; visible: boolean };
+export type AboutContent = { tagline: string; sections: AboutSection[] };
+export type AdminAbout = { value: AboutContent; defaults: AboutContent; updatedAt: string | null };
+
 export const isPremium = (u: Pick<AdminUser, "premiumUntil">) => !!u.premiumUntil && new Date(u.premiumUntil) > new Date();
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
@@ -501,6 +507,9 @@ export const api = {
   savePronunciationSettings: (c: PronunciationConfig) =>
     request<AdminSettings>("/api/admin/settings/pronunciation", json("PUT", c)),
   resetPronunciationSettings: () => request<AdminSettings>("/api/admin/settings/pronunciation/reset", { method: "POST" }),
+  about: () => request<AdminAbout>("/api/admin/about"),
+  saveAbout: (c: AboutContent) => request<AdminAbout>("/api/admin/about", json("PUT", c)),
+  resetAbout: () => request<AdminAbout>("/api/admin/about/reset", { method: "POST" }),
 
   meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
 

@@ -1,3 +1,4 @@
+using FourUme.Application.About;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Pronunciation;
@@ -39,4 +40,9 @@ public interface IAdminSettingsService
     Task<AdminSettingsDto> SavePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
     Task<AdminSettingsDto> ResetPronunciationAsync(CancellationToken ct = default);
     Task RestorePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
+    Task<AdminAboutDto> GetAboutAsync(CancellationToken ct = default);
+    /// <summary>Validates with <see cref="AboutRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminAboutDto> SaveAboutAsync(AboutContent content, CancellationToken ct = default);
+    Task<AdminAboutDto> ResetAboutAsync(CancellationToken ct = default);
+    Task RestoreAboutAsync(AboutContent content, CancellationToken ct = default);
 }

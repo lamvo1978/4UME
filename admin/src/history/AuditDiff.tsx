@@ -1,5 +1,5 @@
 import { Image, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { mediaSrc, type AuditDetail } from "../api";
+import { mediaSrc, type AboutSection, type AuditDetail } from "../api";
 import { sectionLabel } from "../grammar/meta";
 import { kindLabel } from "../listening/meta";
 import { posLabel } from "../lib";
@@ -17,8 +17,20 @@ function format(key: string, value: unknown): string {
   if (key === "role") return value === "admin" ? "Quản trị" : "Người học";
   if (key === "kind" && typeof value === "string") return kindLabel(value);
   if (key === "weeklyDay" && typeof value === "number") return WEEKDAY_NAMES[value] ?? String(value);
+  if (key === "sections" && Array.isArray(value)) return aboutSections(value as AboutSection[]);
   if (Array.isArray(value)) return value.length ? `ngày ${value.join(", ")}` : "tắt";
   return String(value);
+}
+
+/** One line per About section: title, visibility and its items (hidden ones marked). */
+function aboutSections(sections: AboutSection[]): string {
+  if (!sections.length) return "—";
+  return sections
+    .map((s) => {
+      const items = s.items.map((i) => (i.visible ? i.title : `${i.title} (ẩn)`)).join(", ");
+      return `${s.title}${s.visible ? "" : " (ẩn)"}: ${items}`;
+    })
+    .join("\n");
 }
 
 /** Field-by-field view of an audit entry: changed fields for edits, all fields for creations and deletions. */

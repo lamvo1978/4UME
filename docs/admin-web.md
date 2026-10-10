@@ -142,6 +142,15 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 - Nút **Khôi phục mặc định** (xoá thông số đã lưu, quay về mặc định trong code).
 - Mọi thay đổi được ghi vào lịch sử thay đổi và khôi phục được. App nhận thông số mới qua `GET /api/config`.
 
+### 10. Giới thiệu app
+
+Nội dung màn *Hồ sơ → Giới thiệu & bản quyền* trong app (trang `/about`):
+
+- Sửa câu giới thiệu dưới logo; thêm / xoá / đổi thứ tự các mục (tiêu đề + các dòng). Mỗi dòng có biểu tượng (chọn trong danh sách Ionicons cố định, `AboutRules.Icons`), tiêu đề, nội dung, liên kết `https://` không bắt buộc (chạm trong app để mở).
+- Công tắc **ẩn / hiện** cho từng mục và từng dòng; mục không còn dòng nào hiện thì app không hiển thị.
+- **Trích dẫn CEFR-J cố định** trong app (giấy phép yêu cầu đúng nguyên văn), admin không sửa / ẩn được.
+- Lưu trong `AppSettings` (khoá `about`), có *Mặc định* và lịch sử như trang Cài đặt. App đọc `GET /api/about` (công khai, đã lọc phần ẩn) mỗi lần mở màn; lỗi mạng thì chỉ hiện câu giới thiệu mặc định + trích dẫn CEFR-J.
+
 ## Responsive
 
 | | Máy tính (≥ 1024px) | Điện thoại |
@@ -184,6 +193,7 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 | Người dùng | `GET /api/admin/users?q=&filter=&sort=&page=`, `POST /api/admin/users` (`{email, displayName, password, role}`), `GET /api/admin/users/{id}`, `PUT /api/admin/users/{id}/role` (`{role}`), `PUT /api/admin/users/{id}/lock` (`{locked}`) |
 | Thông báo | `GET/POST /api/admin/notifications`, `GET /api/admin/notifications/stats` (chưa làm) |
 | Cài đặt hệ thống | `GET /api/admin/settings`, `PUT /api/admin/settings/notifications`, `POST /api/admin/settings/notifications/reset` |
+| Giới thiệu app | `GET/PUT /api/admin/about`, `POST /api/admin/about/reset`; app: `GET /api/about` |
 | Lịch sử | `GET /api/admin/audit?entityType=&entityId=&q=&page=`, `GET /api/admin/audit/{id}` (trước / sau), `POST /api/admin/audit/{id}/restore` |
 
 ### Thay đổi dữ liệu

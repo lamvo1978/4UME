@@ -39,7 +39,7 @@ export function entityPath(type: string, id: string) {
     case "user":
       return `/users/${id}`;
     case "settings":
-      return "/settings";
+      return id === "about" ? "/about" : "/settings";
     default:
       return null;
   }
@@ -97,5 +97,7 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     freeDailyLimit: "Lượt chấm miễn phí mỗi ngày",
     premiumDailyLimit: "Lượt chấm Premium mỗi ngày",
     monthlyMinutesCap: "Giới hạn phút Azure mỗi tháng",
+    tagline: "Câu giới thiệu",
+    sections: "Các mục",
   },
 };

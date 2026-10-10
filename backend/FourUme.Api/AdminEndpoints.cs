@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using FourUme.Application.About;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
@@ -76,6 +77,11 @@ public static class AdminEndpoints
             Results.Ok(await s.SavePronunciationAsync(c, ct)));
         admin.MapPost("/settings/pronunciation/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetPronunciationAsync(ct)));
+        admin.MapGet("/about", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetAboutAsync(ct)));
+        admin.MapPut("/about", async (AboutContent c, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveAboutAsync(c, ct)));
+        admin.MapPost("/about/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetAboutAsync(ct)));
 
         admin.MapGet("/vocabulary/meta", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMetaAsync(ct)));
 

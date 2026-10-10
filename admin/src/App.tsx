@@ -17,6 +17,7 @@ import { WordsPage } from "./pages/WordsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { AboutPage } from "./pages/AboutPage";
 import { UserDetailPage } from "./pages/UserDetailPage";
 import { UsersPage } from "./pages/UsersPage";
 
@@ -70,6 +71,7 @@ export function App() {
         <Route path="users/:id" element={<UserDetailPage />} />
         <Route path="notifications" element={<ComingSoonPage title="Thông báo" phase="giai đoạn thông báo 2" />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
