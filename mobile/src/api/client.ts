@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { File } from "expo-file-system";
 import { Platform } from "react-native";
 
 const TOKEN_KEY = "fourume.token";
@@ -376,10 +377,8 @@ async function assessPronunciation(wordId: string, recordingUri: string): Promis
   if (Platform.OS === "web") {
     form.append("audio", await (await fetch(recordingUri)).blob(), "recording.webm");
   } else {
-    const name = recordingUri.split("/").pop() || "recording.m4a";
-    const type = name.endsWith(".wav") ? "audio/wav" : "audio/mp4";
-    // React Native's FormData uploads a local file from { uri, name, type }.
-    form.append("audio", { uri: recordingUri, name, type } as unknown as Blob);
+    // Expo's fetch rejects React Native's { uri, name, type } parts; it needs a Blob-like File.
+    form.append("audio", new File(recordingUri));
   }
   const auth = await authHeaders();
   const res = await fetch(`${API_BASE}/api/pronunciation/assess`, {

@@ -93,15 +93,26 @@ export function SpeakExercise({
         setPhase("error");
         return;
       }
-      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
-      await recorder.prepareToRecordAsync();
+      await prepareRecorder();
       recorder.record();
       recording.current = true;
       setPhase("recording");
       timer.current = setTimeout(() => void stop(), MAX_SECONDS * 1000);
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : "Không bật được micro.");
+    } catch {
+      setMessage("Chưa bật được micro. Bạn bấm Đọc lại nhé.");
       setPhase("error");
+    }
+  }
+
+  /** iOS can refuse right after the sample voice or the permission prompt, before the audio session switches. */
+  async function prepareRecorder() {
+    try {
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await recorder.prepareToRecordAsync();
+    } catch {
+      await new Promise((r) => setTimeout(r, 400));
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await recorder.prepareToRecordAsync();
     }
   }
 
