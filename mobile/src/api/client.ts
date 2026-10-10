@@ -303,6 +303,7 @@ export type PronunciationStatus = {
   remaining: number;
   serviceAvailable: boolean;
   premiumDailyLimit: number;
+  freeDailyLimit: number;
 };
 
 export type PhonemeScore = { phoneme: string; score: number };

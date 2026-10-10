@@ -4,12 +4,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Constants from "expo-constants";
 import { ComponentProps, useCallback, useEffect, useState } from "react";
 import { Alert, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, EasyWordMode, Stats, UserSettings, VocabLevel } from "../api/client";
+import { api, EasyWordMode, PronunciationStatus, Stats, UserSettings, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
 import { ActivityCalendar } from "../components/profile/ActivityCalendar";
 import { FormSheet, SheetInput } from "../components/profile/FormSheet";
 import { MemoryCard } from "../components/profile/MemoryCard";
+import { PlanCard } from "../components/profile/PlanCard";
 import { SettingsSection } from "../components/profile/SettingsSection";
 import { StreakCard } from "../components/profile/StreakCard";
 import { Screen } from "../components/Screen";
@@ -20,7 +21,6 @@ import { easierLabel, levelRank } from "../vocabulary/placement";
 
 const FEEDBACK_EMAIL = "lamvo1978@gmail.com";
 const MIN_PASSWORD = 6;
-const CEFRJ_URL = "https://www.cefr-j.org/download.html";
 
 type Sheet = "name" | "password" | "delete" | null;
 
@@ -28,14 +28,16 @@ export function ProfileScreen() {
   const { me, user, logout, refreshMe, updateSettings, applyPlacement } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [stats, setStats] = useState<Stats | null>(null);
+  const [plan, setPlan] = useState<PronunciationStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [sheet, setSheet] = useState<Sheet>(null);
   const name = me?.displayName ?? user?.displayName;
 
   const load = useCallback(async () => {
     try {
-      const [s] = await Promise.all([api.stats(), refreshMe()]);
+      const [s, p] = await Promise.all([api.stats(), api.pronunciationStatus().catch(() => null), refreshMe()]);
       setStats(s);
+      setPlan(p);
     } catch {
       // Keep showing the last stats; pull-to-refresh retries.
     }
@@ -148,12 +150,28 @@ export function ProfileScreen() {
           </>
         ) : null}
 
+        {plan && (plan.enabled || plan.premium) ? (
+          <>
+            <Section title="Gói của bạn" />
+            <PlanCard status={plan} />
+          </>
+        ) : null}
+
         <Section title="Tài khoản" />
         <View style={styles.card}>
           <ActionRow icon="person-outline" label="Đổi tên hiển thị" onPress={() => setSheet("name")} />
           <ActionRow icon="key-outline" label="Đổi mật khẩu" onPress={() => setSheet("password")} />
           <ActionRow icon="log-out-outline" label="Đăng xuất" onPress={confirmLogout} />
           <ActionRow icon="trash-outline" label="Xoá tài khoản" danger last onPress={() => setSheet("delete")} />
+        </View>
+
+        <View style={[styles.card, styles.gapTop]}>
+          <ActionRow
+            icon="information-circle-outline"
+            label="Giới thiệu & bản quyền"
+            last
+            onPress={() => navigation.navigate("About")}
+          />
         </View>
 
         <View style={styles.footer}>
@@ -165,10 +183,6 @@ export function ProfileScreen() {
             <Text style={styles.feedbackText}>Gửi góp ý</Text>
           </Pressable>
           <Text style={styles.version}>4UME · phiên bản {version}</Text>
-          <Text style={styles.credit} onPress={() => Linking.openURL(CEFRJ_URL)}>
-            Danh sách từ và cấp độ dựa trên The CEFR-J Wordlist Version 1.6, Yukio Tono, Tokyo University of Foreign
-            Studies.
-          </Text>
         </View>
       </ScrollView>
 
@@ -337,6 +351,6 @@ const styles = StyleSheet.create({
   },
   feedbackText: { fontSize: 14, fontWeight: "700", color: colors.accent },
   version: { fontSize: 12, color: colors.muted },
-  credit: { fontSize: 11, lineHeight: 16, color: colors.muted, textAlign: "center", paddingHorizontal: spacing.lg },
+  gapTop: { marginTop: spacing.md },
   pressed: { opacity: 0.6 },
 });

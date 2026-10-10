@@ -82,7 +82,7 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var available = azure.Configured && monthMs < config.MonthlyMinutesCap * 60_000L;
 
         var remaining = config.Enabled && available ? Math.Max(0, limit - used) : 0;
-        return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available, config.PremiumDailyLimit);
+        return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available, config.PremiumDailyLimit, config.FreeDailyLimit);
     }
 
     private static DateTimeOffset MonthStart()

@@ -22,6 +22,7 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học.
 - Premium do admin bật tay: *Người dùng → chi tiết → thẻ Premium → Bật / Gia hạn (1, 3, 6 tháng, 1 năm) / Tắt*. Gia hạn cộng thêm vào hạn đang có. Chưa có thanh toán trong app.
 - Danh sách người dùng có bộ lọc **Premium** và huy hiệu vương miện.
+- App: **Hồ sơ → Gói của bạn** so sánh Miễn phí / Premium và số lượt còn hôm nay. Chưa có nút mua; thẻ **không** hướng dẫn thanh toán ngoài app (Apple không cho phép khi bán quyền lợi số mà không qua In‑App Purchase).
 
 ## Cài đặt (web admin → Cài đặt → Kiểm tra giọng đọc)
 
@@ -39,9 +40,15 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - API: `GET /api/pronunciation/status`, `POST /api/pronunciation/assess` (multipart: `wordId`, `audio`). Hết lượt → 429, tắt hoặc hết hạn mức → 503 (app chuyển sang tự so sánh).
 - Admin: `PUT /api/admin/users/{id}/premium` `{ until }` (null = tắt), `PUT /api/admin/settings/pronunciation`, `POST /api/admin/settings/pronunciation/reset`.
 - Dữ liệu: cột `Users.PremiumUntil`, bảng `PronunciationAttempts` (mỗi lượt chấm: từ, ngày địa phương, độ dài âm thanh, điểm), migration `Pronunciation`. Cài đặt lưu trong `AppSettings` khoá `pronunciation`.
-- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`. Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
+- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, thẻ gói `mobile/src/components/profile/PlanCard.tsx`. Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
 
 ## Giai đoạn sau
 
 - Hết lượt: dùng **nhận dạng giọng nói của máy** (`expo-speech-recognition`) để báo đúng/sai cơ bản thay vì chỉ tự so sánh. Cần bản build riêng (development build / EAS Build) vì Expo Go không có module này.
-- Thanh toán Premium trong app.
+- Thanh toán Premium trong app (In‑App Purchase / Google Play Billing).
+- **Quảng cáo nhỏ cho tài khoản miễn phí** (AdMob, `react-native-google-mobile-ads`), làm cùng đợt bản build riêng:
+  - Chỉ **một banner** ở cuối Trang chủ, dưới thẻ Từ vựng / Ngữ pháp; Premium không thấy. Không quảng cáo xen giữa bài học, ôn tập, bài nghe.
+  - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
+  - Cần: tài khoản AdMob, app đã lên store, trang chính sách quyền riêng tư, khai báo quảng cáo trong App Privacy / Data safety, hộp thoại App Tracking Transparency trên iOS, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc…).
+  - Doanh thu banner ở Việt Nam thấp (ước khoảng 0,1–0,5 USD / 1.000 lượt hiển thị); cần cỡ vài trăm người dùng mỗi ngày mới đủ tiền VPS.
+  - Khi có quảng cáo: thêm dòng "Không quảng cáo" vào bảng so sánh trong *Gói của bạn*, và mục quảng cáo trong màn *Giới thiệu & bản quyền*.

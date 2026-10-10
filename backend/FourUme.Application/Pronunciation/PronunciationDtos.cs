@@ -33,6 +33,7 @@ public static class PronunciationRules
 /// <param name="Remaining">Detailed checks left today; 0 also when the feature is off or the monthly budget is used up.</param>
 /// <param name="ServiceAvailable">False when Azure isn't configured or this month's audio budget is spent.</param>
 /// <param name="PremiumDailyLimit">Shown to free users so they can see what Premium adds.</param>
+/// <param name="FreeDailyLimit">Lets the plan comparison show both columns whichever plan the user is on.</param>
 public record PronunciationStatusDto(
     bool Enabled,
     bool Premium,
@@ -41,7 +42,8 @@ public record PronunciationStatusDto(
     int UsedToday,
     int Remaining,
     bool ServiceAvailable,
-    int PremiumDailyLimit);
+    int PremiumDailyLimit,
+    int FreeDailyLimit);
 
 public record PhonemeScoreDto(string Phoneme, int Score);
 

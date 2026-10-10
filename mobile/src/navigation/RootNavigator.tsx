@@ -14,6 +14,7 @@ import { useAuth } from "../auth/AuthContext";
 import { StreakCelebration } from "../components/streak/StreakCelebration";
 import { onReminderTap, ReminderScreen } from "../notifications/reminders";
 import { colors, shadow } from "../theme";
+import { AboutScreen } from "../screens/AboutScreen";
 import { FlashcardScreen } from "../screens/FlashcardScreen";
 import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 import { GrammarLessonScreen } from "../screens/GrammarLessonScreen";
@@ -186,6 +187,7 @@ export function RootNavigator() {
               })}
             />
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />
+            <Stack.Screen name="About" component={AboutScreen} options={{ title: "Giới thiệu & bản quyền" }} />
             <Stack.Screen
               name="Placement"
               component={PlacementScreen}
