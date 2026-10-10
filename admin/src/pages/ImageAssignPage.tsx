@@ -362,7 +362,17 @@ function ReviewGrid({ filters, onChanged }: { filters: Filters; onChanged: () =>
   const [page, setPage] = useState(1);
   const [busy, setBusy] = useState<string | null>(null);
   const [changing, setChanging] = useState<AdminWord | null>(null);
+  const top = useRef<HTMLDivElement>(null);
   const query: WordFilters = { ...filters, missing: "image-review", page, pageSize: REVIEW_PAGE };
+
+  function scrollToTop() {
+    top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function goToPage(next: number) {
+    setPage(next);
+    scrollToTop();
+  }
   const words = useQuery({ queryKey: ["words", query], queryFn: () => api.words(query), placeholderData: keepPreviousData });
   const items = words.data?.items ?? [];
   const pages = words.data ? Math.max(1, Math.ceil(words.data.total / REVIEW_PAGE)) : 1;
@@ -384,7 +394,7 @@ function ReviewGrid({ filters, onChanged }: { filters: Filters; onChanged: () =>
   if (words.error) return <Alert color="red">{(words.error as Error).message}</Alert>;
 
   return (
-    <Stack gap="md">
+    <Stack gap="md" ref={top} style={{ scrollMarginTop: 80 }}>
       {items.length === 0 ? (
         <Text c="dimmed" ta="center" py="xl">
           Không có ảnh nào chờ duyệt trong bộ lọc này.
@@ -404,6 +414,7 @@ function ReviewGrid({ filters, onChanged }: { filters: Filters; onChanged: () =>
                 "all",
                 async () => {
                   for (const w of items) await api.approveWordImage(w.id);
+                  scrollToTop();
                 },
                 `Đã duyệt ${items.length} ảnh`,
               )
@@ -462,7 +473,7 @@ function ReviewGrid({ filters, onChanged }: { filters: Filters; onChanged: () =>
 
       {pages > 1 ? (
         <Group justify="center">
-          <Pagination total={pages} value={page} onChange={setPage} siblings={0} />
+          <Pagination total={pages} value={page} onChange={goToPage} siblings={0} />
         </Group>
       ) : null}
 
