@@ -180,14 +180,20 @@ export function ListeningEditPage() {
         <Input.Wrapper label="Thể loại">
           <SegmentedControl fullWidth data={KINDS.map((k) => ({ value: k.value, label: k.label }))} value={form.kind} onChange={(kind) => set({ kind: kind as ListeningKind })} />
         </Input.Wrapper>
-        <Grid gap="sm">
+        <Grid gap="sm" align="flex-end">
           <Grid.Col span={{ base: 12, sm: 7 }}>
-            <Input.Wrapper label="Cấp độ" description="A1 đọc chậm hơn khoảng 15%, A2 chậm hơn 8%">
-              <SegmentedControl fullWidth data={LEVELS} value={form.level} onChange={(level) => set({ level })} />
+            <Input.Wrapper label="Cấp độ" description="A1 đọc chậm hơn ~15%, A2 chậm hơn ~8%">
+              <SegmentedControl mt={5} fullWidth data={LEVELS} value={form.level} onChange={(level) => set({ level })} />
             </Input.Wrapper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 5 }}>
-            <TextInput label="Chủ đề" placeholder="Du lịch, Công việc…" value={form.topic ?? ""} onChange={(e) => set({ topic: e.currentTarget.value })} />
+            <TextInput
+              label="Chủ đề"
+              description="Nhãn ngắn, dùng để tìm bài"
+              placeholder="Du lịch, Công việc…"
+              value={form.topic ?? ""}
+              onChange={(e) => set({ topic: e.currentTarget.value })}
+            />
           </Grid.Col>
         </Grid>
         <Textarea
