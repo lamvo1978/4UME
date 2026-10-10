@@ -20,6 +20,13 @@ const RATES = [
   { value: 1.1, label: "Nhanh" },
 ];
 
+const LEVEL_CAPTION: Record<VocabLevel, string> = {
+  A1: "Cơ bản",
+  A2: "Sơ cấp",
+  B1: "Trung cấp",
+  B2: "Khá",
+};
+
 const REMINDER_TIMES = ["07:00", "12:00", "19:00", "20:00", "21:00", "22:00"];
 
 export function SettingsSection({
@@ -63,20 +70,7 @@ export function SettingsSection({
       <Row
         icon="school-outline"
         title="Trình độ từ vựng"
-        subtitle={
-          vocabLevel
-            ? `Từ mới bắt đầu ở ${vocabLevel}${
-                hasEasier
-                  ? ` · từ ${easierLabel(vocabLevel)} ${s.easyWordMode === "known" ? "tính là đã nhớ" : "xếp cuối bộ từ"}`
-                  : ""
-              }`
-            : "Chưa xác định · làm bài kiểm tra 2–3 phút"
-        }
-        right={
-          <Pressable style={styles.link} onPress={onPlacementTest} hitSlop={6}>
-            <Text style={styles.linkText}>{s.placementTakenAt ? "Kiểm tra lại" : "Kiểm tra"}</Text>
-          </Pressable>
-        }
+        subtitle={vocabLevel ? `Từ mới bắt đầu ở ${vocabLevel}` : "Chưa xác định · chọn cấp hoặc làm bài kiểm tra"}
       >
         <View style={styles.pills}>
           {VOCAB_LEVELS.map((l) => (
@@ -84,26 +78,37 @@ export function SettingsSection({
               key={l}
               active={vocabLevel === l}
               title={l}
+              caption={LEVEL_CAPTION[l]}
               onPress={() => vocabLevel !== l && onVocabChange(l, s.easyWordMode)}
             />
           ))}
         </View>
         {hasEasier && vocabLevel ? (
-          <View style={styles.pills}>
-            <Pill
-              small
-              active={s.easyWordMode === "skip"}
-              title="Bỏ qua từ dễ"
-              onPress={() => s.easyWordMode !== "skip" && onVocabChange(vocabLevel, "skip")}
-            />
-            <Pill
-              small
-              active={s.easyWordMode === "known"}
-              title="Tính là đã nhớ"
-              onPress={() => s.easyWordMode !== "known" && onVocabChange(vocabLevel, "known")}
-            />
-          </View>
+          <>
+            <Text style={styles.subLabel}>Từ {easierLabel(vocabLevel)} (dễ hơn trình độ của bạn)</Text>
+            <View style={styles.pills}>
+              <Pill
+                active={s.easyWordMode === "skip"}
+                title="Học sau cùng"
+                caption="xếp cuối bộ từ"
+                onPress={() => s.easyWordMode !== "skip" && onVocabChange(vocabLevel, "skip")}
+              />
+              <Pill
+                active={s.easyWordMode === "known"}
+                title="Tính đã nhớ"
+                caption="chỉ ôn thỉnh thoảng"
+                onPress={() => s.easyWordMode !== "known" && onVocabChange(vocabLevel, "known")}
+              />
+            </View>
+          </>
         ) : null}
+        <Pressable style={({ pressed }) => [styles.testLink, pressed && styles.pressed]} onPress={onPlacementTest}>
+          <Ionicons name="clipboard-outline" size={18} color={colors.accent} />
+          <Text style={styles.testLinkText}>
+            {s.placementTakenAt ? "Làm lại bài kiểm tra trình độ" : "Làm bài kiểm tra trình độ · 2–3 phút"}
+          </Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.accent} />
+        </Pressable>
       </Row>
 
       <Row icon="flag-outline" title="Mục tiêu mỗi ngày" subtitle={`${s.dailyGoal} từ mới · cũng là số từ mỗi lượt học`}>
@@ -249,16 +254,17 @@ const styles = StyleSheet.create({
   pills: { flexDirection: "row", flexWrap: "wrap", gap: 8, alignItems: "center" },
   pill: {
     flexGrow: 1,
+    flexBasis: 0,
     minWidth: 64,
     alignItems: "center",
     paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 4,
     borderRadius: 14,
     borderWidth: 1.5,
     borderColor: colors.border,
     backgroundColor: colors.white,
   },
-  pillSmall: { minWidth: 70, flexGrow: 0, paddingVertical: 6 },
+  pillSmall: { minWidth: 70, flexGrow: 0, flexBasis: "auto", paddingVertical: 6, paddingHorizontal: 10 },
   pillActive: { borderColor: colors.accent, backgroundColor: colors.accent },
   pillTitle: { fontSize: 16, fontWeight: "800", color: colors.ink },
   pillTitleSmall: { fontSize: 14, fontWeight: "700" },
@@ -274,6 +280,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   pressed: { opacity: 0.7 },
-  link: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 99, backgroundColor: colors.accentSoft },
-  linkText: { fontSize: 13, fontWeight: "700", color: colors.accent },
+  subLabel: { marginTop: 4, fontSize: 13, fontWeight: "600", color: colors.muted },
+  testLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: colors.accentSoft,
+  },
+  testLinkText: { flex: 1, fontSize: 14, fontWeight: "700", color: colors.accent },
 });
