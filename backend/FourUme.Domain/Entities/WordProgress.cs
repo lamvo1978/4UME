@@ -13,4 +13,6 @@ public class WordProgress : IReviewable
     public int ReviewLevel { get; set; }
     public int LapseCount { get; set; }
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    /// <summary>Marked known by the placement test rather than studied; cleared once the learner studies or reviews the word.</summary>
+    public bool FromPlacement { get; set; }
 }

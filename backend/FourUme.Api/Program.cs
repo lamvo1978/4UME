@@ -9,6 +9,7 @@ using FourUme.Application.Auth;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Placement;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
 using FourUme.Domain.Enums;
@@ -328,6 +329,23 @@ app.MapPost("/api/vocabulary/progress", async (UpdateProgressRequest request, Cl
     try
     {
         return Results.Ok(await vocab.UpdateProgressAsync(userId.Value, request));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireAuthorization();
+
+app.MapGet("/api/placement/questions", async (IPlacementService placement, CancellationToken ct) =>
+    Results.Ok(await placement.GetQuestionsAsync(ct))).RequireAuthorization();
+
+app.MapPost("/api/placement/apply", async (ApplyPlacementRequest request, ClaimsPrincipal principal, IPlacementService placement, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await placement.ApplyAsync(userId.Value, request, ct));
     }
     catch (InvalidOperationException ex)
     {

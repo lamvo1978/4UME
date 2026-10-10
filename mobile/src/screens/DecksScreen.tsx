@@ -1,9 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, Deck } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { deckIcon, levelRange } from "../vocabulary/deckMeta";
@@ -12,8 +13,12 @@ const LEVELS = ["Tất cả", "A1", "A2", "B1", "B2"] as const;
 
 export function DecksScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { me } = useAuth();
+  const startLevel = me?.settings.vocabLevel ?? "Tất cả";
   const [decks, setDecks] = useState<Deck[]>([]);
-  const [level, setLevel] = useState<(typeof LEVELS)[number]>("Tất cả");
+  const [level, setLevel] = useState<(typeof LEVELS)[number]>(startLevel);
+
+  useEffect(() => setLevel(startLevel), [startLevel]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

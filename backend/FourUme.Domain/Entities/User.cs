@@ -26,6 +26,12 @@ public class User
     /// <summary>IANA zone reported by the app, e.g. "Asia/Ho_Chi_Minh"; used to time server-side notifications.</summary>
     public string? TimeZone { get; set; }
 
+    /// <summary>CEFR level new vocabulary starts at (A1–B2); null until the learner takes the placement test or picks one.</summary>
+    public string? VocabLevel { get; set; }
+    /// <summary>What happens to words below <see cref="VocabLevel"/>: <c>skip</c> or <c>known</c>.</summary>
+    public string EasyWordMode { get; set; } = "skip";
+    public DateTimeOffset? PlacementTakenAt { get; set; }
+
     public int StreakFreezes { get; set; }
     public int BestStreak { get; set; }
 

@@ -34,6 +34,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.PasswordHash).IsRequired();
             e.Property(x => x.ReminderTime).HasMaxLength(5).IsRequired();
             e.Property(x => x.TimeZone).HasMaxLength(64);
+            e.Property(x => x.VocabLevel).HasMaxLength(2);
+            e.Property(x => x.EasyWordMode).HasMaxLength(8).IsRequired().HasDefaultValue("skip");
             e.Property(x => x.Role).HasMaxLength(16).IsRequired().HasDefaultValue(UserRoles.User);
         });
 

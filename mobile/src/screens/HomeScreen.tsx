@@ -66,6 +66,22 @@ export function HomeScreen() {
           Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
         </Text>
 
+        {me && !me.settings.vocabLevel ? (
+          <Pressable
+            style={({ pressed }) => [styles.placement, pressed && styles.pressed]}
+            onPress={() => navigation.navigate("Placement")}
+          >
+            <View style={styles.placementIcon}>
+              <Ionicons name="school-outline" size={24} color={colors.white} />
+            </View>
+            <View style={styles.entryText}>
+              <Text style={styles.placementTitle}>Kiểm tra trình độ từ vựng</Text>
+              <Text style={styles.placementSub}>2–3 phút để bỏ qua những từ bạn đã biết</Text>
+            </View>
+            <Ionicons name="arrow-forward" size={22} color={colors.accent} />
+          </Pressable>
+        ) : null}
+
         {me ? <GoalCard me={me} onPress={() => navigation.navigate("Study", { tab: "vocab" })} /> : null}
 
         {review && review.inReview > 0 ? (
@@ -247,6 +263,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   reviewIconIdle: { backgroundColor: colors.accent },
+  placement: {
+    marginTop: spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+    borderStyle: "dashed",
+  },
+  placementIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.accent,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  placementTitle: { fontSize: 16, fontWeight: "700", color: colors.ink },
+  placementSub: { marginTop: 2, fontSize: 13, color: colors.muted },
   reviewTitle: { fontSize: 17, fontWeight: "700", color: colors.white },
   reviewTitleIdle: { color: colors.ink },
   reviewSub: { marginTop: 2, color: colors.accentSoft, fontSize: 13 },

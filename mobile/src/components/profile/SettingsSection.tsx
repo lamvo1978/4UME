@@ -1,7 +1,8 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ComponentProps, ReactNode, useEffect, useState } from "react";
 import { Alert, Linking, Pressable, StyleSheet, Switch, Text, View } from "react-native";
-import { api, Me, UserSettings } from "../../api/client";
+import { api, EasyWordMode, Me, UserSettings, VOCAB_LEVELS, VocabLevel } from "../../api/client";
+import { easierLabel, levelRank } from "../../vocabulary/placement";
 import { ensureReminderPermission } from "../../notifications/reminders";
 import { colors, shadow, spacing } from "../../theme";
 import { speak } from "../SpeakButton";
@@ -21,8 +22,20 @@ const RATES = [
 
 const REMINDER_TIMES = ["07:00", "12:00", "19:00", "20:00", "21:00", "22:00"];
 
-export function SettingsSection({ me, onChange }: { me: Me; onChange: (changes: Partial<UserSettings>) => void }) {
+export function SettingsSection({
+  me,
+  onChange,
+  onVocabChange,
+  onPlacementTest,
+}: {
+  me: Me;
+  onChange: (changes: Partial<UserSettings>) => void;
+  onVocabChange: (level: VocabLevel, mode: EasyWordMode) => void;
+  onPlacementTest: () => void;
+}) {
   const s = me.settings;
+  const vocabLevel = s.vocabLevel;
+  const hasEasier = levelRank(vocabLevel) > 0;
   const rate = RATES.reduce((best, r) => (Math.abs(r.value - s.speechRate) < Math.abs(best.value - s.speechRate) ? r : best));
 
   const [rescueTime, setRescueTime] = useState<string | null>(null);
@@ -47,6 +60,52 @@ export function SettingsSection({ me, onChange }: { me: Me; onChange: (changes: 
 
   return (
     <View style={styles.card}>
+      <Row
+        icon="school-outline"
+        title="Trình độ từ vựng"
+        subtitle={
+          vocabLevel
+            ? `Từ mới bắt đầu ở ${vocabLevel}${
+                hasEasier
+                  ? ` · từ ${easierLabel(vocabLevel)} ${s.easyWordMode === "known" ? "tính là đã nhớ" : "xếp cuối bộ từ"}`
+                  : ""
+              }`
+            : "Chưa xác định · làm bài kiểm tra 2–3 phút"
+        }
+        right={
+          <Pressable style={styles.link} onPress={onPlacementTest} hitSlop={6}>
+            <Text style={styles.linkText}>{s.placementTakenAt ? "Kiểm tra lại" : "Kiểm tra"}</Text>
+          </Pressable>
+        }
+      >
+        <View style={styles.pills}>
+          {VOCAB_LEVELS.map((l) => (
+            <Pill
+              key={l}
+              active={vocabLevel === l}
+              title={l}
+              onPress={() => vocabLevel !== l && onVocabChange(l, s.easyWordMode)}
+            />
+          ))}
+        </View>
+        {hasEasier && vocabLevel ? (
+          <View style={styles.pills}>
+            <Pill
+              small
+              active={s.easyWordMode === "skip"}
+              title="Bỏ qua từ dễ"
+              onPress={() => s.easyWordMode !== "skip" && onVocabChange(vocabLevel, "skip")}
+            />
+            <Pill
+              small
+              active={s.easyWordMode === "known"}
+              title="Tính là đã nhớ"
+              onPress={() => s.easyWordMode !== "known" && onVocabChange(vocabLevel, "known")}
+            />
+          </View>
+        ) : null}
+      </Row>
+
       <Row icon="flag-outline" title="Mục tiêu mỗi ngày" subtitle={`${s.dailyGoal} từ mới · cũng là số từ mỗi lượt học`}>
         <View style={styles.pills}>
           {GOALS.map((g) => (
@@ -215,4 +274,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   pressed: { opacity: 0.7 },
+  link: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 99, backgroundColor: colors.accentSoft },
+  linkText: { fontSize: 13, fontWeight: "700", color: colors.accent },
 });

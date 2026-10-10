@@ -36,7 +36,27 @@ export type UserSettings = {
   notifyNews: boolean;
   /** IANA zone, e.g. "Asia/Ho_Chi_Minh"; null until the app reports it. */
   timeZone: string | null;
+  /** Level new vocabulary starts at; null until the placement test or a manual pick. Changed via `applyPlacement`. */
+  vocabLevel: VocabLevel | null;
+  easyWordMode: EasyWordMode;
+  placementTakenAt: string | null;
 };
+
+export const VOCAB_LEVELS = ["A1", "A2", "B1", "B2"] as const;
+export type VocabLevel = (typeof VOCAB_LEVELS)[number];
+/** Words below the start level: "skip" sorts them last in decks, "known" marks them known with rare reviews. */
+export type EasyWordMode = "skip" | "known";
+
+export type PlacementQuestion = {
+  wordId: string;
+  word: string;
+  ipa: string;
+  pos: string;
+  options: string[];
+  answer: number;
+};
+export type PlacementLevel = { level: VocabLevel; questions: PlacementQuestion[] };
+export type PlacementResult = { me: Me; markedKnown: number; cleared: number };
 
 /** Server-tunable notification rules; times are local "HH:mm", weeklyDay 0 = Sunday. */
 export type NotificationConfig = {
@@ -372,6 +392,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ wordId, mistakes }),
     }),
+  placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
+  /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */
+  applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) =>
+    request<PlacementResult>("/api/placement/apply", { method: "POST", body: JSON.stringify({ level, mode, tested }) }),
   listeningLessons: () => request<ListeningSummary[]>("/api/listening"),
   listeningLesson: (slug: string) => request<ListeningDetail>(`/api/listening/${slug}`),
   saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>

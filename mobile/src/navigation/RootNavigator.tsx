@@ -22,6 +22,7 @@ import { ListeningPlayerScreen } from "../screens/ListeningPlayerScreen";
 import { GrammarReviewScreen } from "../screens/GrammarReviewScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoginScreen } from "../screens/LoginScreen";
+import { PlacementScreen } from "../screens/PlacementScreen";
 import { PracticeHubScreen } from "../screens/PracticeHubScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
@@ -114,7 +115,7 @@ const navigationRef = createNavigationContainerRef<RootStackParamList>();
 const TAB_FOR: Record<ReminderScreen, keyof MainTabParamList> = { practice: "Practice", study: "Study" };
 
 export function RootNavigator() {
-  const { ready, user } = useAuth();
+  const { ready, user, onboarding } = useAuth();
   const pendingTap = useRef<ReminderScreen | null>(null);
 
   const openPendingTap = useCallback(() => {
@@ -143,6 +144,7 @@ export function RootNavigator() {
   return (
     <NavigationContainer ref={navigationRef} theme={navTheme} onReady={openPendingTap}>
       <Stack.Navigator
+        initialRouteName={user && onboarding ? "Placement" : undefined}
         screenOptions={{
           headerStyle: { backgroundColor: colors.bg },
           headerShadowVisible: false,
@@ -184,6 +186,13 @@ export function RootNavigator() {
               })}
             />
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />
+            <Stack.Screen
+              name="Placement"
+              component={PlacementScreen}
+              options={
+                onboarding ? { headerShown: false, gestureEnabled: false } : { title: "Kiểm tra trình độ" }
+              }
+            />
             <Stack.Screen
               name="GrammarLesson"
               component={GrammarLessonScreen}

@@ -1,5 +1,14 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { api, AuthUser, Me, setUnauthorizedHandler, UserSettings } from "../api/client";
+import {
+  api,
+  AuthUser,
+  EasyWordMode,
+  Me,
+  PlacementResult,
+  setUnauthorizedHandler,
+  UserSettings,
+  VocabLevel,
+} from "../api/client";
 import { configureSpeech } from "../components/SpeakButton";
 import { syncReminders } from "../notifications/reminders";
 
@@ -27,6 +36,10 @@ type AuthState = {
   logout: () => Promise<void>;
   refreshMe: () => Promise<void>;
   updateSettings: (changes: SettingsChange) => Promise<void>;
+  /** True right after sign-up, so the placement test opens before the tabs. */
+  onboarding: boolean;
+  finishOnboarding: () => void;
+  applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) => Promise<PlacementResult>;
 };
 
 const Ctx = createContext<AuthState | null>(null);
@@ -36,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [me, setMeState] = useState<Me | null>(null);
   const [celebration, setCelebration] = useState<number | null>(null);
+  const [onboarding, setOnboarding] = useState(false);
   const meRef = useRef<Me | null>(null);
 
   const setMe = useCallback((next: Me | null) => {
@@ -157,7 +171,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await signIn(await api.login(email, password));
       },
       async register(email, password, displayName, code) {
-        await signIn(await api.register(email, password, displayName, code));
+        const auth = await api.register(email, password, displayName, code);
+        setOnboarding(true);
+        await signIn(auth);
       },
       async resetPassword(email, code, newPassword) {
         await signIn(await api.resetPassword(email, code, newPassword));
@@ -168,11 +184,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null);
         setMe(null);
         setCelebration(null);
+        setOnboarding(false);
       },
       refreshMe,
       updateSettings,
+      onboarding,
+      finishOnboarding: () => setOnboarding(false),
+      async applyPlacement(level, mode, tested) {
+        const result = await api.applyPlacement(level, mode, tested);
+        setMe(result.me);
+        return result;
+      },
     }),
-    [ready, user, me, celebration, setMe, signIn, refreshMe, updateSettings]
+    [ready, user, me, celebration, onboarding, setMe, signIn, refreshMe, updateSettings]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

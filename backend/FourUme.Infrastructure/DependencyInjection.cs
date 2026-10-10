@@ -7,7 +7,9 @@ using FourUme.Infrastructure.Activity;
 using FourUme.Application.Auth;
 using FourUme.Application.Grammar;
 using FourUme.Application.Notifications;
+using FourUme.Application.Placement;
 using FourUme.Infrastructure.Notifications;
+using FourUme.Infrastructure.Placement;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
 using FourUme.Domain.Entities;
@@ -43,6 +45,7 @@ public static class DependencyInjection
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
         services.AddHttpClient<IEmailSender, ResendEmailSender>(c => c.Timeout = TimeSpan.FromSeconds(15));
         services.AddScoped<IVocabularyService, VocabularyService>();
+        services.AddScoped<IPlacementService, PlacementService>();
         services.AddScoped<IGrammarService, GrammarService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<IActivityService, ActivityService>();

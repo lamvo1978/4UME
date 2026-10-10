@@ -102,7 +102,7 @@ public class AuthService(
         var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId, ct)
             ?? throw new InvalidOperationException("Không tìm thấy người dùng.");
 
-        var known = await db.WordProgresses.CountAsync(p => p.UserId == userId && p.Status == WordStatus.Known, ct);
+        var known = await db.WordProgresses.CountAsync(p => p.UserId == userId && p.Status == WordStatus.Known && !p.FromPlacement, ct);
         var hard = await db.WordProgresses.CountAsync(p => p.UserId == userId && p.Status == WordStatus.Hard, ct);
         var grammarPassed = await db.GrammarProgresses.CountAsync(p => p.UserId == userId && p.ReviewLevel > 0, ct);
         var grammarTotal = await db.GrammarLessons.CountAsync(l => l.Published, ct);
@@ -113,7 +113,8 @@ public class AuthService(
             streak.Freezes, streak.NextMilestone, streak.LastStudyDate,
             new UserSettingsDto(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
-                user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone));
+                user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
+                user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt));
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)

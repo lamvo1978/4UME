@@ -17,6 +17,7 @@ export type RootStackParamList = {
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;
+  Placement: undefined;
 };
 
 export type HubTab = "vocab" | "grammar";

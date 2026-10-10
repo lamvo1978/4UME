@@ -23,8 +23,8 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
             .Where(p => p.UserId == userId && p.Status == WordStatus.Known && p.ReviewLevel > 0);
 
         var due = await inReview.CountAsync(p => p.NextReviewAt <= now, ct);
-        var total = await inReview.CountAsync(ct);
-        var mastered = await inReview.CountAsync(p => p.ReviewLevel >= ReviewSchedule.MasteredLevel, ct);
+        var total = await inReview.CountAsync(p => !p.FromPlacement, ct);
+        var mastered = await inReview.CountAsync(p => !p.FromPlacement && p.ReviewLevel >= ReviewSchedule.MasteredLevel, ct);
         var nextDue = await inReview.Where(p => p.NextReviewAt > now).MinAsync(p => p.NextReviewAt, ct);
 
         return new ReviewSummaryDto(due, total, mastered, nextDue);
@@ -135,6 +135,7 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
             throw new InvalidOperationException("Từ này không nằm trong danh sách ôn tập.");
         }
 
+        progress.FromPlacement = false;
         var outcome = ReviewSchedule.ApplyAnswer(progress, request.Mistakes, DateTimeOffset.UtcNow);
         var backToLearning = outcome == ReviewOutcome.Relearn;
         if (backToLearning)

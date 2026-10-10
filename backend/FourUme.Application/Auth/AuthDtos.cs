@@ -14,7 +14,10 @@ public record UserSettingsDto(
     bool NotifyRescue,
     bool NotifyWeekly,
     bool NotifyNews,
-    string? TimeZone);
+    string? TimeZone,
+    string? VocabLevel,
+    string EasyWordMode,
+    DateTimeOffset? PlacementTakenAt);
 
 public record MeResponse(
     Guid UserId,

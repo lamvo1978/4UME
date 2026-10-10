@@ -1,5 +1,6 @@
 using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
+using FourUme.Application.Placement;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
 using FourUme.Domain.Entities;
@@ -69,8 +70,11 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
             select new { p.WordId, p.Status, p.UpdatedAt }
         ).ToDictionaryAsync(x => x.WordId, ct);
 
+        var startRank = PlacementRules.Rank(await db.Users.AsNoTracking()
+            .Where(u => u.Id == userId).Select(u => u.VocabLevel).FirstOrDefaultAsync(ct));
+
         // Study order: "learn later" (Hard) words first, oldest postponement first; then new words
-        // in curriculum order; known words last.
+        // in curriculum order, words below the learner's start level after the rest; known words last.
         return words
             .Select(w =>
             {
@@ -81,10 +85,11 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
                         w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicImageUrl,
                         p?.Status ?? WordStatus.New, WordForms.Describe(w.Text, w.Pos)),
                     w.SortOrder,
+                    Easy = PlacementRules.Rank(w.Level) < startRank,
                     UpdatedAt = p?.UpdatedAt ?? DateTimeOffset.MinValue
                 };
             })
-            .OrderBy(x => x.Dto.Status switch { WordStatus.Hard => 0, WordStatus.New => 1, _ => 2 })
+            .OrderBy(x => x.Dto.Status switch { WordStatus.Hard => 0, WordStatus.New => x.Easy ? 2 : 1, _ => 3 })
             .ThenBy(x => x.Dto.Status == WordStatus.Hard ? x.UpdatedAt : DateTimeOffset.MinValue)
             .ThenBy(x => x.SortOrder)
             .Select(x => x.Dto)
@@ -143,6 +148,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
         progress.Status = request.Status;
         progress.UpdatedAt = now;
         progress.LapseCount = 0;
+        progress.FromPlacement = false;
         if (request.Status == WordStatus.Known)
         {
             progress.ReviewLevel = ReviewSchedule.FirstLevel;

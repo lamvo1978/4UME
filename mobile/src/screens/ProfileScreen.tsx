@@ -1,9 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Constants from "expo-constants";
 import { ComponentProps, useCallback, useEffect, useState } from "react";
 import { Alert, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, Stats, UserSettings } from "../api/client";
+import { api, EasyWordMode, Stats, UserSettings, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
 import { ActivityCalendar } from "../components/profile/ActivityCalendar";
@@ -12,8 +13,10 @@ import { MemoryCard } from "../components/profile/MemoryCard";
 import { SettingsSection } from "../components/profile/SettingsSection";
 import { StreakCard } from "../components/profile/StreakCard";
 import { Screen } from "../components/Screen";
+import { RootStackParamList } from "../navigation/types";
 import { colors, fonts, shadow, spacing } from "../theme";
 import { formatMonthYear } from "../utils/dates";
+import { easierLabel, levelRank } from "../vocabulary/placement";
 
 const FEEDBACK_EMAIL = "lamvo1978@gmail.com";
 const MIN_PASSWORD = 6;
@@ -22,7 +25,8 @@ const CEFRJ_URL = "https://www.cefr-j.org/download.html";
 type Sheet = "name" | "password" | "delete" | null;
 
 export function ProfileScreen() {
-  const { me, user, logout, refreshMe, updateSettings } = useAuth();
+  const { me, user, logout, refreshMe, updateSettings, applyPlacement } = useAuth();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [stats, setStats] = useState<Stats | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -53,6 +57,28 @@ export function ProfileScreen() {
     updateSettings(changes)
       .then(() => (changes.dailyGoal ? load() : undefined))
       .catch((e) => Alert.alert("Không lưu được", e instanceof Error ? e.message : "Thử lại sau nhé."));
+  }
+
+  function changeVocab(level: VocabLevel, mode: EasyWordMode) {
+    const apply = () =>
+      applyPlacement(level, mode, false)
+        .then(load)
+        .catch((e) => Alert.alert("Không lưu được", e instanceof Error ? e.message : "Thử lại sau nhé."));
+    const wasKnown = me?.settings.easyWordMode === "known" && levelRank(me.settings.vocabLevel) > 0;
+    const willMark = mode === "known" && levelRank(level) > 0;
+    if (!wasKnown && !willMark) return apply();
+
+    const keep = "Từ bạn tự học hoặc đã ôn vẫn giữ nguyên.";
+    Alert.alert(
+      willMark ? `Tính từ ${easierLabel(level)} là đã nhớ?` : "Bỏ đánh dấu từ dễ?",
+      willMark
+        ? `Các từ ${easierLabel(level)} chưa học sẽ được tính là đã nhớ và thỉnh thoảng xuất hiện trong Ôn tập. ${keep}`
+        : `Các từ 4UME đã tự đánh dấu "đã nhớ" trở lại thành từ mới. ${keep}`,
+      [
+        { text: "Huỷ", style: "cancel" },
+        { text: "Đồng ý", onPress: apply },
+      ]
+    );
   }
 
   function confirmLogout() {
@@ -113,7 +139,12 @@ export function ProfileScreen() {
         {me ? (
           <>
             <Section title="Cài đặt học" />
-            <SettingsSection me={me} onChange={changeSettings} />
+            <SettingsSection
+              me={me}
+              onChange={changeSettings}
+              onVocabChange={changeVocab}
+              onPlacementTest={() => navigation.navigate("Placement")}
+            />
           </>
         ) : null}
 

@@ -106,7 +106,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
         var totalDays = await db.StudyDays.CountAsync(d => d.UserId == userId && !d.Frozen, ct);
 
         var wordLevels = await db.WordProgresses.AsNoTracking()
-            .Where(p => p.UserId == userId && p.Status == WordStatus.Known && p.ReviewLevel > 0)
+            .Where(p => p.UserId == userId && p.Status == WordStatus.Known && p.ReviewLevel > 0 && !p.FromPlacement)
             .GroupBy(p => p.ReviewLevel)
             .Select(g => new { Level = g.Key, Count = g.Count() })
             .ToListAsync(ct);
