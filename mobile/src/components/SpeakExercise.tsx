@@ -40,6 +40,9 @@ type Phase = "idle" | "recording" | "checking" | "scored" | "compare" | "error";
 
 export const scoreColor = (score: number) => (score >= 80 ? colors.accent : score >= 60 ? colors.flameDeep : colors.danger);
 export const scoreSoft = (score: number) => (score >= 80 ? colors.accentSoft : score >= 60 ? colors.flameSoft : colors.dangerSoft);
+/** Good sounds get a solid chip so they stand out from the pale listen buttons; weak ones stay soft. */
+export const phonemeChip = (score: number) =>
+  score >= 80 ? { bg: colors.accent, fg: colors.white } : { bg: scoreSoft(score), fg: scoreColor(score) };
 
 export function verdict(score: number) {
   if (score >= 90) return "Rất chuẩn!";
@@ -277,7 +280,7 @@ function ScoreCard({
   return (
     <View style={styles.scoreCard}>
       <View style={styles.scoreRow}>
-        <View style={[styles.ring, { borderColor: color }]}>
+        <View style={[styles.ring, { borderColor: color }, result.score >= 80 && { backgroundColor: colors.accentSoft }]}>
           <Text style={[styles.ringValue, { color }]}>{result.score}</Text>
         </View>
         <View style={styles.scoreText}>
@@ -290,12 +293,15 @@ function ScoreCard({
 
       {phonemes.length > 0 ? (
         <View style={styles.phonemes}>
-          {phonemes.map((p, i) => (
-            <View key={`${p.phoneme}-${i}`} style={[styles.phoneme, { backgroundColor: scoreSoft(p.score) }]}>
-              <Text style={[styles.phonemeText, { color: scoreColor(p.score) }]}>/{p.phoneme}/</Text>
-              <Text style={[styles.phonemeScore, { color: scoreColor(p.score) }]}>{p.score}</Text>
-            </View>
-          ))}
+          {phonemes.map((p, i) => {
+            const chip = phonemeChip(p.score);
+            return (
+              <View key={`${p.phoneme}-${i}`} style={[styles.phoneme, { backgroundColor: chip.bg }]}>
+                <Text style={[styles.phonemeText, { color: chip.fg }]}>/{p.phoneme}/</Text>
+                <Text style={[styles.phonemeScore, { color: chip.fg }]}>{p.score}</Text>
+              </View>
+            );
+          })}
         </View>
       ) : null}
 

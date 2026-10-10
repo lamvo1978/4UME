@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { DoneCelebration } from "../components/DoneCelebration";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
@@ -356,9 +357,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   if (!ex) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <View style={styles.bigIcon}>
-          <Ionicons name={practice ? "flash" : "ribbon-outline"} size={40} color={colors.white} />
-        </View>
+        <DoneCelebration />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn hôm nay"}</Text>
         <Text style={styles.doneSub}>
           Đã {practice ? "luyện" : "ôn"} {stats.words} từ qua {total} bài tập.

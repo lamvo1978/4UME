@@ -3,7 +3,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api, PremiumPerk, PronunciationStatus } from "../api/client";
-import { scoreColor, scoreSoft, verdict } from "../components/SpeakExercise";
+import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
 
@@ -122,9 +122,9 @@ export function PremiumScreen() {
         </View>
         <View style={styles.phonemes}>
           {SAMPLE.phonemes.map((p) => (
-            <View key={p.phoneme} style={[styles.phoneme, { backgroundColor: scoreSoft(p.score) }]}>
-              <Text style={[styles.phonemeText, { color: scoreColor(p.score) }]}>/{p.phoneme}/</Text>
-              <Text style={[styles.phonemeScore, { color: scoreColor(p.score) }]}>{p.score}</Text>
+            <View key={p.phoneme} style={[styles.phoneme, { backgroundColor: phonemeChip(p.score).bg }]}>
+              <Text style={[styles.phonemeText, { color: phonemeChip(p.score).fg }]}>/{p.phoneme}/</Text>
+              <Text style={[styles.phonemeScore, { color: phonemeChip(p.score).fg }]}>{p.score}</Text>
             </View>
           ))}
         </View>

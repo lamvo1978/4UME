@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, GrammarReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { DoneCelebration } from "../components/DoneCelebration";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { QuizItem, QuizResult, sampleExercises } from "../grammar/quiz";
@@ -133,9 +134,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
   if (outcome) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <View style={styles.bigIcon}>
-          <Ionicons name={practice ? "flash" : "ribbon-outline"} size={40} color={colors.white} />
-        </View>
+        <DoneCelebration />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn ngữ pháp"}</Text>
         <Text style={styles.doneSub}>
           {lessons.length} bài · {quiz.items.length} câu
