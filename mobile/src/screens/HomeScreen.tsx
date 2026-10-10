@@ -3,7 +3,7 @@ import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-n
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, Me, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
@@ -17,6 +17,9 @@ type Nav = CompositeNavigationProp<
   NativeStackNavigationProp<RootStackParamList>
 >;
 
+/** Replies to feedback have no push yet, so Home checks while it is on screen. */
+const UNREAD_POLL_MS = 30_000;
+
 export function HomeScreen() {
   const { me, user, refreshMe } = useAuth();
   const navigation = useNavigation<Nav>();
@@ -29,8 +32,15 @@ export function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       api.reviewSummary().then(setReview).catch(() => setReview(null));
-      api.feedbackUnread().then(setUnread).catch(() => undefined);
+      const checkUnread = () => api.feedbackUnread().then(setUnread).catch(() => undefined);
+      checkUnread();
+      const timer = setInterval(checkUnread, UNREAD_POLL_MS);
+      const sub = AppState.addEventListener("change", (s) => s === "active" && checkUnread());
       refreshMe().catch(() => undefined);
+      return () => {
+        clearInterval(timer);
+        sub.remove();
+      };
     }, [refreshMe])
   );
 
