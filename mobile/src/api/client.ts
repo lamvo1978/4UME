@@ -293,6 +293,40 @@ export type ReviewAnswerResult = {
   backToLearning: boolean;
 };
 
+/** Detailed (Azure) checks left today; `remaining` is 0 also when the feature is off or the monthly budget is spent. */
+export type PronunciationStatus = {
+  enabled: boolean;
+  premium: boolean;
+  premiumUntil: string | null;
+  dailyLimit: number;
+  usedToday: number;
+  remaining: number;
+  serviceAvailable: boolean;
+  premiumDailyLimit: number;
+};
+
+export type PhonemeScore = { phoneme: string; score: number };
+
+export type PronunciationResult = {
+  score: number;
+  accuracy: number;
+  fluency: number;
+  completeness: number;
+  heard: string;
+  words: { word: string; score: number; errorType: string; phonemes: PhonemeScore[] }[];
+  status: PronunciationStatus;
+};
+
+/** Thrown by `assessPronunciation`; 429 means today's detailed checks are used up. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
 async function authHeaders(): Promise<Record<string, string>> {
   const token = await AsyncStorage.getItem(TOKEN_KEY);
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -324,6 +358,33 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new Error(data?.error ?? `Lỗi ${res.status}`);
   }
   return data as T;
+}
+
+async function assessPronunciation(wordId: string, recordingUri: string): Promise<PronunciationResult> {
+  const form = new FormData();
+  form.append("wordId", wordId);
+  if (Platform.OS === "web") {
+    form.append("audio", await (await fetch(recordingUri)).blob(), "recording.webm");
+  } else {
+    const name = recordingUri.split("/").pop() || "recording.m4a";
+    const type = name.endsWith(".wav") ? "audio/wav" : "audio/mp4";
+    // React Native's FormData uploads a local file from { uri, name, type }.
+    form.append("audio", { uri: recordingUri, name, type } as unknown as Blob);
+  }
+  const auth = await authHeaders();
+  const res = await fetch(`${API_BASE}/api/pronunciation/assess`, {
+    method: "POST",
+    headers: { "X-Utc-Offset": String(-new Date().getTimezoneOffset()), ...auth },
+    body: form,
+  });
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (res.status === 401 && auth.Authorization) {
+    onUnauthorized();
+    throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
+  }
+  if (!res.ok) throw new ApiError(data?.error ?? `Lỗi ${res.status}`, res.status);
+  return data as PronunciationResult;
 }
 
 let configCache: Promise<AppConfig> | null = null;
@@ -392,6 +453,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ wordId, mistakes }),
     }),
+  pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
+  assessPronunciation,
   placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
   /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */
   applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) =>

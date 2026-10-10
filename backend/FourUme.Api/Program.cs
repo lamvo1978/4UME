@@ -10,6 +10,7 @@ using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
+using FourUme.Application.Pronunciation;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
 using FourUme.Domain.Enums;
@@ -350,6 +351,34 @@ app.MapPost("/api/placement/apply", async (ApplyPlacementRequest request, Claims
     catch (InvalidOperationException ex)
     {
         return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireAuthorization();
+
+app.MapGet("/api/pronunciation/status", async (ClaimsPrincipal principal, IPronunciationService pronunciation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await pronunciation.GetStatusAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+// multipart/form-data: "wordId" and the recording in "audio".
+app.MapPost("/api/pronunciation/assess", async (HttpRequest request, ClaimsPrincipal principal, IPronunciationService pronunciation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    if (!request.HasFormContentType) return Results.BadRequest(new { error = "Thiếu bản ghi âm." });
+    var form = await request.ReadFormAsync(ct);
+    var file = form.Files["audio"];
+    var wordId = form["wordId"].ToString();
+    if (file is null || string.IsNullOrWhiteSpace(wordId)) return Results.BadRequest(new { error = "Thiếu bản ghi âm." });
+    try
+    {
+        await using var audio = file.OpenReadStream();
+        return Results.Ok(await pronunciation.AssessAsync(userId.Value, wordId, audio, ct));
+    }
+    catch (PronunciationException ex)
+    {
+        return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
     }
 }).RequireAuthorization();
 

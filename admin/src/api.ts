@@ -70,7 +70,7 @@ export type Overview = {
   recentChanges: AuditEntry[];
 };
 
-export type UserFilter = "" | "admin" | "locked" | "active" | "inactive";
+export type UserFilter = "" | "admin" | "locked" | "active" | "inactive" | "premium";
 export type UserQuery = { q?: string; filter?: UserFilter; sort?: string; page?: number; pageSize?: number };
 export type AdminUser = {
   id: string;
@@ -83,6 +83,8 @@ export type AdminUser = {
   currentStreak: number;
   knownWords: number;
   grammarPassed: number;
+  /** Premium is active while this is in the future. */
+  premiumUntil: string | null;
 };
 export type CreateUser = { email: string; displayName: string; password: string; role: AdminUser["role"] };
 export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean; listens: number };
@@ -123,10 +125,26 @@ export type NotificationConfig = {
   freezeNoticeTime: string;
 };
 export type ListeningConfig = { countsTowardStreak: boolean };
+export type PronunciationConfig = {
+  enabled: boolean;
+  freeDailyLimit: number;
+  premiumDailyLimit: number;
+  monthlyMinutesCap: number;
+};
 export type AdminSettings = {
   notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
   listening: { value: ListeningConfig; defaults: ListeningConfig; updatedAt: string | null };
+  pronunciation: {
+    value: PronunciationConfig;
+    defaults: PronunciationConfig;
+    updatedAt: string | null;
+    /** Azure checks this calendar month (UTC). */
+    usage: { attempts: number; users: number; minutes: number };
+    azureConfigured: boolean;
+  };
 };
+
+export const isPremium = (u: Pick<AdminUser, "premiumUntil">) => !!u.premiumUntil && new Date(u.premiumUntil) > new Date();
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
 
@@ -473,11 +491,16 @@ export const api = {
     request<void>("/api/me/password", json("POST", { currentPassword, newPassword })),
   setUserRole: (id: string, role: AdminUser["role"]) => request<AdminUserDetail>(`/api/admin/users/${id}/role`, json("PUT", { role })),
   setUserLocked: (id: string, locked: boolean) => request<AdminUserDetail>(`/api/admin/users/${id}/lock`, json("PUT", { locked })),
+  setUserPremium: (id: string, until: string | null) =>
+    request<AdminUserDetail>(`/api/admin/users/${id}/premium`, json("PUT", { until })),
 
   settings: () => request<AdminSettings>("/api/admin/settings"),
   saveNotificationSettings: (c: NotificationConfig) => request<AdminSettings>("/api/admin/settings/notifications", json("PUT", c)),
   resetNotificationSettings: () => request<AdminSettings>("/api/admin/settings/notifications/reset", { method: "POST" }),
   saveListeningSettings: (c: ListeningConfig) => request<AdminSettings>("/api/admin/settings/listening", json("PUT", c)),
+  savePronunciationSettings: (c: PronunciationConfig) =>
+    request<AdminSettings>("/api/admin/settings/pronunciation", json("PUT", c)),
+  resetPronunciationSettings: () => request<AdminSettings>("/api/admin/settings/pronunciation/reset", { method: "POST" }),
 
   meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
 

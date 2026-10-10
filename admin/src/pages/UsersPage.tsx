@@ -31,6 +31,7 @@ const FILTERS: { value: UserFilter; label: string }[] = [
   { value: "", label: "Tất cả" },
   { value: "active", label: "Học 7 ngày qua" },
   { value: "inactive", label: "Lâu không học" },
+  { value: "premium", label: "Premium" },
   { value: "admin", label: "Quản trị" },
   { value: "locked", label: "Đã khoá" },
 ];

@@ -4,6 +4,7 @@ using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Pronunciation;
 using FourUme.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,6 +80,9 @@ public class AdminAuditService(
                 break;
             case AuditEntities.Settings when log.EntityId == ListeningConfig.SettingKey:
                 await settings.RestoreListeningAsync(Read<ListeningConfig>(json), ct);
+                break;
+            case AuditEntities.Settings when log.EntityId == PronunciationConfig.SettingKey:
+                await settings.RestorePronunciationAsync(Read<PronunciationConfig>(json), ct);
                 break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");

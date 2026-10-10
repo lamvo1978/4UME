@@ -7,6 +7,7 @@ import {
   Group,
   Modal,
   Paper,
+  SegmentedControl,
   SimpleGrid,
   Skeleton,
   Stack,
@@ -19,6 +20,7 @@ import {
   IconArrowLeft,
   IconBrandAndroid,
   IconBrandApple,
+  IconCrown,
   IconHistory,
   IconLock,
   IconLockOpen,
@@ -29,7 +31,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, type AdminUserDetail } from "../api";
+import { api, isPremium, type AdminUserDetail } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { fullTime, notifyError, notifySaved, shortDate, studyAgo, timeAgo } from "../lib";
 import { ActivityCalendar } from "../users/ActivityCalendar";
@@ -191,6 +193,8 @@ export function UserDetailPage() {
         </Grid.Col>
       </Grid>
 
+      <PremiumCard detail={d} onDone={applied} />
+
       <Card title="Thiết bị nhận thông báo">
         {d.devices.length === 0 ? (
           <Text fz="sm" c="dimmed">
@@ -271,6 +275,93 @@ function OnOff({ on }: { on: boolean }) {
     <Badge color={on ? "green" : "gray"} variant="light" size="sm">
       {on ? "Bật" : "Tắt"}
     </Badge>
+  );
+}
+
+const PREMIUM_MONTHS = [
+  { value: "1", label: "1 tháng" },
+  { value: "3", label: "3 tháng" },
+  { value: "6", label: "6 tháng" },
+  { value: "12", label: "1 năm" },
+];
+
+/** Premium is granted by hand until in-app purchases exist; extending adds to the current end date. */
+function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: AdminUserDetail) => void }) {
+  const u = detail.user;
+  const premium = isPremium(u);
+  const [mode, setMode] = useState<"extend" | "remove" | null>(null);
+  const [months, setMonths] = useState("1");
+  const [busy, setBusy] = useState(false);
+
+  const from = premium ? new Date(u.premiumUntil!) : new Date();
+  const until = new Date(from);
+  until.setMonth(until.getMonth() + Number(months));
+  const daysLeft = premium ? Math.ceil((new Date(u.premiumUntil!).getTime() - Date.now()) / 86_400_000) : 0;
+
+  async function run() {
+    setBusy(true);
+    try {
+      onDone(await api.setUserPremium(u.id, mode === "remove" ? null : until.toISOString()));
+      notifySaved(mode === "remove" ? "Đã tắt Premium" : `Premium đến ${shortDate(until.toISOString())}`);
+      setMode(null);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Paper p="md" radius="lg" shadow="xs">
+      <Group justify="space-between" wrap="wrap" gap="sm">
+        <Group gap="sm" wrap="nowrap">
+          <IconCrown size={22} color={premium ? "var(--mantine-color-yellow-7)" : "var(--mantine-color-gray-5)"} />
+          <div>
+            <Text fw={700}>{premium ? `Premium đến ${shortDate(u.premiumUntil!)}` : "Gói miễn phí"}</Text>
+            <Text fz="sm" c="dimmed">
+              {premium
+                ? `Còn ${daysLeft} ngày · chấm phát âm chi tiết nhiều lượt hơn mỗi ngày.`
+                : "Premium cho chấm phát âm chi tiết nhiều lượt hơn mỗi ngày (số lượt chỉnh ở Cài đặt)."}
+            </Text>
+          </div>
+        </Group>
+        <Group gap="sm">
+          {premium ? (
+            <Button variant="default" color="red" onClick={() => setMode("remove")}>
+              Tắt Premium
+            </Button>
+          ) : null}
+          <Button variant="light" color="yellow" leftSection={<IconCrown size={18} />} onClick={() => setMode("extend")}>
+            {premium ? "Gia hạn" : "Bật Premium"}
+          </Button>
+        </Group>
+      </Group>
+
+      <Modal opened={!!mode} onClose={() => setMode(null)} title={mode === "remove" ? "Tắt Premium?" : premium ? "Gia hạn Premium" : "Bật Premium"} centered>
+        <Stack>
+          {mode === "remove" ? (
+            <Text fz="sm">
+              <b>{u.displayName}</b> trở về gói miễn phí ngay, số lượt chấm phát âm chi tiết mỗi ngày giảm về mức miễn phí.
+            </Text>
+          ) : (
+            <>
+              <SegmentedControl fullWidth data={PREMIUM_MONTHS} value={months} onChange={setMonths} />
+              <Text fz="sm">
+                {premium ? "Cộng thêm vào hạn hiện tại. " : ""}Premium của <b>{u.displayName}</b> sẽ kéo dài đến <b>{shortDate(until.toISOString())}</b>.
+              </Text>
+            </>
+          )}
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setMode(null)}>
+              Huỷ
+            </Button>
+            <Button color={mode === "remove" ? "red" : "yellow"} loading={busy} onClick={run}>
+              {mode === "remove" ? "Tắt Premium" : "Xác nhận"}
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </Paper>
   );
 }
 

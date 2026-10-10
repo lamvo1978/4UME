@@ -7,6 +7,7 @@ import {
   Modal,
   NumberInput,
   Paper,
+  Progress,
   SegmentedControl,
   SimpleGrid,
   Skeleton,
@@ -20,7 +21,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck, IconDeviceFloppy, IconHistory, IconRestore } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
-import { api, type AdminSettings, type NotificationConfig } from "../api";
+import { api, type AdminSettings, type NotificationConfig, type PronunciationConfig } from "../api";
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { WEEKDAY_NAMES } from "../history/meta";
@@ -158,6 +159,7 @@ export function SettingsPage() {
       </Group>
 
       <ListeningSettings settings={settings.data} />
+      <PronunciationSettings settings={settings.data} />
 
       <Section title="Thông báo · Giờ gửi" description="Giờ địa phương của từng người dùng.">
         <DayTimeline config={form} />
@@ -350,6 +352,118 @@ function ListeningSettings({ settings }: { settings: AdminSettings }) {
             : "Mặc định: tắt."
         }
       />
+    </Section>
+  );
+}
+
+/** Its own form and save button, separate from the notification settings above and below. */
+function PronunciationSettings({ settings }: { settings: AdminSettings }) {
+  const queryClient = useQueryClient();
+  const p = settings.pronunciation;
+  const [form, setForm] = useState<PronunciationConfig>(p.value);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => setForm(p.value), [p.value]);
+
+  const dirty = JSON.stringify(form) !== JSON.stringify(p.value);
+  const atDefaults = JSON.stringify(p.value) === JSON.stringify(p.defaults);
+  const usedPct = p.value.monthlyMinutesCap > 0 ? Math.min(100, (p.usage.minutes / p.value.monthlyMinutesCap) * 100) : 100;
+  const number = (key: keyof PronunciationConfig) => (v: string | number) =>
+    setForm({ ...form, [key]: typeof v === "number" ? Math.max(0, Math.round(v)) : 0 });
+
+  async function run(action: () => Promise<AdminSettings>, message: string) {
+    setSaving(true);
+    try {
+      queryClient.setQueryData(["settings"], await action());
+      queryClient.invalidateQueries({ queryKey: ["audit"] });
+      notifySaved(message);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Section title="Kiểm tra giọng đọc" description="Câu “Đọc to từ này” trong Ôn từ, chấm điểm bằng Azure. Hết lượt thì app chuyển sang tự so sánh giọng.">
+      <Stack gap="md">
+        {!p.azureConfigured ? (
+          <Alert color="orange" variant="light">
+            Chưa cấu hình Azure Speech (AZURE_SPEECH_KEY, AZURE_SPEECH_REGION) nên app chỉ có chế độ tự so sánh.
+          </Alert>
+        ) : null}
+        <Switch
+          size="md"
+          checked={form.enabled}
+          onChange={(e) => setForm({ ...form, enabled: e.currentTarget.checked })}
+          label="Có câu đọc to trong bài ôn"
+          description="Tắt thì app không đưa câu đọc vào bài ôn nữa."
+        />
+        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+          <NumberInput
+            label="Miễn phí mỗi ngày"
+            description="Lượt chấm chi tiết"
+            min={0}
+            max={1000}
+            value={form.freeDailyLimit}
+            onChange={number("freeDailyLimit")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Premium mỗi ngày"
+            description="Lượt chấm chi tiết"
+            min={0}
+            max={1000}
+            value={form.premiumDailyLimit}
+            onChange={number("premiumDailyLimit")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Giới hạn mỗi tháng"
+            description="Phút âm thanh gửi Azure (gói F0: 300)"
+            min={0}
+            max={100000}
+            suffix=" phút"
+            value={form.monthlyMinutesCap}
+            onChange={number("monthlyMinutesCap")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+        </SimpleGrid>
+        <div>
+          <Group justify="space-between" mb={4}>
+            <Text fz="sm" fw={500}>
+              Tháng này
+            </Text>
+            <Text fz="sm" c="dimmed">
+              {p.usage.attempts.toLocaleString("vi-VN")} lượt · {p.usage.users} người · {p.usage.minutes.toLocaleString("vi-VN")}/
+              {p.value.monthlyMinutesCap.toLocaleString("vi-VN")} phút
+            </Text>
+          </Group>
+          <Progress value={usedPct} color={usedPct >= 90 ? "red" : usedPct >= 70 ? "orange" : "brand"} radius="xl" />
+          <Text fz="xs" c="dimmed" mt={4}>
+            Chạm giới hạn thì mọi người chuyển sang tự so sánh đến đầu tháng sau (tính theo giờ UTC).
+          </Text>
+        </div>
+        <Group justify="flex-end" gap="sm">
+          <Button
+            variant="default"
+            leftSection={<IconRestore size={18} />}
+            disabled={atDefaults && !dirty}
+            loading={saving && !dirty}
+            onClick={() => run(api.resetPronunciationSettings, "Đã khôi phục mặc định")}
+          >
+            Mặc định
+          </Button>
+          <Button
+            leftSection={<IconDeviceFloppy size={18} />}
+            disabled={!dirty}
+            loading={saving && dirty}
+            onClick={() => run(() => api.savePronunciationSettings(form), "Đã lưu cài đặt kiểm tra giọng đọc")}
+          >
+            Lưu
+          </Button>
+        </Group>
+      </Stack>
     </Section>
   );
 }

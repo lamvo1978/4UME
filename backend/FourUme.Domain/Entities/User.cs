@@ -12,6 +12,8 @@ public class User
     public string Role { get; set; } = UserRoles.User;
     /// <summary>Set when an admin locks the account; locked users can't sign in.</summary>
     public DateTimeOffset? LockedAt { get; set; }
+    /// <summary>Premium (more detailed pronunciation checks) until this moment; granted by an admin for now.</summary>
+    public DateTimeOffset? PremiumUntil { get; set; }
 
     /// <summary>New words per day; also the flashcard batch size.</summary>
     public int DailyGoal { get; set; } = 10;

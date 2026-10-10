@@ -1,5 +1,6 @@
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Pronunciation;
 
 namespace FourUme.Application.Admin;
 
@@ -9,7 +10,19 @@ public record AdminNotificationSettingsDto(NotificationConfig Value, Notificatio
 /// <param name="UpdatedAt">null while the defaults are in use.</param>
 public record AdminListeningSettingsDto(ListeningConfig Value, ListeningConfig Defaults, DateTimeOffset? UpdatedAt);
 
-public record AdminSettingsDto(AdminNotificationSettingsDto Notifications, AdminListeningSettingsDto Listening);
+/// <param name="UpdatedAt">null while the defaults are in use.</param>
+/// <param name="Usage">Azure checks this calendar month (UTC).</param>
+public record AdminPronunciationSettingsDto(
+    PronunciationConfig Value,
+    PronunciationConfig Defaults,
+    DateTimeOffset? UpdatedAt,
+    PronunciationUsageDto Usage,
+    bool AzureConfigured);
+
+public record AdminSettingsDto(
+    AdminNotificationSettingsDto Notifications,
+    AdminListeningSettingsDto Listening,
+    AdminPronunciationSettingsDto Pronunciation);
 
 public interface IAdminSettingsService
 {
@@ -22,4 +35,8 @@ public interface IAdminSettingsService
     Task<AdminSettingsDto> SaveListeningAsync(ListeningConfig config, CancellationToken ct = default);
     Task<AdminSettingsDto> ResetListeningAsync(CancellationToken ct = default);
     Task RestoreListeningAsync(ListeningConfig config, CancellationToken ct = default);
+    /// <summary>Validates with <see cref="PronunciationRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminSettingsDto> SavePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
+    Task<AdminSettingsDto> ResetPronunciationAsync(CancellationToken ct = default);
+    Task RestorePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
 }

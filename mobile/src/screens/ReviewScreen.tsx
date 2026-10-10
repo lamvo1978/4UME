@@ -2,13 +2,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { api, mediaUrl, ReviewItem, ReviewSummary } from "../api/client";
+import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
 import { SentenceBuilder, sentenceTokens } from "../components/SentenceBuilder";
 import { SpeakButton, speak, speakAuto, stopSpeaking } from "../components/SpeakButton";
+import { SpeakExercise } from "../components/SpeakExercise";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -27,7 +28,8 @@ type ExerciseType =
   | "matching"
   | "letters_listen"
   | "letters_meaning"
-  | "sentence";
+  | "sentence"
+  | "speak";
 
 type Exercise = { key: string; type: ExerciseType; items: ReviewItem[] };
 
@@ -41,6 +43,7 @@ const INSTRUCTIONS: Record<ExerciseType, string> = {
   letters_listen: "Nghe và ráp lại từ",
   letters_meaning: "Ráp từ tiếng Anh theo nghĩa",
   sentence: "Sắp xếp thành câu đúng",
+  speak: "Đọc to từ này",
 };
 
 const letterCount = (s: string) => s.replace(/[^a-z]/gi, "").length;
@@ -66,7 +69,23 @@ const DIFFICULTY: Record<ExerciseType, number> = {
   letters_meaning: 3,
   letters_listen: 4,
   sentence: 5,
+  speak: 6,
 };
+
+/** Speaking exercises per session; they never count as mistakes (pronunciation isn't recall). */
+const SPEAK_PER_SESSION = 2;
+
+/** Each picked word is read aloud after its other exercises, from the middle of the session on. */
+function addSpeaking(plan: Exercise[], items: ReviewItem[]): Exercise[] {
+  const picks = shuffle(items.filter((it) => letterCount(it.word.word) >= 2)).slice(0, SPEAK_PER_SESSION);
+  const result = [...plan];
+  for (const it of picks) {
+    const last = result.reduce((at, e, i) => (e.items.some((x) => x.word.id === it.word.id) ? i : at), -1);
+    const at = Math.max(last + 1, Math.ceil(result.length / 2));
+    result.splice(at, 0, { key: `speak-${it.word.id}`, type: "speak", items: [it] });
+  }
+  return result;
+}
 
 /** Higher-level words skip the easy recognition exercises. */
 function eligibleTypes(it: ReviewItem): ExerciseType[] {
@@ -165,6 +184,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   const [stats, setStats] = useState(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pronunciation, setPronunciation] = useState<PronunciationStatus | null>(null);
   const mistakes = useRef<Record<string, number>>({});
   const retries = useRef(0);
 
@@ -172,11 +192,14 @@ export function ReviewScreen({ navigation, route }: Props) {
     setLoading(true);
     setError("");
     try {
-      const [items, s] = await Promise.all([
+      const [items, s, speech] = await Promise.all([
         practice ? api.practiceItems({ deckId, wordIds }) : api.reviewDue(),
         api.reviewSummary(),
+        api.pronunciationStatus().catch(() => null),
       ]);
-      const plan = buildPlan(items);
+      const base = buildPlan(items);
+      const plan = speech?.enabled ? addSpeaking(base, items) : base;
+      setPronunciation(speech);
       setSummary(s);
       setQueue(plan);
       setTotal(plan.length);
@@ -243,6 +266,32 @@ export function ReviewScreen({ navigation, route }: Props) {
     const matches = normalize(answer) === normalize(expected(ex));
     if (matches && hintsUsed > hintLimit(ex)) complete({ correct: false, given: answer, reason: "hints" });
     else complete({ correct: matches, given: answer, reason: matches ? "ok" : "wrong" });
+  }
+
+  /** Words whose last pending exercise is being removed get their result saved. */
+  function dropExercises(drop: (e: Exercise) => boolean) {
+    const removed = queue.filter(drop);
+    const rest = queue.filter((e) => !drop(e));
+    new Set(removed.flatMap((e) => e.items.map((it) => it.word.id)))
+      .forEach((id) => {
+        if (!rest.some((e) => e.items.some((x) => x.word.id === id))) finishWord(id);
+      });
+    setQueue(rest);
+    if (rest.length === 0) refreshMe();
+    return removed.length;
+  }
+
+  function finishSpeak() {
+    if (!ex) return;
+    stopSpeaking();
+    dropExercises((e) => e.key === ex.key);
+    setDone((d) => d + 1);
+  }
+
+  function skipSpeaking() {
+    stopSpeaking();
+    const removed = dropExercises((e) => e.type === "speak");
+    setTotal((t) => t - removed);
   }
 
   function next() {
@@ -382,6 +431,15 @@ export function ReviewScreen({ navigation, route }: Props) {
         <LetterTiles key={ex.key} word={item.word.word} locked={!!feedback} onCheck={check} onReveal={reveal} />
       ) : ex.type === "sentence" ? (
         <SentenceBuilder key={ex.key} sentence={item.word.example} locked={!!feedback} onCheck={check} onReveal={reveal} />
+      ) : ex.type === "speak" ? (
+        <SpeakExercise
+          key={ex.key}
+          word={item.word}
+          status={pronunciation}
+          onStatus={setPronunciation}
+          onNext={finishSpeak}
+          onSkipAll={skipSpeaking}
+        />
       ) : ex.type !== "matching" ? (
         <View style={styles.options}>
           {options.map((opt) => {
@@ -479,6 +537,17 @@ function Prompt({ ex }: { ex: Exercise }) {
       return (
         <View style={styles.prompt}>
           <Text style={styles.promptSentence}>{word.exampleVi || `Câu có từ "${word.word}"`}</Text>
+        </View>
+      );
+    case "speak":
+      return (
+        <View style={styles.prompt}>
+          <Text style={styles.promptWord}>{word.word}</Text>
+          <View style={styles.ipaRow}>
+            {word.ipa ? <Text style={styles.ipa}>{word.ipa}</Text> : null}
+            <SpeakButton text={word.word} />
+          </View>
+          <Text style={styles.promptHint}>{word.meaningVi}</Text>
         </View>
       );
     case "image_choice":

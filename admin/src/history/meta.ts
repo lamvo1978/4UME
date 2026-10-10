@@ -80,7 +80,7 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     version: "Phiên bản",
   },
   media: { originalName: "Tên file", url: "Đường dẫn", width: "Rộng", height: "Cao", bytes: "Dung lượng" },
-  user: { email: "Email", displayName: "Tên", role: "Quyền", locked: "Bị khoá" },
+  user: { email: "Email", displayName: "Tên", role: "Quyền", locked: "Bị khoá", premiumUntil: "Premium đến" },
   settings: {
     rescueTime: "Giờ cứu chuỗi",
     quietStart: "Bắt đầu yên tĩnh",
@@ -93,5 +93,9 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     weeklyTime: "Giờ tổng kết tuần",
     freezeNoticeTime: "Giờ báo đóng băng",
     countsTowardStreak: "Nghe xong tính vào chuỗi ngày",
+    enabled: "Bật kiểm tra giọng đọc",
+    freeDailyLimit: "Lượt chấm miễn phí mỗi ngày",
+    premiumDailyLimit: "Lượt chấm Premium mỗi ngày",
+    monthlyMinutesCap: "Giới hạn phút Azure mỗi tháng",
   },
 };

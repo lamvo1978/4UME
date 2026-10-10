@@ -22,6 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<NotificationLog> NotificationLogs => Set<NotificationLog>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<EmailCode> EmailCodes => Set<EmailCode>();
+    public DbSet<PronunciationAttempt> PronunciationAttempts => Set<PronunciationAttempt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,6 +38,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.VocabLevel).HasMaxLength(2);
             e.Property(x => x.EasyWordMode).HasMaxLength(8).IsRequired().HasDefaultValue("skip");
             e.Property(x => x.Role).HasMaxLength(16).IsRequired().HasDefaultValue(UserRoles.User);
+        });
+
+        modelBuilder.Entity<PronunciationAttempt>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.LocalDate });
+            e.HasIndex(x => x.CreatedAt);
+            e.Property(x => x.WordId).HasMaxLength(120).IsRequired();
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailCode>(e =>

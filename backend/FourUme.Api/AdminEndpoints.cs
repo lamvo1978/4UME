@@ -5,6 +5,7 @@ using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Pronunciation;
 
 namespace FourUme.Api;
 
@@ -59,6 +60,8 @@ public static class AdminEndpoints
             Results.Ok(await s.SetRoleAsync(id, r.Role, clock.Today, ct)));
         admin.MapPut("/users/{id:guid}/lock", async (Guid id, SetLockRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
             Results.Ok(await s.SetLockedAsync(id, r.Locked, clock.Today, ct)));
+        admin.MapPut("/users/{id:guid}/premium", async (Guid id, SetPremiumRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
+            Results.Ok(await s.SetPremiumAsync(id, r.Until, clock.Today, ct)));
 
         admin.MapGet("/settings", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetAsync(ct)));
         admin.MapPut("/settings/notifications", async (NotificationConfig c, IAdminSettingsService s, CancellationToken ct) =>
@@ -69,6 +72,10 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveListeningAsync(c, ct)));
         admin.MapPost("/settings/listening/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetListeningAsync(ct)));
+        admin.MapPut("/settings/pronunciation", async (PronunciationConfig c, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SavePronunciationAsync(c, ct)));
+        admin.MapPost("/settings/pronunciation/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetPronunciationAsync(ct)));
 
         admin.MapGet("/vocabulary/meta", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMetaAsync(ct)));
 

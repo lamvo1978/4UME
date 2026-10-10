@@ -10,6 +10,7 @@ public static class UserFilters
     public const string Active = "active";
     /// <summary>No study in the last 14 days (or never).</summary>
     public const string Inactive = "inactive";
+    public const string Premium = "premium";
     public const int InactiveDays = 14;
 }
 
@@ -27,7 +28,8 @@ public record AdminUserDto(
     DateOnly? LastStudyDate,
     int CurrentStreak,
     int KnownWords,
-    int GrammarPassed);
+    int GrammarPassed,
+    DateTimeOffset? PremiumUntil);
 
 public record AdminUserSettingsDto(
     int DailyGoal,
@@ -71,9 +73,11 @@ public static class AdminUserRules
 public record CreateUserRequest(string Email, string DisplayName, string Password, string Role);
 public record SetRoleRequest(string Role);
 public record SetLockRequest(bool Locked);
+/// <param name="Until">End of Premium; null removes it.</param>
+public record SetPremiumRequest(DateTimeOffset? Until);
 
 /// <summary>What the history stores for a user change (no personal data beyond what the list shows).</summary>
-public record UserAccessSnapshot(string Email, string DisplayName, string Role, bool Locked);
+public record UserAccessSnapshot(string Email, string DisplayName, string Role, bool Locked, DateTimeOffset? PremiumUntil = null);
 
 public interface IAdminUserService
 {
@@ -82,6 +86,7 @@ public interface IAdminUserService
     Task<AdminUserDetailDto> CreateAsync(CreateUserRequest request, DateOnly today, CancellationToken ct = default);
     Task<AdminUserDetailDto> SetRoleAsync(Guid id, string role, DateOnly today, CancellationToken ct = default);
     Task<AdminUserDetailDto> SetLockedAsync(Guid id, bool locked, DateOnly today, CancellationToken ct = default);
+    Task<AdminUserDetailDto> SetPremiumAsync(Guid id, DateTimeOffset? until, DateOnly today, CancellationToken ct = default);
 }
 
 /// <summary>Whether a signed-in account may still use the API (exists and is not locked); cached briefly per user.</summary>

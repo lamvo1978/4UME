@@ -3,27 +3,39 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Pronunciation;
 using FourUme.Domain.Entities;
+using FourUme.Infrastructure.Pronunciation;
 using Microsoft.EntityFrameworkCore;
 
 namespace FourUme.Infrastructure.Admin;
 
-public class AdminSettingsService(IAppDbContext db, INotificationService notifications, IListeningService listening, Auditor auditor) : IAdminSettingsService
+public class AdminSettingsService(
+    IAppDbContext db,
+    INotificationService notifications,
+    IListeningService listening,
+    IPronunciationService pronunciation,
+    AzurePronunciationClient azure,
+    Auditor auditor) : IAdminSettingsService
 {
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
+    private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     public async Task<AdminSettingsDto> GetAsync(CancellationToken ct = default)
     {
         var updated = await db.AppSettings.AsNoTracking()
-            .Where(s => s.Key == NotificationConfig.SettingKey || s.Key == ListeningConfig.SettingKey)
+            .Where(s => s.Key == NotificationConfig.SettingKey || s.Key == ListeningConfig.SettingKey || s.Key == PronunciationConfig.SettingKey)
             .ToDictionaryAsync(s => s.Key, s => s.UpdatedAt, ct);
         return new AdminSettingsDto(
             new AdminNotificationSettingsDto(await notifications.GetConfigAsync(ct), new NotificationConfig(),
                 updated.TryGetValue(NotificationConfig.SettingKey, out var n) ? n : null),
             new AdminListeningSettingsDto(await listening.GetConfigAsync(ct), new ListeningConfig(),
-                updated.TryGetValue(ListeningConfig.SettingKey, out var l) ? l : null));
+                updated.TryGetValue(ListeningConfig.SettingKey, out var l) ? l : null),
+            new AdminPronunciationSettingsDto(await pronunciation.GetConfigAsync(ct), new PronunciationConfig(),
+                updated.TryGetValue(PronunciationConfig.SettingKey, out var p) ? p : null,
+                await pronunciation.GetMonthUsageAsync(ct), azure.Configured));
     }
 
     public async Task<AdminSettingsDto> SaveNotificationsAsync(NotificationConfig config, CancellationToken ct = default)
@@ -56,12 +68,34 @@ public class AdminSettingsService(IAppDbContext db, INotificationService notific
     public async Task RestoreListeningAsync(ListeningConfig config, CancellationToken ct = default) =>
         await WriteAsync(ListeningConfig.SettingKey, ListeningSummary, AuditActions.Restore, await listening.GetConfigAsync(ct), config, ct);
 
+    public async Task<AdminSettingsDto> SavePronunciationAsync(PronunciationConfig config, CancellationToken ct = default)
+    {
+        await ApplyPronunciationAsync(config, AuditActions.Update, ct);
+        return await GetAsync(ct);
+    }
+
+    public async Task<AdminSettingsDto> ResetPronunciationAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(PronunciationConfig.SettingKey, PronunciationSummary, await pronunciation.GetConfigAsync(ct), new PronunciationConfig(), ct);
+        return await GetAsync(ct);
+    }
+
+    public Task RestorePronunciationAsync(PronunciationConfig config, CancellationToken ct = default) =>
+        ApplyPronunciationAsync(config, AuditActions.Restore, ct);
+
     private async Task ApplyNotificationsAsync(NotificationConfig config, string action, CancellationToken ct)
     {
         var next = NotificationConfigRules.Normalize(config);
         var problems = NotificationConfigRules.Validate(next);
         if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
         await WriteAsync(NotificationConfig.SettingKey, NotificationsSummary, action, await notifications.GetConfigAsync(ct), next, ct);
+    }
+
+    private async Task ApplyPronunciationAsync(PronunciationConfig config, string action, CancellationToken ct)
+    {
+        var problems = PronunciationRules.Validate(config);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(PronunciationConfig.SettingKey, PronunciationSummary, action, await pronunciation.GetConfigAsync(ct), config, ct);
     }
 
     private async Task WriteAsync<T>(string key, string summary, string action, T before, T next, CancellationToken ct)
