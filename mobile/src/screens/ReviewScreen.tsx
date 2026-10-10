@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { DoneCelebration } from "../components/DoneCelebration";
+import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
@@ -357,14 +357,14 @@ export function ReviewScreen({ navigation, route }: Props) {
   if (!ex) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <DoneCelebration />
+        <DoneCelebration perfect={stats.words > 0 && stats.withMistakes === 0} />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn hôm nay"}</Text>
         <Text style={styles.doneSub}>
           Đã {practice ? "luyện" : "ôn"} {stats.words} từ qua {total} bài tập.
         </Text>
         <View style={styles.summaryRow}>
-          <SummaryStat value={String(stats.clean)} label={practice ? "Không sai" : "Lên cấp"} />
-          <SummaryStat value={String(stats.withMistakes)} label={practice ? "Có sai" : "Ôn lại sớm"} />
+          <SummaryStat value={stats.clean} label={practice ? "Không sai" : "Lên cấp"} />
+          <SummaryStat value={stats.withMistakes} label={practice ? "Có sai" : "Ôn lại sớm"} />
         </View>
         {stats.relearn > 0 ? (
           <Text style={styles.doneSub}>{stats.relearn} từ sai nhiều lần liên tiếp đã được đưa về "Học sau".</Text>
@@ -579,10 +579,10 @@ function ImagePrompt({ ex }: { ex: Exercise }) {
   );
 }
 
-function SummaryStat({ value, label }: { value: string; label: string }) {
+function SummaryStat({ value, label }: { value: number; label: string }) {
   return (
     <View style={styles.summaryStat}>
-      <Text style={styles.summaryValue}>{value}</Text>
+      <CountUp value={value} style={styles.summaryValue} />
       <Text style={styles.summaryLabel}>{label}</Text>
     </View>
   );

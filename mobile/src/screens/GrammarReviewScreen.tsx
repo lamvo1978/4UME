@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, GrammarReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { DoneCelebration } from "../components/DoneCelebration";
+import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { QuizItem, QuizResult, sampleExercises } from "../grammar/quiz";
@@ -134,7 +134,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
   if (outcome) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <DoneCelebration />
+        <DoneCelebration perfect={lessons.length > 0 && outcome.withMistakes === 0} />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn ngữ pháp"}</Text>
         <Text style={styles.doneSub}>
           {lessons.length} bài · {quiz.items.length} câu
@@ -184,7 +184,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
 function Stat({ value, label }: { value: number; label: string }) {
   return (
     <View style={styles.stat}>
-      <Text style={styles.statValue}>{value}</Text>
+      <CountUp value={value} style={styles.statValue} />
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
