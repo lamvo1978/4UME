@@ -69,6 +69,7 @@ public sealed partial class GeminiDraftService(
             Use invented but realistic places and people; never copy or imitate real news articles; no politics, no tragedies, no real brands or celebrities.
         - Content must be friendly, positive or neutral, and suitable for all ages. Show everyday life that Vietnamese learners can relate to; international settings are fine.
         - English: natural, idiomatic for the level, correct punctuation, no markdown, no stage directions, no sound effects, no emojis.
+          In dialogues and stories use contractions the way people really speak (I'm, it's, don't, can't, I'd like), at every level; news may be slightly more formal.
           Write numbers, times and prices the way they should be spoken when that helps TTS (e.g. "seven thirty", "twelve dollars").
         - Each line has "en" (English, at most 300 characters) and "vi" (natural Vietnamese translation of that line, not word-for-word;
           keep English names; use polite, everyday Vietnamese).

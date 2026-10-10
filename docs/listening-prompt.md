@@ -76,5 +76,6 @@ Nếu trên VPS đã có bài thêm qua admin mà máy Mac không có: trước 
 - **Hội thoại**: đời thường, mỗi lượt nói 1–3 câu ngắn. **Câu chuyện**: có mở – thân – kết, ấm áp, dễ theo. **Bản tin**: giọng bình tĩnh, **tự viết** về chủ đề phổ thông (thời tiết, đời sống thành phố, sức khoẻ, khoa học, công nghệ, môi trường, thể thao, văn hoá) với địa danh / nhân vật hư cấu; **không** chép hay phỏng theo tin thật, không chính trị, không tai nạn, không thương hiệu hay người nổi tiếng thật.
 - Nội dung thân thiện, tích cực hoặc trung tính, hợp mọi lứa tuổi; gần gũi với đời sống người Việt (bối cảnh nước ngoài cũng được).
 - Tiếng Anh tự nhiên, đúng dấu câu; không markdown, không chú thích sân khấu, không emoji. Số, giờ, giá viết theo cách đọc khi cần cho giọng máy (*seven thirty*, *twelve dollars*).
+- Hội thoại và câu chuyện dùng dạng rút gọn như người bản xứ nói (*I'm, it's, don't, can't, I'd like*) ở mọi cấp độ; bản tin có thể trang trọng hơn.
 - **`vi`** dịch tự nhiên theo nghĩa (không dịch từng chữ), giữ tên riêng tiếng Anh, xưng hô hợp ngữ cảnh. **`summaryVi`** 1–2 câu tả tình huống, không kể hết kết. **`topic`** là nhãn tiếng Việt ngắn (*Mua sắm*, *Du lịch*, *Sức khoẻ*…).
 - Độ dài: **ngắn** 8–12 câu (~100–150 từ), **vừa** 12–18 câu (~150–250 từ), **dài** 18–26 câu (~250–400 từ).
