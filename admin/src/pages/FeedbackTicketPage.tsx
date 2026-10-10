@@ -1,8 +1,24 @@
-import { Alert, Anchor, Badge, Button, Group, Image, Paper, SimpleGrid, Skeleton, Stack, Text, Textarea, Title } from "@mantine/core";
+import {
+  Alert,
+  Anchor,
+  Badge,
+  Button,
+  CloseButton,
+  FileButton,
+  Group,
+  Image,
+  Paper,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  Text,
+  Textarea,
+  Title,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconArrowLeft, IconCheck, IconLock, IconLockOpen, IconSend } from "@tabler/icons-react";
+import { IconArrowLeft, IconCheck, IconLock, IconLockOpen, IconPhoto, IconSend } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, mediaSrc, type AdminFeedbackTicket, type FeedbackMessage } from "../api";
 import { Select } from "../components/AppSelect";
@@ -10,6 +26,8 @@ import { categoryMeta, CLOSED_BY, STATUSES } from "../feedback/meta";
 import { fullTime, notifyError, notifySaved } from "../lib";
 
 const MAX_BODY = 2000;
+const MAX_IMAGES = 3;
+const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 
 export function FeedbackTicketPage() {
   const { id = "" } = useParams();
@@ -27,6 +45,15 @@ export function FeedbackTicketPage() {
   const settings = useQuery({ queryKey: ["feedback-settings"], queryFn: api.feedbackSettings });
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState<"reply" | "close" | "status" | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+
+  function addImages(files: File[]) {
+    const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
+    if (tooBig.length) notifyError(new Error("Ảnh quá lớn (tối đa 15 MB)."));
+    const ok = files.filter((f) => f.size <= MAX_IMAGE_BYTES);
+    if (images.length + ok.length > MAX_IMAGES) notifyError(new Error(`Tối đa ${MAX_IMAGES} ảnh mỗi lần gửi.`));
+    setImages((prev) => [...prev, ...ok].slice(0, MAX_IMAGES));
+  }
 
   async function run(kind: "reply" | "close" | "status", action: () => Promise<AdminFeedbackTicket>, message: string) {
     setBusy(kind);
@@ -34,7 +61,10 @@ export function FeedbackTicketPage() {
       queryClient.setQueryData(["feedback-ticket", id], await action());
       queryClient.invalidateQueries({ queryKey: ["feedback"] });
       queryClient.invalidateQueries({ queryKey: ["feedback-counts"] });
-      if (kind !== "status") setBody("");
+      if (kind !== "status") {
+        setBody("");
+        setImages([]);
+      }
       notifySaved(message);
     } catch (e) {
       notifyError(e);
@@ -160,25 +190,43 @@ export function FeedbackTicketPage() {
               />
             ) : null}
             <Textarea
-              placeholder="Trả lời người dùng…"
+              placeholder="Trả lời người dùng… (dán ảnh chụp màn hình bằng Cmd+V)"
               autosize
               minRows={4}
               maxRows={14}
               maxLength={MAX_BODY}
               value={body}
               onChange={(e) => setBody(e.currentTarget.value)}
+              onPaste={(e) => {
+                const pasted = Array.from(e.clipboardData.files).filter((f) => f.type.startsWith("image/"));
+                if (pasted.length) {
+                  e.preventDefault();
+                  addImages(pasted);
+                }
+              }}
             />
+            {images.length ? (
+              <Group gap="xs">
+                {images.map((img, i) => (
+                  <PendingImage key={i} file={img} onRemove={() => setImages((prev) => prev.filter((_, j) => j !== i))} />
+                ))}
+              </Group>
+            ) : null}
             <Group justify="space-between">
-              <Text fz="xs" c="dimmed">
-                Người dùng thấy chấm đỏ trên chuông trong app.
-              </Text>
+              <FileButton onChange={addImages} accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+                {(props) => (
+                  <Button {...props} variant="subtle" leftSection={<IconPhoto size={18} />} disabled={images.length >= MAX_IMAGES}>
+                    Thêm ảnh ({images.length}/{MAX_IMAGES})
+                  </Button>
+                )}
+              </FileButton>
               <Group gap="xs">
                 <Button
                   variant="default"
                   leftSection={<IconCheck size={18} />}
                   disabled={!text}
                   loading={busy === "close"}
-                  onClick={() => run("close", () => api.replyFeedback(id, text, true), "Đã trả lời và đóng góp ý")}
+                  onClick={() => run("close", () => api.replyFeedback(id, text, true, images), "Đã trả lời và đóng góp ý")}
                 >
                   Trả lời & đóng
                 </Button>
@@ -186,7 +234,7 @@ export function FeedbackTicketPage() {
                   leftSection={<IconSend size={18} />}
                   disabled={!text}
                   loading={busy === "reply"}
-                  onClick={() => run("reply", () => api.replyFeedback(id, text, false), "Đã gửi trả lời")}
+                  onClick={() => run("reply", () => api.replyFeedback(id, text, false, images), "Đã gửi trả lời")}
                 >
                   Gửi trả lời
                 </Button>
@@ -196,6 +244,28 @@ export function FeedbackTicketPage() {
         </Paper>
       )}
     </Stack>
+  );
+}
+
+function PendingImage({ file, onRemove }: { file: File; onRemove: () => void }) {
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    const url = URL.createObjectURL(file);
+    setSrc(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+  return (
+    <div style={{ position: "relative" }}>
+      {src ? <Image src={src} w={88} h={88} radius="md" fit="cover" alt={file.name} /> : null}
+      <CloseButton
+        size="sm"
+        radius="xl"
+        variant="filled"
+        aria-label="Bỏ ảnh"
+        onClick={onRemove}
+        style={{ position: "absolute", top: -6, right: -6 }}
+      />
+    </div>
   );
 }
 

@@ -105,8 +105,17 @@ public static class AdminEndpoints
         admin.MapGet("/feedback/counts", async (IAdminFeedbackService s, CancellationToken ct) => Results.Ok(await s.CountsAsync(ct)));
         admin.MapGet("/feedback/{id:guid}", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>
             Results.Ok(await s.GetAsync(id, ct)));
-        admin.MapPost("/feedback/{id:guid}/messages", async (Guid id, AdminFeedbackReplyRequest r, IAdminFeedbackService s, CancellationToken ct) =>
-            Results.Ok(await s.ReplyAsync(id, r, ct)));
+        admin.MapPost("/feedback/{id:guid}/messages", async (Guid id, HttpRequest req, IAdminFeedbackService s, CancellationToken ct) =>
+        {
+            if (!req.HasFormContentType) return Results.BadRequest(new { error = "Cần gửi dạng multipart/form-data." });
+            var form = await req.ReadFormAsync(ct);
+            var close = string.Equals(form["close"], "true", StringComparison.OrdinalIgnoreCase);
+            var images = form.Files.GetFiles("images")
+                .Where(f => f.Length > 0)
+                .Select(f => new FeedbackUpload(f.OpenReadStream(), f.FileName))
+                .ToList();
+            return Results.Ok(await s.ReplyAsync(id, new AdminFeedbackReplyRequest(form["body"].ToString(), close), images, ct));
+        });
         admin.MapPost("/feedback/{id:guid}/close", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>
             Results.Ok(await s.SetClosedAsync(id, true, ct)));
         admin.MapPost("/feedback/{id:guid}/reopen", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>

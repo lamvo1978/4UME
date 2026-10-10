@@ -561,8 +561,13 @@ export const api = {
   feedbackList: (q: FeedbackQuery) => request<AdminFeedbackPage>(`/api/admin/feedback?${query(q)}`),
   feedbackCounts: () => request<FeedbackCounts>("/api/admin/feedback/counts"),
   feedbackTicket: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}`),
-  replyFeedback: (id: string, body: string, close: boolean) =>
-    request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/messages`, json("POST", { body, close })),
+  replyFeedback: (id: string, body: string, close: boolean, images: File[] = []) => {
+    const form = new FormData();
+    form.append("body", body);
+    form.append("close", String(close));
+    for (const image of images) form.append("images", image);
+    return request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/messages`, { method: "POST", body: form });
+  },
   closeFeedback: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/close`, { method: "POST" }),
   reopenFeedback: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/reopen`, { method: "POST" }),
 

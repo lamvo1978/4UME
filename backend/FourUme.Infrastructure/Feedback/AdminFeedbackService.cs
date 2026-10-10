@@ -75,11 +75,15 @@ public class AdminFeedbackService(IAppDbContext db, ICurrentAdmin admin, Feedbac
         return await ToDtoAsync(ticket, ct);
     }
 
-    public async Task<AdminFeedbackTicketDto> ReplyAsync(Guid ticketId, AdminFeedbackReplyRequest request, CancellationToken ct = default)
+    public async Task<AdminFeedbackTicketDto> ReplyAsync(
+        Guid ticketId, AdminFeedbackReplyRequest request, IReadOnlyList<FeedbackUpload> images, CancellationToken ct = default)
     {
         var body = FeedbackShared.CleanBody(request.Body);
         var ticket = await FindAsync(ticketId, ct);
-        var message = new FeedbackMessage { TicketId = ticket.Id, FromAdmin = true, AuthorName = admin.Name, Body = body };
+        var message = new FeedbackMessage
+        {
+            TicketId = ticket.Id, FromAdmin = true, AuthorName = admin.Name, Body = body, Images = shared.SaveImages(images),
+        };
         db.FeedbackMessages.Add(message);
         ticket.LastMessageAt = message.CreatedAt;
         ticket.AdminUnread = false;

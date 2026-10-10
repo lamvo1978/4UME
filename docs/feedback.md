@@ -8,7 +8,7 @@ Người học gửi góp ý / báo lỗi trong app, 4UME trả lời trên web 
 2. Mỗi góp ý: loại (*Góp ý / Báo lỗi / Nội dung sai / Khác*), nội dung (≤ 2000 ký tự), tối đa **3 ảnh** mỗi lần gửi. App tự kèm phiên bản, hệ điều hành, đời máy.
 3. **Email** báo về các địa chỉ trong *Cài đặt góp ý* (mặc định `lamvo1978@gmail.com`), có link thẳng tới góp ý trên admin. Người dùng nhắn thêm cũng có email *Trả lời thêm*. Gửi mail lỗi không chặn việc lưu góp ý.
 4. **Admin** trang *Góp ý* (`/feedback`): danh sách theo trạng thái (*Đang mở, Chưa đọc, Chờ trả lời, Đã trả lời, Đã đóng*), tìm theo nội dung / tên / email, lọc loại. Menu *Góp ý* có số đỏ = góp ý có tin mới của người dùng (tự làm mới mỗi phút).
-5. Trong góp ý: luồng tin nhắn kèm ảnh, người gửi (link trang người dùng), từ được báo (link trang sửa từ), thiết bị. Trả lời bằng tay hoặc chèn **câu trả lời mẫu**; *Gửi trả lời* hoặc *Trả lời & đóng*; *Đóng góp ý* / *Mở lại*.
+5. Trong góp ý: luồng tin nhắn kèm ảnh, người gửi (link trang người dùng), từ được báo (link trang sửa từ), thiết bị. Trả lời bằng tay hoặc chèn **câu trả lời mẫu**, đính kèm tối đa 3 ảnh (chọn file hoặc dán Cmd+V); *Gửi trả lời* hoặc *Trả lời & đóng*; *Đóng góp ý* / *Mở lại*.
 6. **App:** có trả lời mới → chuông hiện chấm đỏ kèm số (làm mới mỗi lần về Trang chủ). Mở góp ý → đọc, nhắn thêm (kèm ảnh), hoặc bấm **Đã giải quyết**.
 
 ## Trạng thái
@@ -38,7 +38,7 @@ Xoá tài khoản thì xoá luôn mọi góp ý, tin nhắn và ảnh đính kè
 
 Người học (cần đăng nhập): `GET /api/feedback`, `GET /api/feedback/unread`, `GET /api/feedback/{id}` (đánh dấu đã đọc), `POST /api/feedback` (multipart: `category, body, wordId?, appVersion, platform, device, images[]`), `POST /api/feedback/{id}/messages` (multipart: `body, images[]`), `POST /api/feedback/{id}/resolve`.
 
-Admin: `GET /api/admin/feedback?status=&category=&q=&page=`, `GET /api/admin/feedback/counts`, `GET /api/admin/feedback/{id}`, `POST /api/admin/feedback/{id}/messages` (`{ body, close }`), `POST /api/admin/feedback/{id}/close|reopen`, `GET|PUT /api/admin/feedback-settings`, `POST /api/admin/feedback-settings/reset`.
+Admin: `GET /api/admin/feedback?status=&category=&q=&page=`, `GET /api/admin/feedback/counts`, `GET /api/admin/feedback/{id}`, `POST /api/admin/feedback/{id}/messages` (multipart: `body, close, images[]`), `POST /api/admin/feedback/{id}/close|reopen`, `GET|PUT /api/admin/feedback-settings`, `POST /api/admin/feedback-settings/reset`.
 
 ## Để sau
 

@@ -190,7 +190,8 @@ public interface IAdminFeedbackService
     Task<AdminFeedbackCountsDto> CountsAsync(CancellationToken ct = default);
     /// <summary>Also marks the learner's messages as read.</summary>
     Task<AdminFeedbackTicketDto> GetAsync(Guid ticketId, CancellationToken ct = default);
-    Task<AdminFeedbackTicketDto> ReplyAsync(Guid ticketId, AdminFeedbackReplyRequest request, CancellationToken ct = default);
+    Task<AdminFeedbackTicketDto> ReplyAsync(
+        Guid ticketId, AdminFeedbackReplyRequest request, IReadOnlyList<FeedbackUpload> images, CancellationToken ct = default);
     Task<AdminFeedbackTicketDto> SetClosedAsync(Guid ticketId, bool closed, CancellationToken ct = default);
 }
 
