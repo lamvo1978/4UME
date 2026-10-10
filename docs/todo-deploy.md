@@ -16,6 +16,7 @@
 | 10/10 | `4a33e3e` | Trang *Gắn ảnh*: ô **Tìm từ vựng** để gắn ảnh cho bất kỳ từ nào (kể cả từ đã có ảnh) |
 | 10/10 | `ceb1622`, `26861f0` | **Mã xác nhận qua email** khi tạo tài khoản và quên mật khẩu (app + web admin) — xem [email.md](email.md) |
 | 10/10 | `f1706c7`…`8c9664a` | **Góc nghe**: 20 bài nghe mẫu A1–B2, tab *Nghe* trong app (script tô sáng, lặp câu, tốc độ, tra nghĩa từ, phát nền), trang *Bài nghe* + cài đặt *Góc nghe* trong admin. Âm thanh Azure cần thêm `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION` — xem [listening.md](listening.md). Màn đăng nhập / tạo tài khoản / quên mật khẩu của app làm lại giao diện |
+| 10/10 | `55058c1`…`c6851f4` | Nút **AI viết nháp** (Gemini) trên trang *Bài nghe* — cần `GEMINI_API_KEY` trong `.env`; prompt mẫu nhờ Cursor viết nhiều bài: [listening-prompt.md](listening-prompt.md) |
 
 Cập nhật VPS sau mỗi lần push (đợi GitHub Actions *Build images* xong):
 
