@@ -14,10 +14,12 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
     public async Task<IReadOnlyList<DeckSummaryDto>> GetDecksAsync(Guid userId, string? level, CancellationToken ct = default)
     {
         var wordsQuery = db.Words.AsNoTracking().Where(w => w.Published && w.Deck.Published);
+        var progressWords = db.Words.AsNoTracking().Where(w => w.Published);
         if (!string.IsNullOrWhiteSpace(level))
         {
             var lv = level.Trim().ToUpperInvariant();
             wordsQuery = wordsQuery.Where(w => w.Level == lv);
+            progressWords = progressWords.Where(w => w.Level == lv);
         }
 
         var counts = await wordsQuery
@@ -37,7 +39,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
 
         var progress = await db.WordProgresses.AsNoTracking()
             .Where(p => p.UserId == userId)
-            .Join(db.Words.AsNoTracking().Where(w => w.Published), p => p.WordId, w => w.Id, (p, w) => new { w.DeckId, p.Status })
+            .Join(progressWords, p => p.WordId, w => w.Id, (p, w) => new { w.DeckId, p.Status })
             .ToListAsync(ct);
 
         return decks
