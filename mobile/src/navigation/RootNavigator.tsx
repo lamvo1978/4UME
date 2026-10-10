@@ -191,7 +191,7 @@ export function RootNavigator() {
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />
             <Stack.Screen name="About" component={AboutScreen} options={{ title: "Giới thiệu & bản quyền" }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "Cài đặt" }} />
-            <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "Premium" }} />
+            <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "4UME Premium" }} />
             <Stack.Screen
               name="Placement"
               component={PlacementScreen}
