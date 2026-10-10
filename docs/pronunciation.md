@@ -22,7 +22,7 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học.
 - Premium do admin bật tay: *Người dùng → chi tiết → thẻ Premium → Bật / Gia hạn (1, 3, 6 tháng, 1 năm) / Tắt*. Gia hạn cộng thêm vào hạn đang có. Chưa có thanh toán trong app.
 - Danh sách người dùng có bộ lọc **Premium** và huy hiệu vương miện.
-- App: **Hồ sơ → Gói của bạn** so sánh Miễn phí / Premium và số lượt còn hôm nay. Chưa có nút mua; thẻ **không** hướng dẫn thanh toán ngoài app (Apple không cho phép khi bán quyền lợi số mà không qua In‑App Purchase).
+- App: dòng gói ngay dưới tên trên **Hồ sơ** mở màn **Premium** (so sánh lượt chấm, số lượt còn hôm nay). Chưa có nút mua; màn này **không** hướng dẫn thanh toán ngoài app (Apple không cho phép khi bán quyền lợi số mà không qua In‑App Purchase).
 
 ## Cài đặt (web admin → Cài đặt → Kiểm tra giọng đọc)
 
@@ -40,7 +40,7 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - API: `GET /api/pronunciation/status`, `POST /api/pronunciation/assess` (multipart: `wordId`, `audio`). Hết lượt → 429, tắt hoặc hết hạn mức → 503 (app chuyển sang tự so sánh).
 - Admin: `PUT /api/admin/users/{id}/premium` `{ until }` (null = tắt), `PUT /api/admin/settings/pronunciation`, `POST /api/admin/settings/pronunciation/reset`.
 - Dữ liệu: cột `Users.PremiumUntil`, bảng `PronunciationAttempts` (mỗi lượt chấm: từ, ngày địa phương, độ dài âm thanh, điểm), migration `Pronunciation`. Cài đặt lưu trong `AppSettings` khoá `pronunciation`.
-- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, thẻ gói `mobile/src/components/profile/PlanCard.tsx`. Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
+- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, dòng gói trên Hồ sơ `mobile/src/components/profile/PlanRow.tsx` mở màn Premium `mobile/src/screens/PremiumScreen.tsx` (ví dụ kết quả chấm, so sánh lượt chấm Miễn phí / Premium, danh sách tính năng luôn miễn phí; chưa có nút đăng ký cho tới khi làm mua trong app). Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
 
 ## Giai đoạn sau
 
@@ -51,4 +51,4 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
   - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
   - Cần: tài khoản AdMob, app đã lên store, trang chính sách quyền riêng tư, khai báo quảng cáo trong App Privacy / Data safety, hộp thoại App Tracking Transparency trên iOS, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc…).
   - Doanh thu banner ở Việt Nam thấp (ước khoảng 0,1–0,5 USD / 1.000 lượt hiển thị); cần cỡ vài trăm người dùng mỗi ngày mới đủ tiền VPS.
-  - Khi có quảng cáo: thêm dòng "Không quảng cáo" vào bảng so sánh trong *Gói của bạn*, và mục quảng cáo trong màn *Giới thiệu & bản quyền*.
+  - Khi có quảng cáo: thêm dòng "Không quảng cáo" vào màn *Premium*, và mục quảng cáo trong màn *Giới thiệu & bản quyền*.

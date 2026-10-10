@@ -113,7 +113,7 @@ export function PlacementScreen({ navigation }: Props) {
         <View style={styles.points}>
           <Point icon="trending-up" text="Câu hỏi khó dần từ A1 đến B2, dừng khi bạn sai 2 câu ở một cấp" />
           <Point icon="help-circle-outline" text='Không chắc thì bấm "Không biết", đừng đoán để kết quả chính xác' />
-          <Point icon="options-outline" text="Có thể đổi cấp độ hoặc làm lại bất cứ lúc nào trong Hồ sơ" />
+          <Point icon="options-outline" text="Có thể đổi cấp độ hoặc làm lại bất cứ lúc nào trong Hồ sơ → Cài đặt" />
         </View>
         {!onboarding && me?.settings.easyWordMode === "known" ? (
           <Text style={styles.note}>

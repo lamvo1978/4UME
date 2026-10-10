@@ -39,9 +39,9 @@ const RECORDING: RecordingOptions = {
 type Phase = "idle" | "recording" | "checking" | "scored" | "compare" | "error";
 
 export const scoreColor = (score: number) => (score >= 80 ? colors.accent : score >= 60 ? colors.flameDeep : colors.danger);
-const scoreSoft = (score: number) => (score >= 80 ? colors.accentSoft : score >= 60 ? colors.flameSoft : colors.dangerSoft);
+export const scoreSoft = (score: number) => (score >= 80 ? colors.accentSoft : score >= 60 ? colors.flameSoft : colors.dangerSoft);
 
-function verdict(score: number) {
+export function verdict(score: number) {
   if (score >= 90) return "Rất chuẩn!";
   if (score >= 80) return "Tốt lắm!";
   if (score >= 60) return "Khá ổn, còn vài âm";

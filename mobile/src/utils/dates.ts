@@ -25,3 +25,9 @@ export function formatMonthYear(iso: string): string {
   const d = new Date(iso);
   return `tháng ${d.getMonth() + 1}/${d.getFullYear()}`;
 }
+
+/** dd/MM/yyyy */
+export function formatDayMonthYear(iso: string): string {
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+}

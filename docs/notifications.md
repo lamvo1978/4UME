@@ -20,7 +20,7 @@
 - **Tối đa 2 thông báo / ngày** cho mỗi người (không tính tin chung từ admin).
 - **Giờ yên tĩnh** (mặc định 22:30 – 07:00): không gửi gì. Chỉnh trong web admin — xem *Thông số hệ thống*.
 - **Hôm nay đã học thì không nhắc học nữa** (vẫn có thể nhận tổng kết tuần / tin mới).
-- Mỗi loại bật / tắt riêng trong *Hồ sơ → Cài đặt học*.
+- Mỗi loại bật / tắt riêng trong *Hồ sơ → Cài đặt (bánh răng) → Cài đặt học*.
 - Chạm vào thông báo mở thẳng màn liên quan (ôn tập, học từ mới, bài ngữ pháp…).
 - Nội dung thay đổi luân phiên, giọng thân thiện, ít emoji; không dọa nạt hay làm người học thấy tội lỗi.
 

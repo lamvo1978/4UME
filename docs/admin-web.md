@@ -144,7 +144,7 @@ Thông số áp dụng cho mọi người dùng, sửa là có hiệu lực ngay
 
 ### 10. Giới thiệu app
 
-Nội dung màn *Hồ sơ → Giới thiệu & bản quyền* trong app (trang `/about`):
+Nội dung màn *Hồ sơ → Cài đặt → Giới thiệu & bản quyền* trong app (trang `/about`):
 
 - Sửa câu giới thiệu dưới logo; thêm / xoá / đổi thứ tự các mục (tiêu đề + các dòng). Mỗi dòng có biểu tượng (chọn trong danh sách Ionicons cố định, `AboutRules.Icons`), tiêu đề, nội dung, liên kết `https://` không bắt buộc (chạm trong app để mở).
 - Công tắc **ẩn / hiện** cho từng mục và từng dòng; mục không còn dòng nào hiện thì app không hiển thị.

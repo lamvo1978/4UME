@@ -19,6 +19,8 @@ export type RootStackParamList = {
   WordSearch: undefined;
   Placement: undefined;
   About: undefined;
+  Settings: undefined;
+  Premium: undefined;
 };
 
 export type HubTab = "vocab" | "grammar";

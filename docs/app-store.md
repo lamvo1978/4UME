@@ -43,13 +43,13 @@ Profile build trong `mobile/eas.json`:
 
 - [ ] **Chính sách quyền riêng tư** — trang công khai, ví dụ `https://4ume.io.vn/privacy`: thu thập gì (email, tên hiển thị, tiến độ học, mã thiết bị nhận thông báo), để làm gì, lưu ở đâu (VPS tại Việt Nam), cách xoá.
 - [ ] **Trang xin xoá tài khoản** trên web, ví dụ `https://4ume.io.vn/delete-account` (Google bắt buộc có link web, ngoài nút xoá trong app).
-- [x] **Xoá tài khoản ngay trong app** (Apple bắt buộc): đã có ở *Hồ sơ* (`POST /api/me/delete`, phải nhập mật khẩu).
+- [x] **Xoá tài khoản ngay trong app** (Apple bắt buộc): đã có ở *Hồ sơ → Cài đặt* (`POST /api/me/delete`, phải nhập mật khẩu).
 - [ ] **Tài khoản demo** cho người duyệt (email + mật khẩu, có sẵn ít tiến độ học). Không dùng tài khoản quản trị.
 - [ ] Biểu tượng 1024×1024 (không trong suốt cho iOS), ảnh nền thông báo Android.
 - [ ] **Ảnh chụp màn hình**: iPhone 6,9" (1320×2868) và 6,5"; Android điện thoại (tối thiểu 2 ảnh); Google Play cần thêm ảnh nổi bật 1024×500.
 - [ ] Mô tả ngắn (Google ≤ 80 ký tự), mô tả đầy đủ, từ khoá (iOS), danh mục *Giáo dục*.
 - [ ] Bảng câu hỏi nội dung: độ tuổi, quảng cáo (không), mua trong app (không), *Data safety* (Google) / *App Privacy* (Apple) khai đúng như chính sách quyền riêng tư. Có ghi âm giọng để chấm phát âm (gửi Azure, không lưu). Khi bật AdMob / Premium trả phí thì khai lại (xem [pronunciation.md](pronunciation.md#giai-đoạn-sau)).
-- [x] **Giới thiệu & bản quyền** trong app (*Hồ sơ*): trích dẫn CEFR-J bắt buộc, nguồn ảnh Pixabay / Pexels, giọng đọc AI Azure, Gemini. Nội dung sửa / ẩn hiện trên admin web, trang *Giới thiệu app*; riêng trích dẫn CEFR-J cố định trong app, admin không sửa được.
+- [x] **Giới thiệu & bản quyền** trong app (*Hồ sơ → Cài đặt*): trích dẫn CEFR-J bắt buộc, nguồn ảnh Pixabay / Pexels, giọng đọc AI Azure, Gemini. Nội dung sửa / ẩn hiện trên admin web, trang *Giới thiệu app*; riêng trích dẫn CEFR-J cố định trong app, admin không sửa được.
 - [ ] Email hỗ trợ (nên là `hotro@4ume.io.vn` — cần làm Zoho trước, xem [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm)).
 
 ## Các bước build và nộp

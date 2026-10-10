@@ -25,9 +25,11 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { LoginScreen } from "../screens/LoginScreen";
 import { PlacementScreen } from "../screens/PlacementScreen";
 import { PracticeHubScreen } from "../screens/PracticeHubScreen";
+import { PremiumScreen } from "../screens/PremiumScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
 import { ReviewScreen } from "../screens/ReviewScreen";
+import { SettingsScreen } from "../screens/SettingsScreen";
 import { StudyHubScreen } from "../screens/StudyHubScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 import { WordSearchScreen } from "../screens/WordSearchScreen";
@@ -188,6 +190,8 @@ export function RootNavigator() {
             />
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />
             <Stack.Screen name="About" component={AboutScreen} options={{ title: "Giới thiệu & bản quyền" }} />
+            <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "Cài đặt" }} />
+            <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "Premium" }} />
             <Stack.Screen
               name="Placement"
               component={PlacementScreen}

@@ -8,7 +8,7 @@ Người học mới làm một bài trắc nghiệm ngắn để 4UME biết n�
    - **Bắt đầu kiểm tra** (2–3 phút), hoặc
    - **Tôi mới bắt đầu học** → cấp A1, vào thẳng app.
 2. **Người dùng cũ chưa có cấp**: Trang chủ có thẻ *Kiểm tra trình độ từ vựng* (không bắt buộc).
-3. **Hồ sơ → Cài đặt học → Trình độ từ vựng**: đổi cấp A1–B2, đổi cách xử lý từ dễ, nút *Kiểm tra* / *Kiểm tra lại*.
+3. **Hồ sơ → Cài đặt (bánh răng) → Cài đặt học → Trình độ từ vựng**: đổi cấp A1–B2, đổi cách xử lý từ dễ, nút *Kiểm tra* / *Kiểm tra lại*.
 
 ## Bài kiểm tra
 
