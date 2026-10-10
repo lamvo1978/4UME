@@ -12,6 +12,7 @@ const DAY_MS = 86_400_000;
 /** Illustration only: what a detailed check looks like for a word with one weak sound. */
 const SAMPLE = {
   word: "thought",
+  ipa: "/θɔt/",
   score: 71,
   phonemes: [
     { phoneme: "θ", score: 38 },
@@ -83,7 +84,9 @@ export function PremiumScreen() {
             <Text style={[styles.ringValue, { color: scoreColor(SAMPLE.score) }]}>{SAMPLE.score}</Text>
           </View>
           <View style={styles.flex}>
-            <Text style={styles.sampleWord}>{SAMPLE.word}</Text>
+            <Text style={styles.sampleWord}>
+              {SAMPLE.word} <Text style={styles.sampleIpa}>{SAMPLE.ipa}</Text>
+            </Text>
             <Text style={[styles.verdict, { color: scoreColor(SAMPLE.score) }]}>{verdict(SAMPLE.score)}</Text>
           </View>
         </View>
@@ -222,6 +225,7 @@ const styles = StyleSheet.create({
   ring: { width: 60, height: 60, borderRadius: 30, borderWidth: 4, alignItems: "center", justifyContent: "center" },
   ringValue: { fontSize: 20, fontWeight: "800" },
   sampleWord: { fontSize: 22, fontWeight: "800", color: colors.ink },
+  sampleIpa: { fontSize: 17, fontWeight: "500", color: colors.muted },
   verdict: { fontSize: 15, fontWeight: "700" },
   phonemes: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
   phoneme: { alignItems: "center", minWidth: 52, borderRadius: 12, paddingVertical: 6, paddingHorizontal: 12 },
