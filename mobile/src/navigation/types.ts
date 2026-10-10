@@ -11,7 +11,7 @@ export type RootStackParamList = {
   Register: undefined;
   ForgotPassword: { email?: string } | undefined;
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
-  Flashcard: { deckId: string; titleVi: string };
+  Flashcard: { deckId: string; titleVi: string; level?: string };
   GrammarLesson: { slug: string; titleVi: string };
   Listening: { slug: string; titleVi: string };
   Review: ReviewParams | undefined;

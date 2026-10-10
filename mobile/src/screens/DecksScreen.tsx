@@ -71,7 +71,13 @@ export function DecksScreen() {
         renderItem={({ item }) => (
           <DeckCard
             deck={item}
-            onPress={() => navigation.navigate("Flashcard", { deckId: item.id, titleVi: item.titleVi })}
+            onPress={() =>
+              navigation.navigate("Flashcard", {
+                deckId: item.id,
+                titleVi: item.titleVi,
+                level: level === "Tất cả" ? undefined : level,
+              })
+            }
           />
         )}
       />

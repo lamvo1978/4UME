@@ -34,7 +34,7 @@ function buildSession(pending: Word[], size: number): Word[] {
 }
 
 export function FlashcardScreen({ route, navigation }: Props) {
-  const { deckId } = route.params;
+  const { deckId, level } = route.params;
   const { me, refreshMe } = useAuth();
   const sessionSize = me?.settings.dailyGoal ?? DEFAULT_SESSION_SIZE;
   const [session, setSession] = useState<Word[]>([]);
@@ -56,7 +56,8 @@ export function FlashcardScreen({ route, navigation }: Props) {
     setLoading(true);
     setError("");
     try {
-      const words = await api.deckWords(deckId);
+      const all = await api.deckWords(deckId);
+      const words = level ? all.filter((w) => w.level === level) : all;
       const pending = words.filter((w) => w.status !== STATUS.Known);
       setSession(buildSession(pending, sessionSize));
       setDeckTotal(words.length);
@@ -72,7 +73,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
       setLoading(false);
     }
     // sessionSize is read once per batch; changing the goal mid-batch shouldn't reload the deck.
-  }, [deckId, flip]);
+  }, [deckId, level, flip]);
 
   useEffect(() => {
     loadSession();
@@ -82,6 +83,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
   }, [loadSession]);
 
   const current = session[index];
+  const scope = level ? `từ ${level} trong bộ` : "cả bộ";
 
   useEffect(() => {
     if (current) speakAuto(current.word);
@@ -130,7 +132,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
         <View style={styles.doneIcon}>
           <Ionicons name="trophy-outline" size={40} color={colors.white} />
         </View>
-        <Text style={styles.doneTitle}>Bạn đã nhớ hết bộ này</Text>
+        <Text style={styles.doneTitle}>{level ? `Bạn đã nhớ hết từ ${level}` : "Bạn đã nhớ hết bộ này"}</Text>
         <Text style={styles.doneSub}>{deckTotal} từ đều đã được đánh dấu "Đã nhớ".</Text>
         <View style={styles.doneActions}>
           <ActionButton label="Xong" icon="checkmark" variant="primary" onPress={() => navigation.goBack()} />
@@ -157,7 +159,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
             <View style={[styles.barFill, { width: `${deckTotal ? (deckKnown / deckTotal) * 100 : 0}%` }]} />
           </View>
           <Text style={styles.doneSub}>
-            Cả bộ: đã nhớ {deckKnown}/{deckTotal} từ
+            {level ? `Từ ${level} trong bộ` : "Cả bộ"}: đã nhớ {deckKnown}/{deckTotal} từ
           </Text>
         </View>
         {error ? <Text style={styles.inlineError}>{error}</Text> : null}
@@ -203,7 +205,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
         </Text>
       </View>
       <Text style={styles.remaining}>
-        {current.status === STATUS.Later ? "Từ bạn để học sau" : "Từ mới"} · cả bộ đã nhớ {deckKnownBefore + result.known}/
+        {current.status === STATUS.Later ? "Từ bạn để học sau" : "Từ mới"} · {scope} đã nhớ {deckKnownBefore + result.known}/
         {deckTotal}
       </Text>
 
