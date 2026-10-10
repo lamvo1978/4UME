@@ -19,6 +19,7 @@
 | 10/10 | `55058c1`…`c6851f4` | Nút **AI viết nháp** (Gemini) trên trang *Bài nghe* — cần `GEMINI_API_KEY` trong `.env`; prompt mẫu nhờ Cursor viết nhiều bài: [listening-prompt.md](listening-prompt.md) |
 | 10/10 | `839034c`…`3aae080` | **Kiểm tra trình độ từ vựng** A1–B2 (sau khi tạo tài khoản, thẻ ở Trang chủ, mục *Trình độ từ vựng* trong Hồ sơ) — xem [placement.md](placement.md). Sửa % bộ từ vượt 100% khi lọc cấp; học bộ từ chỉ lấy đúng cấp đang lọc. DB thêm cột, API tự migrate |
 | 10/10 | `22b554d`…`d2ea83a` | **Chấm phát âm** (Azure) trong bài ôn, lượt miễn phí / Premium, Premium bật tay trong admin — xem [pronunciation.md](pronunciation.md). Hồ sơ tách màn *Cài đặt* và *Premium*; *Giới thiệu app* và *Quyền lợi Premium* sửa trên admin. Khung chọn ảnh: tự tải lại ảnh lỗi, cuộn lên đầu khi đổi trang |
+| 11/10 | `824d53b`…`9a2967d` | **Góp ý dạng ticket**: chuông + chấm đỏ ở Trang chủ, gửi kèm ảnh, *Báo lỗi từ này*; trang *Góp ý* trên admin (trả lời kèm ảnh, câu mẫu, đóng / mở lại), email báo về địa chỉ trong *Cài đặt góp ý* — xem [feedback.md](feedback.md). DB thêm 2 bảng, API tự migrate |
 
 Cập nhật VPS sau mỗi lần push (đợi GitHub Actions *Build images* xong):
 
