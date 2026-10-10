@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, type AdminFeedbackSummary, type FeedbackQuery } from "../api";
 import { Select } from "../components/AppSelect";
-import { CATEGORIES, categoryMeta, STATUSES } from "../feedback/meta";
+import { CATEGORIES, categoryMeta, FEEDBACK_POLL_MS, STATUSES } from "../feedback/meta";
 import { timeAgo } from "../lib";
 
 const PAGE_SIZE = 30;
@@ -43,6 +43,7 @@ export function FeedbackPage() {
     queryKey: ["feedback", filters],
     queryFn: () => api.feedbackList({ ...filters, status: filters.status === "all" ? undefined : filters.status }),
     placeholderData: keepPreviousData,
+    refetchInterval: FEEDBACK_POLL_MS,
   });
   const counts = list.data?.counts;
   const pages = list.data ? Math.max(1, Math.ceil(list.data.total / PAGE_SIZE)) : 1;

@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, mediaSrc, type AdminFeedbackTicket, type FeedbackMessage } from "../api";
 import { Select } from "../components/AppSelect";
-import { categoryMeta, CLOSED_BY, STATUSES } from "../feedback/meta";
+import { categoryMeta, CLOSED_BY, FEEDBACK_POLL_MS, STATUSES } from "../feedback/meta";
 import { fullTime, notifyError, notifySaved } from "../lib";
 
 const MAX_BODY = 2000;
@@ -41,6 +41,7 @@ export function FeedbackTicketPage() {
       queryClient.invalidateQueries({ queryKey: ["feedback"] });
       return t;
     },
+    refetchInterval: FEEDBACK_POLL_MS,
   });
   const settings = useQuery({ queryKey: ["feedback-settings"], queryFn: api.feedbackSettings });
   const [body, setBody] = useState("");

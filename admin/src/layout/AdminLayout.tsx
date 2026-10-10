@@ -2,9 +2,10 @@ import { AppShell, Avatar, Badge, Group, Indicator, Menu, NavLink, Stack, Text, 
 import { useMediaQuery } from "@mantine/hooks";
 import { IconDots, IconKey, IconLogout } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../api";
+import { FEEDBACK_POLL_MS } from "../feedback/meta";
 import { useAuth } from "../auth";
 import { NAV, type NavItem } from "../nav";
 import { ACCENT, BG } from "../theme";
@@ -22,8 +23,20 @@ export function AdminLayout() {
   const primary = NAV.filter((n) => n.primary);
   const more = NAV.filter((n) => !n.primary);
   const moreActive = more.some((n) => isActive(pathname, n.to));
-  const feedbackCounts = useQuery({ queryKey: ["feedback-counts"], queryFn: api.feedbackCounts, refetchInterval: 60_000 });
-  const badgeCount = (n: NavItem) => (n.badge === "feedback" ? (feedbackCounts.data?.unread ?? 0) : 0);
+  const feedbackCounts = useQuery({
+    queryKey: ["feedback-counts"],
+    queryFn: api.feedbackCounts,
+    refetchInterval: FEEDBACK_POLL_MS,
+    // Keeps the "(n)" in the browser tab title current while another tab is in front.
+    refetchIntervalInBackground: true,
+  });
+  const unreadFeedback = feedbackCounts.data?.unread ?? 0;
+
+  useEffect(() => {
+    const base = document.title.replace(/^\(\d+\) /, "");
+    document.title = unreadFeedback > 0 ? `(${unreadFeedback}) ${base}` : base;
+  }, [unreadFeedback]);
+  const badgeCount = (n: NavItem) => (n.badge === "feedback" ? unreadFeedback : 0);
   const badge = (n: NavItem) =>
     badgeCount(n) > 0 ? (
       <Badge size="sm" color="red" circle={badgeCount(n) < 10}>

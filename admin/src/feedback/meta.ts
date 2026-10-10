@@ -1,5 +1,8 @@
 import type { FeedbackCategory, FeedbackStatus } from "../api";
 
+/** No push to the browser yet, so feedback pages and the menu badge poll. */
+export const FEEDBACK_POLL_MS = 30_000;
+
 export const CATEGORIES: { value: FeedbackCategory; label: string; color: string }[] = [
   { value: "idea", label: "Góp ý", color: "teal" },
   { value: "bug", label: "Báo lỗi", color: "red" },
