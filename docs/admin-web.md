@@ -160,6 +160,10 @@ Danh sách *Quyền lợi Premium* trên màn Premium trong app (trang `/premium
 - Mặc định: chấm phát âm chi tiết, và các dòng *Sắp có* (không quảng cáo, thống kê âm hay sai, thêm lượt đóng băng, nghe không cần mạng), ủng hộ 4UME. Ba gợi ý ẩn sẵn: luyện nói cả câu, bộ từ chuyên đề, huy hiệu Premium.
 - Lưu trong `AppSettings` (khoá `premium`), có *Mặc định* và lịch sử. App đọc `GET /api/premium-perks` (công khai, chỉ dòng đang hiện); lỗi mạng thì ẩn khung quyền lợi.
 
+### 12. Góp ý
+
+Hộp thư góp ý / báo lỗi từ app (trang `/feedback`, chi tiết `/feedback/:id`, cài đặt `/feedback/settings`): trả lời, câu trả lời mẫu, đóng / mở lại, email nhận thông báo. Menu có số đỏ khi có tin mới. Chi tiết: [feedback.md](feedback.md).
+
 ## Responsive
 
 | | Máy tính (≥ 1024px) | Điện thoại |

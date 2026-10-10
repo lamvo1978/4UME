@@ -6,6 +6,7 @@ import {
   IconHistory,
   IconInfoCircle,
   IconLayoutDashboard,
+  IconMessageCircle,
   IconPhoto,
   IconPhotoSearch,
   IconSettings,
@@ -15,7 +16,15 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 
-export type NavItem = { to: string; label: string; icon: Icon; /** shown in the phone tab bar */ primary?: boolean };
+export type NavItem = {
+  to: string;
+  label: string;
+  icon: Icon;
+  /** shown in the phone tab bar */
+  primary?: boolean;
+  /** live count shown next to the label */
+  badge?: "feedback";
+};
 
 export const NAV: NavItem[] = [
   { to: "/", label: "Tổng quan", icon: IconLayoutDashboard, primary: true },
@@ -27,6 +36,7 @@ export const NAV: NavItem[] = [
   { to: "/images", label: "Hình ảnh", icon: IconPhoto },
   { to: "/history", label: "Lịch sử", icon: IconHistory },
   { to: "/users", label: "Người dùng", icon: IconUsers },
+  { to: "/feedback", label: "Góp ý", icon: IconMessageCircle, badge: "feedback" },
   { to: "/notifications", label: "Thông báo", icon: IconBell },
   { to: "/premium", label: "Quyền lợi Premium", icon: IconSparkles },
   { to: "/about", label: "Giới thiệu app", icon: IconInfoCircle },

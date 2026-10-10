@@ -8,6 +8,7 @@ using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
+using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
@@ -388,6 +389,47 @@ app.MapPost("/api/pronunciation/assess", async (HttpRequest request, ClaimsPrinc
     }
 }).RequireAuthorization();
 
+var feedback = app.MapGroup("/api/feedback").RequireAuthorization().AddEndpointFilter(async (ctx, next) =>
+{
+    try
+    {
+        return await next(ctx);
+    }
+    catch (FeedbackException ex)
+    {
+        return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
+    }
+});
+
+feedback.MapGet("", async (ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+    GetUserId(principal) is { } userId ? Results.Ok(await s.ListAsync(userId, ct)) : Results.Unauthorized());
+
+feedback.MapGet("/unread", async (ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+    GetUserId(principal) is { } userId ? Results.Ok(await s.UnreadAsync(userId, ct)) : Results.Unauthorized());
+
+feedback.MapGet("/{id:guid}", async (Guid id, ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+    GetUserId(principal) is { } userId ? Results.Ok(await s.GetAsync(userId, id, ct)) : Results.Unauthorized());
+
+feedback.MapPost("", async (HttpRequest request, ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+{
+    if (GetUserId(principal) is not { } userId) return Results.Unauthorized();
+    var form = await ReadFeedbackFormAsync(request, ct);
+    var body = new CreateFeedbackRequest(
+        form["category"].ToString(), form["body"].ToString(), NullIfEmpty(form["wordId"]),
+        NullIfEmpty(form["appVersion"]), NullIfEmpty(form["platform"]), NullIfEmpty(form["device"]));
+    return Results.Ok(await s.CreateAsync(userId, body, FeedbackUploads(form), ct));
+});
+
+feedback.MapPost("/{id:guid}/messages", async (Guid id, HttpRequest request, ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+{
+    if (GetUserId(principal) is not { } userId) return Results.Unauthorized();
+    var form = await ReadFeedbackFormAsync(request, ct);
+    return Results.Ok(await s.ReplyAsync(userId, id, form["body"].ToString(), FeedbackUploads(form), ct));
+});
+
+feedback.MapPost("/{id:guid}/resolve", async (Guid id, ClaimsPrincipal principal, IFeedbackService s, CancellationToken ct) =>
+    GetUserId(principal) is { } userId ? Results.Ok(await s.ResolveAsync(userId, id, ct)) : Results.Unauthorized());
+
 app.MapGet("/api/review/summary", async (ClaimsPrincipal principal, IReviewService review) =>
 {
     var userId = GetUserId(principal);
@@ -557,6 +599,20 @@ static Guid? GetUserId(ClaimsPrincipal principal)
         ?? principal.FindFirstValue("sub");
     return Guid.TryParse(sub, out var id) ? id : null;
 }
+
+static async Task<IFormCollection> ReadFeedbackFormAsync(HttpRequest request, CancellationToken ct)
+{
+    if (!request.HasFormContentType) throw new FeedbackException(400, "Cần gửi dạng multipart/form-data.");
+    return await request.ReadFormAsync(ct);
+}
+
+static List<FeedbackUpload> FeedbackUploads(IFormCollection form) =>
+    form.Files.GetFiles("images")
+        .Where(f => f.Length > 0)
+        .Select(f => new FeedbackUpload(f.OpenReadStream(), f.FileName))
+        .ToList();
+
+static string? NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
 // Make Program visible for tests if needed
 public partial class Program

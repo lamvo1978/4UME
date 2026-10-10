@@ -19,7 +19,9 @@ public static class MediaStorage
 {
     private const int WebpQuality = 82;
 
-    public static StoredImage SaveImage(Stream input, string folder, bool squareCrop)
+    /// <param name="folder">Media root.</param>
+    /// <param name="subfolder">Optional folder under the root, part of the public URL.</param>
+    public static StoredImage SaveImage(Stream input, string folder, bool squareCrop, int maxSide = MediaOptions.MaxSide, string? subfolder = null)
     {
         using var buffer = new MemoryStream();
         input.CopyTo(buffer);
@@ -31,7 +33,7 @@ public static class MediaStorage
         using var upright = ApplyOrientation(decoded, codec.EncodedOrigin);
 
         var crop = squareCrop ? CentreSquare(upright.Width, upright.Height) : new SKRectI(0, 0, upright.Width, upright.Height);
-        var scale = Math.Min(1f, (float)MediaOptions.MaxSide / Math.Max(crop.Width, crop.Height));
+        var scale = Math.Min(1f, (float)maxSide / Math.Max(crop.Width, crop.Height));
         var width = Math.Max(1, (int)Math.Round(crop.Width * scale));
         var height = Math.Max(1, (int)Math.Round(crop.Height * scale));
 
@@ -45,13 +47,15 @@ public static class MediaStorage
         using var data = snapshot.Encode(SKEncodedImageFormat.Webp, WebpQuality)
             ?? throw new InvalidOperationException("Không nén được ảnh.");
 
-        Directory.CreateDirectory(folder);
+        var target = subfolder is null ? folder : System.IO.Path.Combine(folder, subfolder);
+        Directory.CreateDirectory(target);
         var fileName = $"{Guid.NewGuid():N}.webp";
-        using (var file = File.Create(System.IO.Path.Combine(folder, fileName)))
+        using (var file = File.Create(System.IO.Path.Combine(target, fileName)))
         {
             data.SaveTo(file);
         }
-        return new StoredImage(fileName, $"{MediaOptions.UrlPrefix}/{fileName}", width, height, data.Size);
+        var url = subfolder is null ? $"{MediaOptions.UrlPrefix}/{fileName}" : $"{MediaOptions.UrlPrefix}/{subfolder}/{fileName}";
+        return new StoredImage(fileName, url, width, height, data.Size);
     }
 
     public static void Delete(string folder, string fileName)

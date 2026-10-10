@@ -2,6 +2,7 @@ using System.Text.Json;
 using FourUme.Application.About;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
+using FourUme.Application.Feedback;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Premium;
@@ -20,9 +21,11 @@ public class AdminSettingsService(
     AzurePronunciationClient azure,
     IAboutService about,
     IPremiumPerksService premiumPerks,
+    IFeedbackSettingsService feedback,
     Auditor auditor) : IAdminSettingsService
 {
     private const string PremiumSummary = "Quyền lợi Premium";
+    private const string FeedbackSummary = "Cài đặt góp ý";
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
     private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
@@ -151,6 +154,38 @@ public class AdminSettingsService(
         var problems = PremiumPerkRules.Validate(next);
         if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
         await WriteAsync(PremiumPerks.SettingKey, PremiumSummary, action, await premiumPerks.GetAsync(ct), next, ct);
+    }
+
+    public async Task<AdminFeedbackSettingsDto> GetFeedbackAsync(CancellationToken ct = default)
+    {
+        var updated = await db.AppSettings.AsNoTracking()
+            .Where(s => s.Key == FeedbackSettings.SettingKey)
+            .Select(s => (DateTimeOffset?)s.UpdatedAt)
+            .FirstOrDefaultAsync(ct);
+        return new AdminFeedbackSettingsDto(await feedback.GetAsync(ct), FeedbackSettings.Default(), updated);
+    }
+
+    public async Task<AdminFeedbackSettingsDto> SaveFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default)
+    {
+        await ApplyFeedbackAsync(settings, AuditActions.Update, ct);
+        return await GetFeedbackAsync(ct);
+    }
+
+    public async Task<AdminFeedbackSettingsDto> ResetFeedbackAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(FeedbackSettings.SettingKey, FeedbackSummary, await feedback.GetAsync(ct), FeedbackSettings.Default(), ct);
+        return await GetFeedbackAsync(ct);
+    }
+
+    public Task RestoreFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default) =>
+        ApplyFeedbackAsync(settings, AuditActions.Restore, ct);
+
+    private async Task ApplyFeedbackAsync(FeedbackSettings settings, string action, CancellationToken ct)
+    {
+        var next = FeedbackRules.Normalize(settings);
+        var problems = FeedbackRules.Validate(next);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(FeedbackSettings.SettingKey, FeedbackSummary, action, await feedback.GetAsync(ct), next, ct);
     }
 
     private async Task ApplyNotificationsAsync(NotificationConfig config, string action, CancellationToken ct)

@@ -6,6 +6,7 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
+using FourUme.Application.Feedback;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +21,8 @@ public class AuthService(
     IOptions<JwtOptions> jwtOptions,
     PasswordHasher<User> passwordHasher,
     IActivityService activity,
-    EmailCodeService codes) : IAuthService
+    EmailCodeService codes,
+    IFeedbackService feedback) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
@@ -175,6 +177,7 @@ public class AuthService(
         VerifyPassword(user, request.Password, "Mật khẩu không đúng.");
         if (AdminUserRules.IsProtected(user.Email))
             throw new InvalidOperationException("Đây là tài khoản quản trị gốc, không thể xoá.");
+        await feedback.DeleteUserFilesAsync(userId, ct);
         db.Users.Remove(user);
         await db.SaveChangesAsync(ct);
     }

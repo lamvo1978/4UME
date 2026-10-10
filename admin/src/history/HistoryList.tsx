@@ -97,7 +97,7 @@ function EntryRow({
       notifySaved(entry.action === "delete" ? "Đã khôi phục" : "Đã quay về bản này");
       setConfirm(false);
       await Promise.all(
-        ["audit", "words", "word", "decks", "meta", "grammar", "listening", "overview", "settings", "about", "premium-perks"].map((key) =>
+        ["audit", "words", "word", "decks", "meta", "grammar", "listening", "overview", "settings", "about", "premium-perks", "feedback-settings"].map((key) =>
           queryClient.invalidateQueries({ queryKey: [key] }),
         ),
       );

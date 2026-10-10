@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Constants from "expo-constants";
 import { ComponentProps, useState } from "react";
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EasyWordMode, UserSettings, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
@@ -12,8 +12,6 @@ import { SettingsSection } from "../components/profile/SettingsSection";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { easierLabel, levelRank } from "../vocabulary/placement";
-
-const FEEDBACK_EMAIL = "lamvo1978@gmail.com";
 
 type Sheet = "name" | "password" | "delete" | null;
 
@@ -93,7 +91,7 @@ export function SettingsScreen() {
         <View style={styles.footer}>
           <Pressable
             style={({ pressed }) => [styles.feedback, pressed && styles.pressed]}
-            onPress={() => Linking.openURL(`mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(`Góp ý 4UME ${version}`)}`)}
+            onPress={() => navigation.navigate("Feedback")}
           >
             <Ionicons name="chatbubble-ellipses-outline" size={18} color={colors.accent} />
             <Text style={styles.feedbackText}>Gửi góp ý</Text>

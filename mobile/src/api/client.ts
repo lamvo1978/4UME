@@ -316,6 +316,41 @@ export type PronunciationStatus = {
   freeDailyLimit: number;
 };
 
+export type FeedbackCategory = "idea" | "bug" | "content" | "other";
+/** "open" waits for 4UME, "answered" waits for the learner. */
+export type FeedbackStatus = "open" | "answered" | "closed";
+export type FeedbackMessage = { id: string; fromAdmin: boolean; authorName: string | null; body: string; images: string[]; createdAt: string };
+export type FeedbackSummary = {
+  id: string;
+  category: FeedbackCategory;
+  subject: string;
+  status: FeedbackStatus;
+  unread: boolean;
+  createdAt: string;
+  lastMessageAt: string;
+  wordText: string | null;
+};
+export type FeedbackTicket = {
+  id: string;
+  category: FeedbackCategory;
+  subject: string;
+  status: FeedbackStatus;
+  closedBy: "user" | "admin" | "auto" | null;
+  createdAt: string;
+  lastMessageAt: string;
+  word: { id: string; text: string; meaningVi: string; level: string } | null;
+  messages: FeedbackMessage[];
+};
+export type NewFeedback = {
+  category: FeedbackCategory;
+  body: string;
+  wordId?: string;
+  appVersion: string;
+  platform: string;
+  device: string;
+  imageUris: string[];
+};
+
 export type PhonemeScore = { phoneme: string; score: number };
 
 export type PronunciationResult = {
@@ -371,17 +406,18 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return data as T;
 }
 
-async function assessPronunciation(wordId: string, recordingUri: string): Promise<PronunciationResult> {
-  const form = new FormData();
-  form.append("wordId", wordId);
+async function appendFile(form: FormData, field: string, uri: string, webName: string) {
   if (Platform.OS === "web") {
-    form.append("audio", await (await fetch(recordingUri)).blob(), "recording.webm");
+    form.append(field, await (await fetch(uri)).blob(), webName);
   } else {
     // Expo's fetch rejects React Native's { uri, name, type } parts; it needs a Blob-like File.
-    form.append("audio", new File(recordingUri));
+    form.append(field, new File(uri));
   }
+}
+
+async function postForm<T>(path: string, form: FormData): Promise<T> {
   const auth = await authHeaders();
-  const res = await fetch(`${API_BASE}/api/pronunciation/assess`, {
+  const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: { "X-Utc-Offset": String(-new Date().getTimezoneOffset()), ...auth },
     body: form,
@@ -393,7 +429,37 @@ async function assessPronunciation(wordId: string, recordingUri: string): Promis
     throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
   }
   if (!res.ok) throw new ApiError(data?.error ?? `Lỗi ${res.status}`, res.status);
-  return data as PronunciationResult;
+  return data as T;
+}
+
+async function assessPronunciation(wordId: string, recordingUri: string): Promise<PronunciationResult> {
+  const form = new FormData();
+  form.append("wordId", wordId);
+  await appendFile(form, "audio", recordingUri, "recording.webm");
+  return postForm<PronunciationResult>("/api/pronunciation/assess", form);
+}
+
+async function appendImages(form: FormData, imageUris: string[]) {
+  for (const [i, uri] of imageUris.entries()) await appendFile(form, "images", uri, `image-${i + 1}.jpg`);
+}
+
+async function createFeedback(input: NewFeedback): Promise<FeedbackTicket> {
+  const form = new FormData();
+  form.append("category", input.category);
+  form.append("body", input.body);
+  if (input.wordId) form.append("wordId", input.wordId);
+  form.append("appVersion", input.appVersion);
+  form.append("platform", input.platform);
+  form.append("device", input.device);
+  await appendImages(form, input.imageUris);
+  return postForm<FeedbackTicket>("/api/feedback", form);
+}
+
+async function replyFeedback(id: string, body: string, imageUris: string[]): Promise<FeedbackTicket> {
+  const form = new FormData();
+  form.append("body", body);
+  await appendImages(form, imageUris);
+  return postForm<FeedbackTicket>(`/api/feedback/${id}/messages`, form);
 }
 
 let configCache: Promise<AppConfig> | null = null;
@@ -466,6 +532,12 @@ export const api = {
   about: () => request<AboutContent>("/api/about"),
   premiumPerks: () => request<{ perks: PremiumPerk[] }>("/api/premium-perks").then((r) => r.perks),
   assessPronunciation,
+  feedbackList: () => request<FeedbackSummary[]>("/api/feedback"),
+  feedbackUnread: () => request<{ count: number }>("/api/feedback/unread").then((r) => r.count),
+  feedbackTicket: (id: string) => request<FeedbackTicket>(`/api/feedback/${id}`),
+  createFeedback,
+  replyFeedback,
+  resolveFeedback: (id: string) => request<FeedbackTicket>(`/api/feedback/${id}/resolve`, { method: "POST" }),
   placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
   /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */
   applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) =>

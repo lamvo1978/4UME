@@ -1,10 +1,12 @@
-import { AppShell, Avatar, Group, Menu, NavLink, Stack, Text, UnstyledButton } from "@mantine/core";
+import { AppShell, Avatar, Badge, Group, Indicator, Menu, NavLink, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconDots, IconKey, IconLogout } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { api } from "../api";
 import { useAuth } from "../auth";
-import { NAV } from "../nav";
+import { NAV, type NavItem } from "../nav";
 import { ACCENT, BG } from "../theme";
 import classes from "./AdminLayout.module.css";
 import { ChangePasswordModal } from "./ChangePasswordModal";
@@ -20,6 +22,15 @@ export function AdminLayout() {
   const primary = NAV.filter((n) => n.primary);
   const more = NAV.filter((n) => !n.primary);
   const moreActive = more.some((n) => isActive(pathname, n.to));
+  const feedbackCounts = useQuery({ queryKey: ["feedback-counts"], queryFn: api.feedbackCounts, refetchInterval: 60_000 });
+  const badgeCount = (n: NavItem) => (n.badge === "feedback" ? (feedbackCounts.data?.unread ?? 0) : 0);
+  const badge = (n: NavItem) =>
+    badgeCount(n) > 0 ? (
+      <Badge size="sm" color="red" circle={badgeCount(n) < 10}>
+        {badgeCount(n)}
+      </Badge>
+    ) : null;
+  const moreUnread = more.some((n) => badgeCount(n) > 0);
 
   return (
     <AppShell
@@ -46,6 +57,7 @@ export function AdminLayout() {
               to={n.to}
               label={n.label}
               leftSection={<n.icon size={20} stroke={1.7} />}
+              rightSection={badge(n)}
               active={isActive(pathname, n.to)}
               className={classes.navLink}
             />
@@ -101,13 +113,15 @@ export function AdminLayout() {
         <Menu position="top-end" width={220} shadow="md">
           <Menu.Target>
             <UnstyledButton className={classes.tab} data-active={moreActive || undefined}>
-              <IconDots size={22} stroke={1.7} />
+              <Indicator color="red" size={8} disabled={!moreUnread} offset={2}>
+                <IconDots size={22} stroke={1.7} />
+              </Indicator>
               <span>Thêm</span>
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
             {more.map((n) => (
-              <Menu.Item key={n.to} leftSection={<n.icon size={18} />} onClick={() => navigate(n.to)}>
+              <Menu.Item key={n.to} leftSection={<n.icon size={18} />} rightSection={badge(n)} onClick={() => navigate(n.to)}>
                 {n.label}
               </Menu.Item>
             ))}

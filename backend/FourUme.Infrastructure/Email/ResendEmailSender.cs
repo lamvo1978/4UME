@@ -12,6 +12,8 @@ public class EmailOptions
     public string? ResendKey { get; set; }
     public string From { get; set; } = "4UME <noreply@4ume.io.vn>";
     public string? ReplyTo { get; set; }
+    /// <summary>Web admin address used for links in staff emails.</summary>
+    public string AdminUrl { get; set; } = "https://admin.4ume.io.vn";
 }
 
 /// <summary>

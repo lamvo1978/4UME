@@ -1,5 +1,5 @@
 import { Image, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { mediaSrc, type AboutSection, type AuditDetail, type PremiumPerk } from "../api";
+import { mediaSrc, type AboutSection, type AuditDetail, type FeedbackReplyTemplate, type PremiumPerk } from "../api";
 import { sectionLabel } from "../grammar/meta";
 import { kindLabel } from "../listening/meta";
 import { posLabel } from "../lib";
@@ -19,6 +19,8 @@ function format(key: string, value: unknown): string {
   if (key === "weeklyDay" && typeof value === "number") return WEEKDAY_NAMES[value] ?? String(value);
   if (key === "sections" && Array.isArray(value)) return aboutSections(value as AboutSection[]);
   if (key === "perks" && Array.isArray(value)) return premiumPerks(value as PremiumPerk[]);
+  if (key === "recipients" && Array.isArray(value)) return value.length ? value.join("\n") : "—";
+  if (key === "replies" && Array.isArray(value)) return value.length ? (value as FeedbackReplyTemplate[]).map((r) => r.title).join("\n") : "—";
   if (Array.isArray(value)) return value.length ? `ngày ${value.join(", ")}` : "tắt";
   return String(value);
 }

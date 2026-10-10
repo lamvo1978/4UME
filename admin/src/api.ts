@@ -153,6 +153,45 @@ export type PremiumPerk = { icon: string; title: string; body: string; soon: boo
 export type PremiumPerks = { perks: PremiumPerk[] };
 export type AdminPremiumPerks = { value: PremiumPerks; defaults: PremiumPerks; updatedAt: string | null };
 
+export type FeedbackReplyTemplate = { title: string; body: string };
+export type FeedbackSettings = { recipients: string[]; replies: FeedbackReplyTemplate[]; dailyLimit: number; autoCloseDays: number };
+export type AdminFeedbackSettings = { value: FeedbackSettings; defaults: FeedbackSettings; updatedAt: string | null };
+
+export type FeedbackCategory = "idea" | "bug" | "content" | "other";
+export type FeedbackStatus = "open" | "answered" | "closed";
+export type FeedbackUser = { id: string; email: string; displayName: string };
+export type FeedbackMessage = { id: string; fromAdmin: boolean; authorName: string | null; body: string; images: string[]; createdAt: string };
+export type FeedbackCounts = { open: number; answered: number; closed: number; unread: number };
+export type AdminFeedbackSummary = {
+  id: string;
+  category: FeedbackCategory;
+  subject: string;
+  status: FeedbackStatus;
+  unread: boolean;
+  createdAt: string;
+  lastMessageAt: string;
+  messages: number;
+  user: FeedbackUser;
+  wordText: string | null;
+};
+export type AdminFeedbackPage = { items: AdminFeedbackSummary[]; total: number; counts: FeedbackCounts };
+export type AdminFeedbackTicket = {
+  id: string;
+  category: FeedbackCategory;
+  subject: string;
+  status: FeedbackStatus;
+  closedBy: "user" | "admin" | "auto" | null;
+  createdAt: string;
+  lastMessageAt: string;
+  appVersion: string | null;
+  platform: string | null;
+  device: string | null;
+  user: FeedbackUser;
+  word: { id: string; text: string; meaningVi: string; level: string } | null;
+  messages: FeedbackMessage[];
+};
+export type FeedbackQuery = { status?: string; category?: string; q?: string; page?: number; pageSize?: number };
+
 export const isPremium = (u: Pick<AdminUser, "premiumUntil">) => !!u.premiumUntil && new Date(u.premiumUntil) > new Date();
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
@@ -516,6 +555,16 @@ export const api = {
   premiumPerks: () => request<AdminPremiumPerks>("/api/admin/premium-perks"),
   savePremiumPerks: (p: PremiumPerks) => request<AdminPremiumPerks>("/api/admin/premium-perks", json("PUT", p)),
   resetPremiumPerks: () => request<AdminPremiumPerks>("/api/admin/premium-perks/reset", { method: "POST" }),
+  feedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings"),
+  saveFeedbackSettings: (s: FeedbackSettings) => request<AdminFeedbackSettings>("/api/admin/feedback-settings", json("PUT", s)),
+  resetFeedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings/reset", { method: "POST" }),
+  feedbackList: (q: FeedbackQuery) => request<AdminFeedbackPage>(`/api/admin/feedback?${query(q)}`),
+  feedbackCounts: () => request<FeedbackCounts>("/api/admin/feedback/counts"),
+  feedbackTicket: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}`),
+  replyFeedback: (id: string, body: string, close: boolean) =>
+    request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/messages`, json("POST", { body, close })),
+  closeFeedback: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/close`, { method: "POST" }),
+  reopenFeedback: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}/reopen`, { method: "POST" }),
 
   meta: () => request<VocabularyMeta>("/api/admin/vocabulary/meta"),
 

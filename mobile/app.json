@@ -37,6 +37,14 @@
           "recordAudioAndroid": true,
           "enableBackgroundPlayback": true
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "4UME cần truy cập ảnh để bạn đính kèm ảnh chụp màn hình khi gửi góp ý.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
       ]
     ]
   }

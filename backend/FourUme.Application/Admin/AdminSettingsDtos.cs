@@ -1,4 +1,5 @@
 using FourUme.Application.About;
+using FourUme.Application.Feedback;
 using FourUme.Application.Premium;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
@@ -51,4 +52,9 @@ public interface IAdminSettingsService
     Task<AdminPremiumPerksDto> SavePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default);
     Task<AdminPremiumPerksDto> ResetPremiumPerksAsync(CancellationToken ct = default);
     Task RestorePremiumPerksAsync(PremiumPerks perks, CancellationToken ct = default);
+
+    Task<AdminFeedbackSettingsDto> GetFeedbackAsync(CancellationToken ct = default);
+    Task<AdminFeedbackSettingsDto> SaveFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default);
+    Task<AdminFeedbackSettingsDto> ResetFeedbackAsync(CancellationToken ct = default);
+    Task RestoreFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default);
 }

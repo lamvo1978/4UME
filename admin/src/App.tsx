@@ -19,6 +19,9 @@ import { OverviewPage } from "./pages/OverviewPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { AboutPage } from "./pages/AboutPage";
 import { PremiumPerksPage } from "./pages/PremiumPerksPage";
+import { FeedbackPage } from "./pages/FeedbackPage";
+import { FeedbackSettingsPage } from "./pages/FeedbackSettingsPage";
+import { FeedbackTicketPage } from "./pages/FeedbackTicketPage";
 import { UserDetailPage } from "./pages/UserDetailPage";
 import { UsersPage } from "./pages/UsersPage";
 
@@ -74,6 +77,9 @@ export function App() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="premium" element={<PremiumPerksPage />} />
+        <Route path="feedback" element={<FeedbackPage />} />
+        <Route path="feedback/settings" element={<FeedbackSettingsPage />} />
+        <Route path="feedback/:id" element={<FeedbackTicketPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

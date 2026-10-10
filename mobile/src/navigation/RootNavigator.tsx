@@ -15,6 +15,9 @@ import { StreakCelebration } from "../components/streak/StreakCelebration";
 import { onReminderTap, ReminderScreen } from "../notifications/reminders";
 import { colors, shadow } from "../theme";
 import { AboutScreen } from "../screens/AboutScreen";
+import { FeedbackInboxScreen } from "../screens/FeedbackInboxScreen";
+import { FeedbackNewScreen } from "../screens/FeedbackNewScreen";
+import { FeedbackThreadScreen } from "../screens/FeedbackThreadScreen";
 import { FlashcardScreen } from "../screens/FlashcardScreen";
 import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 import { GrammarLessonScreen } from "../screens/GrammarLessonScreen";
@@ -192,6 +195,13 @@ export function RootNavigator() {
             <Stack.Screen name="About" component={AboutScreen} options={{ title: "Giới thiệu & bản quyền" }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "Cài đặt" }} />
             <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "4UME Premium" }} />
+            <Stack.Screen name="Feedback" component={FeedbackInboxScreen} options={{ title: "Góp ý & hỗ trợ" }} />
+            <Stack.Screen
+              name="FeedbackNew"
+              component={FeedbackNewScreen}
+              options={({ route }) => ({ title: route.params?.wordId ? "Báo lỗi từ" : "Gửi góp ý" })}
+            />
+            <Stack.Screen name="FeedbackThread" component={FeedbackThreadScreen} options={{ title: "Góp ý" }} />
             <Stack.Screen
               name="Placement"
               component={PlacementScreen}

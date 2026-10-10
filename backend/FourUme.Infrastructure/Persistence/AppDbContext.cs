@@ -23,6 +23,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<EmailCode> EmailCodes => Set<EmailCode>();
     public DbSet<PronunciationAttempt> PronunciationAttempts => Set<PronunciationAttempt>();
+    public DbSet<FeedbackTicket> FeedbackTickets => Set<FeedbackTicket>();
+    public DbSet<FeedbackMessage> FeedbackMessages => Set<FeedbackMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +49,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(x => x.CreatedAt);
             e.Property(x => x.WordId).HasMaxLength(120).IsRequired();
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<FeedbackTicket>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.LastMessageAt });
+            e.HasIndex(x => new { x.Status, x.LastMessageAt });
+            e.Property(x => x.Category).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Subject).HasMaxLength(120).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.Property(x => x.WordId).HasMaxLength(120);
+            e.Property(x => x.AppVersion).HasMaxLength(32);
+            e.Property(x => x.Platform).HasMaxLength(16);
+            e.Property(x => x.Device).HasMaxLength(120);
+            e.Property(x => x.ClosedBy).HasMaxLength(8);
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<FeedbackMessage>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.TicketId, x.CreatedAt });
+            e.Property(x => x.AuthorName).HasMaxLength(120);
+            e.Property(x => x.Body).HasMaxLength(4000).IsRequired();
+            e.HasOne(x => x.Ticket).WithMany(x => x.Messages).HasForeignKey(x => x.TicketId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailCode>(e =>

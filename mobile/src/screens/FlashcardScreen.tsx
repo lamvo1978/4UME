@@ -6,6 +6,7 @@ import { api, mediaUrl, Word } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Screen } from "../components/Screen";
 import { SpeakButton, speakAuto, stopSpeaking } from "../components/SpeakButton";
+import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -258,6 +259,9 @@ export function FlashcardScreen({ route, navigation }: Props) {
               {current.exampleVi ? <Text style={styles.exampleVi}>{current.exampleVi}</Text> : null}
             </View>
           ) : null}
+          <View style={styles.report}>
+            <ReportWordButton wordId={current.id} wordText={current.word} />
+          </View>
         </Animated.View>
       </Pressable>
 
@@ -371,6 +375,7 @@ const styles = StyleSheet.create({
   exampleRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
   example: { flex: 1, fontSize: 17, lineHeight: 24, color: colors.ink },
   exampleVi: { fontSize: 15, lineHeight: 21, color: colors.muted },
+  report: { marginTop: "auto", paddingTop: spacing.md },
   actions: { flexDirection: "row", gap: 10, marginTop: spacing.lg },
   btn: {
     flex: 1,

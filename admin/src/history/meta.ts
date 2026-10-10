@@ -39,7 +39,7 @@ export function entityPath(type: string, id: string) {
     case "user":
       return `/users/${id}`;
     case "settings":
-      return id === "about" ? "/about" : id === "premium" ? "/premium" : "/settings";
+      return id === "about" ? "/about" : id === "premium" ? "/premium" : id === "feedback" ? "/feedback/settings" : "/settings";
     default:
       return null;
   }
@@ -100,5 +100,9 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     tagline: "Câu giới thiệu",
     sections: "Các mục",
     perks: "Quyền lợi",
+    recipients: "Email nhận góp ý",
+    replies: "Câu trả lời mẫu",
+    dailyLimit: "Góp ý mới tối đa mỗi ngày",
+    autoCloseDays: "Tự đóng sau (ngày)",
   },
 };

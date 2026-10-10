@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FourUme.Application.About;
+using FourUme.Application.Feedback;
 using FourUme.Application.Premium;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
@@ -91,6 +92,9 @@ public class AdminAuditService(
                 break;
             case AuditEntities.Settings when log.EntityId == PremiumPerks.SettingKey:
                 await settings.RestorePremiumPerksAsync(Read<PremiumPerks>(json), ct);
+                break;
+            case AuditEntities.Settings when log.EntityId == FeedbackSettings.SettingKey:
+                await settings.RestoreFeedbackAsync(Read<FeedbackSettings>(json), ct);
                 break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");

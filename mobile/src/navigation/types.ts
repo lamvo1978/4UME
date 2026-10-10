@@ -1,4 +1,5 @@
 import type { NavigatorScreenParams } from "@react-navigation/native";
+import type { FeedbackCategory } from "../api/client";
 
 /** No params (or mode "due") = today's scheduled review; "practice" never raises levels. */
 export type ReviewParams =
@@ -21,6 +22,10 @@ export type RootStackParamList = {
   About: undefined;
   Settings: undefined;
   Premium: undefined;
+  Feedback: undefined;
+  /** wordId/wordText come from "Báo lỗi từ này" on a word card. */
+  FeedbackNew: { category?: FeedbackCategory; wordId?: string; wordText?: string } | undefined;
+  FeedbackThread: { id: string; justSent?: boolean };
 };
 
 export type HubTab = "vocab" | "grammar";

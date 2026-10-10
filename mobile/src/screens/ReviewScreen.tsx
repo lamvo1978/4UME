@@ -11,6 +11,7 @@ import { MatchPairs } from "../components/MatchPairs";
 import { SentenceBuilder, sentenceTokens } from "../components/SentenceBuilder";
 import { SpeakButton, speak, speakAuto, stopSpeaking } from "../components/SpeakButton";
 import { SpeakExercise } from "../components/SpeakExercise";
+import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -498,6 +499,7 @@ export function ReviewScreen({ navigation, route }: Props) {
           <Pressable style={styles.primaryBtn} onPress={next}>
             <Text style={styles.primaryBtnText}>Tiếp tục</Text>
           </Pressable>
+          {ex.type !== "matching" ? <ReportWordButton wordId={item.word.id} wordText={item.word.word} /> : null}
         </View>
       ) : null}
     </KeyboardScreen>

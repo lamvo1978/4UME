@@ -4,6 +4,7 @@ using FourUme.Application.About;
 using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
+using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
@@ -37,6 +38,10 @@ public static class AdminEndpoints
             catch (ContentConflictException ex)
             {
                 return Results.Conflict(new { error = ex.Message });
+            }
+            catch (FeedbackException ex)
+            {
+                return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
             }
             catch (KeyNotFoundException)
             {
@@ -88,6 +93,24 @@ public static class AdminEndpoints
             Results.Ok(await s.SavePremiumPerksAsync(p, ct)));
         admin.MapPost("/premium-perks/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetPremiumPerksAsync(ct)));
+
+        admin.MapGet("/feedback-settings", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetFeedbackAsync(ct)));
+        admin.MapPut("/feedback-settings", async (FeedbackSettings f, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveFeedbackAsync(f, ct)));
+        admin.MapPost("/feedback-settings/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetFeedbackAsync(ct)));
+
+        admin.MapGet("/feedback", async ([AsParameters] AdminFeedbackQuery q, IAdminFeedbackService s, CancellationToken ct) =>
+            Results.Ok(await s.ListAsync(q, ct)));
+        admin.MapGet("/feedback/counts", async (IAdminFeedbackService s, CancellationToken ct) => Results.Ok(await s.CountsAsync(ct)));
+        admin.MapGet("/feedback/{id:guid}", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>
+            Results.Ok(await s.GetAsync(id, ct)));
+        admin.MapPost("/feedback/{id:guid}/messages", async (Guid id, AdminFeedbackReplyRequest r, IAdminFeedbackService s, CancellationToken ct) =>
+            Results.Ok(await s.ReplyAsync(id, r, ct)));
+        admin.MapPost("/feedback/{id:guid}/close", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>
+            Results.Ok(await s.SetClosedAsync(id, true, ct)));
+        admin.MapPost("/feedback/{id:guid}/reopen", async (Guid id, IAdminFeedbackService s, CancellationToken ct) =>
+            Results.Ok(await s.SetClosedAsync(id, false, ct)));
 
         admin.MapGet("/vocabulary/meta", async (IAdminContentService s, CancellationToken ct) => Results.Ok(await s.GetMetaAsync(ct)));
 

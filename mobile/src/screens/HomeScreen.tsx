@@ -6,7 +6,6 @@ import { ComponentProps, useCallback, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, Me, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { Avatar } from "../components/Avatar";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -25,10 +24,12 @@ export function HomeScreen() {
   const grammarDone = me?.grammarLessonsCompleted ?? 0;
   const grammarTotal = me?.grammarLessonsTotal ?? 0;
   const [review, setReview] = useState<ReviewSummary | null>(null);
+  const [unread, setUnread] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
       api.reviewSummary().then(setReview).catch(() => setReview(null));
+      api.feedbackUnread().then(setUnread).catch(() => undefined);
       refreshMe().catch(() => undefined);
     }, [refreshMe])
   );
@@ -55,8 +56,18 @@ export function HomeScreen() {
               studiedToday={me?.studiedToday ?? false}
               onPress={() => navigation.navigate("Profile")}
             />
-            <Pressable onPress={() => navigation.navigate("Profile")} hitSlop={8}>
-              <Avatar name={name} />
+            <Pressable
+              onPress={() => navigation.navigate("Feedback")}
+              hitSlop={8}
+              style={({ pressed }) => [styles.searchBtn, pressed && styles.pressed]}
+              accessibilityLabel={unread > 0 ? `Góp ý, ${unread} trả lời mới` : "Góp ý & hỗ trợ"}
+            >
+              <Ionicons name={unread > 0 ? "notifications" : "notifications-outline"} size={20} color={colors.accent} />
+              {unread > 0 ? (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
+                </View>
+              ) : null}
             </Pressable>
           </View>
         </View>
@@ -209,6 +220,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  badge: {
+    position: "absolute",
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    borderRadius: 9,
+    backgroundColor: "#E5484D",
+    borderWidth: 2,
+    borderColor: colors.bg,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: { color: colors.white, fontSize: 10, fontWeight: "800" },
   goal: {
     marginTop: spacing.lg,
     flexDirection: "row",
