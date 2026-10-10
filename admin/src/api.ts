@@ -416,6 +416,10 @@ export type SpeechStatus = {
   charsUsed: number;
   monthlyCharLimit: number;
 };
+export type ListeningDraftStatus = { configured: boolean; model: string };
+export type ListeningDraftLength = "short" | "medium" | "long";
+export type ListeningDraftRequest = { level: string; kind: ListeningKind; topic?: string; notes?: string; length: ListeningDraftLength };
+export type ListeningDraft = { lesson: ListeningLesson; problems: string[] };
 export type ImportListeningRow = { slug: string; titleEn: string; status: ImportStatus; currentVersion: number | null; problems: string[] };
 export type ImportListeningResult = {
   created: number;
@@ -512,6 +516,8 @@ export const api = {
     request<ImportListeningResult>("/api/admin/listening/import", json("POST", { lessons, commit })),
   generateListeningAudio: (slug: string) => request<AdminListeningAudio>(`/api/admin/listening/${slug}/audio`, { method: "POST" }),
   speechStatus: () => request<SpeechStatus>("/api/admin/listening/speech"),
+  listeningDraftStatus: () => request<ListeningDraftStatus>("/api/admin/listening/draft"),
+  draftListening: (r: ListeningDraftRequest) => request<ListeningDraft>("/api/admin/listening/draft", json("POST", r)),
   previewVoice: (voice: string, text?: string, level?: string) => requestBlob("/api/admin/listening/speech/preview", json("POST", { voice, text, level })),
   importGrammar: (lessons: unknown[], commit: boolean) =>
     request<ImportGrammarResult>("/api/admin/grammar/import", json("POST", { lessons, commit })),

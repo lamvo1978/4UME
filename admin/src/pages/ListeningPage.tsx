@@ -1,11 +1,12 @@
 import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
-import { IconArrowDown, IconArrowUp, IconDownload, IconFileCode, IconHeart, IconPlus, IconSearch, IconUpload } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconDownload, IconFileCode, IconHeart, IconPlus, IconSearch, IconSparkles, IconUpload } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { LEVELS } from "../grammar/meta";
 import { notifyError, notifySaved } from "../lib";
+import { ListeningDraftModal } from "../listening/ListeningDraftModal";
 import { ListeningImportModal } from "../listening/ListeningImportModal";
 import { AUDIO_STATE, formatDuration, KINDS, kindLabel } from "../listening/meta";
 import { SpeechStatusCard } from "../listening/SpeechStatusCard";
@@ -18,6 +19,7 @@ export function ListeningPage() {
   const lessons = useQuery({ queryKey: ["listening"], queryFn: api.listeningLessons });
   const [q, setQ] = useState("");
   const [level, setLevel] = useState("all");
+  const [drafting, setDrafting] = useState(false);
   const [kind, setKind] = useState("all");
   const [importing, setImporting] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -85,12 +87,16 @@ export function ListeningPage() {
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
+          <Button variant="light" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
+            AI viết nháp
+          </Button>
           <Button component={Link} to="/listening/new" leftSection={<IconPlus size={18} />}>
             Thêm bài
           </Button>
         </Group>
       </Group>
       <ListeningImportModal opened={importing} onClose={() => setImporting(false)} />
+      <ListeningDraftModal opened={drafting} onClose={() => setDrafting(false)} />
 
       <SpeechStatusCard needAudio={needAudio} />
 

@@ -139,6 +139,9 @@ public static class AdminEndpoints
             Results.Ok(await s.GetSpeechStatusAsync(ct)));
         admin.MapPost("/listening/speech/preview", async (VoicePreviewRequest r, IAdminListeningService s, CancellationToken ct) =>
             Results.File(await s.PreviewVoiceAsync(r, ct), "audio/mpeg"));
+        admin.MapGet("/listening/draft", (IListeningDraftService s) => Results.Ok(s.GetStatus()));
+        admin.MapPost("/listening/draft", async (ListeningDraftRequest r, IListeningDraftService s, CancellationToken ct) =>
+            Results.Ok(await s.DraftAsync(r, ct)));
         admin.MapPost("/listening/validate", (ListeningLessonDocument doc) =>
             Results.Ok(new ListeningValidationDto(ListeningRules.Validate(ListeningRules.Normalize(doc)))));
         admin.MapPut("/listening/order", async (ReorderRequest r, IAdminListeningService s, CancellationToken ct) =>

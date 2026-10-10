@@ -56,6 +56,9 @@ public static class DependencyInjection
         services.AddHttpClient(AzureSpeechClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(30));
         services.AddSingleton<AzureSpeechClient>();
         services.AddSingleton<ListeningAudioJobs>();
+        services.Configure<GeminiOptions>(configuration.GetSection(GeminiOptions.SectionName));
+        services.AddHttpClient(GeminiDraftService.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(90));
+        services.AddScoped<IListeningDraftService, GeminiDraftService>();
         services.AddScoped<IAdminAuditService, AdminAuditService>();
         services.AddScoped<IAdminUserService, AdminUserService>();
         services.AddScoped<IAdminSettingsService, AdminSettingsService>();

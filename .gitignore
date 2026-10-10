@@ -11,3 +11,4 @@ mobile/dist/
 .env.*
 !.env.example
 backups/
+drafts/

@@ -41,6 +41,8 @@ services:
       # Azure Speech (free F0) for listening audio; without it the app reads scripts with the device voice.
       Speech__Key: ${AZURE_SPEECH_KEY:-}
       Speech__Region: ${AZURE_SPEECH_REGION:-}
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      Gemini__Model: ${GEMINI_MODEL:-}
     volumes:
       - fourume_media:/app/media
     ports:

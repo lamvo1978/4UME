@@ -52,7 +52,22 @@ Nghe **thư giãn cho quen tai**: hội thoại ngắn, câu chuyện, bản tin
   - Lịch sử thay đổi + khôi phục như từ vựng / ngữ pháp.
 - **Cài đặt → Góc nghe**: công tắc *Nghe xong một bài được tính là đã học hôm nay* (mặc định tắt).
 
-> Nút "AI viết nháp" ngay trong admin cần thêm API key của một dịch vụ AI (có phí). Tạm thời soạn bài bằng cách nhập JSON; khi cần thì thêm sau.
+### Thêm bài mới
+
+- **AI viết nháp** (nút trên trang *Bài nghe*): chọn cấp độ, thể loại, độ dài, chủ đề → Google Gemini viết bản nháp, mở sẵn trong trang soạn bài (**chưa lưu**, đang ẩn khỏi app). Đọc lại, sửa, *Tạo bài* → *Tạo âm thanh* → bật *Hiện trong app*. Máy chủ gửi kèm mục đích bài nghe, quy tắc theo cấp độ, danh sách giọng, tên các bài đã có (để tránh trùng) và một bài mẫu cùng thể loại; Gemini buộc trả đúng khung JSON.
+- **Nhờ Cursor viết nhiều bài một lúc**: dán prompt mẫu trong [listening-prompt.md](listening-prompt.md), Cursor lưu một file JSON → *Nhập từ file JSON*.
+
+#### Bật Gemini (miễn phí)
+
+1. https://aistudio.google.com → đăng nhập tài khoản Google → **Get API key** → **Create API key** (không cần thẻ).
+2. Thêm vào `.env` (máy dev và VPS, **không** gửi qua chat), rồi `docker compose up -d api`:
+
+   ```bash
+   GEMINI_API_KEY=...
+   # GEMINI_MODEL=gemini-flash-latest   (mặc định, chỉ đổi khi cần)
+   ```
+
+Gói miễn phí giới hạn số lượt gọi mỗi phút / mỗi ngày (dư cho việc soạn bài); Google có thể dùng nội dung gửi lên để cải thiện dịch vụ — ở đây chỉ là bài học, không có dữ liệu người dùng.
 
 ## Dữ liệu
 

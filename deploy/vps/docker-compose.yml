@@ -47,6 +47,8 @@ services:
       Email__ResendKey: ${RESEND_API_KEY:-}
       Speech__Key: ${AZURE_SPEECH_KEY:-}
       Speech__Region: ${AZURE_SPEECH_REGION:-}
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      Gemini__Model: ${GEMINI_MODEL:-}
       Email__ReplyTo: ${EMAIL_REPLY_TO:-}
     volumes:
       - media:/app/media

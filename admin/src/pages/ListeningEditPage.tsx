@@ -1,9 +1,9 @@
 import { ActionIcon, Alert, Button, Grid, Group, Input, List, Loader, Modal, Paper, SegmentedControl, Stack, Switch, Tabs, Text, Textarea, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
-import { IconAlertTriangle, IconArrowLeft, IconCheck, IconDeviceFloppy, IconDownload, IconHistory, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconCheck, IconDeviceFloppy, IconDownload, IconHistory, IconSparkles, IconTrash } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { api, type ListeningKind, type ListeningLesson } from "../api";
 import { LEVELS } from "../grammar/meta";
 import { HistoryDrawer } from "../history/HistoryDrawer";
@@ -39,6 +39,8 @@ export function ListeningEditPage() {
   const { slug } = useParams();
   const isNew = !slug;
   const navigate = useNavigate();
+  const location = useLocation();
+  const draft = isNew ? (location.state as { draft?: ListeningLesson } | null)?.draft : undefined;
   const queryClient = useQueryClient();
   const desktop = useMediaQuery("(min-width: 64em)", true);
 
@@ -62,8 +64,8 @@ export function ListeningEditPage() {
   const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
-    if (initial) setForm(structuredClone(initial));
-  }, [initial]);
+    if (initial) setForm(structuredClone(draft ?? initial));
+  }, [initial, draft]);
 
   const dirty = form !== null && initial !== null && JSON.stringify(form) !== JSON.stringify(initial);
   useEffect(() => {
@@ -298,7 +300,7 @@ export function ListeningEditPage() {
           </ActionIcon>
           <div style={{ minWidth: 0 }}>
             <Title order={2} lineClamp={1}>
-              {isNew ? "Thêm bài nghe" : form.titleVi || slug}
+              {isNew ? (draft ? "Bản nháp AI" : "Thêm bài nghe") : form.titleVi || slug}
             </Title>
             {!isNew ? (
               <Text fz="xs" c="dimmed">
@@ -311,6 +313,11 @@ export function ListeningEditPage() {
         {desktop ? <Group gap="sm" wrap="nowrap">{actions}</Group> : null}
       </Group>
 
+      {draft ? (
+        <Alert color="violet" icon={<IconSparkles size={18} />} radius="lg">
+          Bài do Gemini viết, <b>chưa lưu</b> và đang ẩn khỏi app. Đọc lại câu tiếng Anh, bản dịch và giọng đọc, sửa nếu cần rồi bấm <b>Tạo bài</b>; sau đó tạo âm thanh và bật hiện trong app.
+        </Alert>
+      ) : null}
       {error ? (
         <Alert color="red" withCloseButton onClose={() => setError("")}>
           {error}

@@ -94,3 +94,18 @@ public interface IAdminListeningService
     /// <summary>A short MP3 sample of a voice.</summary>
     Task<byte[]> PreviewVoiceAsync(VoicePreviewRequest request, CancellationToken ct = default);
 }
+
+/// <param name="Configured">False until Gemini:ApiKey is set on the server.</param>
+public record ListeningDraftStatusDto(bool Configured, string Model);
+
+/// <param name="Length">short / medium / long.</param>
+public record ListeningDraftRequest(string Level, string Kind, string? Topic, string? Notes, string? Length);
+
+/// <summary>An unsaved lesson written by the AI, with the problems the editor would show.</summary>
+public record ListeningDraftDto(ListeningLessonDocument Lesson, IReadOnlyList<string> Problems);
+
+public interface IListeningDraftService
+{
+    ListeningDraftStatusDto GetStatus();
+    Task<ListeningDraftDto> DraftAsync(ListeningDraftRequest request, CancellationToken ct = default);
+}
