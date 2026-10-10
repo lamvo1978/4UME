@@ -1,7 +1,7 @@
 import { Alert, Anchor, Box, Button, Group, Image, Loader, Overlay, SimpleGrid, Skeleton, Stack, Text, TextInput, UnstyledButton } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconPhotoOff, IconSearch } from "@tabler/icons-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, stockLabel, type StockImage } from "../api";
 
 /**
@@ -21,6 +21,7 @@ export function StockSearchPanel({
   const [input, setInput] = useState(initialQuery);
   const [search, setSearch] = useState({ q: initialQuery.trim(), page: 1 });
   const [picking, setPicking] = useState<string | null>(null);
+  const top = useRef<HTMLDivElement>(null);
 
   const result = useQuery({
     queryKey: ["stock", search.q.toLowerCase(), search.page],
@@ -41,10 +42,15 @@ export function StockSearchPanel({
     }
   }
 
+  function goToPage(page: number) {
+    setSearch((s) => ({ ...s, page }));
+    top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const items = result.data?.items ?? [];
 
   return (
-    <Stack gap="sm">
+    <Stack gap="sm" ref={top} style={{ scrollMarginTop: 80 }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -100,7 +106,7 @@ export function StockSearchPanel({
               style={{ borderRadius: 8, overflow: "hidden" }}
             >
               <Box pos="relative">
-                <Image src={img.previewUrl} alt={img.description ?? ""} radius="md" fit="cover" style={{ aspectRatio: "1" }} loading="lazy" />
+                <StockThumb src={img.previewUrl} alt={img.description ?? ""} />
                 {picking === key ? (
                   <Overlay color="#fff" backgroundOpacity={0.6} radius="md" center>
                     <Loader size="sm" />
@@ -133,7 +139,7 @@ export function StockSearchPanel({
               size="compact-sm"
               variant="subtle"
               disabled={search.page <= 1}
-              onClick={() => setSearch((s) => ({ ...s, page: s.page - 1 }))}
+              onClick={() => goToPage(search.page - 1)}
               leftSection={<IconChevronLeft size={14} />}
             >
               Trước
@@ -142,7 +148,7 @@ export function StockSearchPanel({
               size="compact-sm"
               variant="subtle"
               disabled={items.length === 0}
-              onClick={() => setSearch((s) => ({ ...s, page: s.page + 1 }))}
+              onClick={() => goToPage(search.page + 1)}
               rightSection={<IconChevronRight size={14} />}
             >
               Thêm ảnh
@@ -151,5 +157,44 @@ export function StockSearchPanel({
         </Group>
       ) : null}
     </Stack>
+  );
+}
+
+const MAX_RETRIES = 3;
+
+/** Provider previews sometimes fail on mobile networks; retry a few times with a cache-busting query. */
+function StockThumb({ src, alt }: { src: string; alt: string }) {
+  const [attempt, setAttempt] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    setAttempt(0);
+    setFailed(false);
+  }, [src]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  if (failed) {
+    return (
+      <Box bg="gray.1" style={{ aspectRatio: "1", borderRadius: 8, display: "grid", placeItems: "center" }}>
+        <IconPhotoOff size={24} color="var(--mantine-color-gray-5)" />
+      </Box>
+    );
+  }
+
+  const url = attempt === 0 ? src : `${src}${src.includes("?") ? "&" : "?"}retry=${attempt}`;
+  return (
+    <Image
+      key={url}
+      src={url}
+      alt={alt}
+      radius="md"
+      fit="cover"
+      style={{ aspectRatio: "1" }}
+      onError={() => {
+        if (attempt >= MAX_RETRIES) return setFailed(true);
+        timer.current = window.setTimeout(() => setAttempt((a) => a + 1), 600 * (attempt + 1));
+      }}
+    />
   );
 }
