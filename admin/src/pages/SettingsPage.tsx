@@ -399,35 +399,43 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
           label="Có câu đọc to trong bài ôn"
           description="Tắt thì app không đưa câu đọc vào bài ôn nữa."
         />
+        <Switch
+          size="md"
+          checked={form.adRewardsEnabled}
+          onChange={(e) => setForm({ ...form, adRewardsEnabled: e.currentTarget.checked })}
+          label="Cho xem quảng cáo đổi lượt chấm"
+          description="Hết lượt, người dùng miễn phí có thể tự chọn xem một quảng cáo để chấm thêm 1 lần. Premium không thấy quảng cáo. Chỉ bật khi bản app có quảng cáo đã lên cửa hàng."
+        />
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
           <NumberInput
             label="Miễn phí mỗi ngày"
-            description="Số từ được chấm chi tiết"
+            description="Mỗi lần chấm, kể cả đọc lại, là một lượt"
             min={0}
             max={1000}
-            suffix=" từ"
+            suffix=" lượt"
             value={form.freeDailyLimit}
             onChange={number("freeDailyLimit")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
             label="Premium mỗi ngày"
-            description="Số từ được chấm chi tiết"
+            description="Mỗi lần chấm, kể cả đọc lại, là một lượt"
             min={0}
             max={1000}
-            suffix=" từ"
+            suffix=" lượt"
             value={form.premiumDailyLimit}
             onChange={number("premiumDailyLimit")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
-            label="Số lần chấm mỗi từ"
-            description="Đọc lại cùng từ không tốn thêm lượt"
+            label="Quảng cáo tối đa mỗi ngày"
+            description="Mỗi quảng cáo xem hết được thêm 1 lượt"
             min={1}
-            max={20}
+            max={50}
             suffix=" lần"
-            value={form.attemptsPerWord}
-            onChange={number("attemptsPerWord")}
+            disabled={!form.adRewardsEnabled}
+            value={form.adRewardsPerDay}
+            onChange={number("adRewardsPerDay")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
@@ -447,8 +455,8 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
               Tháng này
             </Text>
             <Text fz="sm" c="dimmed">
-              {p.usage.attempts.toLocaleString("vi-VN")} lần chấm · {p.usage.users} người · {p.usage.minutes.toLocaleString("vi-VN")}/
-              {p.value.monthlyMinutesCap.toLocaleString("vi-VN")} phút
+              {p.usage.attempts.toLocaleString("vi-VN")} lần chấm · {p.usage.users} người · {p.usage.adRewards.toLocaleString("vi-VN")} quảng cáo ·{" "}
+              {p.usage.minutes.toLocaleString("vi-VN")}/{p.value.monthlyMinutesCap.toLocaleString("vi-VN")} phút
             </Text>
           </Group>
           <Progress value={usedPct} color={usedPct >= 90 ? "red" : usedPct >= 70 ? "orange" : "brand"} radius="xl" />

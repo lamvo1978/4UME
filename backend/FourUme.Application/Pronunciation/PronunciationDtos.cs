@@ -6,11 +6,13 @@ public record PronunciationConfig
     public const string SettingKey = "pronunciation";
 
     public bool Enabled { get; init; } = true;
-    /// <summary>Words checked in detail (Azure) per day without Premium; afterwards the app falls back to a basic check.</summary>
+    /// <summary>Detailed checks (Azure) per day without Premium; every check counts, retries included. Afterwards the app falls back to comparing by ear.</summary>
     public int FreeDailyLimit { get; init; } = 3;
     public int PremiumDailyLimit { get; init; } = 50;
-    /// <summary>Detailed checks of the same word per day, so a learner can retry a sound without spending another word.</summary>
-    public int AttemptsPerWord { get; init; } = 3;
+    /// <summary>Free learners who ran out may watch a rewarded ad for one more check. Off until the app ships with ads.</summary>
+    public bool AdRewardsEnabled { get; init; }
+    /// <summary>Rewarded ads that count per learner per day.</summary>
+    public int AdRewardsPerDay { get; init; } = 10;
     /// <summary>Audio minutes sent to Azure per calendar month (UTC) across all users; the free tier (F0) covers 300.</summary>
     public int MonthlyMinutesCap { get; init; } = 300;
 }
@@ -18,7 +20,7 @@ public record PronunciationConfig
 public static class PronunciationRules
 {
     public const int MaxLimit = 1000;
-    public const int MaxAttemptsPerWord = 20;
+    public const int MaxAdRewardsPerDay = 50;
     public const int MaxAudioBytes = 2 * 1024 * 1024;
     /// <summary>Longer recordings are cut; one word needs far less.</summary>
     public const int MaxAudioSeconds = 6;
@@ -28,17 +30,20 @@ public static class PronunciationRules
         var problems = new List<string>();
         if (c.FreeDailyLimit is < 0 or > MaxLimit) problems.Add($"Lượt miễn phí mỗi ngày phải từ 0 đến {MaxLimit}.");
         if (c.PremiumDailyLimit is < 0 or > MaxLimit) problems.Add($"Lượt Premium mỗi ngày phải từ 0 đến {MaxLimit}.");
-        if (c.AttemptsPerWord is < 1 or > MaxAttemptsPerWord) problems.Add($"Số lần chấm mỗi từ phải từ 1 đến {MaxAttemptsPerWord}.");
+        if (c.AdRewardsPerDay is < 0 or > MaxAdRewardsPerDay) problems.Add($"Số quảng cáo mỗi ngày phải từ 0 đến {MaxAdRewardsPerDay}.");
         if (c.MonthlyMinutesCap is < 0 or > 100_000) problems.Add("Giới hạn phút mỗi tháng không hợp lệ.");
         return problems;
     }
 }
 
-/// <param name="UsedToday">Distinct words checked today; retries of the same word don't count again.</param>
-/// <param name="Remaining">New words that can still be checked today; 0 also when the feature is off or the monthly budget is used up.</param>
+/// <param name="DailyLimit">Checks for today: the plan's allowance plus checks earned from ads today.</param>
+/// <param name="UsedToday">Checks run today; every check counts, retries of a word included.</param>
+/// <param name="Remaining">Checks left today; 0 also when the feature is off or the monthly budget is used up.</param>
 /// <param name="ServiceAvailable">False when Azure isn't configured or this month's audio budget is spent.</param>
 /// <param name="PremiumDailyLimit">Shown to free users so they can see what Premium adds.</param>
 /// <param name="FreeDailyLimit">Lets the plan comparison show both columns whichever plan the user is on.</param>
+/// <param name="AdsWatchedToday">Rewarded ads already counted today.</param>
+/// <param name="AdsLeftToday">Ads that can still earn a check today; 0 for Premium, when ads are off or the scorer is paused.</param>
 public record PronunciationStatusDto(
     bool Enabled,
     bool Premium,
@@ -49,7 +54,8 @@ public record PronunciationStatusDto(
     bool ServiceAvailable,
     int PremiumDailyLimit,
     int FreeDailyLimit,
-    int AttemptsPerWord);
+    int AdsWatchedToday,
+    int AdsLeftToday);
 
 public record PhonemeScoreDto(string Phoneme, int Score);
 
@@ -57,7 +63,6 @@ public record PhonemeScoreDto(string Phoneme, int Score);
 public record WordScoreDto(string Word, int Score, string ErrorType, IReadOnlyList<PhonemeScoreDto> Phonemes);
 
 /// <param name="Heard">What the recogniser understood (biased toward the expected word).</param>
-/// <param name="WordAttemptsLeft">Further detailed checks of this word today.</param>
 public record PronunciationResultDto(
     int Score,
     int Accuracy,
@@ -65,10 +70,20 @@ public record PronunciationResultDto(
     int Completeness,
     string Heard,
     IReadOnlyList<WordScoreDto> Words,
-    PronunciationStatusDto Status,
-    int WordAttemptsLeft);
+    PronunciationStatusDto Status);
 
-public record PronunciationUsageDto(int Attempts, int Users, double Minutes);
+/// <param name="AdRewards">Rewarded ads counted this month (each gave one extra check).</param>
+public record PronunciationUsageDto(int Attempts, int Users, double Minutes, int AdRewards);
+
+/// <summary>Outcome of one rewarded-ad callback.</summary>
+public enum AdRewardOutcome
+{
+    Granted,
+    /// <summary>The same transaction arrived again; nothing changed.</summary>
+    Duplicate,
+    /// <summary>Daily cap reached, ads switched off, Premium, or unknown user: verified but not counted.</summary>
+    NotCounted,
+}
 
 /// <param name="StatusCode">HTTP status for the API: 400 bad audio, 429 quota used up, 503 service unavailable.</param>
 public class PronunciationException(int statusCode, string message) : Exception(message)
@@ -82,4 +97,6 @@ public interface IPronunciationService
     Task<PronunciationStatusDto> GetStatusAsync(Guid userId, CancellationToken ct = default);
     Task<PronunciationResultDto> AssessAsync(Guid userId, string wordId, Stream audio, CancellationToken ct = default);
     Task<PronunciationUsageDto> GetMonthUsageAsync(CancellationToken ct = default);
+    /// <summary>Adds one check to <paramref name="localDate"/> for a verified ad view.</summary>
+    Task<AdRewardOutcome> GrantAdRewardAsync(Guid userId, DateOnly localDate, string transactionId, string source, CancellationToken ct = default);
 }

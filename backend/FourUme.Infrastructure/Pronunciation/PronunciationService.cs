@@ -30,13 +30,7 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         if (!status.Enabled) throw new PronunciationException(503, "Tính năng chấm phát âm đang tạm tắt.");
         if (!status.ServiceAvailable) throw new PronunciationException(503, "Chấm phát âm chi tiết đang tạm dừng, bạn quay lại sau nhé.");
 
-        var today = clock.Today;
-        var wordAttempts = await db.PronunciationAttempts
-            .CountAsync(a => a.UserId == userId && a.LocalDate == today && a.WordId == wordId, ct);
-        if (wordAttempts == 0 && status.Remaining <= 0)
-            throw new PronunciationException(429, "Bạn đã dùng hết lượt chấm chi tiết hôm nay.");
-        if (wordAttempts >= config.AttemptsPerWord)
-            throw new PronunciationException(429, $"Bạn đã chấm từ này {config.AttemptsPerWord} lần hôm nay.");
+        if (status.Remaining <= 0) throw new PronunciationException(429, "Bạn đã dùng hết lượt chấm chi tiết hôm nay.");
 
         var word = await db.Words.AsNoTracking()
             .Where(w => w.Id == wordId && w.Published)
@@ -54,18 +48,41 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         {
             UserId = userId,
             WordId = wordId,
-            LocalDate = today,
+            LocalDate = clock.Today,
             AudioMs = durationMs,
             Score = result.Accuracy,
             Phonemes = JsonSerializer.Serialize(result.Words.SelectMany(w => w.Phonemes), Json),
         });
         await db.SaveChangesAsync(ct);
 
-        var used = wordAttempts == 0 ? status.UsedToday + 1 : status.UsedToday;
-        var after = status with { UsedToday = used, Remaining = Math.Max(0, status.DailyLimit - used) };
+        var after = status with { UsedToday = status.UsedToday + 1, Remaining = status.Remaining - 1 };
         // For a single word fluency is always ~100 and would inflate the overall score, so accuracy is the headline.
-        return new PronunciationResultDto(result.Accuracy, result.Accuracy, result.Fluency, result.Completeness, result.Heard, result.Words, after,
-            config.AttemptsPerWord - wordAttempts - 1);
+        return new PronunciationResultDto(result.Accuracy, result.Accuracy, result.Fluency, result.Completeness, result.Heard, result.Words, after);
+    }
+
+    public async Task<AdRewardOutcome> GrantAdRewardAsync(Guid userId, DateOnly localDate, string transactionId, string source, CancellationToken ct = default)
+    {
+        if (await db.AdRewards.AnyAsync(r => r.TransactionId == transactionId, ct)) return AdRewardOutcome.Duplicate;
+
+        var config = await GetConfigAsync(ct);
+        var user = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => new { u.PremiumUntil }).FirstOrDefaultAsync(ct);
+        if (user is null || !config.Enabled || !config.AdRewardsEnabled || user.PremiumUntil > DateTimeOffset.UtcNow)
+            return AdRewardOutcome.NotCounted;
+
+        var watched = await db.AdRewards.CountAsync(r => r.UserId == userId && r.LocalDate == localDate, ct);
+        if (watched >= config.AdRewardsPerDay) return AdRewardOutcome.NotCounted;
+
+        db.AdRewards.Add(new AdReward { UserId = userId, LocalDate = localDate, TransactionId = transactionId, Source = source });
+        try
+        {
+            await db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException)
+        {
+            // TransactionId is the only unique column: AdMob retried while the first callback was being saved.
+            return AdRewardOutcome.Duplicate;
+        }
+        return AdRewardOutcome.Granted;
     }
 
     public async Task<PronunciationUsageDto> GetMonthUsageAsync(CancellationToken ct = default)
@@ -75,28 +92,29 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var count = await attempts.CountAsync(ct);
         var users = await attempts.Select(a => a.UserId).Distinct().CountAsync(ct);
         var ms = await attempts.SumAsync(a => (long)a.AudioMs, ct);
-        return new PronunciationUsageDto(count, users, Math.Round(ms / 60000.0, 1));
+        var ads = await db.AdRewards.AsNoTracking().CountAsync(r => r.CreatedAt >= month, ct);
+        return new PronunciationUsageDto(count, users, Math.Round(ms / 60000.0, 1), ads);
     }
 
     private async Task<PronunciationStatusDto> BuildStatusAsync(Guid userId, PronunciationConfig config, CancellationToken ct)
     {
         var premiumUntil = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.PremiumUntil).FirstOrDefaultAsync(ct);
         var premium = premiumUntil > DateTimeOffset.UtcNow;
-        var limit = premium ? config.PremiumDailyLimit : config.FreeDailyLimit;
         var today = clock.Today;
-        var used = await db.PronunciationAttempts
-            .Where(a => a.UserId == userId && a.LocalDate == today)
-            .Select(a => a.WordId)
-            .Distinct()
-            .CountAsync(ct);
+        var used = await db.PronunciationAttempts.CountAsync(a => a.UserId == userId && a.LocalDate == today, ct);
+        // Checks earned before going Premium stay valid for the rest of that day.
+        var ads = await db.AdRewards.CountAsync(r => r.UserId == userId && r.LocalDate == today, ct);
+        var limit = (premium ? config.PremiumDailyLimit : config.FreeDailyLimit) + ads;
 
         var month = MonthStart();
         var monthMs = await db.PronunciationAttempts.Where(a => a.CreatedAt >= month).SumAsync(a => (long)a.AudioMs, ct);
         var available = azure.Configured && monthMs < config.MonthlyMinutesCap * 60_000L;
 
-        var remaining = config.Enabled && available ? Math.Max(0, limit - used) : 0;
+        var on = config.Enabled && available;
+        var remaining = on ? Math.Max(0, limit - used) : 0;
+        var adsLeft = on && config.AdRewardsEnabled && !premium ? Math.Max(0, config.AdRewardsPerDay - ads) : 0;
         return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available,
-            config.PremiumDailyLimit, config.FreeDailyLimit, config.AttemptsPerWord);
+            config.PremiumDailyLimit, config.FreeDailyLimit, ads, adsLeft);
     }
 
     private static DateTimeOffset MonthStart()

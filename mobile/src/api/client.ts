@@ -331,8 +331,10 @@ export type PronunciationStatus = {
   serviceAvailable: boolean;
   premiumDailyLimit: number;
   freeDailyLimit: number;
-  /** Retrying a word already checked today doesn't use another of the daily words, up to this many checks. */
-  attemptsPerWord: number;
+  /** Each watched rewarded ad adds one check today; already included in `dailyLimit`. */
+  adsWatchedToday: number;
+  /** 0 for Premium, or when ads are switched off or the scorer is paused. */
+  adsLeftToday: number;
 };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -380,7 +382,6 @@ export type PronunciationResult = {
   heard: string;
   words: { word: string; score: number; errorType: string; phonemes: PhonemeScore[] }[];
   status: PronunciationStatus;
-  wordAttemptsLeft: number;
 };
 
 /** Thrown by `assessPronunciation`; 429 means today's detailed checks are used up. */
@@ -554,6 +555,8 @@ export const api = {
   about: () => request<AboutContent>("/api/about"),
   premiumPerks: () => request<{ perks: PremiumPerk[] }>("/api/premium-perks").then((r) => r.perks),
   assessPronunciation,
+  /** Development servers only: grants the check a watched ad would. */
+  devAdReward: () => request<PronunciationStatus>("/api/ads/dev-reward", { method: "POST" }),
   feedbackList: () => request<FeedbackSummary[]>("/api/feedback"),
   feedbackUnread: () => request<{ count: number }>("/api/feedback/unread").then((r) => r.count),
   feedbackTicket: (id: string) => request<FeedbackTicket>(`/api/feedback/${id}`),

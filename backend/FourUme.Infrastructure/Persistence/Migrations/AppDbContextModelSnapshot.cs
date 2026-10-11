@@ -23,6 +23,43 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FourUme.Domain.Entities.AdReward", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("LocalDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "LocalDate");
+
+                    b.ToTable("AdRewards");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.AppSetting", b =>
                 {
                     b.Property<string>("Key")
@@ -943,6 +980,17 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("WordProgresses");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.AdReward", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FourUme.Domain.Entities.DeviceToken", b =>

@@ -152,7 +152,10 @@ export function PremiumScreen() {
         />
       </View>
       <Text style={styles.planNote}>
-        Mỗi lượt là một từ. Đọc lại từ đó (tối đa {status.attemptsPerWord} lần) không tốn thêm lượt.
+        Mỗi lần chấm là một lượt, kể cả khi đọc lại cùng một từ.
+        {status.adsLeftToday > 0 || status.adsWatchedToday > 0
+          ? " Hết lượt miễn phí, bạn có thể tự chọn xem quảng cáo để chấm thêm (mỗi quảng cáo 1 lượt)."
+          : ""}
       </Text>
 
       <Text style={[styles.sectionTitle, styles.sectionGap]}>Luôn miễn phí cho mọi người</Text>

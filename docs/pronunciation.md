@@ -7,10 +7,12 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - Mỗi phiên ôn có tối đa **2 câu đọc to**, đặt ở nửa sau phiên và ngay sau câu cuối của từ đó (người học vừa ôn xong nghĩa và cách viết).
 - Bấm micro → ghi tối đa 4 giây (bấm lần nữa để dừng sớm) → gửi lên máy chủ chấm.
 - **Còn lượt chấm chi tiết**: điểm 0–100, điểm từng âm (xanh ≥ 80, cam ≥ 60, đỏ < 60), gợi ý âm sai nhiều nhất, nút nghe lại *Giọng bạn* / *Giọng mẫu*.
-- **Đọc lại** cùng từ được chấm chi tiết tiếp, không tốn thêm lượt, tối đa 3 lần chấm cho một từ mỗi ngày (nút ghi `Đọc lại (còn n)`). Quá số lần đó thì từ này chuyển sang tự so sánh, từ khác vẫn chấm bình thường.
-- **Hết lượt** (hoặc admin tắt, hoặc hết hạn mức tháng): chế độ **Tự so sánh**. Người học nghe lại giọng mình và giọng mẫu; bên dưới là khung *Chấm chi tiết từng âm* bị khoá, giải thích Premium được bao nhiêu lượt, kèm nút **Xem Premium** (chỉ tài khoản miễn phí, khi dịch vụ chấm đang chạy).
-- Ngay sau khi chấm **từ miễn phí cuối cùng** trong ngày: dưới kết quả có khung nhắc nhẹ (còn đọc lại được từ này, từ sau sẽ tự so sánh, Premium có bao nhiêu lượt) và nút **Xem Premium**.
-- Dòng trạng thái phía trên micro luôn cho biết: `Chấm chi tiết: còn x/y lượt hôm nay`, `Premium · …`, `Đọc lại từ này: còn n lần chấm chi tiết`, `Đã chấm đủ n lần cho từ này hôm nay` hoặc `Hết lượt … · tự so sánh giọng`.
+- **Đọc lại** cũng tốn một lượt như lần chấm đầu. Người học tự chọn dùng lượt để đọc lại một từ khó hay để chấm từ khác.
+- **Hết lượt** (hoặc admin tắt, hoặc hết hạn mức tháng): chế độ **Tự so sánh**. Người học nghe lại giọng mình và giọng mẫu; bên dưới là khung *Chấm chi tiết từng âm* bị khoá, kèm:
+  - nút **Xem quảng cáo để chấm bản ghi này** (xem [Quảng cáo đổi lượt chấm](ads.md)): xem hết quảng cáo thì bản ghi vừa đọc được chấm ngay, không phải đọc lại;
+  - nút **Xem Premium** (chỉ tài khoản miễn phí, khi dịch vụ chấm đang chạy).
+- Ngay sau khi chấm **lượt cuối cùng** trong ngày: dưới kết quả có khung nhắc nhẹ (từ sau sẽ tự so sánh, có thể xem quảng cáo đổi lượt nếu đang bật, Premium có bao nhiêu lượt).
+- Dòng trạng thái phía trên micro luôn cho biết: `Chấm chi tiết: còn x/y lượt hôm nay`, `Premium · …` hoặc `Hết lượt … · tự so sánh giọng`. Lượt có được từ quảng cáo cộng vào `y`.
 - **Không tiện nói lúc này**: bỏ mọi câu đọc to còn lại của phiên.
 - Câu đọc to **không** tính đúng/sai và không ảnh hưởng lịch ôn.
 
@@ -18,12 +20,12 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 
 | | Miễn phí | Premium |
 |---|---|---|
-| Chấm chi tiết (Azure) | 3 từ / ngày | 50 từ / ngày |
-| Đọc lại cùng từ | Tối đa 3 lần chấm / từ / ngày | Như miễn phí |
+| Chấm chi tiết (Azure) | 3 lượt / ngày | 50 lượt / ngày |
+| Xem quảng cáo đổi lượt | +1 lượt mỗi quảng cáo, tối đa 10 / ngày | Không có quảng cáo |
 | Hết lượt | Tự so sánh giọng | Tự so sánh giọng |
 
-- **Một lượt = một từ khác nhau trong ngày** (đếm `WordId` khác nhau trong `PronunciationAttempts` của ngày đó). Lần chấm đầu của một từ mới cần còn lượt; các lần sau của cùng từ chỉ cần chưa quá *Số lần chấm mỗi từ*. Mỗi lần chấm vẫn ghi một dòng (tính phút Azure và hạn mức tháng).
-
+- **Một lượt = một lần chấm**, kể cả đọc lại cùng từ. Mỗi lần chấm ghi một dòng `PronunciationAttempts` (tính lượt trong ngày, phút Azure và hạn mức tháng).
+- Số lượt trong ngày = lượt của gói + số quảng cáo đã xem hôm nay. Lượt từ quảng cáo xem trước khi lên Premium vẫn giữ trong ngày đó.
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học.
 - Premium do admin bật tay: *Người dùng → chi tiết → thẻ Premium → Bật / Gia hạn (1, 3, 6 tháng, 1 năm) / Tắt*. Gia hạn cộng thêm vào hạn đang có. Chưa có thanh toán trong app.
 - Danh sách người dùng có bộ lọc **Premium** và huy hiệu vương miện.
@@ -32,9 +34,10 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 ## Cài đặt (web admin → Cài đặt → Kiểm tra giọng đọc)
 
 - Bật/tắt câu đọc to trong bài ôn.
-- Số từ được chấm mỗi ngày (miễn phí / Premium) và **Số lần chấm mỗi từ** (mặc định 3, từ 1 đến 20).
-- **Giới hạn phút mỗi tháng** (mặc định 300 phút, khớp hạn mức gói Azure F0 cho nhận dạng giọng nói). Chạm giới hạn thì mọi người chuyển sang tự so sánh tới đầu tháng sau (UTC).
-- Hiện số lần chấm, số người, số phút đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
+- Số lượt chấm mỗi ngày (miễn phí / Premium).
+- **Cho xem quảng cáo đổi lượt chấm** (mặc định tắt) và **Quảng cáo tối đa mỗi ngày** (mặc định 10, từ 1 đến 50).
+- **Giới hạn phút mỗi tháng** (mặc định 300 phút, khớp hạn mức gói Azure F0 cho nhận dạng giọng nói). Chạm giới hạn thì mọi người chuyển sang tự so sánh tới đầu tháng sau (UTC), và nút quảng cáo cũng ẩn.
+- Hiện số lần chấm, số người, số quảng cáo và số phút đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
 
 ## Kỹ thuật
 
@@ -44,16 +47,11 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - Ghi âm: iOS ghi thẳng WAV 16 kHz; Android (m4a) và web (webm) được máy chủ chuyển sang WAV 16 kHz mono bằng **ffmpeg** (đã cài trong image API, `deploy/Dockerfile`). Tối đa 2 MB và 6 giây; dưới 0,3 giây báo ghi lại.
 - API: `GET /api/pronunciation/status`, `POST /api/pronunciation/assess` (multipart: `wordId`, `audio`). Hết lượt → 429, tắt hoặc hết hạn mức → 503 (app chuyển sang tự so sánh).
 - Admin: `PUT /api/admin/users/{id}/premium` `{ until }` (null = tắt), `PUT /api/admin/settings/pronunciation`, `POST /api/admin/settings/pronunciation/reset`.
-- Dữ liệu: cột `Users.PremiumUntil`, bảng `PronunciationAttempts` (mỗi lượt chấm: từ, ngày địa phương, độ dài âm thanh, điểm), migration `Pronunciation`. Cài đặt lưu trong `AppSettings` khoá `pronunciation`.
+- Dữ liệu: cột `Users.PremiumUntil`, bảng `PronunciationAttempts` (mỗi lượt chấm: từ, ngày địa phương, độ dài âm thanh, điểm), migration `Pronunciation`; bảng `AdRewards` (migration `AdRewards`). Cài đặt lưu trong `AppSettings` khoá `pronunciation`.
 - App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, dòng gói trên Hồ sơ `mobile/src/components/profile/PlanRow.tsx` mở màn Premium `mobile/src/screens/PremiumScreen.tsx` (ví dụ kết quả chấm, so sánh lượt chấm Miễn phí / Premium, danh sách tính năng luôn miễn phí; chưa có nút đăng ký cho tới khi làm mua trong app). Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
 
 ## Giai đoạn sau
 
 - Hết lượt: dùng **nhận dạng giọng nói của máy** (`expo-speech-recognition`) để báo đúng/sai cơ bản thay vì chỉ tự so sánh. Cần bản build riêng (development build / EAS Build) vì Expo Go không có module này.
 - Thanh toán Premium trong app (In‑App Purchase / Google Play Billing).
-- **Quảng cáo nhỏ cho tài khoản miễn phí** (AdMob, `react-native-google-mobile-ads`), làm cùng đợt bản build riêng:
-  - Chỉ **một banner** ở cuối Trang chủ, dưới thẻ Từ vựng / Ngữ pháp; Premium không thấy. Không quảng cáo xen giữa bài học, ôn tập, bài nghe.
-  - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
-  - Cần: tài khoản AdMob, app đã lên store, trang chính sách quyền riêng tư, khai báo quảng cáo trong App Privacy / Data safety, hộp thoại App Tracking Transparency trên iOS, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc…).
-  - Doanh thu banner ở Việt Nam thấp (ước khoảng 0,1–0,5 USD / 1.000 lượt hiển thị); cần cỡ vài trăm người dùng mỗi ngày mới đủ tiền VPS.
-  - Khi có quảng cáo: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong admin *Quyền lợi Premium*, và thêm mục quảng cáo trong màn *Giới thiệu & bản quyền*.
+- Quảng cáo đổi lượt chấm: phần còn lại khi build bằng EAS ghi trong [ads.md](ads.md).
