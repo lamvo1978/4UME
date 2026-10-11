@@ -4,10 +4,8 @@ Nhìn lại một tuần học (thứ Hai – Chủ nhật, theo giờ máy ngư
 
 ## Người học thấy gì
 
-- **Thẻ tổng kết trên Trang chủ**, chỉ vào **thứ Hai** (cả ngày), nằm trên thẻ *Mục tiêu hôm nay*, gọn một hàng cùng kiểu thẻ mục tiêu:
-  - "Tuần qua: học 5/7 ngày", dòng dưới "Tổng kết 5/10 – 11/10", mũi tên bên phải; bấm vào mở màn chi tiết. Không có nút đóng (thẻ tự hết vào thứ Ba).
-  - **Không hiện** khi tuần trước không học ngày nào (không gây áp lực), hoặc khi người học tắt **Tổng kết tuần** trong Cài đặt.
-- **Hồ sơ → Tổng kết tuần** (dưới lịch *5 tuần gần đây*): xem bất kỳ lúc nào.
+- **Hồ sơ → Tổng kết tuần** (dưới dòng gói / *Thêm lượt kiểm tra*): "Tuần này đã học 3/4 ngày · xem các tuần trước", mở màn chi tiết bất kỳ lúc nào.
+- **Thông báo sáng thứ Hai** mở thẳng màn tổng kết của tuần vừa qua (xem *Sau này*). Trang chủ không có thẻ tổng kết.
 - **Màn chi tiết** (`WeeklyScreen`): mũi tên chuyển tuần (tuần này và tối đa 8 tuần trước, không lùi quá tuần tạo tài khoản), số ngày đã học, biểu đồ cột 7 ngày (ngày giữ chuỗi bằng đóng băng hiện bông tuyết, ngày chưa tới viền nét đứt), 6 ô số liệu.
 
 ## Cách tính
@@ -24,4 +22,4 @@ Nhìn lại một tuần học (thứ Hai – Chủ nhật, theo giờ máy ngư
 
 ## Sau này
 
-- Có bản build EAS và thông báo đẩy: gửi thông báo `weekly` vào ngày/giờ trong admin *Thông số hệ thống* (mặc định Chủ nhật 19:00), tôn trọng công tắc *Tổng kết tuần* và giờ yên tĩnh — xem [notifications.md](notifications.md).
+- Thông báo `weekly` **sáng thứ Hai**, bấm vào mở `Weekly` với `start` = thứ Hai tuần trước. Chỉ gửi khi tuần trước có học ít nhất một ngày, tôn trọng công tắc *Tổng kết tuần* và giờ yên tĩnh — xem [notifications.md](notifications.md). Ngày/giờ đặt trong admin *Thông số hệ thống*.

@@ -4,8 +4,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, Me, ReviewSummary, WeekSummary } from "../api/client";
-import { WeeklyCard } from "../components/weekly/WeeklyCard";
+import { api, Me, ReviewSummary } from "../api/client";
 import { HomeBanner } from "../components/ads/HomeBanner";import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
@@ -29,30 +28,6 @@ export function HomeScreen() {
   const grammarTotal = me?.grammarLessonsTotal ?? 0;
   const [review, setReview] = useState<ReviewSummary | null>(null);
   const [unread, setUnread] = useState(0);
-  const [lastWeek, setLastWeek] = useState<WeekSummary | null>(null);
-  const userId = user?.userId;
-  const notifyWeekly = me?.settings.notifyWeekly ?? false;
-
-  useFocusEffect(
-    useCallback(() => {
-      // Mondays only, for people who keep "Tổng kết tuần" on, after a week with at least one study day.
-      if (!userId || !notifyWeekly || new Date().getDay() !== 1) {
-        setLastWeek(null);
-        return;
-      }
-      let live = true;
-      api
-        .weekly(2)
-        .then(({ weeks: [, last] }) => {
-          if (live) setLastWeek(last && last.studyDays > 0 ? last : null);
-        })
-        .catch(() => undefined);
-      return () => {
-        live = false;
-      };
-    }, [userId, notifyWeekly])
-  );
-
   useFocusEffect(
     useCallback(() => {
       api.reviewSummary().then(setReview).catch(() => setReview(null));
@@ -125,10 +100,6 @@ export function HomeScreen() {
             </View>
             <Ionicons name="arrow-forward" size={22} color={colors.accent} />
           </Pressable>
-        ) : null}
-
-        {lastWeek ? (
-          <WeeklyCard week={lastWeek} onPress={() => navigation.navigate("Weekly", { start: lastWeek.start })} />
         ) : null}
 
         {me ? <GoalCard me={me} onPress={() => navigation.navigate("Study", { tab: "vocab" })} /> : null}
