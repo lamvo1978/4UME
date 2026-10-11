@@ -58,7 +58,9 @@ Thêm nữa: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong adm
 
 ## Banner nhỏ (làm cùng đợt EAS)
 
-- Chỉ **một banner** ở cuối Trang chủ, dưới thẻ Từ vựng / Ngữ pháp; **Premium không thấy**. Không quảng cáo xen giữa bài học, ôn tập, bài nghe, chép chính tả.
+- Chỉ **một banner** trên Trang chủ; **Premium không thấy**. Không quảng cáo xen giữa bài học, ôn tập, bài nghe, chép chính tả.
+- **Banner không bị đẩy xuống**: ghim cố định ở đáy màn Trang chủ, ngay trên thanh tab, **nằm ngoài vùng cuộn**. Các thẻ thêm vào Trang chủ (tổng kết tuần, kiểm tra trình độ, ôn tập…) chỉ làm phần nội dung phía trên dài ra và cuộn được, banner luôn nhìn thấy. Phần cuộn chừa khoảng trống dưới cùng bằng chiều cao banner để thẻ cuối không bị che.
+- Dùng *anchored adaptive banner* (chiều cao cố định theo bề rộng máy, khoảng 50–60 điểm) để bố cục không nhảy khi quảng cáo tải xong; chưa có quảng cáo thì không chừa ô trống.
 - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
 - Cần thêm một **Banner ad unit** cho mỗi nền tảng và một công tắc bật/tắt banner trong admin (mặc định tắt, giống quảng cáo đổi lượt).
 - Doanh thu banner ở Việt Nam thấp (khoảng 0,1–0,5 USD / 1.000 lượt hiển thị), nên quảng cáo đổi lượt mới là nguồn chính.
