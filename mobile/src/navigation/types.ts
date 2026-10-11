@@ -24,6 +24,7 @@ export type RootStackParamList = {
   About: undefined;
   Settings: undefined;
   Premium: undefined;
+  AdRewards: undefined;
   WeakWords: undefined;
   Feedback: undefined;
   /** wordId/wordText come from "Báo lỗi từ này" on a word card. */

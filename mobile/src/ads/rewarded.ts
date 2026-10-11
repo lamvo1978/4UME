@@ -10,6 +10,10 @@ export function rewardedAdsSupported() {
   return __DEV__;
 }
 
+/** Free learners only, while ads are switched on and the scorer is up. */
+export const adsOffered = (status: PronunciationStatus | null): status is PronunciationStatus =>
+  !!status && status.adsDailyLimit > 0 && rewardedAdsSupported();
+
 /** The learner's calendar date, so a reward counts toward their own "today" rather than the server's. */
 export function localDate(d = new Date()) {
   const pad = (n: number) => String(n).padStart(2, "0");

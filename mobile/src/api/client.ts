@@ -333,7 +333,8 @@ export type PronunciationStatus = {
   freeDailyLimit: number;
   /** Each watched rewarded ad adds one check today; already included in `dailyLimit`. */
   adsWatchedToday: number;
-  /** 0 for Premium, or when ads are switched off or the scorer is paused. */
+  /** 0 = no ads offered: Premium, ads switched off, or the scorer is paused. */
+  adsDailyLimit: number;
   adsLeftToday: number;
 };
 

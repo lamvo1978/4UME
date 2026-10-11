@@ -13,7 +13,7 @@ import {
 } from "expo-audio";
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
-import { rewardedAdsSupported, watchRewardedAd } from "../ads/rewarded";
+import { adsOffered, watchRewardedAd } from "../ads/rewarded";
 import { api, ApiError, PhonemeScore, PronunciationResult, PronunciationStatus, Word } from "../api/client";
 import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
@@ -61,7 +61,7 @@ const offerPremium = (status: PronunciationStatus | null): status is Pronunciati
 
 /** Never pushed: the learner only sees a button once their checks run out, and chooses to tap it. */
 const offerAd = (status: PronunciationStatus | null): status is PronunciationStatus =>
-  !!status && status.serviceAvailable && status.adsLeftToday > 0 && rewardedAdsSupported();
+  adsOffered(status) && status.adsLeftToday > 0;
 
 export function SpeakExercise({
   word,

@@ -1,10 +1,17 @@
-# Quảng cáo đổi lượt chấm
+# Quảng cáo
 
-Người dùng miễn phí hết lượt chấm phát âm trong ngày có thể **tự chọn** xem một quảng cáo có thưởng (rewarded ad) để được chấm thêm **1 lượt**. Mục tiêu là có thêm doanh thu trả chi phí Azure và VPS mà không làm phiền người học.
+Hai loại quảng cáo, chỉ cho tài khoản miễn phí, mục tiêu là có thêm doanh thu trả chi phí Azure và VPS mà không làm phiền người học:
 
-## Nguyên tắc
+1. **Banner nhỏ** cuối Trang chủ (chưa làm, cần SDK, xem mục cuối).
+2. **Quảng cáo đổi lượt chấm**: người học **tự chọn** xem một quảng cáo có thưởng (rewarded ad) để được chấm phát âm thêm **1 lượt**.
 
-- **Tự nguyện**: không có quảng cáo tự bật. Nút chỉ hiện trong khung *Chấm chi tiết từng âm* khi đã hết lượt, và người học phải tự bấm.
+## Quảng cáo đổi lượt chấm: nguyên tắc
+
+- **Tự nguyện**: không có quảng cáo tự bật. Có hai chỗ để xem, người học phải tự bấm:
+  - **Hồ sơ → Thêm lượt kiểm tra** (dưới dòng gói): màn riêng để tích lượt trước khi ôn. Hiện số lượt còn hôm nay, số quảng cáo đã xem (ví dụ 3/10), nút *Xem quảng cáo +1 lượt*; xem đủ thì nút đổi thành *Đã xem đủ hôm nay*.
+  - Trong câu **Đọc to từ này** khi đã hết lượt: nút trong khung *Chấm chi tiết từng âm*.
+- Dòng và màn trên Hồ sơ **ẩn hẳn** với Premium, khi admin tắt quảng cáo, hoặc khi dịch vụ chấm tạm dừng.
+- **Lượt từ quảng cáo chỉ dùng trong ngày** (theo giờ máy người học), qua ngày mới không còn.
 - **1 quảng cáo xem hết = 1 lượt chấm**, tối đa **10 quảng cáo mỗi ngày** (admin chỉnh được).
 - Xem xong thì **bản ghi vừa đọc được chấm ngay**, không phải đọc lại.
 - **Premium không thấy quảng cáo.** Lượt có được từ quảng cáo trước khi lên Premium vẫn giữ đến hết ngày.
@@ -17,9 +24,9 @@ Người dùng miễn phí hết lượt chấm phát âm trong ngày có thể 
   - Bảng `AdRewards`: người dùng, ngày địa phương, mã giao dịch AdMob (duy nhất, chống cộng trùng khi Google gửi lại), nguồn `admob` / `dev`.
   - `GET /api/ads/admob-reward`: URL nhận xác nhận của AdMob. Kiểm tra chữ ký ECDSA bằng khoá công khai Google (`verifier-keys.json`, lưu đệm 24 giờ, tải lại khi gặp khoá mới). Đọc `user_id` (id người học) và `custom_data` (ngày trên máy người học, `yyyy-MM-dd`). Chữ ký đúng thì luôn trả 200 để AdMob không gửi lại; chỉ cộng lượt khi đang bật, chưa quá 10/ngày, không phải Premium.
   - `POST /api/ads/dev-reward`: **chỉ có ở môi trường Development** (docker compose local), giả lập một quảng cáo đã xem để thử luồng trên Expo Go.
-  - Trạng thái `GET /api/pronunciation/status` có thêm `adsWatchedToday`, `adsLeftToday` (0 khi Premium, khi tắt quảng cáo, hoặc khi dịch vụ chấm tạm dừng).
+  - Trạng thái `GET /api/pronunciation/status` có thêm `adsWatchedToday`, `adsDailyLimit` (0 = không mời xem quảng cáo: Premium, tắt quảng cáo, hoặc dịch vụ chấm tạm dừng), `adsLeftToday`.
 - Admin → Cài đặt → Kiểm tra giọng đọc: công tắc **Cho xem quảng cáo đổi lượt chấm** (mặc định **tắt**), **Quảng cáo tối đa mỗi ngày**, số quảng cáo đã xem trong tháng.
-- App: nút trong `SpeakExercise.tsx`, gọi qua `mobile/src/ads/rewarded.ts`. Hiện tại chỉ bản dev hiện nút (gọi endpoint giả lập); bản phát hành không hiện nút cho tới khi có SDK.
+- App: màn `AdRewardsScreen.tsx` (mở từ `components/profile/AdRewardsRow.tsx` trên Hồ sơ), nút trong `SpeakExercise.tsx`; cả hai gọi qua `mobile/src/ads/rewarded.ts`. Hiện tại chỉ bản dev hiện (gọi endpoint giả lập); bản phát hành ẩn cho tới khi có SDK.
 
 ## Còn lại khi build bằng EAS
 
@@ -49,6 +56,10 @@ Chính sách quyền riêng tư `site/privacy/index.html`: bỏ câu "không hi�
 
 Thêm nữa: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong admin *Quyền lợi Premium*, và thêm mục quảng cáo trong màn *Giới thiệu & bản quyền*.
 
-## Banner (chưa làm)
+## Banner nhỏ (làm cùng đợt EAS)
 
-Ý tưởng cũ: một banner nhỏ cuối Trang chủ cho tài khoản miễn phí. Tạm gác lại vì quảng cáo đổi lượt tự nguyện ít làm phiền hơn; doanh thu banner ở Việt Nam cũng thấp (khoảng 0,1–0,5 USD / 1.000 lượt hiển thị).
+- Chỉ **một banner** ở cuối Trang chủ, dưới thẻ Từ vựng / Ngữ pháp; **Premium không thấy**. Không quảng cáo xen giữa bài học, ôn tập, bài nghe, chép chính tả.
+- Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
+- Cần thêm một **Banner ad unit** cho mỗi nền tảng và một công tắc bật/tắt banner trong admin (mặc định tắt, giống quảng cáo đổi lượt).
+- Doanh thu banner ở Việt Nam thấp (khoảng 0,1–0,5 USD / 1.000 lượt hiển thị), nên quảng cáo đổi lượt mới là nguồn chính.
+- Câu chữ trang chủ đề xuất ở trên cần thêm: "Tài khoản miễn phí có một banner nhỏ ở cuối Trang chủ."

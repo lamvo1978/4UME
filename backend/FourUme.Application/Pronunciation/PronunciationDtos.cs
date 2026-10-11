@@ -43,7 +43,8 @@ public static class PronunciationRules
 /// <param name="PremiumDailyLimit">Shown to free users so they can see what Premium adds.</param>
 /// <param name="FreeDailyLimit">Lets the plan comparison show both columns whichever plan the user is on.</param>
 /// <param name="AdsWatchedToday">Rewarded ads already counted today.</param>
-/// <param name="AdsLeftToday">Ads that can still earn a check today; 0 for Premium, when ads are off or the scorer is paused.</param>
+/// <param name="AdsDailyLimit">How many ads this user may watch per day; 0 (no ads offered) for Premium, when ads are off or the scorer is paused.</param>
+/// <param name="AdsLeftToday">Ads that can still earn a check today.</param>
 public record PronunciationStatusDto(
     bool Enabled,
     bool Premium,
@@ -55,6 +56,7 @@ public record PronunciationStatusDto(
     int PremiumDailyLimit,
     int FreeDailyLimit,
     int AdsWatchedToday,
+    int AdsDailyLimit,
     int AdsLeftToday);
 
 public record PhonemeScoreDto(string Phoneme, int Score);
