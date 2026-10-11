@@ -29,7 +29,14 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var status = await BuildStatusAsync(userId, config, ct);
         if (!status.Enabled) throw new PronunciationException(503, "Tính năng chấm phát âm đang tạm tắt.");
         if (!status.ServiceAvailable) throw new PronunciationException(503, "Chấm phát âm chi tiết đang tạm dừng, bạn quay lại sau nhé.");
-        if (status.Remaining <= 0) throw new PronunciationException(429, "Bạn đã dùng hết lượt chấm chi tiết hôm nay.");
+
+        var today = clock.Today;
+        var wordAttempts = await db.PronunciationAttempts
+            .CountAsync(a => a.UserId == userId && a.LocalDate == today && a.WordId == wordId, ct);
+        if (wordAttempts == 0 && status.Remaining <= 0)
+            throw new PronunciationException(429, "Bạn đã dùng hết lượt chấm chi tiết hôm nay.");
+        if (wordAttempts >= config.AttemptsPerWord)
+            throw new PronunciationException(429, $"Bạn đã chấm từ này {config.AttemptsPerWord} lần hôm nay.");
 
         var word = await db.Words.AsNoTracking()
             .Where(w => w.Id == wordId && w.Published)
@@ -47,16 +54,18 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         {
             UserId = userId,
             WordId = wordId,
-            LocalDate = clock.Today,
+            LocalDate = today,
             AudioMs = durationMs,
             Score = result.Accuracy,
+            Phonemes = JsonSerializer.Serialize(result.Words.SelectMany(w => w.Phonemes), Json),
         });
         await db.SaveChangesAsync(ct);
 
-        var used = status.UsedToday + 1;
+        var used = wordAttempts == 0 ? status.UsedToday + 1 : status.UsedToday;
         var after = status with { UsedToday = used, Remaining = Math.Max(0, status.DailyLimit - used) };
         // For a single word fluency is always ~100 and would inflate the overall score, so accuracy is the headline.
-        return new PronunciationResultDto(result.Accuracy, result.Accuracy, result.Fluency, result.Completeness, result.Heard, result.Words, after);
+        return new PronunciationResultDto(result.Accuracy, result.Accuracy, result.Fluency, result.Completeness, result.Heard, result.Words, after,
+            config.AttemptsPerWord - wordAttempts - 1);
     }
 
     public async Task<PronunciationUsageDto> GetMonthUsageAsync(CancellationToken ct = default)
@@ -75,14 +84,19 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var premium = premiumUntil > DateTimeOffset.UtcNow;
         var limit = premium ? config.PremiumDailyLimit : config.FreeDailyLimit;
         var today = clock.Today;
-        var used = await db.PronunciationAttempts.CountAsync(a => a.UserId == userId && a.LocalDate == today, ct);
+        var used = await db.PronunciationAttempts
+            .Where(a => a.UserId == userId && a.LocalDate == today)
+            .Select(a => a.WordId)
+            .Distinct()
+            .CountAsync(ct);
 
         var month = MonthStart();
         var monthMs = await db.PronunciationAttempts.Where(a => a.CreatedAt >= month).SumAsync(a => (long)a.AudioMs, ct);
         var available = azure.Configured && monthMs < config.MonthlyMinutesCap * 60_000L;
 
         var remaining = config.Enabled && available ? Math.Max(0, limit - used) : 0;
-        return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available, config.PremiumDailyLimit, config.FreeDailyLimit);
+        return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available,
+            config.PremiumDailyLimit, config.FreeDailyLimit, config.AttemptsPerWord);
     }
 
     private static DateTimeOffset MonthStart()

@@ -8,4 +8,5 @@ public interface IReviewService
     Task<ReviewAnswerResponse> AnswerAsync(Guid userId, ReviewAnswerRequest request, CancellationToken ct = default);
     Task<IReadOnlyList<ReviewItemDto>> GetPracticeItemsAsync(Guid userId, PracticeQuery query, CancellationToken ct = default);
     Task<PracticeAnswerResponse> PracticeAnswerAsync(Guid userId, ReviewAnswerRequest request, CancellationToken ct = default);
+    Task<IReadOnlyList<WeakWordDto>> GetWeakWordsAsync(Guid userId, CancellationToken ct = default);
 }

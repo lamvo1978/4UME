@@ -399,23 +399,35 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
           label="Có câu đọc to trong bài ôn"
           description="Tắt thì app không đưa câu đọc vào bài ôn nữa."
         />
-        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
           <NumberInput
             label="Miễn phí mỗi ngày"
-            description="Lượt chấm chi tiết"
+            description="Số từ được chấm chi tiết"
             min={0}
             max={1000}
+            suffix=" từ"
             value={form.freeDailyLimit}
             onChange={number("freeDailyLimit")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
             label="Premium mỗi ngày"
-            description="Lượt chấm chi tiết"
+            description="Số từ được chấm chi tiết"
             min={0}
             max={1000}
+            suffix=" từ"
             value={form.premiumDailyLimit}
             onChange={number("premiumDailyLimit")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Số lần chấm mỗi từ"
+            description="Đọc lại cùng từ không tốn thêm lượt"
+            min={1}
+            max={20}
+            suffix=" lần"
+            value={form.attemptsPerWord}
+            onChange={number("attemptsPerWord")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
@@ -435,7 +447,7 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
               Tháng này
             </Text>
             <Text fz="sm" c="dimmed">
-              {p.usage.attempts.toLocaleString("vi-VN")} lượt · {p.usage.users} người · {p.usage.minutes.toLocaleString("vi-VN")}/
+              {p.usage.attempts.toLocaleString("vi-VN")} lần chấm · {p.usage.users} người · {p.usage.minutes.toLocaleString("vi-VN")}/
               {p.value.monthlyMinutesCap.toLocaleString("vi-VN")} phút
             </Text>
           </Group>

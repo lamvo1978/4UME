@@ -271,6 +271,8 @@ export type ReviewSummary = {
   inReview: number;
   mastered: number;
   nextDueAt: string | null;
+  /** Words under "Ôn từ hay sai"; always 0 for grammar. */
+  weakCount: number;
 };
 
 export type ReviewItem = {
@@ -278,7 +280,22 @@ export type ReviewItem = {
   word: Word;
   wordOptions: string[];
   meaningOptions: string[];
+  /** Latest pronunciation score, only sent for "Ôn từ hay sai". */
+  speakScore?: number | null;
 };
+
+export type WeakWord = {
+  wordId: string;
+  word: string;
+  ipa: string;
+  meaningVi: string;
+  /** Above 0 = missed lately; each clean answer lowers it by 1. */
+  weakScore: number;
+  speakScore: number | null;
+};
+
+/** Below this the latest pronunciation score puts a word under "Ôn từ hay sai" (matches the server). */
+export const WEAK_SPEAK_SCORE = 70;
 
 export type PracticeAnswerResult = {
   wordId: string;
@@ -314,6 +331,8 @@ export type PronunciationStatus = {
   serviceAvailable: boolean;
   premiumDailyLimit: number;
   freeDailyLimit: number;
+  /** Retrying a word already checked today doesn't use another of the daily words, up to this many checks. */
+  attemptsPerWord: number;
 };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -361,6 +380,7 @@ export type PronunciationResult = {
   heard: string;
   words: { word: string; score: number; errorType: string; phonemes: PhonemeScore[] }[];
   status: PronunciationStatus;
+  wordAttemptsLeft: number;
 };
 
 /** Thrown by `assessPronunciation`; 429 means today's detailed checks are used up. */
@@ -517,12 +537,14 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ wordId, mistakes }),
     }),
-  practiceItems: (opts: { deckId?: string; wordIds?: string[]; limit?: number } = {}) => {
+  practiceItems: (opts: { deckId?: string; wordIds?: string[]; limit?: number; weak?: boolean } = {}) => {
     const qs = new URLSearchParams({ limit: String(opts.limit ?? 10) });
     if (opts.deckId) qs.set("deckId", opts.deckId);
     if (opts.wordIds?.length) qs.set("wordIds", opts.wordIds.join(","));
+    if (opts.weak) qs.set("weak", "true");
     return request<ReviewItem[]>(`/api/review/practice?${qs.toString()}`);
   },
+  weakWords: () => request<WeakWord[]>("/api/review/weak"),
   practiceAnswer: (wordId: string, mistakes: number) =>
     request<PracticeAnswerResult>("/api/review/practice/answer", {
       method: "POST",

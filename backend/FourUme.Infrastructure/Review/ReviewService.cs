@@ -16,6 +16,27 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
 
     private sealed record PoolWord(string Id, string Text, string Pos, string DeckId, string MeaningVi);
 
+    private sealed class WeakRow
+    {
+        public required Word Word { get; init; }
+        public int ReviewLevel { get; init; }
+        public int WeakScore { get; init; }
+        public int? SpeakScore { get; init; }
+    }
+
+    /// <summary>Words in review that were missed lately or whose latest pronunciation check scored low.</summary>
+    private IQueryable<WeakRow> WeakQuery(Guid userId) =>
+        from p in db.WordProgresses.AsNoTracking()
+        join w in db.Words.AsNoTracking() on p.WordId equals w.Id
+        where p.UserId == userId && p.Status == WordStatus.Known && p.ReviewLevel > 0
+        let speak = db.PronunciationAttempts
+            .Where(a => a.UserId == userId && a.WordId == p.WordId)
+            .OrderByDescending(a => a.CreatedAt)
+            .Select(a => (int?)a.Score)
+            .FirstOrDefault()
+        where p.WeakScore > 0 || speak < WeakWords.SpeakThreshold
+        select new WeakRow { Word = w, ReviewLevel = p.ReviewLevel, WeakScore = p.WeakScore, SpeakScore = speak };
+
     public async Task<ReviewSummaryDto> GetSummaryAsync(Guid userId, CancellationToken ct = default)
     {
         var now = DateTimeOffset.UtcNow;
@@ -26,8 +47,9 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
         var total = await inReview.CountAsync(p => !p.FromPlacement, ct);
         var mastered = await inReview.CountAsync(p => !p.FromPlacement && p.ReviewLevel >= ReviewSchedule.MasteredLevel, ct);
         var nextDue = await inReview.Where(p => p.NextReviewAt > now).MinAsync(p => p.NextReviewAt, ct);
+        var weak = await WeakQuery(userId).CountAsync(ct);
 
-        return new ReviewSummaryDto(due, total, mastered, nextDue);
+        return new ReviewSummaryDto(due, total, mastered, nextDue, weak);
     }
 
     public async Task<IReadOnlyList<ReviewForecastDayDto>> GetForecastAsync(Guid userId, int days, CancellationToken ct = default)
@@ -78,6 +100,8 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
 
     public async Task<IReadOnlyList<ReviewItemDto>> GetPracticeItemsAsync(Guid userId, PracticeQuery query, CancellationToken ct = default)
     {
+        if (query.Weak) return await GetWeakItemsAsync(userId, query.Limit, ct);
+
         var known =
             from p in db.WordProgresses.AsNoTracking()
             join w in db.Words.AsNoTracking() on p.WordId equals w.Id
@@ -116,9 +140,38 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
         }
 
         var pulled = ReviewSchedule.ApplyPractice(progress, request.Mistakes, DateTimeOffset.UtcNow);
-        if (pulled) await db.SaveChangesAsync(ct);
+        WeakWords.Apply(progress, request.Mistakes);
+        await db.SaveChangesAsync(ct);
         await activity.RecordAsync(userId, ActivityKind.Review, ct);
         return new PracticeAnswerResponse(progress.WordId, progress.NextReviewAt, pulled);
+    }
+
+    public async Task<IReadOnlyList<WeakWordDto>> GetWeakWordsAsync(Guid userId, CancellationToken ct = default)
+    {
+        var rows = await WeakQuery(userId).ToListAsync(ct);
+        return rows
+            .OrderByDescending(r => r.WeakScore)
+            .ThenBy(r => r.SpeakScore ?? 100)
+            .ThenBy(r => r.Word.Text)
+            .Select(r => new WeakWordDto(r.Word.Id, r.Word.Text, r.Word.Ipa, r.Word.MeaningVi, r.WeakScore, r.SpeakScore))
+            .ToList();
+    }
+
+    private async Task<IReadOnlyList<ReviewItemDto>> GetWeakItemsAsync(Guid userId, int limit, CancellationToken ct)
+    {
+        var rows = await WeakQuery(userId).ToListAsync(ct);
+        if (rows.Count == 0) return [];
+
+        var picked = rows
+            .OrderByDescending(r => r.WeakScore)
+            .ThenBy(_ => Random.Shared.Next())
+            .Take(Math.Clamp(limit, 1, 50))
+            .ToList();
+
+        var pool = await LoadPoolAsync(ct);
+        var items = picked.Select(r => BuildItem(r.Word, r.ReviewLevel, pool) with { SpeakScore = r.SpeakScore }).ToList();
+        Shuffle(items);
+        return items;
     }
 
     private Task<List<PoolWord>> LoadPoolAsync(CancellationToken ct) =>
@@ -136,6 +189,7 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
         }
 
         progress.FromPlacement = false;
+        WeakWords.Apply(progress, request.Mistakes);
         var outcome = ReviewSchedule.ApplyAnswer(progress, request.Mistakes, DateTimeOffset.UtcNow);
         var backToLearning = outcome == ReviewOutcome.Relearn;
         if (backToLearning)

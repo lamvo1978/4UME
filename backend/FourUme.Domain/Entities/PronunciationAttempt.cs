@@ -13,4 +13,6 @@ public class PronunciationAttempt
     /// <summary>Length of the audio sent to Azure (what the service bills).</summary>
     public int AudioMs { get; set; }
     public int Score { get; set; }
+    /// <summary>Per-sound scores as JSON (<c>[{"phoneme":"θ","score":38}]</c>), kept for weak-sound stats.</summary>
+    public string? Phonemes { get; set; }
 }

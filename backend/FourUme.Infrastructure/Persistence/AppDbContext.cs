@@ -46,6 +46,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
             e.HasIndex(x => new { x.UserId, x.LocalDate });
+            e.HasIndex(x => new { x.UserId, x.WordId, x.CreatedAt });
             e.HasIndex(x => x.CreatedAt);
             e.Property(x => x.WordId).HasMaxLength(120).IsRequired();
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);

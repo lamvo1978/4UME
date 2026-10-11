@@ -151,6 +151,9 @@ export function PremiumScreen() {
           note={premium ? null : "Sắp mở đăng ký"}
         />
       </View>
+      <Text style={styles.planNote}>
+        Mỗi lượt là một từ. Đọc lại từ đó (tối đa {status.attemptsPerWord} lần) không tốn thêm lượt.
+      </Text>
 
       <Text style={[styles.sectionTitle, styles.sectionGap]}>Luôn miễn phí cho mọi người</Text>
       <View style={styles.card}>
@@ -345,4 +348,5 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   soon: { marginTop: spacing.lg, fontSize: 12, color: colors.muted, textAlign: "center" },
+  planNote: { marginTop: spacing.sm, fontSize: 12, lineHeight: 17, color: colors.muted },
 });

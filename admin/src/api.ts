@@ -129,6 +129,7 @@ export type PronunciationConfig = {
   enabled: boolean;
   freeDailyLimit: number;
   premiumDailyLimit: number;
+  attemptsPerWord: number;
   monthlyMinutesCap: number;
 };
 export type AdminSettings = {
