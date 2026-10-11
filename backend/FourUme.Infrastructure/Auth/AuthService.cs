@@ -116,7 +116,8 @@ public class AuthService(
             new UserSettingsDto(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
-                user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt));
+                user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt),
+            user.PremiumUntil > DateTimeOffset.UtcNow);
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)

@@ -32,7 +32,7 @@
 | `rescue` | Giờ cứu chuỗi (mặc định 22:00, chỉnh trong web admin), nếu đang có chuỗi ≥ 2 và hôm đó chưa học | "Còn 2 tiếng nữa là mất chuỗi 15 ngày 🔥 — 3 phút ôn tập là đủ!" | Local (ước lượng) | Push (chính xác) |
 | `comeback` | Sau 3 và 7 ngày không học | "Lâu rồi không gặp! Ôn lại 5 từ cũ trong 2 phút nhé." | Local (ngày 3 và 7) | Push (ngày 3, 7, 14, 30) |
 | `freeze` | Sáng hôm sau khi app tự dùng lượt đóng băng | "Hôm qua bạn lỡ học — đã dùng 1 lượt đóng băng để giữ chuỗi 15 ngày." | — | Push |
-| `weekly` | Chủ nhật 19:00 | "Tuần này: 52 từ mới, 6/7 ngày học — hơn tuần trước 20%!" | — | Push |
+| `weekly` | Thứ Hai 08:30, nếu tuần trước có học | "Tuần qua: 52 từ mới, 6/7 ngày học — hơn tuần trước đó 20%!" — bấm mở màn *Tổng kết tuần* ([weekly.md](weekly.md)) | — | Push |
 | `news` | Admin gửi từ web admin | "Có 3 bài ngữ pháp mới: câu điều kiện loại 3…" | — | Push |
 
 ### Nội dung `daily` theo tình huống
@@ -87,7 +87,7 @@ Dòng phụ luôn nhắc chuỗi nếu đang có: "Giữ chuỗi **N** ngày nh�
 ### Backend
 
 - Tác vụ nền (`BackgroundService`) chạy mỗi 5 phút:
-  - Tìm người dùng đang trong khung giờ cần gửi theo `TimeZone` của họ (`rescue` theo giờ cứu chuỗi, `freeze` 08:00, `weekly` CN 19:00, `comeback` vào giờ nhắc của họ — đều đọc từ *Thông số hệ thống*).
+  - Tìm người dùng đang trong khung giờ cần gửi theo `TimeZone` của họ (`rescue` theo giờ cứu chuỗi, `freeze` 08:00, `weekly` thứ Hai 08:30, `comeback` vào giờ nhắc của họ — đều đọc từ *Thông số hệ thống*).
   - Kiểm tra điều kiện (chưa học hôm nay, chuỗi ≥ 2…), giới hạn 2 / ngày, giờ yên tĩnh, công tắc của người dùng.
   - Gửi theo lô 100 qua Expo Push API, ghi `NotificationLogs`.
   - 15 phút sau đọc biên nhận (receipts); token báo `DeviceNotRegistered` → xoá.
@@ -115,7 +115,7 @@ Admin chỉnh trong trang **Cài đặt hệ thống** của [web admin](admin-w
 | Số thông báo tối đa / ngày | 2 | 1 – 3 |
 | Chuỗi tối thiểu để gửi cứu chuỗi | 2 ngày | |
 | Ngày gửi nhắc quay lại | 3, 7 (local) · 3, 7, 14, 30 (push) | |
-| Giờ tổng kết tuần | Chủ nhật 19:00 | |
+| Giờ tổng kết tuần | Thứ Hai 08:30 | |
 | Giờ báo dùng lượt đóng băng | 08:00 | |
 
 ## Để làm sau

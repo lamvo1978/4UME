@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, Me, ReviewSummary } from "../api/client";
-import { useAuth } from "../auth/AuthContext";
+import { HomeBanner } from "../components/ads/HomeBanner";import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -28,7 +28,6 @@ export function HomeScreen() {
   const grammarTotal = me?.grammarLessonsTotal ?? 0;
   const [review, setReview] = useState<ReviewSummary | null>(null);
   const [unread, setUnread] = useState(0);
-
   useFocusEffect(
     useCallback(() => {
       api.reviewSummary().then(setReview).catch(() => setReview(null));
@@ -133,6 +132,7 @@ export function HomeScreen() {
           />
         </View>
       </ScrollView>
+      <HomeBanner premium={me?.premium} />
     </Screen>
   );
 }

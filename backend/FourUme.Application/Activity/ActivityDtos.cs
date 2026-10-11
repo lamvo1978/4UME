@@ -36,3 +36,32 @@ public record MemoryDto(IReadOnlyList<int> Levels, int Learning, IReadOnlyList<C
 public record CefrProgressDto(string Level, int Done, int Total);
 
 public record StatsDto(StreakDto Streak, MemoryDto Vocabulary, MemoryDto Grammar, int TotalStudyDays, DateTimeOffset MemberSince);
+
+public record WeekDayDto(DateOnly Date, int NewWords, int Reviews, int GrammarItems, int Listens, bool Studied, bool Frozen);
+
+/// <summary>One Monday–Sunday week of the learner's local calendar.</summary>
+/// <param name="GoodPronunciations">Different words read with an accuracy of 80 or more that week.</param>
+/// <param name="StreakAtEnd">Streak on the week's last day (today for the current week).</param>
+public record WeekSummaryDto(
+    DateOnly Start,
+    DateOnly End,
+    bool InProgress,
+    int StudyDays,
+    int NewWords,
+    int Reviews,
+    int GrammarItems,
+    int Listens,
+    int GoodPronunciations,
+    int StreakAtEnd,
+    IReadOnlyList<WeekDayDto> Days);
+
+/// <summary>Newest week first; weeks that ended before the account existed are left out.</summary>
+public record WeeklyDto(DateOnly Today, IReadOnlyList<WeekSummaryDto> Weeks);
+
+public static class WeeklyRules
+{
+    public const int GoodPronunciationScore = 80;
+    public const int MaxWeeks = 13;
+
+    public static DateOnly WeekStart(DateOnly day) => day.AddDays(-(((int)day.DayOfWeek + 6) % 7));
+}

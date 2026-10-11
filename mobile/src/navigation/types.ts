@@ -25,6 +25,8 @@ export type RootStackParamList = {
   Settings: undefined;
   Premium: undefined;
   AdRewards: undefined;
+  /** `start` = the week's Monday ("YYYY-MM-DD"); defaults to the current week. */
+  Weekly: { start?: string } | undefined;
   WeakWords: undefined;
   Feedback: undefined;
   /** wordId/wordText come from "Báo lỗi từ này" on a word card. */

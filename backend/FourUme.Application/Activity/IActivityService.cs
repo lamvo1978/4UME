@@ -15,6 +15,9 @@ public interface IActivityService
     Task<StreakDto> GetStreakAsync(Guid userId, CancellationToken ct = default);
 
     Task<StatsDto> GetStatsAsync(Guid userId, CancellationToken ct = default);
+
+    /// <summary>The current week and up to <paramref name="weeks"/> − 1 before it.</summary>
+    Task<WeeklyDto> GetWeeklyAsync(Guid userId, int weeks, CancellationToken ct = default);
 }
 
 public static class StreakRules

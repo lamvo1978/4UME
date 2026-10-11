@@ -16,8 +16,8 @@ public record NotificationConfig
     public IReadOnlyList<int> ComebackDaysLocal { get; init; } = [3, 7];
     public IReadOnlyList<int> ComebackDaysPush { get; init; } = [3, 7, 14, 30];
     /// <summary>0 = Sunday … 6 = Saturday.</summary>
-    public int WeeklyDay { get; init; }
-    public string WeeklyTime { get; init; } = "19:00";
+    public int WeeklyDay { get; init; } = 1;
+    public string WeeklyTime { get; init; } = "08:30";
     public string FreezeNoticeTime { get; init; } = "08:00";
 }
 

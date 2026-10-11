@@ -234,6 +234,13 @@ app.MapGet("/api/me/stats", async (ClaimsPrincipal principal, IActivityService a
     return Results.Ok(await activity.GetStatsAsync(userId.Value));
 }).RequireAuthorization();
 
+app.MapGet("/api/me/weekly", async (ClaimsPrincipal principal, IActivityService activity, int? weeks, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await activity.GetWeeklyAsync(userId.Value, weeks ?? 2, ct));
+}).RequireAuthorization();
+
 app.MapPut("/api/me/settings", async (UpdateSettingsRequest request, ClaimsPrincipal principal, IAuthService auth) =>
 {
     var userId = GetUserId(principal);
