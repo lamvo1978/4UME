@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<EmailCode> EmailCodes => Set<EmailCode>();
     public DbSet<PronunciationAttempt> PronunciationAttempts => Set<PronunciationAttempt>();
     public DbSet<AdReward> AdRewards => Set<AdReward>();
+    public DbSet<ListeningLog> ListeningLogs => Set<ListeningLog>();
     public DbSet<FeedbackTicket> FeedbackTickets => Set<FeedbackTicket>();
     public DbSet<FeedbackMessage> FeedbackMessages => Set<FeedbackMessage>();
 
@@ -61,6 +62,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(x => x.CreatedAt);
             e.Property(x => x.TransactionId).HasMaxLength(128).IsRequired();
             e.Property(x => x.Source).HasMaxLength(16).IsRequired();
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ListeningLog>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.LocalDate });
+            e.Property(x => x.LessonSlug).HasMaxLength(128).IsRequired();
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         });
 

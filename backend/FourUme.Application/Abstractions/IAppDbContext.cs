@@ -23,6 +23,7 @@ public interface IAppDbContext
     DbSet<EmailCode> EmailCodes { get; }
     DbSet<PronunciationAttempt> PronunciationAttempts { get; }
     DbSet<AdReward> AdRewards { get; }
+    DbSet<ListeningLog> ListeningLogs { get; }
     DbSet<FeedbackTicket> FeedbackTickets { get; }
     DbSet<FeedbackMessage> FeedbackMessages { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

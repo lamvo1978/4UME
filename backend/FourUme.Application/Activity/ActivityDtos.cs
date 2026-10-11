@@ -37,7 +37,9 @@ public record CefrProgressDto(string Level, int Done, int Total);
 
 public record StatsDto(StreakDto Streak, MemoryDto Vocabulary, MemoryDto Grammar, int TotalStudyDays, DateTimeOffset MemberSince);
 
-public record WeekDayDto(DateOnly Date, int NewWords, int Reviews, int GrammarItems, int Listens, bool Studied, bool Frozen);
+/// <param name="Listens">Pieces listened to the end, counted even when listening doesn't count toward the streak.</param>
+/// <param name="DictationLines">Dictation lines checked.</param>
+public record WeekDayDto(DateOnly Date, int NewWords, int Reviews, int GrammarItems, int Listens, int DictationLines, bool Studied, bool Frozen);
 
 /// <summary>One Monday–Sunday week of the learner's local calendar.</summary>
 /// <param name="GoodPronunciations">Different words read with an accuracy of 80 or more that week.</param>
@@ -51,12 +53,14 @@ public record WeekSummaryDto(
     int Reviews,
     int GrammarItems,
     int Listens,
+    int DictationLines,
     int GoodPronunciations,
     int StreakAtEnd,
     IReadOnlyList<WeekDayDto> Days);
 
 /// <summary>Newest week first; weeks that ended before the account existed are left out.</summary>
-public record WeeklyDto(DateOnly Today, IReadOnlyList<WeekSummaryDto> Weeks);
+/// <param name="ListensCountTowardStreak">Admin switch; when off, finishing a piece doesn't make a study day.</param>
+public record WeeklyDto(DateOnly Today, bool ListensCountTowardStreak, IReadOnlyList<WeekSummaryDto> Weeks);
 
 public static class WeeklyRules
 {

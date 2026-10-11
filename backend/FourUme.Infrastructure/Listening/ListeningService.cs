@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FourUme.Infrastructure.Listening;
 
-public class ListeningService(IAppDbContext db, IActivityService activity) : IListeningService
+public class ListeningService(IAppDbContext db, IActivityService activity, IClientClock clock) : IListeningService
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
     private static readonly ListeningProgressDto NoProgress = new(0, false, 0, false);
@@ -72,6 +72,7 @@ public class ListeningService(IAppDbContext db, IActivityService activity) : ILi
             progress.CompletedAt ??= DateTimeOffset.UtcNow;
             progress.TimesCompleted++;
             progress.PositionMs = 0;
+            db.ListeningLogs.Add(new ListeningLog { UserId = userId, LocalDate = clock.Today, LessonSlug = slug, Kind = ListeningLogKind.Listen });
         }
         progress.UpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
@@ -84,11 +85,16 @@ public class ListeningService(IAppDbContext db, IActivityService activity) : ILi
     public async Task<bool> RecordDictationAsync(Guid userId, string slug, CancellationToken ct = default)
     {
         if (!await db.ListeningLessons.AnyAsync(l => l.Slug == slug && l.Published, ct)) return false;
+        db.ListeningLogs.Add(new ListeningLog { UserId = userId, LocalDate = clock.Today, LessonSlug = slug, Kind = ListeningLogKind.Dictation });
+        await db.SaveChangesAsync(ct);
         await activity.RecordAsync(userId, ActivityKind.Listening, ct);
         return true;
     }
 
-    public async Task<ListeningConfig> GetConfigAsync(CancellationToken ct = default)
+    public Task<ListeningConfig> GetConfigAsync(CancellationToken ct = default) => LoadConfigAsync(db, ct);
+
+    /// <summary>Also used by the activity service, which can't depend on this one (this one records activity).</summary>
+    internal static async Task<ListeningConfig> LoadConfigAsync(IAppDbContext db, CancellationToken ct)
     {
         var stored = await db.AppSettings.AsNoTracking()
             .Where(s => s.Key == ListeningConfig.SettingKey)

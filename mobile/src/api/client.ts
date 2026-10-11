@@ -380,7 +380,9 @@ export type WeekDay = {
   newWords: number;
   reviews: number;
   grammarItems: number;
+  /** Pieces listened to the end, counted even when listening doesn't count toward the streak. */
   listens: number;
+  dictationLines: number;
   studied: boolean;
   frozen: boolean;
 };
@@ -394,13 +396,19 @@ export type WeekSummary = {
   reviews: number;
   grammarItems: number;
   listens: number;
+  dictationLines: number;
   /** Different words read with an accuracy of 80+. */
   goodPronunciations: number;
   streakAtEnd: number;
   days: WeekDay[];
 };
 /** Newest week first. */
-export type Weekly = { today: string; weeks: WeekSummary[] };
+export type Weekly = {
+  today: string;
+  /** Admin switch: when off, finishing a piece doesn't make a study day (dictation always does). */
+  listensCountTowardStreak: boolean;
+  weeks: WeekSummary[];
+};
 
 export type PhonemeScore = { phoneme: string; score: number };
 

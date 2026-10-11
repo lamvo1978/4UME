@@ -2,8 +2,8 @@ import { WeekDay, WeekSummary } from "../api/client";
 import { parseDay } from "../utils/dates";
 
 /** Grammar items take longer than a flashcard, so they weigh more (same as the activity calendar). */
-export const dayActivity = (d: Pick<WeekDay, "newWords" | "reviews" | "grammarItems" | "listens">) =>
-  d.newWords + d.reviews + d.grammarItems * 3 + d.listens * 3;
+export const dayActivity = (d: Pick<WeekDay, "newWords" | "reviews" | "grammarItems" | "listens" | "dictationLines">) =>
+  d.newWords + d.reviews + d.grammarItems * 3 + d.listens * 3 + d.dictationLines;
 
 const weekActivity = (w: WeekSummary) => dayActivity(w);
 

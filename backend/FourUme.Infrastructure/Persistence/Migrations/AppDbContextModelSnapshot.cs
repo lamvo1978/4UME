@@ -550,6 +550,36 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.ToTable("ListeningLessons");
                 });
 
+            modelBuilder.Entity("FourUme.Domain.Entities.ListeningLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LessonSlug")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateOnly>("LocalDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "LocalDate");
+
+                    b.ToTable("ListeningLogs");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.ListeningProgress", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1041,6 +1071,17 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FourUme.Domain.Entities.User", "User")
                         .WithMany("GrammarProgresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.ListeningLog", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
