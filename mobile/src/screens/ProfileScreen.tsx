@@ -92,6 +92,15 @@ export function ProfileScreen() {
 
             <Section title="Hoạt động" />
             <ActivityCalendar today={stats.streak.today} days={stats.streak.days} totalDays={stats.totalStudyDays} />
+            <Pressable
+              style={({ pressed }) => [styles.weeklyRow, pressed && styles.pressed]}
+              onPress={() => navigation.navigate("Weekly")}
+            >
+              <Ionicons name="stats-chart" size={18} color={colors.accent} />
+              <Text style={styles.weeklyText}>Tổng kết tuần</Text>
+              <Text style={styles.weeklyHint}>Tuần này và các tuần trước</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.accent} />
+            </Pressable>
 
             <Section title="Độ nhớ" hint="Từ và bài lên cấp mỗi lần ôn đúng; lên cấp 6 là đã thuộc." />
             <MemoryCard icon="book-outline" title="Từ vựng" unit="từ" learningLabel="Đang để học sau" memory={stats.vocabulary} />
@@ -145,5 +154,17 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: "700", color: colors.ink },
   sectionHint: { marginTop: 2, fontSize: 13, color: colors.muted },
   gap: { height: spacing.sm },
+  weeklyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md,
+    borderRadius: 16,
+    backgroundColor: colors.accentSoft,
+  },
+  weeklyText: { fontSize: 15, fontWeight: "700", color: colors.accent },
+  weeklyHint: { flex: 1, fontSize: 12, color: colors.muted, textAlign: "right" },
   pressed: { opacity: 0.6 },
 });

@@ -158,6 +158,58 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
         return new StatsDto(streak, vocabulary, grammar, totalDays, memberSince);
     }
 
+    public async Task<WeeklyDto> GetWeeklyAsync(Guid userId, int weeks, CancellationToken ct = default)
+    {
+        var today = clock.Today;
+        await ApplyFreezesAsync(userId, today, ct);
+
+        var createdAt = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.CreatedAt).FirstAsync(ct);
+        var joined = DateOnly.FromDateTime(createdAt.ToOffset(clock.Offset).DateTime);
+        var current = WeeklyRules.WeekStart(today);
+        var oldest = current.AddDays(-7 * (Math.Clamp(weeks, 1, WeeklyRules.MaxWeeks) - 1));
+        if (oldest < WeeklyRules.WeekStart(joined)) oldest = WeeklyRules.WeekStart(joined);
+        var last = current.AddDays(6);
+
+        var rows = await db.StudyDays.AsNoTracking()
+            .Where(d => d.UserId == userId && d.Date >= oldest && d.Date <= last)
+            .ToDictionaryAsync(d => d.Date, ct);
+        var good = await db.PronunciationAttempts.AsNoTracking()
+            .Where(a => a.UserId == userId && a.LocalDate >= oldest && a.LocalDate <= last && a.Score >= WeeklyRules.GoodPronunciationScore)
+            .Select(a => new { a.LocalDate, a.WordId })
+            .ToListAsync(ct);
+        var dates = await LoadDatesAsync(userId, ct);
+
+        var result = new List<WeekSummaryDto>();
+        for (var start = current; start >= oldest; start = start.AddDays(-7))
+        {
+            var end = start.AddDays(6);
+            var days = Enumerable.Range(0, 7).Select(i =>
+            {
+                var date = start.AddDays(i);
+                var row = rows.GetValueOrDefault(date);
+                return new WeekDayDto(date, row?.NewWords ?? 0, row?.Reviews ?? 0, row?.GrammarItems ?? 0, row?.Listens ?? 0,
+                    row is { Frozen: false }, row?.Frozen ?? false);
+            }).ToList();
+            var goodWords = good.Where(g => g.LocalDate >= start && g.LocalDate <= end).Select(g => g.WordId).Distinct().Count();
+            var streak = end >= today ? CurrentStreak(dates, today) : RunEndingOn(dates, end);
+            result.Add(new WeekSummaryDto(start, end, end >= today, days.Count(d => d.Studied),
+                days.Sum(d => d.NewWords), days.Sum(d => d.Reviews), days.Sum(d => d.GrammarItems), days.Sum(d => d.Listens),
+                goodWords, streak, days));
+        }
+        return new WeeklyDto(today, result);
+    }
+
+    private static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)
+    {
+        var count = 0;
+        while (dates.Contains(day))
+        {
+            count++;
+            day = day.AddDays(-1);
+        }
+        return count;
+    }
+
     /// <summary>Spends freezes to cover missed days right before today, if there are enough of them.</summary>
     private async Task ApplyFreezesAsync(Guid userId, DateOnly today, CancellationToken ct)
     {
@@ -190,17 +242,8 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
         (await db.StudyDays.AsNoTracking().Where(d => d.UserId == userId).Select(d => d.Date).ToListAsync(ct)).ToHashSet();
 
     /// <summary>Consecutive days ending today, or yesterday when today has no activity yet.</summary>
-    internal static int CurrentStreak(HashSet<DateOnly> dates, DateOnly today)
-    {
-        var day = dates.Contains(today) ? today : today.AddDays(-1);
-        var count = 0;
-        while (dates.Contains(day))
-        {
-            count++;
-            day = day.AddDays(-1);
-        }
-        return count;
-    }
+    internal static int CurrentStreak(HashSet<DateOnly> dates, DateOnly today) =>
+        RunEndingOn(dates, dates.Contains(today) ? today : today.AddDays(-1));
 
     internal static int LongestRun(HashSet<DateOnly> dates)
     {

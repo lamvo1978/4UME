@@ -373,6 +373,33 @@ export type NewFeedback = {
   imageUris: string[];
 };
 
+export type WeekDay = {
+  date: string;
+  newWords: number;
+  reviews: number;
+  grammarItems: number;
+  listens: number;
+  studied: boolean;
+  frozen: boolean;
+};
+/** Monday–Sunday in the learner's local calendar. */
+export type WeekSummary = {
+  start: string;
+  end: string;
+  inProgress: boolean;
+  studyDays: number;
+  newWords: number;
+  reviews: number;
+  grammarItems: number;
+  listens: number;
+  /** Different words read with an accuracy of 80+. */
+  goodPronunciations: number;
+  streakAtEnd: number;
+  days: WeekDay[];
+};
+/** Newest week first. */
+export type Weekly = { today: string; weeks: WeekSummary[] };
+
 export type PhonemeScore = { phoneme: string; score: number };
 
 export type PronunciationResult = {
@@ -516,6 +543,7 @@ export const api = {
   me: () => request<Me>("/api/me"),
   reviewForecast: (days = 7) => request<ReviewForecastDay[]>(`/api/review/forecast?days=${days}`),
   stats: () => request<Stats>("/api/me/stats"),
+  weekly: (weeks: number) => request<Weekly>(`/api/me/weekly?weeks=${weeks}`),
   updateSettings: (changes: Partial<UserSettings> & { displayName?: string }) =>
     request<Me>("/api/me/settings", { method: "PUT", body: JSON.stringify(changes) }),
   changePassword: (currentPassword: string, newPassword: string) =>

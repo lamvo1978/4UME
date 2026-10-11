@@ -10,7 +10,7 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 ## 2. Gợi ý Premium khi hết lượt chấm
 
-- [x] Khi hết lượt chấm chi tiết: nhắc nhẹ, mở màn *Premium* (chỉ giới thiệu, chưa bán). Kèm đổi cách tính: một lượt = một từ, đọc lại cùng từ tối đa 3 lần không tốn lượt — xem [pronunciation.md](pronunciation.md).
+- [x] Khi hết lượt chấm chi tiết: nhắc nhẹ, mở màn *Premium* (chỉ giới thiệu, chưa bán). Mỗi lần chấm (kể cả đọc lại) là một lượt; hết lượt có thể tự chọn xem quảng cáo đổi thêm lượt (12/10, đang tắt chờ AdMob) — xem [pronunciation.md](pronunciation.md), [ads.md](ads.md).
 - Không hướng dẫn thanh toán ngoài app (Apple cấm khi chưa có In‑App Purchase).
 
 ## 3. Chuẩn bị hồ sơ store
@@ -39,7 +39,7 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
 
 1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
 2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
-3. [ ] **Tổng kết tuần**: "Tuần này bạn học 42 từ, đọc chuẩn 18 từ, chuỗi 12 ngày". Trước khi có thông báo đẩy thật thì hiện thẻ trên Trang chủ vào đầu tuần; có bản build EAS thì gửi thêm thông báo (tôn trọng giờ nhắc / tắt nhắc trong Cài đặt).
+3. [x] **Tổng kết tuần** (12/10) — thẻ Trang chủ thứ Hai, màn chi tiết, xem lại từ Hồ sơ; xem [weekly.md](weekly.md). Còn lại: thông báo đẩy khi có bản build EAS.
 4. [ ] **Giới thiệu bạn bè**: mỗi người có mã / link mời; bạn mới đăng ký và học đủ vài ngày thì cả hai được tặng ngày Premium (cộng vào `PremiumUntil` như admin gia hạn). Chống lạm dụng: chỉ tính tài khoản đã xác minh email, giới hạn số lần tặng.
 5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
 6. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
