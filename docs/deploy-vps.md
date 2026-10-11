@@ -157,9 +157,11 @@ Trang hỗ trợ, quyền riêng tư, xoá tài khoản (nguồn trong `site/`, 
 2. Trên VPS, sau khi `git pull` và `docker compose up -d` bản mới, chép lại cấu hình nginx và nạp lại:
 
 ```bash
-cp /opt/4ume/deploy/vps/4ume.conf /opt/pethubpro/edge/nginx/4ume.conf
+sudo cp /opt/4ume/deploy/vps/4ume.conf /opt/pethubpro/edge/nginx/4ume.conf
 docker exec pethubpro-edge-nginx nginx -t && docker exec pethubpro-edge-nginx nginx -s reload
 ```
+
+Chạy từ máy Mac qua một lệnh `ssh` thì thêm `-t` để `sudo` hỏi được mật khẩu: `ssh -t pethubpro-vps 'sudo cp … && docker exec …'`.
 
 Chứng chỉ hiện có đã gồm `4ume.io.vn` và `*.4ume.io.vn` nên không cần xin thêm. Sửa nội dung trang: sửa file trong `site/`, push `main`, deploy như thường. Nội dung từng trang và khi nào phải sửa: [site.md](site.md).
 
