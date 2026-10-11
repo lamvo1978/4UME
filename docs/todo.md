@@ -5,8 +5,8 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 ## 1. Trang web bắt buộc để lên store
 
 - [x] **Chính sách quyền riêng tư** `https://4ume.io.vn/privacy/`, **xoá tài khoản trên web** `https://4ume.io.vn/delete-account/`, **trang hỗ trợ** `https://4ume.io.vn/` (nguồn `site/`).
-- [ ] Bật lên VPS: thêm DNS `@` và `www`, chép `4ume.conf` — xem [deploy-vps.md](deploy-vps.md#trang-web-4umeiovn).
-- Chi tiết: [app-store.md](app-store.md).
+- [x] Bật lên VPS (11/10): DNS `@` và `www`, `4ume.conf` — xem [deploy-vps.md](deploy-vps.md#trang-web-4umeiovn).
+- Chi tiết: [app-store.md](app-store.md); nội dung trang và khi nào phải sửa: [site.md](site.md).
 
 ## 2. Gợi ý Premium khi hết lượt chấm
 
