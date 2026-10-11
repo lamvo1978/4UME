@@ -21,6 +21,7 @@ using FourUme.Infrastructure;
 using FourUme.Infrastructure.Auth;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Media;
+using FourUme.Infrastructure.Pronunciation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
@@ -391,6 +392,42 @@ app.MapPost("/api/pronunciation/assess", async (HttpRequest request, ClaimsPrinc
         return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
     }
 }).RequireAuthorization();
+
+// AdMob server-side verification callback (set as the rewarded ad unit's SSV URL). The app passes
+// user_id = the learner's id and custom_data = their local date (yyyy-MM-dd) when it loads the ad.
+app.MapGet("/api/ads/admob-reward", async (HttpRequest request, AdMobRewardVerifier verifier, IPronunciationService pronunciation,
+    ILogger<Program> logger, CancellationToken ct) =>
+{
+    var raw = request.QueryString.Value?.TrimStart('?') ?? "";
+    if (!await verifier.VerifyAsync(raw, ct)) return Results.StatusCode(StatusCodes.Status403Forbidden);
+
+    // The console's "Verify URL" test sends a signed callback without a user.
+    if (!Guid.TryParse(request.Query["user_id"], out var userId)) return Results.Ok();
+    var transactionId = request.Query["transaction_id"].ToString();
+    if (string.IsNullOrEmpty(transactionId) || transactionId.Length > 128) return Results.Ok();
+
+    var utcToday = DateOnly.FromDateTime(DateTime.UtcNow);
+    var localDate = DateOnly.TryParseExact(request.Query["custom_data"].ToString(), "yyyy-MM-dd", out var d)
+        && d >= utcToday.AddDays(-1) && d <= utcToday.AddDays(1)
+            ? d
+            : DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7));
+    var outcome = await pronunciation.GrantAdRewardAsync(userId, localDate, transactionId, "admob", ct);
+    logger.LogInformation("AdMob reward {Outcome} for {UserId}", outcome, userId);
+    // Always 200 once the signature is valid, so AdMob does not keep retrying a reward we chose not to count.
+    return Results.Ok();
+});
+
+if (app.Environment.IsDevelopment())
+{
+    // Stands in for a watched ad while the app runs in Expo Go, which has no ad SDK.
+    app.MapPost("/api/ads/dev-reward", async (ClaimsPrincipal principal, IClientClock clock, IPronunciationService pronunciation, CancellationToken ct) =>
+    {
+        var userId = GetUserId(principal);
+        if (userId is null) return Results.Unauthorized();
+        await pronunciation.GrantAdRewardAsync(userId.Value, clock.Today, $"dev-{Guid.NewGuid():N}", "dev", ct);
+        return Results.Ok(await pronunciation.GetStatusAsync(userId.Value, ct));
+    }).RequireAuthorization();
+}
 
 var feedback = app.MapGroup("/api/feedback").RequireAuthorization().AddEndpointFilter(async (ctx, next) =>
 {

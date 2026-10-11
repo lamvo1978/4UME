@@ -69,6 +69,8 @@ public static class DependencyInjection
         services.AddSingleton<ListeningAudioJobs>();
         services.AddSingleton<AzurePronunciationClient>();
         services.AddScoped<IPronunciationService, PronunciationService>();
+        services.AddHttpClient(AdMobRewardVerifier.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(10));
+        services.AddSingleton<AdMobRewardVerifier>();
         services.AddScoped<IAboutService, AboutService>();
         services.AddScoped<IPremiumPerksService, PremiumPerksService>();
         services.AddScoped<IFeedbackSettingsService, FeedbackSettingsService>();

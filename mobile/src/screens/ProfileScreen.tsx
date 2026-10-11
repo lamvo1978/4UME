@@ -10,6 +10,8 @@ import { NameSheet } from "../components/profile/AccountSheets";
 import { ActivityCalendar } from "../components/profile/ActivityCalendar";
 import { MemoryCard } from "../components/profile/MemoryCard";
 import { PlanRow } from "../components/profile/PlanRow";
+import { AdRewardsRow } from "../components/profile/AdRewardsRow";
+import { adsOffered } from "../ads/rewarded";
 import { StreakCard } from "../components/profile/StreakCard";
 import { Screen } from "../components/Screen";
 import { RootStackParamList } from "../navigation/types";
@@ -82,6 +84,7 @@ export function ProfileScreen() {
         </View>
 
         {plan && (plan.enabled || plan.premium) ? <PlanRow status={plan} onPress={() => navigation.navigate("Premium")} /> : null}
+        {adsOffered(plan) ? <AdRewardsRow status={plan} onPress={() => navigation.navigate("AdRewards")} /> : null}
 
         {stats ? (
           <>

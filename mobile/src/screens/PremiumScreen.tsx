@@ -2,6 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { adsOffered } from "../ads/rewarded";
 import { api, PremiumPerk, PronunciationStatus } from "../api/client";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
@@ -152,7 +153,8 @@ export function PremiumScreen() {
         />
       </View>
       <Text style={styles.planNote}>
-        Mỗi lượt là một từ. Đọc lại từ đó (tối đa {status.attemptsPerWord} lần) không tốn thêm lượt.
+        Mỗi lần chấm là một lượt, kể cả khi đọc lại cùng một từ.
+        {adsOffered(status) ? " Bạn cũng có thể tự chọn xem quảng cáo để có thêm lượt trong ngày (mỗi quảng cáo 1 lượt)." : ""}
       </Text>
 
       <Text style={[styles.sectionTitle, styles.sectionGap]}>Luôn miễn phí cho mọi người</Text>

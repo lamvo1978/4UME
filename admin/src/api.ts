@@ -129,8 +129,9 @@ export type PronunciationConfig = {
   enabled: boolean;
   freeDailyLimit: number;
   premiumDailyLimit: number;
-  attemptsPerWord: number;
   monthlyMinutesCap: number;
+  adRewardsEnabled: boolean;
+  adRewardsPerDay: number;
 };
 export type AdminSettings = {
   notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
@@ -140,7 +141,7 @@ export type AdminSettings = {
     defaults: PronunciationConfig;
     updatedAt: string | null;
     /** Azure checks this calendar month (UTC). */
-    usage: { attempts: number; users: number; minutes: number };
+    usage: { attempts: number; users: number; minutes: number; adRewards: number };
     azureConfigured: boolean;
   };
 };

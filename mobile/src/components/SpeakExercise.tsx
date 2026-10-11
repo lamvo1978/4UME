@@ -13,6 +13,7 @@ import {
 } from "expo-audio";
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { adsOffered, watchRewardedAd } from "../ads/rewarded";
 import { api, ApiError, PhonemeScore, PronunciationResult, PronunciationStatus, Word } from "../api/client";
 import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
@@ -58,6 +59,10 @@ export function verdict(score: number) {
 const offerPremium = (status: PronunciationStatus | null): status is PronunciationStatus =>
   !!status && !status.premium && status.serviceAvailable && status.premiumDailyLimit > status.dailyLimit;
 
+/** Never pushed: the learner only sees a button once their checks run out, and chooses to tap it. */
+const offerAd = (status: PronunciationStatus | null): status is PronunciationStatus =>
+  adsOffered(status) && status.adsLeftToday > 0;
+
 export function SpeakExercise({
   word,
   status,
@@ -79,9 +84,9 @@ export function SpeakExercise({
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const recording = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  /** Null until this word has been checked once; retries then draw on the word's own allowance, not the daily words. */
-  const [retriesLeft, setRetriesLeft] = useState<number | null>(null);
-  const detailed = !!status && status.serviceAvailable && (retriesLeft === null ? status.remaining > 0 : retriesLeft > 0);
+  const [watchingAd, setWatchingAd] = useState(false);
+  const [adError, setAdError] = useState("");
+  const detailed = !!status && status.serviceAvailable && status.remaining > 0;
 
   useEffect(
     () => () => {
@@ -156,15 +161,9 @@ export function SpeakExercise({
     try {
       const r = await api.assessPronunciation(word.id, uri);
       setResult(r);
-      setRetriesLeft(r.wordAttemptsLeft);
       onStatus(r.status);
       setPhase("scored");
     } catch (e) {
-      if (e instanceof ApiError && e.status === 429 && retriesLeft !== null) {
-        setRetriesLeft(0);
-        setPhase("compare");
-        return;
-      }
       if (e instanceof ApiError && (e.status === 429 || e.status === 503) && status) {
         // Out of detailed checks (or the service is paused): fall back to comparing by ear.
         onStatus({ ...status, remaining: 0, serviceAvailable: e.status === 429 && status.serviceAvailable });
@@ -191,12 +190,28 @@ export function SpeakExercise({
   function retry() {
     setResult(null);
     setRecordingUri(null);
+    setAdError("");
     setPhase("idle");
+  }
+
+  /** The recording the learner just made is scored with the check the ad earned, so they needn't read again. */
+  async function watchAd() {
+    setWatchingAd(true);
+    setAdError("");
+    try {
+      const next = await watchRewardedAd();
+      onStatus(next);
+      if (recordingUri && next.serviceAvailable && next.remaining > 0) await check(recordingUri);
+    } catch {
+      setAdError("Chưa tải được quảng cáo, bạn thử lại sau nhé.");
+    } finally {
+      setWatchingAd(false);
+    }
   }
 
   return (
     <View style={styles.root}>
-      <QuotaPill status={status} retriesLeft={retriesLeft} />
+      <QuotaPill status={status} />
 
       {phase === "idle" || phase === "recording" ? (
         <View style={styles.micArea}>
@@ -225,8 +240,8 @@ export function SpeakExercise({
       ) : null}
 
       {phase === "scored" && result ? <ScoreCard word={word.word} result={result} onMine={playMine} onSample={playSample} /> : null}
-      {phase === "scored" && offerPremium(status) && status.remaining === 0 ? (
-        <LastFreeNote status={status} retriesLeft={retriesLeft ?? 0} />
+      {phase === "scored" && (offerPremium(status) || offerAd(status)) && status.remaining === 0 ? (
+        <LastFreeNote status={status} />
       ) : null}
 
       {phase === "compare" ? (
@@ -236,7 +251,7 @@ export function SpeakExercise({
             <Text style={styles.compareText}>Nghe giọng bạn rồi nghe giọng mẫu, xem đã giống chưa.</Text>
             <ListenRow onMine={playMine} onSample={playSample} />
           </View>
-          <LockedDetail status={status} wordDone={retriesLeft === 0} />
+          <LockedDetail status={status} onWatchAd={watchAd} watchingAd={watchingAd} adError={adError} />
         </>
       ) : null}
 
@@ -250,9 +265,7 @@ export function SpeakExercise({
         <View style={styles.actions}>
           <Pressable style={({ pressed }) => [styles.secondaryBtn, pressed && styles.pressed]} onPress={retry}>
             <Ionicons name="refresh" size={18} color={colors.accent} />
-            <Text style={styles.secondaryBtnText}>
-              {phase === "scored" && retriesLeft ? `Đọc lại (còn ${retriesLeft})` : "Đọc lại"}
-            </Text>
+            <Text style={styles.secondaryBtnText}>Đọc lại</Text>
           </Pressable>
           <Pressable style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]} onPress={onNext}>
             <Text style={styles.primaryBtnText}>Tiếp tục</Text>
@@ -263,16 +276,10 @@ export function SpeakExercise({
   );
 }
 
-function QuotaPill({ status, retriesLeft }: { status: PronunciationStatus | null; retriesLeft: number | null }) {
+function QuotaPill({ status }: { status: PronunciationStatus | null }) {
   if (!status) return null;
-  const retrying = status.serviceAvailable && status.remaining === 0 && !!retriesLeft;
-  const wordDone = status.serviceAvailable && retriesLeft === 0;
-  const detailed = (status.remaining > 0 || retrying) && !wordDone;
-  const text = wordDone
-    ? `Đã chấm đủ ${status.attemptsPerWord} lần cho từ này hôm nay`
-    : retrying
-    ? `Đọc lại từ này: còn ${retriesLeft} lần chấm chi tiết`
-    : detailed
+  const detailed = status.serviceAvailable && status.remaining > 0;
+  const text = detailed
     ? `${status.premium ? "Premium · c" : "C"}hấm chi tiết: còn ${status.remaining}/${status.dailyLimit} lượt hôm nay`
     : !status.serviceAvailable
       ? "Chấm chi tiết đang tạm dừng · tự so sánh giọng"
@@ -369,16 +376,23 @@ function ListenButton({
 }
 
 /** What the detailed check would have shown, greyed out, so the free tier sees what it's missing. */
-function LockedDetail({ status, wordDone }: { status: PronunciationStatus | null; wordDone: boolean }) {
+function LockedDetail({
+  status,
+  onWatchAd,
+  watchingAd,
+  adError,
+}: {
+  status: PronunciationStatus | null;
+  onWatchAd: () => void;
+  watchingAd: boolean;
+  adError: string;
+}) {
   if (!status) return null;
-  const otherWords = wordDone && status.remaining > 0;
   const text = !status.serviceAvailable
     ? "Chấm chi tiết đang tạm dừng, bạn quay lại sau nhé."
-    : otherWords
-    ? `Bạn đã chấm từ này ${status.attemptsPerWord} lần hôm nay. Sang từ khác để chấm tiếp nhé.`
     : status.premium
       ? `Bạn đã dùng hết ${status.dailyLimit} lượt chấm chi tiết hôm nay. Lượt mới có vào ngày mai.`
-      : `Bạn đã dùng hết ${status.dailyLimit} lượt miễn phí hôm nay. Lượt mới có vào ngày mai, hoặc dùng Premium để chấm ${status.premiumDailyLimit} lượt mỗi ngày.`;
+      : `Bạn đã dùng hết ${status.dailyLimit} lượt hôm nay. Lượt mới có vào ngày mai, hoặc dùng Premium để chấm ${status.premiumDailyLimit} lượt mỗi ngày.`;
   return (
     <View style={styles.locked}>
       <View style={styles.lockedHead}>
@@ -398,20 +412,41 @@ function LockedDetail({ status, wordDone }: { status: PronunciationStatus | null
         </View>
       </View>
       <Text style={styles.lockedText}>Điểm 0–100, âm nào đọc sai được tô đỏ kèm gợi ý sửa. {text}</Text>
-      {offerPremium(status) && !otherWords ? <PremiumLink /> : null}
+      {offerAd(status) ? (
+        <View style={styles.adBox}>
+          <Pressable
+            disabled={watchingAd}
+            onPress={onWatchAd}
+            style={({ pressed }) => [styles.adBtn, (pressed || watchingAd) && styles.pressed]}
+          >
+            {watchingAd ? (
+              <ActivityIndicator color={colors.accent} size="small" />
+            ) : (
+              <Ionicons name="play-circle" size={18} color={colors.accent} />
+            )}
+            <Text style={styles.adBtnText}>Xem quảng cáo để chấm bản ghi này</Text>
+          </Pressable>
+          <Text style={styles.adNote}>
+            Không bắt buộc. Mỗi quảng cáo xem hết được 1 lượt chấm, còn {status.adsLeftToday} lần hôm nay.
+          </Text>
+          {adError ? <Text style={styles.adError}>{adError}</Text> : null}
+        </View>
+      ) : null}
+      {offerPremium(status) ? <PremiumLink /> : null}
     </View>
   );
 }
 
-function LastFreeNote({ status, retriesLeft }: { status: PronunciationStatus; retriesLeft: number }) {
+function LastFreeNote({ status }: { status: PronunciationStatus }) {
+  const ad = offerAd(status);
   return (
     <View style={styles.lastFree}>
       <Text style={styles.lastFreeText}>
-        Đây là lượt chấm chi tiết miễn phí cuối cùng hôm nay
-        {retriesLeft > 0 ? `, bạn vẫn đọc lại từ này được ${retriesLeft} lần` : ""}. Từ tiếp theo bạn tự so sánh giọng,
-        ngày mai lại có {status.dailyLimit} lượt mới. Premium có {status.premiumDailyLimit} lượt mỗi ngày.
+        Đây là lượt chấm chi tiết cuối cùng hôm nay. Từ tiếp theo bạn tự so sánh giọng
+        {ad ? ", hoặc tự chọn xem một quảng cáo để chấm thêm 1 lượt" : ""}. Ngày mai lại có {status.freeDailyLimit} lượt
+        mới{offerPremium(status) ? `, Premium có ${status.premiumDailyLimit} lượt mỗi ngày` : ""}.
       </Text>
-      <PremiumLink />
+      {offerPremium(status) ? <PremiumLink /> : null}
     </View>
   );
 }
@@ -523,6 +558,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accentSoft,
   },
   premiumLinkText: { fontSize: 13, fontWeight: "700", color: colors.accent },
+  adBox: { gap: 6 },
+  adBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
+  adBtnText: { fontSize: 14, fontWeight: "700", color: colors.accent },
+  adNote: { fontSize: 12, lineHeight: 17, color: colors.muted, textAlign: "center" },
+  adError: { fontSize: 13, color: colors.danger, textAlign: "center" },
   errorCard: { backgroundColor: colors.dangerSoft, borderRadius: 16, padding: spacing.md },
   errorText: { color: colors.danger, fontSize: 15, fontWeight: "600" },
   actions: { flexDirection: "row", gap: 10 },
