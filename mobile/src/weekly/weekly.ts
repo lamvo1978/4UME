@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeekDay, WeekSummary } from "../api/client";
 import { parseDay } from "../utils/dates";
 
@@ -25,25 +24,4 @@ export function comparison(week: WeekSummary, previous: WeekSummary | undefined)
   if (pct >= 10) return `Chăm hơn tuần trước đó ${pct}%`;
   if (pct > -10) return "Đều đặn như tuần trước đó";
   return week.inProgress ? null : "Tuần này bận hơn một chút, mỗi ngày vài phút là đủ giữ nhịp";
-}
-
-/** The non-zero numbers, in the order they read best: "42 từ mới · 120 lượt ôn · đọc chuẩn 18 từ". */
-export function highlights(w: WeekSummary): string[] {
-  const parts: string[] = [];
-  if (w.newWords) parts.push(`${w.newWords} từ mới`);
-  if (w.reviews) parts.push(`${w.reviews} lượt ôn`);
-  if (w.grammarItems) parts.push(`${w.grammarItems} lượt ngữ pháp`);
-  if (w.listens) parts.push(`${w.listens} bài nghe`);
-  if (w.goodPronunciations) parts.push(`đọc chuẩn ${w.goodPronunciations} từ`);
-  return parts;
-}
-
-const dismissKey = (userId: string) => `4ume.weeklyDismissed.${userId}`;
-
-export async function isDismissed(userId: string, weekStart: string) {
-  return (await AsyncStorage.getItem(dismissKey(userId))) === weekStart;
-}
-
-export function dismiss(userId: string, weekStart: string) {
-  return AsyncStorage.setItem(dismissKey(userId), weekStart);
 }

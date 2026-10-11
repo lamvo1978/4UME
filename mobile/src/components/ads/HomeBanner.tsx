@@ -6,7 +6,7 @@ import { colors, spacing } from "../../theme";
  * ships with the EAS build this is a dev-only placeholder; swap the box for the anchored adaptive banner then.
  */
 export function HomeBanner({ premium }: { premium: boolean | undefined }) {
-  if (premium !== false || !__DEV__) return null;
+  if (premium || !__DEV__) return null;
   return (
     <View style={styles.wrap}>
       <Text style={styles.label}>Quảng cáo</Text>

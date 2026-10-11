@@ -5,8 +5,7 @@ Nhìn lại một tuần học (thứ Hai – Chủ nhật, theo giờ máy ngư
 ## Người học thấy gì
 
 - **Thẻ tổng kết trên Trang chủ**, chỉ vào **thứ Hai** (cả ngày), nằm trên thẻ *Mục tiêu hôm nay*, gọn một hàng cùng kiểu thẻ mục tiêu:
-  - "Tuần qua: học 5/7 ngày" kèm khoảng ngày, dòng dưới là các con số khác 0 ("42 từ mới · 120 lượt ôn · đọc chuẩn 18 từ"); bấm vào mở màn chi tiết.
-  - Nút **×** để đóng; đóng rồi thì tuần đó không hiện lại (lưu trên máy, theo từng tài khoản).
+  - "Tuần qua: học 5/7 ngày", dòng dưới "Tổng kết 5/10 – 11/10", mũi tên bên phải; bấm vào mở màn chi tiết. Không có nút đóng (thẻ tự hết vào thứ Ba).
   - **Không hiện** khi tuần trước không học ngày nào (không gây áp lực), hoặc khi người học tắt **Tổng kết tuần** trong Cài đặt.
 - **Hồ sơ → Tổng kết tuần** (dưới lịch *5 tuần gần đây*): xem bất kỳ lúc nào.
 - **Màn chi tiết** (`WeeklyScreen`): mũi tên chuyển tuần (tuần này và tối đa 8 tuần trước, không lùi quá tuần tạo tài khoản), số ngày đã học, biểu đồ cột 7 ngày (ngày giữ chuỗi bằng đóng băng hiện bông tuyết, ngày chưa tới viền nét đứt), 6 ô số liệu.

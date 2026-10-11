@@ -6,9 +6,7 @@ import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, Me, ReviewSummary, WeekSummary } from "../api/client";
 import { WeeklyCard } from "../components/weekly/WeeklyCard";
-import { HomeBanner } from "../components/ads/HomeBanner";
-import { dismiss, isDismissed } from "../weekly/weekly";
-import { useAuth } from "../auth/AuthContext";
+import { HomeBanner } from "../components/ads/HomeBanner";import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -31,7 +29,7 @@ export function HomeScreen() {
   const grammarTotal = me?.grammarLessonsTotal ?? 0;
   const [review, setReview] = useState<ReviewSummary | null>(null);
   const [unread, setUnread] = useState(0);
-  const [weekly, setWeekly] = useState<{ week: WeekSummary; previous?: WeekSummary } | null>(null);
+  const [lastWeek, setLastWeek] = useState<WeekSummary | null>(null);
   const userId = user?.userId;
   const notifyWeekly = me?.settings.notifyWeekly ?? false;
 
@@ -39,15 +37,14 @@ export function HomeScreen() {
     useCallback(() => {
       // Mondays only, for people who keep "Tổng kết tuần" on, after a week with at least one study day.
       if (!userId || !notifyWeekly || new Date().getDay() !== 1) {
-        setWeekly(null);
+        setLastWeek(null);
         return;
       }
       let live = true;
       api
-        .weekly(3)
-        .then(async ({ weeks: [, last, before] }) => {
-          const show = !!last && last.studyDays > 0 && !(await isDismissed(userId, last.start));
-          if (live) setWeekly(show ? { week: last, previous: before } : null);
+        .weekly(2)
+        .then(({ weeks: [, last] }) => {
+          if (live) setLastWeek(last && last.studyDays > 0 ? last : null);
         })
         .catch(() => undefined);
       return () => {
@@ -55,12 +52,6 @@ export function HomeScreen() {
       };
     }, [userId, notifyWeekly])
   );
-
-  function closeWeekly() {
-    if (!weekly || !userId) return;
-    void dismiss(userId, weekly.week.start);
-    setWeekly(null);
-  }
 
   useFocusEffect(
     useCallback(() => {
@@ -136,12 +127,8 @@ export function HomeScreen() {
           </Pressable>
         ) : null}
 
-        {weekly ? (
-          <WeeklyCard
-            week={weekly.week}
-            onPress={() => navigation.navigate("Weekly", { start: weekly.week.start })}
-            onClose={closeWeekly}
-          />
+        {lastWeek ? (
+          <WeeklyCard week={lastWeek} onPress={() => navigation.navigate("Weekly", { start: lastWeek.start })} />
         ) : null}
 
         {me ? <GoalCard me={me} onPress={() => navigation.navigate("Study", { tab: "vocab" })} /> : null}
