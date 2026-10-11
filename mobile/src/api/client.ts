@@ -314,6 +314,8 @@ export type PronunciationStatus = {
   serviceAvailable: boolean;
   premiumDailyLimit: number;
   freeDailyLimit: number;
+  /** Retrying a word already checked today doesn't use another of the daily words, up to this many checks. */
+  attemptsPerWord: number;
 };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -361,6 +363,7 @@ export type PronunciationResult = {
   heard: string;
   words: { word: string; score: number; errorType: string; phonemes: PhonemeScore[] }[];
   status: PronunciationStatus;
+  wordAttemptsLeft: number;
 };
 
 /** Thrown by `assessPronunciation`; 429 means today's detailed checks are used up. */

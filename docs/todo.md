@@ -10,7 +10,7 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 ## 2. Gợi ý Premium khi hết lượt chấm
 
-- [ ] Khi hết lượt chấm chi tiết: nhắc nhẹ, mở màn *Premium* (chỉ giới thiệu, chưa bán).
+- [x] Khi hết lượt chấm chi tiết: nhắc nhẹ, mở màn *Premium* (chỉ giới thiệu, chưa bán). Kèm đổi cách tính: một lượt = một từ, đọc lại cùng từ tối đa 3 lần không tốn lượt — xem [pronunciation.md](pronunciation.md).
 - Không hướng dẫn thanh toán ngoài app (Apple cấm khi chưa có In‑App Purchase).
 
 ## 3. Chuẩn bị hồ sơ store

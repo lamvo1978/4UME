@@ -7,8 +7,10 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - Mỗi phiên ôn có tối đa **2 câu đọc to**, đặt ở nửa sau phiên và ngay sau câu cuối của từ đó (người học vừa ôn xong nghĩa và cách viết).
 - Bấm micro → ghi tối đa 4 giây (bấm lần nữa để dừng sớm) → gửi lên máy chủ chấm.
 - **Còn lượt chấm chi tiết**: điểm 0–100, điểm từng âm (xanh ≥ 80, cam ≥ 60, đỏ < 60), gợi ý âm sai nhiều nhất, nút nghe lại *Giọng bạn* / *Giọng mẫu*.
-- **Hết lượt** (hoặc admin tắt, hoặc hết hạn mức tháng): chế độ **Tự so sánh**. Người học nghe lại giọng mình và giọng mẫu; bên dưới là khung *Chấm chi tiết từng âm* bị khoá, giải thích Premium được bao nhiêu lượt.
-- Dòng trạng thái phía trên micro luôn cho biết: `Chấm chi tiết: còn x/y lượt hôm nay`, `Premium · …` hoặc `Hết lượt … · tự so sánh giọng`.
+- **Đọc lại** cùng từ được chấm chi tiết tiếp, không tốn thêm lượt, tối đa 3 lần chấm cho một từ mỗi ngày (nút ghi `Đọc lại (còn n)`). Quá số lần đó thì từ này chuyển sang tự so sánh, từ khác vẫn chấm bình thường.
+- **Hết lượt** (hoặc admin tắt, hoặc hết hạn mức tháng): chế độ **Tự so sánh**. Người học nghe lại giọng mình và giọng mẫu; bên dưới là khung *Chấm chi tiết từng âm* bị khoá, giải thích Premium được bao nhiêu lượt, kèm nút **Xem Premium** (chỉ tài khoản miễn phí, khi dịch vụ chấm đang chạy).
+- Ngay sau khi chấm **từ miễn phí cuối cùng** trong ngày: dưới kết quả có khung nhắc nhẹ (còn đọc lại được từ này, từ sau sẽ tự so sánh, Premium có bao nhiêu lượt) và nút **Xem Premium**.
+- Dòng trạng thái phía trên micro luôn cho biết: `Chấm chi tiết: còn x/y lượt hôm nay`, `Premium · …`, `Đọc lại từ này: còn n lần chấm chi tiết`, `Đã chấm đủ n lần cho từ này hôm nay` hoặc `Hết lượt … · tự so sánh giọng`.
 - **Không tiện nói lúc này**: bỏ mọi câu đọc to còn lại của phiên.
 - Câu đọc to **không** tính đúng/sai và không ảnh hưởng lịch ôn.
 
@@ -16,8 +18,11 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 
 | | Miễn phí | Premium |
 |---|---|---|
-| Chấm chi tiết (Azure) | 3 lượt / ngày | 50 lượt / ngày |
+| Chấm chi tiết (Azure) | 3 từ / ngày | 50 từ / ngày |
+| Đọc lại cùng từ | Tối đa 3 lần chấm / từ / ngày | Như miễn phí |
 | Hết lượt | Tự so sánh giọng | Tự so sánh giọng |
+
+- **Một lượt = một từ khác nhau trong ngày** (đếm `WordId` khác nhau trong `PronunciationAttempts` của ngày đó). Lần chấm đầu của một từ mới cần còn lượt; các lần sau của cùng từ chỉ cần chưa quá *Số lần chấm mỗi từ*. Mỗi lần chấm vẫn ghi một dòng (tính phút Azure và hạn mức tháng).
 
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học.
 - Premium do admin bật tay: *Người dùng → chi tiết → thẻ Premium → Bật / Gia hạn (1, 3, 6 tháng, 1 năm) / Tắt*. Gia hạn cộng thêm vào hạn đang có. Chưa có thanh toán trong app.
@@ -27,9 +32,9 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 ## Cài đặt (web admin → Cài đặt → Kiểm tra giọng đọc)
 
 - Bật/tắt câu đọc to trong bài ôn.
-- Số lượt miễn phí / Premium mỗi ngày.
+- Số từ được chấm mỗi ngày (miễn phí / Premium) và **Số lần chấm mỗi từ** (mặc định 3, từ 1 đến 20).
 - **Giới hạn phút mỗi tháng** (mặc định 300 phút, khớp hạn mức gói Azure F0 cho nhận dạng giọng nói). Chạm giới hạn thì mọi người chuyển sang tự so sánh tới đầu tháng sau (UTC).
-- Hiện số lượt, số người, số phút đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
+- Hiện số lần chấm, số người, số phút đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
 
 ## Kỹ thuật
 

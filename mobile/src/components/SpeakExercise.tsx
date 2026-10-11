@@ -1,4 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   AudioQuality,
   IOSOutputFormat,
@@ -12,6 +14,7 @@ import {
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, ApiError, PhonemeScore, PronunciationResult, PronunciationStatus, Word } from "../api/client";
+import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
 import { speak, stopSpeaking } from "./SpeakButton";
 
@@ -51,6 +54,10 @@ export function verdict(score: number) {
   return "Cần luyện thêm";
 }
 
+/** Only free learners while the scorer is up: when it's paused, Premium wouldn't help either. */
+const offerPremium = (status: PronunciationStatus | null): status is PronunciationStatus =>
+  !!status && !status.premium && status.serviceAvailable && status.premiumDailyLimit > status.dailyLimit;
+
 export function SpeakExercise({
   word,
   status,
@@ -72,7 +79,9 @@ export function SpeakExercise({
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const recording = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const detailed = !!status && status.remaining > 0;
+  /** Null until this word has been checked once; retries then draw on the word's own allowance, not the daily words. */
+  const [retriesLeft, setRetriesLeft] = useState<number | null>(null);
+  const detailed = !!status && status.serviceAvailable && (retriesLeft === null ? status.remaining > 0 : retriesLeft > 0);
 
   useEffect(
     () => () => {
@@ -147,9 +156,15 @@ export function SpeakExercise({
     try {
       const r = await api.assessPronunciation(word.id, uri);
       setResult(r);
+      setRetriesLeft(r.wordAttemptsLeft);
       onStatus(r.status);
       setPhase("scored");
     } catch (e) {
+      if (e instanceof ApiError && e.status === 429 && retriesLeft !== null) {
+        setRetriesLeft(0);
+        setPhase("compare");
+        return;
+      }
       if (e instanceof ApiError && (e.status === 429 || e.status === 503) && status) {
         // Out of detailed checks (or the service is paused): fall back to comparing by ear.
         onStatus({ ...status, remaining: 0, serviceAvailable: e.status === 429 && status.serviceAvailable });
@@ -181,7 +196,7 @@ export function SpeakExercise({
 
   return (
     <View style={styles.root}>
-      <QuotaPill status={status} />
+      <QuotaPill status={status} retriesLeft={retriesLeft} />
 
       {phase === "idle" || phase === "recording" ? (
         <View style={styles.micArea}>
@@ -210,6 +225,9 @@ export function SpeakExercise({
       ) : null}
 
       {phase === "scored" && result ? <ScoreCard word={word.word} result={result} onMine={playMine} onSample={playSample} /> : null}
+      {phase === "scored" && offerPremium(status) && status.remaining === 0 ? (
+        <LastFreeNote status={status} retriesLeft={retriesLeft ?? 0} />
+      ) : null}
 
       {phase === "compare" ? (
         <>
@@ -218,7 +236,7 @@ export function SpeakExercise({
             <Text style={styles.compareText}>Nghe giọng bạn rồi nghe giọng mẫu, xem đã giống chưa.</Text>
             <ListenRow onMine={playMine} onSample={playSample} />
           </View>
-          <LockedDetail status={status} />
+          <LockedDetail status={status} wordDone={retriesLeft === 0} />
         </>
       ) : null}
 
@@ -232,7 +250,9 @@ export function SpeakExercise({
         <View style={styles.actions}>
           <Pressable style={({ pressed }) => [styles.secondaryBtn, pressed && styles.pressed]} onPress={retry}>
             <Ionicons name="refresh" size={18} color={colors.accent} />
-            <Text style={styles.secondaryBtnText}>Đọc lại</Text>
+            <Text style={styles.secondaryBtnText}>
+              {phase === "scored" && retriesLeft ? `Đọc lại (còn ${retriesLeft})` : "Đọc lại"}
+            </Text>
           </Pressable>
           <Pressable style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]} onPress={onNext}>
             <Text style={styles.primaryBtnText}>Tiếp tục</Text>
@@ -243,10 +263,16 @@ export function SpeakExercise({
   );
 }
 
-function QuotaPill({ status }: { status: PronunciationStatus | null }) {
+function QuotaPill({ status, retriesLeft }: { status: PronunciationStatus | null; retriesLeft: number | null }) {
   if (!status) return null;
-  const detailed = status.remaining > 0;
-  const text = detailed
+  const retrying = status.serviceAvailable && status.remaining === 0 && !!retriesLeft;
+  const wordDone = status.serviceAvailable && retriesLeft === 0;
+  const detailed = (status.remaining > 0 || retrying) && !wordDone;
+  const text = wordDone
+    ? `Đã chấm đủ ${status.attemptsPerWord} lần cho từ này hôm nay`
+    : retrying
+    ? `Đọc lại từ này: còn ${retriesLeft} lần chấm chi tiết`
+    : detailed
     ? `${status.premium ? "Premium · c" : "C"}hấm chi tiết: còn ${status.remaining}/${status.dailyLimit} lượt hôm nay`
     : !status.serviceAvailable
       ? "Chấm chi tiết đang tạm dừng · tự so sánh giọng"
@@ -343,10 +369,13 @@ function ListenButton({
 }
 
 /** What the detailed check would have shown, greyed out, so the free tier sees what it's missing. */
-function LockedDetail({ status }: { status: PronunciationStatus | null }) {
+function LockedDetail({ status, wordDone }: { status: PronunciationStatus | null; wordDone: boolean }) {
   if (!status) return null;
+  const otherWords = wordDone && status.remaining > 0;
   const text = !status.serviceAvailable
     ? "Chấm chi tiết đang tạm dừng, bạn quay lại sau nhé."
+    : otherWords
+    ? `Bạn đã chấm từ này ${status.attemptsPerWord} lần hôm nay. Sang từ khác để chấm tiếp nhé.`
     : status.premium
       ? `Bạn đã dùng hết ${status.dailyLimit} lượt chấm chi tiết hôm nay. Lượt mới có vào ngày mai.`
       : `Bạn đã dùng hết ${status.dailyLimit} lượt miễn phí hôm nay. Lượt mới có vào ngày mai, hoặc dùng Premium để chấm ${status.premiumDailyLimit} lượt mỗi ngày.`;
@@ -369,7 +398,36 @@ function LockedDetail({ status }: { status: PronunciationStatus | null }) {
         </View>
       </View>
       <Text style={styles.lockedText}>Điểm 0–100, âm nào đọc sai được tô đỏ kèm gợi ý sửa. {text}</Text>
+      {offerPremium(status) && !otherWords ? <PremiumLink /> : null}
     </View>
+  );
+}
+
+function LastFreeNote({ status, retriesLeft }: { status: PronunciationStatus; retriesLeft: number }) {
+  return (
+    <View style={styles.lastFree}>
+      <Text style={styles.lastFreeText}>
+        Đây là lượt chấm chi tiết miễn phí cuối cùng hôm nay
+        {retriesLeft > 0 ? `, bạn vẫn đọc lại từ này được ${retriesLeft} lần` : ""}. Từ tiếp theo bạn tự so sánh giọng,
+        ngày mai lại có {status.dailyLimit} lượt mới. Premium có {status.premiumDailyLimit} lượt mỗi ngày.
+      </Text>
+      <PremiumLink />
+    </View>
+  );
+}
+
+function PremiumLink() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  return (
+    <Pressable
+      onPress={() => navigation.navigate("Premium")}
+      hitSlop={8}
+      style={({ pressed }) => [styles.premiumLink, pressed && styles.pressed]}
+    >
+      <Ionicons name="sparkles" size={14} color={colors.accent} />
+      <Text style={styles.premiumLinkText}>Xem Premium</Text>
+      <Ionicons name="chevron-forward" size={14} color={colors.accent} />
+    </Pressable>
   );
 }
 
@@ -452,6 +510,19 @@ const styles = StyleSheet.create({
   lockedPhoneme: { minWidth: 44, alignItems: "center", paddingVertical: 6, borderRadius: 12, backgroundColor: colors.bgAlt },
   lockedPhonemeText: { fontSize: 15, fontWeight: "700", color: colors.idle },
   lockedText: { fontSize: 13, lineHeight: 19, color: colors.muted },
+  lastFree: { backgroundColor: colors.bgAlt, borderRadius: 16, padding: spacing.md, gap: spacing.sm },
+  lastFreeText: { fontSize: 13, lineHeight: 19, color: colors.muted },
+  premiumLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 99,
+    backgroundColor: colors.accentSoft,
+  },
+  premiumLinkText: { fontSize: 13, fontWeight: "700", color: colors.accent },
   errorCard: { backgroundColor: colors.dangerSoft, borderRadius: 16, padding: spacing.md },
   errorText: { color: colors.danger, fontSize: 15, fontWeight: "600" },
   actions: { flexDirection: "row", gap: 10 },
