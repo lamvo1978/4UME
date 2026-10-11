@@ -41,6 +41,8 @@ Profile build trong `mobile/eas.json`:
 
 ## Việc cần chuẩn bị (cả hai cửa hàng)
 
+Các trang web cho store và những gì phải sửa khi app đổi (quảng cáo, Premium, dữ liệu…): xem [site.md](site.md).
+
 - [x] **Chính sách quyền riêng tư**: `https://4ume.io.vn/privacy/` (nguồn `site/privacy/index.html`). Có thêm quảng cáo / mua Premium thì phải sửa trang này.
 - [x] **Trang xoá tài khoản** trên web: `https://4ume.io.vn/delete-account/`, tự xoá ngay bằng email + mật khẩu (Google bắt buộc có link web).
 - [x] **URL hỗ trợ** (Apple bắt buộc): `https://4ume.io.vn/` (hướng dẫn nhắn qua mục *Góp ý* trong app).

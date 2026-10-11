@@ -161,7 +161,7 @@ cp /opt/4ume/deploy/vps/4ume.conf /opt/pethubpro/edge/nginx/4ume.conf
 docker exec pethubpro-edge-nginx nginx -t && docker exec pethubpro-edge-nginx nginx -s reload
 ```
 
-Chứng chỉ hiện có đã gồm `4ume.io.vn` và `*.4ume.io.vn` nên không cần xin thêm. Sửa nội dung trang: sửa file trong `site/`, push `main`, deploy như thường.
+Chứng chỉ hiện có đã gồm `4ume.io.vn` và `*.4ume.io.vn` nên không cần xin thêm. Sửa nội dung trang: sửa file trong `site/`, push `main`, deploy như thường. Nội dung từng trang và khi nào phải sửa: [site.md](site.md).
 
 ## Sao lưu
 
