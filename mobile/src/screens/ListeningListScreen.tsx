@@ -76,7 +76,7 @@ export function ListeningListScreen() {
         ListHeaderComponent={
           lessons.length ? (
             <View style={styles.intro}>
-              <Text style={styles.introText}>Nghe thoải mái, không chấm điểm. Chạm vào câu để nghe lại, nhấn giữ một từ để xem nghĩa.</Text>
+              <Text style={styles.introText}>Nghe thoải mái, không chấm điểm. Chạm vào câu để nghe lại, nhấn giữ một từ để xem nghĩa. Muốn luyện tai kỹ hơn thì thử Chép chính tả trong từng bài.</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
                 {FILTERS.map((f) => (
                   <Pressable key={f.key} onPress={() => setFilter(f.key)} style={[styles.chip, filter === f.key && styles.chipActive]}>

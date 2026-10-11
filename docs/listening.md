@@ -37,6 +37,15 @@ Nghe **thư giãn cho quen tai**: hội thoại ngắn, câu chuyện, bản tin
 - Nút ♥ thích bài; nhớ vị trí đang nghe để quay lại nghe tiếp.
 - **Màn hình khoá / chuyển app**: tiếp tục phát, hiện tên bài, phát / dừng, tua.
 
+**Chép chính tả** (nút ngay dưới chế độ hiển thị trong màn nghe một bài):
+
+- Mỗi lượt **5 câu ngẫu nhiên** (ưu tiên câu từ 3 từ trở lên, giữ đúng thứ tự trong bài). Lượt sau ưu tiên câu chưa ra trong bài đó, hết câu mới thì quay vòng (nhớ trong lúc app đang mở); xong lượt thì chọn *Chép 5 câu khác* hoặc *Chép cả bài* (lần lượt mọi câu).
+- Mỗi câu tự phát một lần; bấm nút để **nghe lại** không giới hạn. Có bản thu thì phát đúng đoạn của câu đó (theo mốc thời gian), chưa có thì đọc bằng giọng của máy.
+- Trợ giúp: **Chậm** (0,7×), **Gợi ý** (chữ cái đầu mỗi từ: `I'_ f___ C_____.`), **Nghĩa** (câu tiếng Việt).
+- Chấm (trong app, `mobile/src/listening/dictation.ts`): bỏ qua hoa / thường và dấu câu; dạng viết tắt tính như dạng đầy đủ (`I'm` = `I am`, `don't` = `do not`, `she'd` = `she would / had`), gõ thiếu dấu nháy (`dont`, `lets`) vẫn đúng; số 0–20 viết bằng chữ hay số đều được. Kết quả hiện hai dòng: **Bạn gõ** (chữ đã gõ; sai tô đỏ, suýt đúng tô cam, thừa gạch ngang) và **Đáp án** (đúng xanh, suýt đúng cam, sai đỏ, thiếu nền xám); câu đúng hoàn toàn chỉ hiện đáp án. *Suýt đúng* = sai một chữ cái ở từ dài từ 4 chữ, hoặc chỉ thiếu dấu nháy (`its` / `It's`). Bên dưới là vài dòng ghi chú, chỉ cho những loại lỗi có trong câu.
+- *Sửa lại* giữ chữ đã gõ để sửa; tổng kết lấy lần tốt nhất của mỗi câu: số câu đúng hoàn toàn và % số từ đúng.
+- **Chuỗi ngày**: mỗi câu được kiểm tra (lần đầu) gọi `POST /api/listening/{slug}/dictation` → tính là đã học hôm nay (`StudyDays.Listens` +1), **không phụ thuộc** công tắc *Nghe xong một bài…* trong admin. Không lưu nội dung đã gõ.
+
 ## Web admin
 
 **Trang *Bài nghe*** (menu bên trái; điện thoại nằm trong *Thêm*):
@@ -102,6 +111,7 @@ App:
 | GET | `/api/listening` | Danh sách bài đã đăng + tiến độ của tôi |
 | GET | `/api/listening/{slug}` | Bài đầy đủ (script, mốc thời gian, `audioUrl`) |
 | PUT | `/api/listening/{slug}/progress` | `{ positionMs, completed?, liked? }` |
+| POST | `/api/listening/{slug}/dictation` | Một câu chép chính tả đã kiểm tra → ghi ngày học (204) |
 
 Admin: `GET/POST /api/admin/listening`, `GET/PUT/DELETE /api/admin/listening/{slug}`, `PUT /api/admin/listening/order`, `POST /api/admin/listening/{slug}/audio` (tạo âm thanh), `GET /api/admin/listening/voices`, `GET /api/admin/listening/export`, `POST /api/admin/listening/import`, `PUT /api/admin/settings/listening`, `POST /api/admin/settings/listening/reset`.
 

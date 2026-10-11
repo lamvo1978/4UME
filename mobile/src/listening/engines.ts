@@ -150,6 +150,69 @@ export function useAudioEngine(url: string, opts: Options): Engine {
   };
 }
 
+/** Speed of "Nghe chậm" in dictation. */
+export const SLOW_RATE = 0.7;
+/** Timings end on the last word boundary; keep its tail audible without running into the next line. */
+const LINE_TAIL_MS = 250;
+
+/**
+ * Plays one line at a time for dictation: its slice of the recording when there are timings,
+ * otherwise the device voice.
+ */
+export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
+  const player = useAudioPlayer(url ? { uri: mediaUrl(url)! } : null, { updateInterval: 50 });
+  const status = useAudioPlayerStatus(player);
+  const stopAt = useRef<number | null>(null);
+  const token = useRef(0);
+  const [speaking, setSpeaking] = useState(false);
+
+  // The audio mode is left to the player screen underneath, which already allows silent-mode playback.
+  useEffect(
+    () => () => {
+      token.current++;
+      Speech.stop();
+    },
+    []
+  );
+
+  useEffect(() => {
+    const end = stopAt.current;
+    if (end == null || !status.playing || status.currentTime * 1000 < end) return;
+    stopAt.current = null;
+    player.pause();
+  }, [status.currentTime, status.playing, player]);
+
+  const play = useCallback(
+    (index: number, slow: boolean) => {
+      const line = lines[index];
+      if (!line) return;
+      const t = ++token.current;
+      Speech.stop();
+      setSpeaking(false);
+      const rate = slow ? SLOW_RATE : 1;
+
+      if (url && line.startMs != null) {
+        const next = lines[index + 1]?.startMs ?? null;
+        const end = (line.endMs ?? next ?? Number.MAX_SAFE_INTEGER) + LINE_TAIL_MS;
+        stopAt.current = next != null ? Math.min(end, next) : end;
+        player.setPlaybackRate(rate);
+        void player.seekTo(line.startMs / 1000).then(() => player.play());
+        return;
+      }
+
+      if (url) player.pause();
+      setSpeaking(true);
+      const done = () => {
+        if (t === token.current) setSpeaking(false);
+      };
+      Speech.speak(line.en, { language: "en-US", rate: speechRate() * rate, onDone: done, onStopped: done, onError: done });
+    },
+    [lines, url, player]
+  );
+
+  return { play, playing: status.playing || speaking, loading: !!url && !status.isLoaded };
+}
+
 /** Reads the script line by line with the device voice while the lesson has no recording yet. */
 export function useSpeechEngine(opts: Options): Engine {
   const { lines, speakers, rate, repeat } = opts;

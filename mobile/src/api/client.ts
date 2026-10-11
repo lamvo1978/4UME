@@ -568,6 +568,7 @@ export const api = {
   listeningLesson: (slug: string) => request<ListeningDetail>(`/api/listening/${slug}`),
   saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>
     request<ListeningProgress>(`/api/listening/${slug}/progress`, { method: "PUT", body: JSON.stringify(changes) }),
+  recordDictation: (slug: string) => request<void>(`/api/listening/${slug}/dictation`, { method: "POST" }),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

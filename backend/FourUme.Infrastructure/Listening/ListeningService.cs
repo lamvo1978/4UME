@@ -81,6 +81,13 @@ public class ListeningService(IAppDbContext db, IActivityService activity) : ILi
         return ToDto(progress);
     }
 
+    public async Task<bool> RecordDictationAsync(Guid userId, string slug, CancellationToken ct = default)
+    {
+        if (!await db.ListeningLessons.AnyAsync(l => l.Slug == slug && l.Published, ct)) return false;
+        await activity.RecordAsync(userId, ActivityKind.Listening, ct);
+        return true;
+    }
+
     public async Task<ListeningConfig> GetConfigAsync(CancellationToken ct = default)
     {
         var stored = await db.AppSettings.AsNoTracking()
