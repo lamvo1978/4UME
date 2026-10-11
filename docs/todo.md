@@ -38,7 +38,7 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc dùng dịch vụ bên ngoài thì sửa trang quyền riêng tư — xem [site.md](site.md#khi-nào-phải-sửa-trang).
 
 1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
-2. [ ] **Nghe chép chính tả** trong *Góc nghe*: nghe một câu → gõ lại → tô chữ sai / thiếu. Dùng lại câu và giọng đọc của bài nghe có sẵn.
+2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
 3. [ ] **Tổng kết tuần**: "Tuần này bạn học 42 từ, đọc chuẩn 18 từ, chuỗi 12 ngày". Trước khi có thông báo đẩy thật thì hiện thẻ trên Trang chủ vào đầu tuần; có bản build EAS thì gửi thêm thông báo (tôn trọng giờ nhắc / tắt nhắc trong Cài đặt).
 4. [ ] **Giới thiệu bạn bè**: mỗi người có mã / link mời; bạn mới đăng ký và học đủ vài ngày thì cả hai được tặng ngày Premium (cộng vào `PremiumUntil` như admin gia hạn). Chống lạm dụng: chỉ tính tài khoản đã xác minh email, giới hạn số lần tặng.
 5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.

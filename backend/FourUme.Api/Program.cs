@@ -522,6 +522,15 @@ app.MapPut("/api/listening/{slug}/progress", async (string slug, UpdateListening
         : Results.NotFound(new { error = "Không tìm thấy bài." });
 }).RequireAuthorization();
 
+app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincipal principal, IListeningService listening, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return await listening.RecordDictationAsync(userId.Value, slug, ct)
+        ? Results.NoContent()
+        : Results.NotFound(new { error = "Không tìm thấy bài." });
+}).RequireAuthorization();
+
 app.MapGet("/api/grammar/lessons", async (ClaimsPrincipal principal, IGrammarService grammar) =>
 {
     var userId = GetUserId(principal);

@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -128,6 +129,7 @@ function PlayerView({ lesson, settings, onSettings, engine }: SessionProps & { e
   const lineY = useRef<number[]>([]);
   const lastDrag = useRef(0);
   const [word, setWord] = useState<string | null>(null);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { lines, speakers } = lesson;
   const { active, playing } = engine;
   const kind = KIND_META[lesson.kind];
@@ -173,6 +175,20 @@ function PlayerView({ lesson, settings, onSettings, engine }: SessionProps & { e
             <Text style={styles.note}>Bài này chưa có bản thu, đang đọc bằng giọng của máy.</Text>
           ) : null}
           <Segmented items={SCRIPT_MODES} value={settings.mode} onChange={(mode) => onSettings({ mode })} />
+          <Pressable
+            style={({ pressed }) => [styles.dictation, pressed && styles.pressed]}
+            onPress={() => {
+              engine.pause();
+              navigation.navigate("Dictation", { slug: lesson.slug });
+            }}
+          >
+            <Ionicons name="create-outline" size={20} color={colors.accent} />
+            <View style={styles.dictationText}>
+              <Text style={styles.dictationTitle}>Chép chính tả</Text>
+              <Text style={styles.dictationSub}>Nghe từng câu rồi gõ lại</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.accent} />
+          </Pressable>
         </View>
 
         {settings.mode === "hidden" ? (
@@ -284,6 +300,18 @@ const styles = StyleSheet.create({
   titleEn: { fontSize: 24, fontWeight: "800", color: colors.ink, fontFamily: fonts.display },
   summary: { fontSize: 14, color: colors.muted, lineHeight: 20 },
   note: { fontSize: 13, color: colors.flameDeep, lineHeight: 18 },
+  dictation: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    backgroundColor: colors.accentSoft,
+  },
+  dictationText: { flex: 1 },
+  dictationTitle: { fontSize: 15, fontWeight: "800", color: colors.accent },
+  dictationSub: { fontSize: 12, color: colors.accent, opacity: 0.8 },
   line: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 14, gap: 3 },
   lineActive: { backgroundColor: colors.surface, ...shadow.card, shadowOpacity: 0.06 },
   speaker: { fontSize: 12, fontWeight: "800", textTransform: "uppercase", letterSpacing: 0.5 },

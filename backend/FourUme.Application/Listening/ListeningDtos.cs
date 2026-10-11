@@ -53,5 +53,7 @@ public interface IListeningService
     Task<ListeningDetailDto?> GetLessonAsync(Guid userId, string slug, CancellationToken ct = default);
     /// <summary>Null when the lesson does not exist or is hidden.</summary>
     Task<ListeningProgressDto?> UpdateProgressAsync(Guid userId, string slug, UpdateListeningProgressRequest request, CancellationToken ct = default);
+    /// <summary>One dictation sentence checked; always counts as study for the day. False when the lesson does not exist or is hidden.</summary>
+    Task<bool> RecordDictationAsync(Guid userId, string slug, CancellationToken ct = default);
     Task<ListeningConfig> GetConfigAsync(CancellationToken ct = default);
 }

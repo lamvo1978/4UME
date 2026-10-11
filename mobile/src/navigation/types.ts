@@ -15,6 +15,8 @@ export type RootStackParamList = {
   Flashcard: { deckId: string; titleVi: string; level?: string };
   GrammarLesson: { slug: string; titleVi: string };
   Listening: { slug: string; titleVi: string };
+  /** `all` = every line in order instead of a random handful. */
+  Dictation: { slug: string; all?: boolean };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;
