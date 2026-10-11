@@ -7,6 +7,7 @@ on:
     paths:
       - "backend/**"
       - "admin/**"
+      - "site/**"
       - "deploy/Dockerfile"
       - "deploy/admin.Dockerfile"
       - "deploy/admin-nginx.conf"

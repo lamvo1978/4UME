@@ -149,6 +149,20 @@ Migration database chạy tự động khi API khởi động. Nếu `4ume.conf`
 
 **Quay lại bản cũ**: đặt `IMAGE_TAG=sha-<commit>` (xem tag trong GitHub → Packages) trong `.env`, chạy `docker compose up -d`. Bỏ dòng đó (hoặc `latest`) để về bản mới nhất.
 
+## Trang web 4ume.io.vn
+
+Trang hỗ trợ, quyền riêng tư, xoá tài khoản (nguồn trong `site/`, đóng chung image web admin). Làm một lần:
+
+1. **Cloudflare DNS**: thêm bản ghi `A` tên `@` (tức `4ume.io.vn`) và `A` tên `www`, cùng trỏ về IP VPS như `api`, chế độ **DNS only** (mây xám) giống `api` / `admin`.
+2. Trên VPS, sau khi `git pull` và `docker compose up -d` bản mới, chép lại cấu hình nginx và nạp lại:
+
+```bash
+cp /opt/4ume/deploy/vps/4ume.conf /opt/pethubpro/edge/nginx/4ume.conf
+docker exec pethubpro-edge-nginx nginx -t && docker exec pethubpro-edge-nginx nginx -s reload
+```
+
+Chứng chỉ hiện có đã gồm `4ume.io.vn` và `*.4ume.io.vn` nên không cần xin thêm. Sửa nội dung trang: sửa file trong `site/`, push `main`, deploy như thường.
+
 ## Sao lưu
 
 `deploy/backup.sh` lưu database + ảnh vào `/opt/4ume/backups/<thời-gian>/`, giữ 14 bản mới nhất. Chạy tự động mỗi đêm lúc 3 giờ:

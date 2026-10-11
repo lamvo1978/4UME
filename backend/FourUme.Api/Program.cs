@@ -75,16 +75,19 @@ builder.Services.AddCors(options =>
         policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 });
 
-// Each mailed code costs money and can be aimed at someone else's inbox, so cap sends per client IP
-// (Cloudflare passes the visitor's address in CF-Connecting-IP).
+// Each mailed code costs money and can be aimed at someone else's inbox, and logins can be used to guess
+// passwords, so both are capped per client IP.
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     options.OnRejected = async (ctx, ct) =>
         await ctx.HttpContext.Response.WriteAsJsonAsync(new { error = "Bạn thao tác quá nhanh, vui lòng thử lại sau ít phút." }, ct);
     options.AddPolicy(EmailCodeLimit, http => RateLimitPartition.GetFixedWindowLimiter(
-        http.Request.Headers["CF-Connecting-IP"].FirstOrDefault() ?? http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        ClientIp(http),
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(15) }));
+    options.AddPolicy(LoginLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+        ClientIp(http),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(15) }));
 });
 
 var app = builder.Build();
@@ -214,7 +217,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, IAuthService auth) =
     {
         return Results.BadRequest(new { error = ex.Message });
     }
-});
+}).RequireRateLimiting(LoginLimit);
 
 app.MapGet("/api/me", async (ClaimsPrincipal principal, IAuthService auth) =>
 {
@@ -618,4 +621,12 @@ static string? NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? 
 public partial class Program
 {
     private const string EmailCodeLimit = "email-code";
+    private const string LoginLimit = "login";
+
+    /// <summary>
+    /// The visitor's address. The edge nginx overwrites X-Real-IP with the connecting address, so it can't be
+    /// forged through the proxy; without it (local runs) the socket address is used.
+    /// </summary>
+    private static string ClientIp(HttpContext http) =>
+        http.Request.Headers["X-Real-IP"].FirstOrDefault() ?? http.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 }

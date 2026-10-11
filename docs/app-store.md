@@ -41,8 +41,9 @@ Profile build trong `mobile/eas.json`:
 
 ## Việc cần chuẩn bị (cả hai cửa hàng)
 
-- [ ] **Chính sách quyền riêng tư** — trang công khai, ví dụ `https://4ume.io.vn/privacy`: thu thập gì (email, tên hiển thị, tiến độ học, mã thiết bị nhận thông báo), để làm gì, lưu ở đâu (VPS tại Việt Nam), cách xoá.
-- [ ] **Trang xin xoá tài khoản** trên web, ví dụ `https://4ume.io.vn/delete-account` (Google bắt buộc có link web, ngoài nút xoá trong app).
+- [x] **Chính sách quyền riêng tư**: `https://4ume.io.vn/privacy/` (nguồn `site/privacy/index.html`). Có thêm quảng cáo / mua Premium thì phải sửa trang này.
+- [x] **Trang xoá tài khoản** trên web: `https://4ume.io.vn/delete-account/`, tự xoá ngay bằng email + mật khẩu (Google bắt buộc có link web).
+- [x] **URL hỗ trợ** (Apple bắt buộc): `https://4ume.io.vn/` (hướng dẫn nhắn qua mục *Góp ý* trong app).
 - [x] **Xoá tài khoản ngay trong app** (Apple bắt buộc): đã có ở *Hồ sơ → Cài đặt* (`POST /api/me/delete`, phải nhập mật khẩu).
 - [ ] **Tài khoản demo** cho người duyệt (email + mật khẩu, có sẵn ít tiến độ học). Không dùng tài khoản quản trị.
 - [ ] Biểu tượng 1024×1024 (không trong suốt cho iOS), ảnh nền thông báo Android.

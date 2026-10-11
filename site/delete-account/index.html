@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Xoá tài khoản · 4UME</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/"><img src="/logo-emblem.png" alt="" />4UME</a>
+      <nav>
+        <a href="/#ho-tro">Hỗ trợ</a>
+        <a href="/privacy/">Quyền riêng tư</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Xoá tài khoản 4UME</h1>
+      <p class="muted">Xoá tài khoản và toàn bộ dữ liệu học của bạn.</p>
+
+      <div class="card">
+        <h2>Những gì bị xoá</h2>
+        <ul>
+          <li>Tài khoản: email, tên hiển thị, mật khẩu.</li>
+          <li>Tiến độ học: từ vựng, ngữ pháp, bài nghe, lịch ôn tập, chuỗi ngày học, kết quả kiểm tra trình độ.</li>
+          <li>Lượt chấm phát âm, góp ý và ảnh đính kèm, mã thiết bị nhận thông báo.</li>
+        </ul>
+        <p>
+          Dữ liệu bị xoá <b>ngay lập tức</b> và <b>không khôi phục được</b>. Bản sao lưu cũ có thể còn chứa dữ liệu
+          này tối đa khoảng 14 ngày, sau đó tự động bị xoá. Thời hạn Premium còn lại (nếu
+          có) cũng mất theo tài khoản.
+        </p>
+        <p>
+          Bạn cũng có thể xoá ngay trong app: <b>Hồ sơ → Cài đặt → Xoá tài khoản</b>.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Xoá trên web</h2>
+        <form id="form" novalidate>
+          <label for="email">Email đăng nhập</label>
+          <input id="email" type="email" autocomplete="username" required />
+          <label for="password">Mật khẩu</label>
+          <input id="password" type="password" autocomplete="current-password" required />
+          <label class="check">
+            <input id="confirm" type="checkbox" />
+            <span>Tôi hiểu tài khoản và toàn bộ dữ liệu học sẽ bị xoá vĩnh viễn.</span>
+          </label>
+          <button id="submit" type="submit" disabled>Xoá vĩnh viễn tài khoản</button>
+          <div id="message" class="notice" role="status" hidden></div>
+        </form>
+        <p class="muted">
+          Quên mật khẩu? Mở app, ở màn đăng nhập bấm <b>Quên mật khẩu</b> để đặt lại, rồi quay lại trang này.
+        </p>
+      </div>
+    </main>
+    <footer>© 2026 4UME · <a href="/">4ume.io.vn</a></footer>
+    <script src="/delete-account/delete.js"></script>
+  </body>
+</html>

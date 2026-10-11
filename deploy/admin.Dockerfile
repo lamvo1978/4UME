@@ -8,3 +8,4 @@ RUN npm run build
 FROM nginx:1.27-alpine
 COPY deploy/admin-nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /admin/dist /usr/share/nginx/html
+COPY site/ /usr/share/nginx/site
