@@ -26,6 +26,7 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 - [ ] Thông báo đẩy thật (Expo Go không hỗ trợ đầy đủ), gồm cả báo khi 4UME trả lời góp ý ([feedback.md](feedback.md)).
 - [ ] Nhận dạng giọng của máy (`expo-speech-recognition`) khi hết lượt chấm Azure.
 - [ ] Nền cho AdMob và mua Premium trong app (In‑App Purchase / Google Play Billing) — xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
+- [ ] **Báo lỗi crash tự động** (Sentry, gói miễn phí): app văng trên máy ai thì biết ngay lỗi ở đâu, kèm phiên bản app / loại máy. Làm ngay ở bản build EAS đầu tiên, trước khi mời bạn bè thử nhiều vòng. Có thể gắn luôn cho API và web admin. Thêm Sentry vào mục bên thứ ba trong `privacy/`, khai *Crash data* trong App Privacy / Data safety.
 
 ## 5. Nội dung
 
@@ -36,18 +37,17 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc dùng dịch vụ bên ngoài thì sửa trang quyền riêng tư — xem [site.md](site.md#khi-nào-phải-sửa-trang).
 
-1. [ ] **Báo lỗi crash tự động** (Sentry, gói miễn phí): app văng trên máy ai thì biết ngay lỗi ở đâu, kèm phiên bản app / loại máy. Làm **trước khi** mời bạn bè thử nhiều vòng. Trong Expo Go chỉ bắt được lỗi JavaScript; lỗi native cần bản build EAS. Có thể gắn luôn cho API và web admin. Thêm Sentry vào mục bên thứ ba trong `privacy/`, khai *Crash data* trong App Privacy / Data safety.
-2. [ ] **Ôn từ hay sai**: buổi ôn riêng gom những từ người học sai nhiều (dữ liệu ôn tập) và từ đọc sai âm (`PronunciationAttempts`). Kèm **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
-3. [ ] **Nghe chép chính tả** trong *Góc nghe*: nghe một câu → gõ lại → tô chữ sai / thiếu. Dùng lại câu và giọng đọc của bài nghe có sẵn.
-4. [ ] **Tổng kết tuần**: "Tuần này bạn học 42 từ, đọc chuẩn 18 từ, chuỗi 12 ngày". Trước khi có thông báo đẩy thật thì hiện thẻ trên Trang chủ vào đầu tuần; có bản build EAS thì gửi thêm thông báo (tôn trọng giờ nhắc / tắt nhắc trong Cài đặt).
-5. [ ] **Giới thiệu bạn bè**: mỗi người có mã / link mời; bạn mới đăng ký và học đủ vài ngày thì cả hai được tặng ngày Premium (cộng vào `PremiumUntil` như admin gia hạn). Chống lạm dụng: chỉ tính tài khoản đã xác minh email, giới hạn số lần tặng.
-6. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
-7. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
-8. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
-9. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai). Cần thông báo đẩy thật để "nhắc bạn" có ý nghĩa.
-10. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
-11. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
-12. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
+1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
+2. [ ] **Nghe chép chính tả** trong *Góc nghe*: nghe một câu → gõ lại → tô chữ sai / thiếu. Dùng lại câu và giọng đọc của bài nghe có sẵn.
+3. [ ] **Tổng kết tuần**: "Tuần này bạn học 42 từ, đọc chuẩn 18 từ, chuỗi 12 ngày". Trước khi có thông báo đẩy thật thì hiện thẻ trên Trang chủ vào đầu tuần; có bản build EAS thì gửi thêm thông báo (tôn trọng giờ nhắc / tắt nhắc trong Cài đặt).
+4. [ ] **Giới thiệu bạn bè**: mỗi người có mã / link mời; bạn mới đăng ký và học đủ vài ngày thì cả hai được tặng ngày Premium (cộng vào `PremiumUntil` như admin gia hạn). Chống lạm dụng: chỉ tính tài khoản đã xác minh email, giới hạn số lần tặng.
+5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
+6. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
+7. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
+8. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai). Cần thông báo đẩy thật để "nhắc bạn" có ý nghĩa.
+9. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
+10. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
+11. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
 
 ## Ý tưởng để sau
 

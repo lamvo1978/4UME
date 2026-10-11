@@ -676,6 +676,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateOnly>("LocalDate")
                         .HasColumnType("date");
 
+                    b.Property<string>("Phonemes")
+                        .HasColumnType("text");
+
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 
@@ -692,6 +695,8 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.HasIndex("CreatedAt");
 
                     b.HasIndex("UserId", "LocalDate");
+
+                    b.HasIndex("UserId", "WordId", "CreatedAt");
 
                     b.ToTable("PronunciationAttempts");
                 });
@@ -923,6 +928,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("WeakScore")
+                        .HasColumnType("integer");
 
                     b.Property<string>("WordId")
                         .IsRequired()

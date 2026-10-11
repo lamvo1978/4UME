@@ -105,6 +105,15 @@ function VocabPractice() {
         subtitle: "Ưu tiên từ hay quên, còn lại chọn ngẫu nhiên",
         onPress: () => navigation.navigate("Review", { mode: "practice", title: "Luyện thêm" }),
       }}
+      weak={
+        data && data.summary.weakCount > 0
+          ? {
+              count: data.summary.weakCount,
+              onPress: () => navigation.navigate("Review", { mode: "practice", weak: true, title: "Ôn từ hay sai" }),
+              onList: () => navigation.navigate("WeakWords"),
+            }
+          : undefined
+      }
       topicsTitle="Luyện theo chủ đề"
     />
   );
@@ -158,6 +167,7 @@ function ReviewPanel({
   empty,
   onDue,
   quick,
+  weak,
   topicsTitle,
 }: {
   data: PanelData | null;
@@ -166,6 +176,7 @@ function ReviewPanel({
   empty: { title: string; sub: string; action: string; onPress: () => void };
   onDue: () => void;
   quick: { title: string; subtitle: string; onPress: () => void };
+  weak?: { count: number; onPress: () => void; onList: () => void };
   topicsTitle: string;
 }) {
   if (!data) {
@@ -230,6 +241,20 @@ function ReviewPanel({
           <Text style={styles.section}>Luyện thêm</Text>
           <Text style={styles.sectionSub}>Không ảnh hưởng lịch ôn. Làm bao nhiêu lần cũng được.</Text>
           <ActionCard icon="flash-outline" title={quick.title} subtitle={quick.subtitle} onPress={quick.onPress} />
+          {weak ? (
+            <View style={styles.weakGap}>
+              <ActionCard
+                icon="fitness-outline"
+                title={`Ôn từ hay sai · ${weak.count} ${unit}`}
+                subtitle="Từ bạn hay quên hoặc đọc chưa chuẩn"
+                onPress={weak.onPress}
+              />
+              <Pressable onPress={weak.onList} hitSlop={8} style={styles.weakLink}>
+                <Text style={styles.weakLinkText}>Xem danh sách</Text>
+                <Ionicons name="chevron-forward" size={14} color={colors.accent} />
+              </Pressable>
+            </View>
+          ) : null}
 
           {topics.length > 0 ? (
             <>
@@ -325,6 +350,9 @@ const styles = StyleSheet.create({
   sectionGap: { marginBottom: spacing.sm },
   sectionSub: { marginTop: 2, marginBottom: spacing.sm, fontSize: 13, color: colors.muted },
   topicList: { gap: 10 },
+  weakGap: { marginTop: 10 },
+  weakLink: { flexDirection: "row", alignItems: "center", alignSelf: "flex-end", gap: 2, marginTop: 6 },
+  weakLinkText: { fontSize: 13, fontWeight: "700", color: colors.accent },
   action: {
     flexDirection: "row",
     alignItems: "center",

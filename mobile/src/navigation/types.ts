@@ -1,10 +1,10 @@
 import type { NavigatorScreenParams } from "@react-navigation/native";
 import type { FeedbackCategory } from "../api/client";
 
-/** No params (or mode "due") = today's scheduled review; "practice" never raises levels. */
+/** No params (or mode "due") = today's scheduled review; "practice" never raises levels; `weak` = "Ôn từ hay sai". */
 export type ReviewParams =
   | { mode: "due" }
-  | { mode: "practice"; deckId?: string; wordIds?: string[]; title?: string };
+  | { mode: "practice"; deckId?: string; wordIds?: string[]; weak?: boolean; title?: string };
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -22,6 +22,7 @@ export type RootStackParamList = {
   About: undefined;
   Settings: undefined;
   Premium: undefined;
+  WeakWords: undefined;
   Feedback: undefined;
   /** wordId/wordText come from "Báo lỗi từ này" on a word card. */
   FeedbackNew: { category?: FeedbackCategory; wordId?: string; wordText?: string } | undefined;

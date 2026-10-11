@@ -12,6 +12,8 @@ public class WordProgress : IReviewable
     public DateTimeOffset? NextReviewAt { get; set; }
     public int ReviewLevel { get; set; }
     public int LapseCount { get; set; }
+    /// <summary>Raised by mistakes, lowered by clean answers (review and practice); above 0 the word is under "Ôn từ hay sai".</summary>
+    public int WeakScore { get; set; }
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     /// <summary>Marked known by the placement test rather than studied; cleared once the learner studies or reviews the word.</summary>
     public bool FromPlacement { get; set; }

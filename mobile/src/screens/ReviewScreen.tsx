@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary } from "../api/client";
+import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary, WEAK_SPEAK_SCORE } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { KeyboardScreen } from "../components/KeyboardScreen";
@@ -77,9 +77,19 @@ const DIFFICULTY: Record<ExerciseType, number> = {
 /** Speaking exercises per session; they never count as mistakes (pronunciation isn't recall). */
 const SPEAK_PER_SESSION = 2;
 
+/** "Ôn từ hay sai" reads aloud every word whose last pronunciation score was low, up to this many. */
+const WEAK_SPEAK_MAX = 4;
+
+function pickSpeaking(items: ReviewItem[], weak: boolean): ReviewItem[] {
+  const readable = items.filter((it) => letterCount(it.word.word) >= 2);
+  if (!weak) return shuffle(readable).slice(0, SPEAK_PER_SESSION);
+  return readable
+    .filter((it) => it.speakScore != null && it.speakScore < WEAK_SPEAK_SCORE)
+    .slice(0, WEAK_SPEAK_MAX);
+}
+
 /** Each picked word is read aloud after its other exercises, from the middle of the session on. */
-function addSpeaking(plan: Exercise[], items: ReviewItem[]): Exercise[] {
-  const picks = shuffle(items.filter((it) => letterCount(it.word.word) >= 2)).slice(0, SPEAK_PER_SESSION);
+function addSpeaking(plan: Exercise[], picks: ReviewItem[]): Exercise[] {
   const result = [...plan];
   for (const it of picks) {
     const last = result.reduce((at, e, i) => (e.items.some((x) => x.word.id === it.word.id) ? i : at), -1);
@@ -178,6 +188,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   const practice = params.mode === "practice";
   const deckId = practice ? params.deckId : undefined;
   const wordIds = practice ? params.wordIds : undefined;
+  const weak = practice && !!params.weak;
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
   const [queue, setQueue] = useState<Exercise[]>([]);
   const [total, setTotal] = useState(0);
@@ -195,12 +206,12 @@ export function ReviewScreen({ navigation, route }: Props) {
     setError("");
     try {
       const [items, s, speech] = await Promise.all([
-        practice ? api.practiceItems({ deckId, wordIds }) : api.reviewDue(),
+        practice ? api.practiceItems({ deckId, wordIds, weak }) : api.reviewDue(),
         api.reviewSummary(),
         api.pronunciationStatus().catch(() => null),
       ]);
       const base = buildPlan(items);
-      const plan = speech?.enabled ? addSpeaking(base, items) : base;
+      const plan = speech?.enabled ? addSpeaking(base, pickSpeaking(items, weak)) : base;
       setPronunciation(speech);
       setSummary(s);
       setQueue(plan);
@@ -214,7 +225,7 @@ export function ReviewScreen({ navigation, route }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [practice, deckId, wordIds?.join(",")]);
+  }, [practice, deckId, weak, wordIds?.join(",")]);
 
   const startPractice = () => navigation.replace("Review", { mode: "practice", title: "Luyện thêm" });
 
@@ -327,9 +338,13 @@ export function ReviewScreen({ navigation, route }: Props) {
         <View style={styles.bigIcon}>
           <Ionicons name="leaf-outline" size={40} color={colors.white} />
         </View>
-        <Text style={styles.doneTitle}>{practice ? "Chưa có từ để luyện" : "Hôm nay không có từ cần ôn"}</Text>
+        <Text style={styles.doneTitle}>
+          {weak ? "Không còn từ hay sai" : practice ? "Chưa có từ để luyện" : "Hôm nay không có từ cần ôn"}
+        </Text>
         <Text style={styles.doneSub}>
-          {!canPractice
+          {weak
+            ? "Bạn đã nắm chắc các từ từng sai. Từ nào sai khi ôn sẽ quay lại đây."
+            : !canPractice
             ? 'Bấm "Đã nhớ" khi học từ vựng, từ đó sẽ xuất hiện ở đây để ôn lại.'
             : practice
               ? "Chưa có từ đã nhớ phù hợp để luyện."
@@ -372,6 +387,11 @@ export function ReviewScreen({ navigation, route }: Props) {
         ) : null}
         {stats.pulled > 0 ? (
           <Text style={styles.doneSub}>{stats.pulled} từ sai nhiều đã được hẹn ôn lại vào ngày mai.</Text>
+        ) : null}
+        {weak ? (
+          <Text style={styles.doneSub}>
+            Từ nào trả lời đúng ngay vài lần liền (và đọc đạt từ {WEAK_SPEAK_SCORE} điểm) sẽ rời danh sách hay sai.
+          </Text>
         ) : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <View style={styles.doneActions}>

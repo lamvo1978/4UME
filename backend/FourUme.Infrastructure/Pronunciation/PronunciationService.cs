@@ -57,6 +57,7 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
             LocalDate = today,
             AudioMs = durationMs,
             Score = result.Accuracy,
+            Phonemes = JsonSerializer.Serialize(result.Words.SelectMany(w => w.Phonemes), Json),
         });
         await db.SaveChangesAsync(ct);
 

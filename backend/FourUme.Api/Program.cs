@@ -468,12 +468,19 @@ app.MapPost("/api/review/answer", async (ReviewAnswerRequest request, ClaimsPrin
     }
 }).RequireAuthorization();
 
-app.MapGet("/api/review/practice", async (ClaimsPrincipal principal, IReviewService review, string? deckId, string? wordIds, int? limit) =>
+app.MapGet("/api/review/practice", async (ClaimsPrincipal principal, IReviewService review, string? deckId, string? wordIds, int? limit, bool? weak) =>
 {
     var userId = GetUserId(principal);
     if (userId is null) return Results.Unauthorized();
     var ids = wordIds?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-    return Results.Ok(await review.GetPracticeItemsAsync(userId.Value, new PracticeQuery(deckId, ids, limit ?? 10)));
+    return Results.Ok(await review.GetPracticeItemsAsync(userId.Value, new PracticeQuery(deckId, ids, limit ?? 10, weak ?? false)));
+}).RequireAuthorization();
+
+app.MapGet("/api/review/weak", async (ClaimsPrincipal principal, IReviewService review) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await review.GetWeakWordsAsync(userId.Value));
 }).RequireAuthorization();
 
 app.MapPost("/api/review/practice/answer", async (ReviewAnswerRequest request, ClaimsPrincipal principal, IReviewService review) =>
