@@ -6,6 +6,7 @@ import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, Me, ReviewSummary, WeekSummary } from "../api/client";
 import { WeeklyCard } from "../components/weekly/WeeklyCard";
+import { HomeBanner } from "../components/ads/HomeBanner";
 import { dismiss, isDismissed } from "../weekly/weekly";
 import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
@@ -138,7 +139,6 @@ export function HomeScreen() {
         {weekly ? (
           <WeeklyCard
             week={weekly.week}
-            previous={weekly.previous}
             onPress={() => navigation.navigate("Weekly", { start: weekly.week.start })}
             onClose={closeWeekly}
           />
@@ -174,6 +174,7 @@ export function HomeScreen() {
           />
         </View>
       </ScrollView>
+      <HomeBanner premium={me?.premium} />
     </Screen>
   );
 }

@@ -33,7 +33,9 @@ public record MeResponse(
     int StreakFreezes,
     int? NextMilestone,
     DateOnly? LastStudyDate,
-    UserSettingsDto Settings);
+    UserSettingsDto Settings,
+    /// <summary>Premium is active now (no ads).</summary>
+    bool Premium = false);
 
 /// <summary>Every field is optional; only the ones sent are changed.</summary>
 public record UpdateSettingsRequest(

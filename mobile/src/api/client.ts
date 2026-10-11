@@ -128,6 +128,8 @@ export type Me = {
   /** Local "YYYY-MM-DD" of the last real (not frozen) study day. */
   lastStudyDate: string | null;
   settings: UserSettings;
+  /** Premium is active now (no ads). */
+  premium: boolean;
 };
 
 export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean };

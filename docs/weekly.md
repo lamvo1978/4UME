@@ -4,8 +4,8 @@ Nhìn lại một tuần học (thứ Hai – Chủ nhật, theo giờ máy ngư
 
 ## Người học thấy gì
 
-- **Thẻ "Tổng kết tuần qua" trên Trang chủ**, chỉ vào **thứ Hai** (cả ngày), nằm trên thẻ *Mục tiêu hôm nay*:
-  - "Bạn học 5/7 ngày · chuỗi 12 ngày", dòng các con số khác 0 ("42 từ mới · 120 lượt ôn · đọc chuẩn 18 từ"), câu so sánh với tuần trước đó, "Xem chi tiết ›".
+- **Thẻ tổng kết trên Trang chủ**, chỉ vào **thứ Hai** (cả ngày), nằm trên thẻ *Mục tiêu hôm nay*, gọn một hàng cùng kiểu thẻ mục tiêu:
+  - "Tuần qua: học 5/7 ngày" kèm khoảng ngày, dòng dưới là các con số khác 0 ("42 từ mới · 120 lượt ôn · đọc chuẩn 18 từ"); bấm vào mở màn chi tiết.
   - Nút **×** để đóng; đóng rồi thì tuần đó không hiện lại (lưu trên máy, theo từng tài khoản).
   - **Không hiện** khi tuần trước không học ngày nào (không gây áp lực), hoặc khi người học tắt **Tổng kết tuần** trong Cài đặt.
 - **Hồ sơ → Tổng kết tuần** (dưới lịch *5 tuần gần đây*): xem bất kỳ lúc nào.
