@@ -41,6 +41,7 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
 2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
 3. [x] **Tổng kết tuần** (12/10) — màn chi tiết, mở từ Hồ sơ; xem [weekly.md](weekly.md). Còn lại: thông báo đẩy thứ Hai 08:30 (bấm mở màn tổng kết) khi có bản build EAS.
 4. [x] **Giới thiệu bạn bè + mã trung tâm đối tác** (12/10) — xem [invites.md](invites.md). Còn lại: mở app thẳng từ link mời (universal link) và báo đẩy "bạn vừa nhận ngày Premium" khi có bản build EAS; nội dung phần IELTS.
+   - [ ] **Khai báo giá cho trung tâm** trên admin: mỗi đối tác có bảng giá (tiền / học viên / tháng, áp dụng từ tháng nào), tháng nào lấy giá đang áp dụng tháng đó để đổi giá không làm sai các tháng cũ; thẻ *Thống kê tháng* và file Excel thêm cột **Thành tiền** + tổng tiền. Hiện thống kê mới đếm số tháng tính phí.
 5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
 6. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
 7. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
