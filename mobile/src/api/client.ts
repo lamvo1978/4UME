@@ -75,7 +75,32 @@ export type NotificationConfig = {
 
 export type ListeningConfig = { countsTowardStreak: boolean };
 
-export type AppConfig = { notifications: NotificationConfig; listening?: ListeningConfig };
+/** Reminder wording edited in the admin; `{name}` placeholders are filled in by the app. */
+export type NotificationTexts = {
+  dueTitles: string[];
+  newWordsTitles: string[];
+  encouragementTitles: string[];
+  startStreakLines: string[];
+  streakLines: string[];
+  milestoneTomorrow: string;
+  milestoneSoon: string;
+  rescueFreezeTitle: string;
+  rescueFreezeBodies: string[];
+  rescueTitles: string[];
+  rescueBodies: string[];
+  comebackTitles: string[];
+  comebackDueBody: string;
+  comebackNewBody: string;
+  promptTitle: string;
+  promptBody: string;
+};
+
+export type AppConfig = {
+  notifications: NotificationConfig;
+  listening?: ListeningConfig;
+  /** Missing on servers older than the admin editor; the app falls back to its built-in texts. */
+  notificationTexts?: Partial<NotificationTexts>;
+};
 
 export type ListeningKind = "dialogue" | "story" | "news";
 export type ListeningProgress = { positionMs: number; completed: boolean; timesCompleted: number; liked: boolean };

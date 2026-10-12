@@ -8,11 +8,12 @@ import {
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ComponentProps, useCallback, useEffect, useRef } from "react";
+import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "../auth/AuthContext";
+import { ReminderPrompt } from "../components/streak/ReminderPrompt";
 import { StreakCelebration } from "../components/streak/StreakCelebration";
-import { onReminderTap, ReminderScreen } from "../notifications/reminders";
+import { onReminderTap, ReminderScreen, shouldOfferReminder } from "../notifications/reminders";
 import { colors, shadow } from "../theme";
 import { AboutScreen } from "../screens/AboutScreen";
 import { FeedbackInboxScreen } from "../screens/FeedbackInboxScreen";
@@ -70,10 +71,20 @@ function tabIcon(active: IconName, inactive: IconName) {
 
 /** Waits until the user is back on the tabs so the celebration never interrupts a session. */
 function CelebrationHost() {
-  const { celebration, dismissCelebration } = useAuth();
+  const { me, celebration, dismissCelebration } = useAuth();
   const focused = useIsFocused();
-  if (celebration === null || !focused) return null;
-  return <StreakCelebration streak={celebration} onClose={dismissCelebration} />;
+  const [offerReminder, setOfferReminder] = useState(false);
+
+  const closeCelebration = useCallback(() => {
+    dismissCelebration();
+    shouldOfferReminder(me)
+      .then(setOfferReminder)
+      .catch(() => undefined);
+  }, [me, dismissCelebration]);
+
+  if (!focused) return null;
+  if (celebration !== null) return <StreakCelebration streak={celebration} onClose={closeCelebration} />;
+  return offerReminder ? <ReminderPrompt onClose={() => setOfferReminder(false)} /> : null;
 }
 
 function MainTabs() {

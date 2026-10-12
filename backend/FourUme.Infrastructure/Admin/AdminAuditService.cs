@@ -100,6 +100,9 @@ public class AdminAuditService(
             case AuditEntities.Settings when log.EntityId == FeedbackSettings.SettingKey:
                 await settings.RestoreFeedbackAsync(Read<FeedbackSettings>(json), ct);
                 break;
+            case AuditEntities.Settings when log.EntityId == NotificationTexts.SettingKey:
+                await settings.RestoreNotificationTextsAsync(Read<NotificationTexts>(json), ct);
+                break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");
         }

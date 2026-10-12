@@ -3,7 +3,6 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth";
 import { AdminLayout } from "./layout/AdminLayout";
-import { ComingSoonPage } from "./pages/ComingSoonPage";
 import { DecksPage } from "./pages/DecksPage";
 import { GrammarEditPage } from "./pages/GrammarEditPage";
 import { GrammarPage } from "./pages/GrammarPage";
@@ -15,6 +14,7 @@ import { MediaPage } from "./pages/MediaPage";
 import { WordEditPage } from "./pages/WordEditPage";
 import { WordsPage } from "./pages/WordsPage";
 import { LoginPage } from "./pages/LoginPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { AboutPage } from "./pages/AboutPage";
@@ -77,7 +77,7 @@ export function App() {
         <Route path="users/:id" element={<UserDetailPage />} />
         <Route path="partners" element={<PartnersPage />} />
         <Route path="partners/:id" element={<PartnerDetailPage />} />
-        <Route path="notifications" element={<ComingSoonPage title="Thông báo" phase="giai đoạn thông báo 2" />} />
+        <Route path="notifications" element={<NotificationsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="premium" element={<PremiumPerksPage />} />

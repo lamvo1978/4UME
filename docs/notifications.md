@@ -21,6 +21,7 @@
 - **Giờ yên tĩnh** (mặc định 22:30 – 07:00): không gửi gì. Chỉnh trong web admin — xem *Thông số hệ thống*.
 - **Hôm nay đã học thì không nhắc học nữa** (vẫn có thể nhận tổng kết tuần / tin mới).
 - Mỗi loại bật / tắt riêng trong *Hồ sơ → Cài đặt (bánh răng) → Cài đặt học*.
+- Nhắc học mặc định tắt. Sau bảng mừng chuỗi ngày học đầu tiên (mỗi máy chỉ một lần, khi nhắc học đang tắt và máy còn cho xin quyền), app hỏi *"Giữ lửa mỗi ngày nhé?"* — bấm **Bật nhắc học** thì xin quyền thông báo và bật `daily`.
 - Chạm vào thông báo mở thẳng màn liên quan (ôn tập, học từ mới, bài ngữ pháp…).
 - Nội dung thay đổi luân phiên, giọng thân thiện, ít emoji; không dọa nạt hay làm người học thấy tội lỗi.
 
@@ -54,7 +55,7 @@ Dòng phụ luôn nhắc chuỗi nếu đang có: "Giữ chuỗi **N** ngày nh�
   - Ngày thứ 3 và 7 kể từ lần học cuối: thay nội dung bằng `comeback`.
   - Số từ đến hạn của từng ngày lấy từ API dự báo (xem dưới) để nội dung đúng cho cả những ngày sau.
   - Học xong → lịch được dựng lại (bỏ nhắc của hôm nay), như hiện tại.
-- Kho câu nhắc luân phiên (`notifications/copy.ts`), không lặp lại câu của hôm trước.
+- Kho câu nhắc luân phiên, không lặp lại câu của hôm trước. Nội dung sửa ở web admin, mục **Thông báo** (khoá `notificationTexts` trong `AppSettings`, có lịch sử và khôi phục mặc định), trả về app qua `GET /api/config` → `notificationTexts`. Chữ trong ngoặc nhọn (`{streak}`, `{count}`…) do app thay bằng số thật; server chỉ nhận đúng các chỗ trống của từng loại câu. App giữ bản mặc định trong `notifications/copy.ts` để dùng khi server cũ hoặc không tải được.
 - Chạm thông báo → mở màn tương ứng (Ôn tập / Học từ mới).
 - Cài đặt: thêm công tắc **Nhắc cứu chuỗi** (mặc định bật) bên dưới *Nhắc học hằng ngày*.
 

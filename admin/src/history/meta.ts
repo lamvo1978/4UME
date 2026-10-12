@@ -42,7 +42,15 @@ export function entityPath(type: string, id: string) {
     case "partner":
       return `/partners/${id}`;
     case "settings":
-      return id === "about" ? "/about" : id === "premium" ? "/premium" : id === "feedback" ? "/feedback/settings" : "/settings";
+      return id === "about"
+        ? "/about"
+        : id === "premium"
+          ? "/premium"
+          : id === "feedback"
+            ? "/feedback/settings"
+            : id === "notificationTexts"
+              ? "/notifications"
+              : "/settings";
     default:
       return null;
   }
@@ -115,6 +123,22 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     rewardDays: "Thưởng mỗi bên (ngày Premium)",
     maxRewardsPerUser: "Thưởng tối đa mỗi người mời",
     joinWindowDays: "Hạn nhập mã mời (ngày)",
+    dueTitles: "Nhắc học · có bài cần ôn",
+    newWordsTitles: "Nhắc học · còn từ mới",
+    encouragementTitles: "Nhắc học · đã xong mục tiêu",
+    startStreakLines: "Dòng phụ · chưa có chuỗi",
+    streakLines: "Dòng phụ · đang có chuỗi",
+    milestoneTomorrow: "Dòng phụ · mai đạt mốc",
+    milestoneSoon: "Dòng phụ · sắp đạt mốc",
+    rescueFreezeTitle: "Cứu chuỗi · tiêu đề khi còn đóng băng",
+    rescueFreezeBodies: "Cứu chuỗi · nội dung khi còn đóng băng",
+    rescueTitles: "Cứu chuỗi · tiêu đề",
+    rescueBodies: "Cứu chuỗi · nội dung",
+    comebackTitles: "Quay lại học · tiêu đề",
+    comebackDueBody: "Quay lại học · có từ cần ôn",
+    comebackNewBody: "Quay lại học · không có từ cần ôn",
+    promptTitle: "Hỏi bật nhắc học · tiêu đề",
+    promptBody: "Hỏi bật nhắc học · nội dung",
   },
   partner: { name: "Tên đối tác", prefix: "Tiền tố mã", features: "Tính năng mở", note: "Ghi chú" },
 };

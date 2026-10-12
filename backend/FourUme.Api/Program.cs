@@ -343,7 +343,7 @@ app.MapDelete("/api/me/devices/{token}", async (string token, ClaimsPrincipal pr
 }).RequireAuthorization();
 
 app.MapGet("/api/config", async (INotificationService notifications, IListeningService listening) =>
-    Results.Ok(new AppConfigDto(await notifications.GetConfigAsync(), await listening.GetConfigAsync())));
+    Results.Ok(new AppConfigDto(await notifications.GetConfigAsync(), await listening.GetConfigAsync(), await notifications.GetTextsAsync())));
 
 app.MapGet("/api/about", async (IAboutService about, CancellationToken ct) => Results.Ok(AboutRules.Visible(await about.GetAsync(ct))));
 app.MapGet("/api/premium-perks", async (IPremiumPerksService perks, CancellationToken ct) =>

@@ -5,6 +5,9 @@ public interface INotificationService
     /// <summary>Stored parameters merged over the defaults.</summary>
     Task<NotificationConfig> GetConfigAsync(CancellationToken ct = default);
 
+    /// <summary>Stored reminder wording merged over the defaults.</summary>
+    Task<NotificationTexts> GetTextsAsync(CancellationToken ct = default);
+
     /// <summary>Adds or refreshes a push token; a token seen under another account moves to this user.</summary>
     Task RegisterDeviceAsync(Guid userId, RegisterDeviceRequest request, CancellationToken ct = default);
 

@@ -66,4 +66,10 @@ public interface IAdminSettingsService
     Task<AdminFeedbackSettingsDto> SaveFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default);
     Task<AdminFeedbackSettingsDto> ResetFeedbackAsync(CancellationToken ct = default);
     Task RestoreFeedbackAsync(FeedbackSettings settings, CancellationToken ct = default);
+
+    Task<AdminNotificationTextsDto> GetNotificationTextsAsync(CancellationToken ct = default);
+    /// <summary>Validates with <see cref="NotificationTextRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminNotificationTextsDto> SaveNotificationTextsAsync(NotificationTexts texts, CancellationToken ct = default);
+    Task<AdminNotificationTextsDto> ResetNotificationTextsAsync(CancellationToken ct = default);
+    Task RestoreNotificationTextsAsync(NotificationTexts texts, CancellationToken ct = default);
 }

@@ -14,6 +14,8 @@ public class EmailOptions
     public string? ReplyTo { get; set; }
     /// <summary>Web admin address used for links in staff emails.</summary>
     public string AdminUrl { get; set; } = "https://admin.4ume.io.vn";
+    /// <summary>Public API address; uploaded images in staff emails load from here.</summary>
+    public string ApiUrl { get; set; } = "https://api.4ume.io.vn";
 }
 
 /// <summary>
