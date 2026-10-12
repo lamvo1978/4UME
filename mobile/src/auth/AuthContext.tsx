@@ -11,6 +11,7 @@ import {
 } from "../api/client";
 import { configureSpeech } from "../components/SpeakButton";
 import { resolveTexts } from "../notifications/copy";
+import * as Sentry from "@sentry/react-native";
 import { forgetPushToken, registerPushToken, unregisterPushToken } from "../notifications/push";
 import { syncReminders } from "../notifications/reminders";
 
@@ -114,6 +115,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     me?.studiedToday,
     me?.todayNewWords,
   ]);
+
+  // Crash reports carry the account id only, so a report can be matched to a feedback ticket.
+  useEffect(() => {
+    Sentry.setUser(me ? { id: me.userId } : null);
+  }, [me?.userId]);
 
   // Turning a reminder on is when permission usually gets granted.
   useEffect(() => {

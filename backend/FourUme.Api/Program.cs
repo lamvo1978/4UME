@@ -31,6 +31,16 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Only with Sentry:Dsn set (VPS .env); no request bodies, user data or tracing.
+if (!string.IsNullOrWhiteSpace(builder.Configuration["Sentry:Dsn"]))
+{
+    builder.WebHost.UseSentry(o =>
+    {
+        o.SendDefaultPii = false;
+        o.TracesSampleRate = 0;
+    });
+}
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IClientClock, HttpClientClock>();

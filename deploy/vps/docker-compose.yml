@@ -50,6 +50,7 @@ services:
       Gemini__ApiKey: ${GEMINI_API_KEY:-}
       Gemini__Model: ${GEMINI_MODEL:-}
       Email__ReplyTo: ${EMAIL_REPLY_TO:-}
+      Sentry__Dsn: ${SENTRY_DSN_API:-}
     volumes:
       - media:/app/media
     depends_on:

@@ -27,7 +27,7 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 - [ ] **Gửi thông báo hàng loạt** trên admin *Thông báo*: soạn tiêu đề / nội dung / màn mở khi chạm, xem trước; chọn người nhận (tất cả, học trong 7 ngày, lâu không học, Premium, học viên một trung tâm) kèm số người ước tính; gửi thử cho mình trước, xác nhận rồi mới gửi thật; gửi ngay hoặc hẹn giờ (tránh giờ yên tĩnh từng người); lịch sử số máy nhận / lỗi. Cần thêm công tắc **Tin mới từ 4UME** (`NotifyNews`) vào Cài đặt app — Apple chỉ cho gửi tin quảng cáo / khuyến mãi khi người dùng đồng ý và tắt được (Guideline 4.5.4).
 - [ ] Nhận dạng giọng của máy (`expo-speech-recognition`) khi hết lượt chấm Azure.
 - [ ] Nền cho AdMob và mua Premium trong app (In‑App Purchase / Google Play Billing) — xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
-- [ ] **Báo lỗi crash tự động** (Sentry, gói miễn phí): app văng trên máy ai thì biết ngay lỗi ở đâu, kèm phiên bản app / loại máy. Làm ngay ở bản build EAS đầu tiên, trước khi mời bạn bè thử nhiều vòng. Có thể gắn luôn cho API và web admin. Thêm Sentry vào mục bên thứ ba trong `privacy/`, khai *Crash data* trong App Privacy / Data safety.
+- [x] **Báo lỗi crash tự động** (Sentry, gói miễn phí, 13/10): app (bản build thật, từ build 4) và API; chỉ gửi mã tài khoản, không email / IP / quay màn hình. Bật bằng biến môi trường: app `EXPO_PUBLIC_SENTRY_DSN` + `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` trên EAS, API `SENTRY_DSN_API` trong `.env` của VPS. Đã thêm vào `privacy/`. Khi khai App Privacy / Data safety: *Crash data* + *User ID*, không dùng để theo dõi. Web admin chưa gắn.
 
 ## 5. Nội dung
 

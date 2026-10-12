@@ -6,7 +6,8 @@
   "build": {
     "base": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.4ume.io.vn"
+        "EXPO_PUBLIC_API_URL": "https://api.4ume.io.vn",
+        "SENTRY_ALLOW_FAILURE": "true"
       }
     },
     "preview": {
