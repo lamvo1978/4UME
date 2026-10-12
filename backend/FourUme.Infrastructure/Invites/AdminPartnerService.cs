@@ -64,10 +64,11 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
         if (batch.Length is < 1 or > 80) throw new InvalidOperationException("Tên lô mã cần từ 1 đến 80 ký tự.");
         if (request.Count is < 1 or > ReferralRules.MaxBatchSize)
             throw new InvalidOperationException($"Số mã mỗi lần tạo phải từ 1 đến {ReferralRules.MaxBatchSize}.");
-        if (request.ExpiresAt <= DateTimeOffset.UtcNow) throw new InvalidOperationException("Ngày hết hạn phải ở tương lai.");
+        var expiresAt = request.ExpiresAt?.ToUniversalTime();
+        if (expiresAt <= DateTimeOffset.UtcNow) throw new InvalidOperationException("Ngày hết hạn phải ở tương lai.");
         // One batch has one end date, so adding codes to an existing batch must keep its date.
         var current = await db.PartnerCodes.Where(c => c.PartnerId == id && c.Batch == batch).Select(c => new { c.ExpiresAt }).FirstOrDefaultAsync(ct);
-        if (current is not null && current.ExpiresAt != request.ExpiresAt)
+        if (current is not null && current.ExpiresAt != expiresAt)
             throw new InvalidOperationException($"Lô {batch} đang {ExpiryText(current.ExpiresAt)}. Chọn đúng hạn đó, hoặc đổi hạn cả lô trước.");
         var existing = await db.PartnerCodes.CountAsync(c => c.Code.StartsWith(partner.Prefix), ct);
         // Six digits allow a million codes per prefix; stop well before random picks start to stall.
@@ -88,9 +89,9 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
 
         var now = DateTimeOffset.UtcNow;
         foreach (var code in codes)
-            db.PartnerCodes.Add(new PartnerCode { PartnerId = id, Code = code, Batch = batch, CreatedAt = now, ExpiresAt = request.ExpiresAt });
+            db.PartnerCodes.Add(new PartnerCode { PartnerId = id, Code = code, Batch = batch, CreatedAt = now, ExpiresAt = expiresAt });
         auditor.Record(AuditEntities.Partner, id.ToString(), AuditActions.Create,
-            $"Tạo {codes.Count} mã cho {partner.Name} (lô {batch}, {ExpiryText(request.ExpiresAt)})", null, null);
+            $"Tạo {codes.Count} mã cho {partner.Name} (lô {batch}, {ExpiryText(expiresAt)})", null, null);
         await db.SaveChangesAsync(ct);
         return await GetAsync(id, ct);
     }
@@ -99,11 +100,11 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
     {
         var partner = await db.Partners.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, ct) ?? throw new KeyNotFoundException();
         var batch = (request.Batch ?? "").Trim();
-        if (request.ExpiresAt <= DateTimeOffset.UtcNow)
+        var expiresAt = request.ExpiresAt?.ToUniversalTime();
+        if (expiresAt <= DateTimeOffset.UtcNow)
             throw new InvalidOperationException("Ngày hết hạn phải ở tương lai. Muốn dừng ngay thì thu hồi từng mã.");
         var codes = db.PartnerCodes.Where(c => c.PartnerId == id && c.Batch == batch);
         var users = await codes.Where(c => c.UsedById != null).Select(c => c.UsedById!.Value).ToListAsync(ct);
-        var expiresAt = request.ExpiresAt;
         if (await codes.ExecuteUpdateAsync(s => s.SetProperty(c => c.ExpiresAt, expiresAt), ct) == 0) throw new KeyNotFoundException();
 
         auditor.Record(AuditEntities.Partner, id.ToString(), AuditActions.Update, $"Đổi hạn lô {batch} của {partner.Name}: {ExpiryText(expiresAt)}", null, null);
@@ -167,10 +168,15 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
     }
 
     /// <summary>Codes redeemed before the period ends and not ended before it starts.</summary>
-    private static IQueryable<PartnerCode> UsedIn(IQueryable<PartnerCode> codes, DateTimeOffset start, DateTimeOffset end) =>
-        codes.Where(c => c.UsedAt != null && c.UsedAt < end
-            && (c.RevokedAt == null || c.RevokedAt > start)
-            && (c.ExpiresAt == null || c.ExpiresAt > start));
+    private static IQueryable<PartnerCode> UsedIn(IQueryable<PartnerCode> codes, DateTimeOffset start, DateTimeOffset end)
+    {
+        // Npgsql only writes UTC values to timestamptz.
+        var from = start.ToUniversalTime();
+        var to = end.ToUniversalTime();
+        return codes.Where(c => c.UsedAt != null && c.UsedAt < to
+            && (c.RevokedAt == null || c.RevokedAt > from)
+            && (c.ExpiresAt == null || c.ExpiresAt > from));
+    }
 
     private static DateTimeOffset? EndOf(DateTimeOffset? revokedAt, DateTimeOffset? expiresAt) =>
         revokedAt is { } r && (expiresAt is null || r < expiresAt) ? r : expiresAt;
