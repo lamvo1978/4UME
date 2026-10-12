@@ -1,4 +1,4 @@
-# Việc tiếp theo (cập nhật 11/10/2026)
+# Việc tiếp theo (cập nhật 13/10/2026)
 
 Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật khẩu tạm, chứng chỉ PetHubPro, hộp thư Zoho) xem [todo-deploy.md](todo-deploy.md).
 
@@ -23,7 +23,8 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 ## 4. Bản build riêng (EAS) — cần tài khoản Apple Developer
 
-- [ ] Thông báo đẩy thật (Expo Go không hỗ trợ đầy đủ), gồm cả báo khi 4UME trả lời góp ý ([feedback.md](feedback.md)).
+- [x] Thông báo đẩy thật từ máy chủ (13/10, iOS từ build 3): tổng kết tuần, gọi quay lại sau 14/30 ngày, báo khi 4UME trả lời góp ý, nút *Gửi thông báo thử* ở trang người dùng; nội dung sửa ở admin *Thông báo* — xem [notifications.md](notifications.md#giai-đoạn-2--thông-báo-đẩy-từ-máy-chủ-đã-làm-ios-trước). Android chờ Firebase (sau khi Google Play xong).
+- [ ] **Gửi thông báo hàng loạt** trên admin *Thông báo*: soạn tiêu đề / nội dung / màn mở khi chạm, xem trước; chọn người nhận (tất cả, học trong 7 ngày, lâu không học, Premium, học viên một trung tâm) kèm số người ước tính; gửi thử cho mình trước, xác nhận rồi mới gửi thật; gửi ngay hoặc hẹn giờ (tránh giờ yên tĩnh từng người); lịch sử số máy nhận / lỗi. Cần thêm công tắc **Tin mới từ 4UME** (`NotifyNews`) vào Cài đặt app — Apple chỉ cho gửi tin quảng cáo / khuyến mãi khi người dùng đồng ý và tắt được (Guideline 4.5.4).
 - [ ] Nhận dạng giọng của máy (`expo-speech-recognition`) khi hết lượt chấm Azure.
 - [ ] Nền cho AdMob và mua Premium trong app (In‑App Purchase / Google Play Billing) — xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
 - [ ] **Báo lỗi crash tự động** (Sentry, gói miễn phí): app văng trên máy ai thì biết ngay lỗi ở đâu, kèm phiên bản app / loại máy. Làm ngay ở bản build EAS đầu tiên, trước khi mời bạn bè thử nhiều vòng. Có thể gắn luôn cho API và web admin. Thêm Sentry vào mục bên thứ ba trong `privacy/`, khai *Crash data* trong App Privacy / Data safety.
@@ -39,7 +40,7 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
 
 1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
 2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
-3. [x] **Tổng kết tuần** (12/10) — màn chi tiết, mở từ Hồ sơ; xem [weekly.md](weekly.md). Còn lại: thông báo đẩy thứ Hai 08:30 (bấm mở màn tổng kết) khi có bản build EAS.
+3. [x] **Tổng kết tuần** (12/10) — màn chi tiết, mở từ Hồ sơ; xem [weekly.md](weekly.md). Thông báo đẩy thứ Hai 08:30 đã có từ build 3 (13/10).
 4. [x] **Giới thiệu bạn bè + mã trung tâm đối tác** (12/10) — xem [invites.md](invites.md). Còn lại: mở app thẳng từ link mời (universal link) và báo đẩy "bạn vừa nhận ngày Premium" khi có bản build EAS; nội dung phần IELTS.
    - [ ] **Khai báo giá cho trung tâm** trên admin: mỗi đối tác có bảng giá (tiền / học viên / tháng, áp dụng từ tháng nào), tháng nào lấy giá đang áp dụng tháng đó để đổi giá không làm sai các tháng cũ; thẻ *Thống kê tháng* và file Excel thêm cột **Thành tiền** + tổng tiền. Hiện thống kê mới đếm số tháng tính phí.
 5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
