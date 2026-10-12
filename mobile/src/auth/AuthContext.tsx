@@ -10,6 +10,7 @@ import {
   VocabLevel,
 } from "../api/client";
 import { configureSpeech } from "../components/SpeakButton";
+import { resolveTexts } from "../notifications/copy";
 import { syncReminders } from "../notifications/reminders";
 
 type SettingsChange = Partial<UserSettings> & { displayName?: string };
@@ -94,7 +95,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     (async () => {
       const [config, forecast] = await Promise.all([api.config(), api.reviewForecast(7)]);
-      if (!cancelled) await syncReminders({ me: current, config: config.notifications, forecast });
+      if (!cancelled) {
+        await syncReminders({ me: current, config: config.notifications, forecast, texts: resolveTexts(config.notificationTexts) });
+      }
     })().catch(() => undefined);
     return () => {
       cancelled = true;

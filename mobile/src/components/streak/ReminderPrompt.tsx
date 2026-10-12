@@ -1,7 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { api } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
+import { DEFAULT_TEXTS, fill, resolveTexts } from "../../notifications/copy";
 import { ensureReminderPermission, markReminderOffered } from "../../notifications/reminders";
 import { colors, shadow, spacing } from "../../theme";
 
@@ -11,8 +13,14 @@ export function ReminderPrompt({ onClose }: { onClose: () => void }) {
   const [busy, setBusy] = useState(false);
   const time = me?.settings.reminderTime ?? "20:00";
 
+  const [texts, setTexts] = useState(DEFAULT_TEXTS);
+
   useEffect(() => {
     markReminderOffered().catch(() => undefined);
+    api
+      .config()
+      .then((c) => setTexts(resolveTexts(c.notificationTexts)))
+      .catch(() => undefined);
   }, []);
 
   async function enable() {
@@ -33,10 +41,8 @@ export function ReminderPrompt({ onClose }: { onClose: () => void }) {
           <View style={styles.icon}>
             <Ionicons name="notifications" size={44} color={colors.flame} />
           </View>
-          <Text style={styles.title}>Giữ lửa mỗi ngày nhé?</Text>
-          <Text style={styles.sub}>
-            4UME sẽ nhắc bạn học lúc {time} mỗi ngày. Bạn đổi giờ hoặc tắt bất cứ lúc nào trong Hồ sơ › Cài đặt.
-          </Text>
+          <Text style={styles.title}>{fill(texts.promptTitle, { time })}</Text>
+          <Text style={styles.sub}>{fill(texts.promptBody, { time })}</Text>
           <Pressable
             style={({ pressed }) => [styles.button, pressed && styles.pressed]}
             onPress={enable}

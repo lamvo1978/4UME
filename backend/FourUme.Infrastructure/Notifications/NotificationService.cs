@@ -22,6 +22,15 @@ public class NotificationService(IAppDbContext db) : INotificationService
         return stored is null ? new NotificationConfig() : JsonSerializer.Deserialize<NotificationConfig>(stored, Json) ?? new NotificationConfig();
     }
 
+    public async Task<NotificationTexts> GetTextsAsync(CancellationToken ct = default)
+    {
+        var stored = await db.AppSettings.AsNoTracking()
+            .Where(s => s.Key == NotificationTexts.SettingKey)
+            .Select(s => s.Value)
+            .FirstOrDefaultAsync(ct);
+        return stored is null ? new NotificationTexts() : JsonSerializer.Deserialize<NotificationTexts>(stored, Json) ?? new NotificationTexts();
+    }
+
     public async Task RegisterDeviceAsync(Guid userId, RegisterDeviceRequest request, CancellationToken ct = default)
     {
         var token = request.Token?.Trim() ?? "";

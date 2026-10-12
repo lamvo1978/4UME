@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import type { Me, NotificationConfig, ReviewForecastDay } from "../api/client";
+import type { Me, NotificationConfig, NotificationTexts, ReviewForecastDay } from "../api/client";
 import { addDays, toDayKey } from "../utils/dates";
 import {
   comebackContent,
   Content,
+  DEFAULT_TEXTS,
   dueTitle,
   encouragementTitle,
   newWordsTitle,
@@ -74,7 +75,13 @@ type Planned = { date: Date; content: Content; screen: ReminderScreen };
  * Builds the next week of local reminders assuming the user does not study until then;
  * the schedule is rebuilt whenever /api/me changes, so studying drops the stale ones.
  */
-export function planReminders(me: Me, config: NotificationConfig, forecast: ReviewForecastDay[], now = new Date()) {
+export function planReminders(
+  me: Me,
+  config: NotificationConfig,
+  forecast: ReviewForecastDay[],
+  now = new Date(),
+  t: NotificationTexts = DEFAULT_TEXTS
+) {
   const s = me.settings;
   const studied = me.studiedToday ? 1 : 0;
   const dailyMinutes = inQuietHours(toMinutes(s.reminderTime), config)
@@ -109,17 +116,17 @@ export function planReminders(me: Me, config: NotificationConfig, forecast: Revi
       let content: Content;
       let screen: ReminderScreen;
       if (!alive && daysAway !== null && config.comebackDaysLocal.includes(daysAway)) {
-        content = comebackContent(daysAway, due.words, seed);
+        content = comebackContent(t, daysAway, due.words, seed);
         screen = dueTotal > 0 ? "practice" : "study";
       } else {
         const newLeft = d === 0 ? Math.max(0, s.dailyGoal - me.todayNewWords) : s.dailyGoal;
         const title =
           dueTotal > 0
-            ? dueTitle(due.words, due.grammar, seed)
+            ? dueTitle(t, due.words, due.grammar, seed)
             : newLeft > 0
-              ? newWordsTitle(newLeft, seed)
-              : encouragementTitle(seed);
-        content = { title, body: streakLine(streakToKeep, me.nextMilestone, seed) };
+              ? newWordsTitle(t, newLeft, seed)
+              : encouragementTitle(t, seed);
+        content = { title, body: streakLine(t, streakToKeep, me.nextMilestone, seed) };
         screen = dueTotal > 0 ? "practice" : "study";
       }
       planned.push({ date: at(day, dailyMinutes), content, screen });
@@ -128,7 +135,7 @@ export function planReminders(me: Me, config: NotificationConfig, forecast: Revi
     if (rescueAllowed && alive && streakToKeep >= config.rescueMinStreak) {
       planned.push({
         date: at(day, rescueMinutes),
-        content: rescueContent({ streak: streakToKeep, hoursLeft, freezesLeft: me.streakFreezes - missed, seed }),
+        content: rescueContent(t, { streak: streakToKeep, hoursLeft, freezesLeft: me.streakFreezes - missed, seed }),
         screen: dueTotal > 0 ? "practice" : "study",
       });
     }
@@ -138,13 +145,13 @@ export function planReminders(me: Me, config: NotificationConfig, forecast: Revi
 
 /** Replaces every scheduled reminder; pass null to clear them (e.g. on logout). */
 export async function syncReminders(
-  input: { me: Me; config: NotificationConfig; forecast: ReviewForecastDay[] } | null
+  input: { me: Me; config: NotificationConfig; forecast: ReviewForecastDay[]; texts: NotificationTexts } | null
 ) {
   if (Platform.OS === "web") return;
   await Notifications.cancelAllScheduledNotificationsAsync();
   if (!input) return;
 
-  const planned = planReminders(input.me, input.config, input.forecast);
+  const planned = planReminders(input.me, input.config, input.forecast, new Date(), input.texts);
   if (planned.length === 0) return;
 
   const { granted } = await Notifications.getPermissionsAsync();

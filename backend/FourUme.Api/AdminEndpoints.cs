@@ -120,6 +120,12 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveFeedbackAsync(f, ct)));
         admin.MapPost("/feedback-settings/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetFeedbackAsync(ct)));
+        admin.MapGet("/notification-texts", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.GetNotificationTextsAsync(ct)));
+        admin.MapPut("/notification-texts", async (NotificationTexts t, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveNotificationTextsAsync(t, ct)));
+        admin.MapPost("/notification-texts/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetNotificationTextsAsync(ct)));
 
         admin.MapGet("/feedback", async ([AsParameters] AdminFeedbackQuery q, IAdminFeedbackService s, CancellationToken ct) =>
             Results.Ok(await s.ListAsync(q, ct)));

@@ -55,7 +55,7 @@ Dòng phụ luôn nhắc chuỗi nếu đang có: "Giữ chuỗi **N** ngày nh�
   - Ngày thứ 3 và 7 kể từ lần học cuối: thay nội dung bằng `comeback`.
   - Số từ đến hạn của từng ngày lấy từ API dự báo (xem dưới) để nội dung đúng cho cả những ngày sau.
   - Học xong → lịch được dựng lại (bỏ nhắc của hôm nay), như hiện tại.
-- Kho câu nhắc luân phiên (`notifications/copy.ts`), không lặp lại câu của hôm trước.
+- Kho câu nhắc luân phiên, không lặp lại câu của hôm trước. Nội dung sửa ở web admin, mục **Thông báo** (khoá `notificationTexts` trong `AppSettings`, có lịch sử và khôi phục mặc định), trả về app qua `GET /api/config` → `notificationTexts`. Chữ trong ngoặc nhọn (`{streak}`, `{count}`…) do app thay bằng số thật; server chỉ nhận đúng các chỗ trống của từng loại câu. App giữ bản mặc định trong `notifications/copy.ts` để dùng khi server cũ hoặc không tải được.
 - Chạm thông báo → mở màn tương ứng (Ôn tập / Học từ mới).
 - Cài đặt: thêm công tắc **Nhắc cứu chuỗi** (mặc định bật) bên dưới *Nhắc học hằng ngày*.
 

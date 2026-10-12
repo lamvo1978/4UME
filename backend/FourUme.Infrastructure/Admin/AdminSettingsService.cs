@@ -29,6 +29,7 @@ public class AdminSettingsService(
     private const string ReferralSummary = "Thông số mời bạn bè";
     private const string PremiumSummary = "Quyền lợi Premium";
     private const string FeedbackSummary = "Cài đặt góp ý";
+    private const string NotificationTextsSummary = "Nội dung thông báo";
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
     private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
@@ -217,6 +218,38 @@ public class AdminSettingsService(
         var problems = FeedbackRules.Validate(next);
         if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
         await WriteAsync(FeedbackSettings.SettingKey, FeedbackSummary, action, await feedback.GetAsync(ct), next, ct);
+    }
+
+    public async Task<AdminNotificationTextsDto> GetNotificationTextsAsync(CancellationToken ct = default)
+    {
+        var updated = await db.AppSettings.AsNoTracking()
+            .Where(s => s.Key == NotificationTexts.SettingKey)
+            .Select(s => (DateTimeOffset?)s.UpdatedAt)
+            .FirstOrDefaultAsync(ct);
+        return new AdminNotificationTextsDto(await notifications.GetTextsAsync(ct), new NotificationTexts(), updated);
+    }
+
+    public async Task<AdminNotificationTextsDto> SaveNotificationTextsAsync(NotificationTexts texts, CancellationToken ct = default)
+    {
+        await ApplyNotificationTextsAsync(texts, AuditActions.Update, ct);
+        return await GetNotificationTextsAsync(ct);
+    }
+
+    public async Task<AdminNotificationTextsDto> ResetNotificationTextsAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(NotificationTexts.SettingKey, NotificationTextsSummary, await notifications.GetTextsAsync(ct), new NotificationTexts(), ct);
+        return await GetNotificationTextsAsync(ct);
+    }
+
+    public Task RestoreNotificationTextsAsync(NotificationTexts texts, CancellationToken ct = default) =>
+        ApplyNotificationTextsAsync(texts, AuditActions.Restore, ct);
+
+    private async Task ApplyNotificationTextsAsync(NotificationTexts texts, string action, CancellationToken ct)
+    {
+        var next = NotificationTextRules.Normalize(texts);
+        var problems = NotificationTextRules.Validate(next);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(NotificationTexts.SettingKey, NotificationTextsSummary, action, await notifications.GetTextsAsync(ct), next, ct);
     }
 
     private async Task ApplyNotificationsAsync(NotificationConfig config, string action, CancellationToken ct)

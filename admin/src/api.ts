@@ -240,6 +240,27 @@ export type FeedbackReplyTemplate = { title: string; body: string };
 export type FeedbackSettings = { recipients: string[]; replies: FeedbackReplyTemplate[]; dailyLimit: number; autoCloseDays: number };
 export type AdminFeedbackSettings = { value: FeedbackSettings; defaults: FeedbackSettings; updatedAt: string | null };
 
+/** Wording of the reminders the app schedules on the phone; `{name}` placeholders are filled in by the app. */
+export type NotificationTexts = {
+  dueTitles: string[];
+  newWordsTitles: string[];
+  encouragementTitles: string[];
+  startStreakLines: string[];
+  streakLines: string[];
+  milestoneTomorrow: string;
+  milestoneSoon: string;
+  rescueFreezeTitle: string;
+  rescueFreezeBodies: string[];
+  rescueTitles: string[];
+  rescueBodies: string[];
+  comebackTitles: string[];
+  comebackDueBody: string;
+  comebackNewBody: string;
+  promptTitle: string;
+  promptBody: string;
+};
+export type AdminNotificationTexts = { value: NotificationTexts; defaults: NotificationTexts; updatedAt: string | null };
+
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
 export type FeedbackStatus = "open" | "answered" | "closed";
 export type FeedbackUser = { id: string; email: string; displayName: string };
@@ -656,6 +677,9 @@ export const api = {
   feedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings"),
   saveFeedbackSettings: (s: FeedbackSettings) => request<AdminFeedbackSettings>("/api/admin/feedback-settings", json("PUT", s)),
   resetFeedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings/reset", { method: "POST" }),
+  notificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts"),
+  saveNotificationTexts: (t: NotificationTexts) => request<AdminNotificationTexts>("/api/admin/notification-texts", json("PUT", t)),
+  resetNotificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts/reset", { method: "POST" }),
   feedbackList: (q: FeedbackQuery) => request<AdminFeedbackPage>(`/api/admin/feedback?${query(q)}`),
   feedbackCounts: () => request<FeedbackCounts>("/api/admin/feedback/counts"),
   feedbackTicket: (id: string) => request<AdminFeedbackTicket>(`/api/admin/feedback/${id}`),
