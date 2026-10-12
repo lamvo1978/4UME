@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FourUme.Application.Abstractions;
+using FourUme.Application.Admin;
 using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Infrastructure.Persistence;
@@ -35,19 +36,15 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
             .Where(r => r.InviterId == userId)
             .OrderByDescending(r => r.CreatedAt)
             .Take(100)
-            .Select(r => new
-            {
-                r.Invitee!.DisplayName,
-                r.CreatedAt,
-                r.RewardedAt,
-                Days = r.Invitee.StudyDays.Count(d => !d.Frozen),
-            })
+            .Select(r => new { r.InviteeId, r.Invitee!.DisplayName, r.CreatedAt, r.RewardedAt })
             .ToListAsync(ct);
+        var progress = await ProgressAsync(invitees.Where(i => i.RewardedAt == null).Select(i => i.InviteeId).ToList(), ct);
         var earned = await db.Referrals.CountAsync(r => r.InviterId == userId && r.InviterRewarded, ct);
         var invitedBy = await db.Referrals.AsNoTracking()
             .Where(r => r.InviteeId == userId)
-            .Select(r => new { r.Inviter!.DisplayName })
+            .Select(r => new { r.Inviter!.DisplayName, r.RewardedAt })
             .FirstOrDefaultAsync(ct);
+        var invitePaused = invitedBy is { RewardedAt: null } && (await ProgressAsync([userId], ct)).GetValueOrDefault(userId).Paused;
 
         return new MyReferralDto(
             config.Enabled,
@@ -59,8 +56,14 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
             earned,
             config.Enabled && invitedBy is null && InJoinWindow(user, config),
             invitedBy?.DisplayName,
-            invitees.Select(i => new InviteeDto(i.DisplayName, i.CreatedAt, Math.Min(i.Days, config.RequiredStudyDays), i.RewardedAt)).ToList(),
-            config.JoinWindowDays);
+            invitees.Select(i =>
+            {
+                var p = progress.GetValueOrDefault(i.InviteeId);
+                var days = i.RewardedAt is null ? Math.Min(p.Days, config.RequiredStudyDays) : config.RequiredStudyDays;
+                return new InviteeDto(i.DisplayName, i.CreatedAt, days, i.RewardedAt, i.RewardedAt is null && p.Paused);
+            }).ToList(),
+            config.JoinWindowDays,
+            invitePaused);
     }
 
     public async Task<RedeemResultDto> RedeemAsync(Guid userId, string? raw, CancellationToken ct = default)
@@ -103,9 +106,11 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
         await PremiumHold.SyncAsync(db, userId, ct);
         logger.LogInformation("Partner code {CodeId} of {PartnerId} redeemed by {UserId}", code.Id, partner.Id, userId);
         var ielts = FeatureKeys.Parse(partner.Features).Contains(FeatureKeys.Ielts);
+        var pendingInvite = await db.Referrals.AnyAsync(r => r.InviteeId == userId && r.RewardedAt == null, ct);
         return new RedeemResultDto("partner",
             $"Chào mừng học viên {partner.Name}! Tài khoản của bạn đã có Premium{(ielts ? " và mở phần IELTS" : "")}."
-            + (ownPremium ? " Premium riêng của bạn được tạm dừng và sẽ tiếp tục khi hết thời gian học ở trung tâm." : ""));
+            + (ownPremium ? " Premium riêng của bạn được tạm dừng và sẽ tiếp tục khi hết thời gian học ở trung tâm." : "")
+            + (pendingInvite ? " Ngày học cho mã mời bạn bè tạm dừng đếm và đếm tiếp sau thời gian học ở trung tâm." : ""));
     }
 
     private async Task<RedeemResultDto> RedeemReferralAsync(Guid userId, Guid inviterId, string inviterName, CancellationToken ct)
@@ -132,8 +137,10 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
 
         // Someone who already studied enough days before typing the code is rewarded right away.
         await OnStudyDayAsync(userId, ct);
+        var paused = (await ProgressAsync([userId], ct)).GetValueOrDefault(userId).Paused;
         return new RedeemResultDto("referral",
-            $"Đã nhận mã mời của {inviterName}. Khi bạn học đủ {config.RequiredStudyDays} ngày, cả hai sẽ được {config.RewardDays} ngày Premium.");
+            $"Đã nhận mã mời của {inviterName}. Khi bạn học đủ {config.RequiredStudyDays} ngày, cả hai sẽ được {config.RewardDays} ngày Premium."
+            + (paused ? " Ngày học được đếm sau khi hết thời gian học ở trung tâm." : ""));
     }
 
     public async Task OnStudyDayAsync(Guid userId, CancellationToken ct = default)
@@ -142,8 +149,8 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
         if (referral is null) return;
         var config = await GetConfigAsync(ct);
         if (!config.Enabled) return;
-        var days = await db.StudyDays.CountAsync(d => d.UserId == userId && !d.Frozen, ct);
-        if (days < config.RequiredStudyDays) return;
+        var progress = (await ProgressAsync([userId], ct)).GetValueOrDefault(userId);
+        if (progress.Paused || progress.Days < config.RequiredStudyDays) return;
 
         var now = DateTimeOffset.UtcNow;
         var claimed = await db.Referrals
@@ -171,6 +178,39 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
             WHERE "Id" = {userId}
             """, ct);
         await PremiumHold.SyncAsync(db, userId, ct);
+    }
+
+    /// <summary>
+    /// Study days that count toward an invite: not frozen and not while a partner code was active. An invite waiting for
+    /// its reward is paused while the invitee is a partner student and resumes, keeping earlier days, once that ends.
+    /// </summary>
+    private async Task<Dictionary<Guid, (int Days, bool Paused)>> ProgressAsync(IReadOnlyCollection<Guid> userIds, CancellationToken ct)
+    {
+        if (userIds.Count == 0) return [];
+        var now = DateTimeOffset.UtcNow;
+        var codes = await db.PartnerCodes.AsNoTracking()
+            .Where(c => c.UsedById != null && userIds.Contains(c.UsedById.Value) && c.UsedAt != null)
+            .Select(c => new { UserId = c.UsedById!.Value, UsedAt = c.UsedAt!.Value, c.RevokedAt, c.ExpiresAt })
+            .ToListAsync(ct);
+        var days = await db.StudyDays.AsNoTracking()
+            .Where(d => userIds.Contains(d.UserId) && !d.Frozen)
+            .Select(d => new { d.UserId, d.Date })
+            .ToListAsync(ct);
+
+        // Study days are calendar dates; partner periods are converted to Vietnam dates, end day counting again.
+        static DateOnly VnDate(DateTimeOffset t) => DateOnly.FromDateTime(t.ToOffset(PartnerBilling.Offset).DateTime);
+        var periods = codes.Select(c =>
+        {
+            DateTimeOffset? end = c.RevokedAt is { } r && (c.ExpiresAt is null || r < c.ExpiresAt) ? r : c.ExpiresAt;
+            return new { c.UserId, From = VnDate(c.UsedAt), To = end is { } e ? VnDate(e) : DateOnly.MaxValue, Active = end is null || end > now };
+        }).ToList();
+
+        return userIds.ToDictionary(id => id, id =>
+        {
+            var mine = periods.Where(p => p.UserId == id).ToList();
+            var counted = days.Count(d => d.UserId == id && !mine.Any(p => d.Date >= p.From && d.Date < p.To));
+            return (counted, mine.Any(p => p.Active));
+        });
     }
 
     private static bool InJoinWindow(User user, ReferralConfig config) =>

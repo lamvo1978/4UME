@@ -141,7 +141,14 @@ export type Me = {
 export const FEATURE_IELTS = "ielts";
 export const hasFeature = (me: Me | null | undefined, key: string) => !!me?.features?.includes(key);
 
-export type Invitee = { displayName: string; joinedAt: string; studyDays: number; rewardedAt: string | null };
+export type Invitee = {
+  displayName: string;
+  joinedAt: string;
+  studyDays: number;
+  rewardedAt: string | null;
+  /** Counting is on hold while the friend studies with a partner centre. */
+  paused?: boolean;
+};
 export type MyReferral = {
   enabled: boolean;
   code: string;
@@ -156,6 +163,8 @@ export type MyReferral = {
   invitees: Invitee[];
   /** Days after sign-up during which an invite code is accepted. */
   joinWindowDays: number;
+  /** This learner's own invite reward is on hold while they study with a partner centre. */
+  invitePaused?: boolean;
 };
 export type RedeemResult = { kind: "partner" | "referral"; message: string };
 

@@ -25,11 +25,12 @@ Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua
 2. Bạn mới nhập mã trong **14 ngày** đầu sau khi tạo tài khoản; mỗi tài khoản chỉ nhập một mã mời.
 3. Khi bạn mới có đủ **3 ngày học** (ngày đóng băng không tính), cả hai được cộng **7 ngày Premium** vào `PremiumUntil` (cộng tiếp sau hạn hiện tại, hoặc từ hôm nay nếu đã hết hạn).
 4. Người mời nhận thưởng tối đa **10 lần**; quá số đó bạn mới vẫn được thưởng.
+5. Bạn mới đang là **học viên trung tâm** (mã trung tâm còn hiệu lực) thì lời mời chưa thưởng được **tạm dừng**: ngày học trong thời gian dùng mã trung tâm không tính, và không trao thưởng. Khi mã trung tâm hết hạn hoặc bị thu hồi, đếm tiếp và cộng dồn với số ngày đã học trước đó. Người mời thấy "Đã học x/3 ngày · tạm dừng". Thứ tự nhập mã (mời trước hay trung tâm trước) không ảnh hưởng.
 
 Chống lạm dụng:
 
 - Mọi tài khoản đều đã xác minh email lúc đăng ký (mã gửi qua email).
-- Không nhập được mã của chính mình, không mời ngược (A mời B thì B không nhập được mã của A).
+- Không nhập được mã của chính mình, không mời ngược (A mời B thì B không nhập được mã của A). Hai học viên cùng trung tâm mời nhau theo một chiều vẫn được chấp nhận.
 - Chỉ tài khoản mới (trong hạn nhập mã) mới nhập được, nên tài khoản cũ không đổi mã cho nhau được.
 - Mỗi tài khoản (hoặc IP) nhập mã tối đa 10 lần / 15 phút.
 

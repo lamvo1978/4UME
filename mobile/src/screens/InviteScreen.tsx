@@ -126,7 +126,12 @@ export function InviteScreen() {
           </Pressable>
         </View>
         {message ? <Text style={[styles.message, !message.ok && styles.messageError]}>{message.text}</Text> : null}
-        {data.invitedBy ? <Text style={styles.hint}>Bạn tham gia qua lời mời của {data.invitedBy}.</Text> : null}
+        {data.invitedBy ? (
+          <Text style={styles.hint}>
+            Bạn tham gia qua lời mời của {data.invitedBy}.
+            {data.invitePaused ? " Ngày học cho lời mời đang tạm dừng đếm, sẽ đếm tiếp khi hết thời gian học ở trung tâm." : ""}
+          </Text>
+        ) : null}
       </View>
 
       {data.enabled ? (
@@ -162,7 +167,7 @@ export function InviteScreen() {
                     </View>
                   ) : (
                     <Text style={styles.progress}>
-                      Đã học {f.studyDays}/{data.requiredStudyDays} ngày
+                      Đã học {f.studyDays}/{data.requiredStudyDays} ngày{f.paused ? " · tạm dừng" : ""}
                     </Text>
                   )}
                 </View>
