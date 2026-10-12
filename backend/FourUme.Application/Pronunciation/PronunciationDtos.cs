@@ -45,6 +45,9 @@ public static class PronunciationRules
 /// <param name="AdsWatchedToday">Rewarded ads already counted today.</param>
 /// <param name="AdsDailyLimit">How many ads this user may watch per day; 0 (no ads offered) for Premium, when ads are off or the scorer is paused.</param>
 /// <param name="AdsLeftToday">Ads that can still earn a check today.</param>
+/// <param name="PartnerName">Premium through a partner centre while set.</param>
+/// <param name="PartnerUntil">End of partner access; null runs until the centre's code is revoked.</param>
+/// <param name="PausedPremiumDays">Own Premium days on hold while studying with the centre.</param>
 public record PronunciationStatusDto(
     bool Enabled,
     bool Premium,
@@ -57,7 +60,10 @@ public record PronunciationStatusDto(
     int FreeDailyLimit,
     int AdsWatchedToday,
     int AdsDailyLimit,
-    int AdsLeftToday);
+    int AdsLeftToday,
+    string? PartnerName = null,
+    DateTimeOffset? PartnerUntil = null,
+    int PausedPremiumDays = 0);
 
 public record PhonemeScoreDto(string Phoneme, int Score);
 

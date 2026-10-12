@@ -3,7 +3,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { adsOffered } from "../ads/rewarded";
-import { api, PremiumPerk, PronunciationStatus } from "../api/client";
+import { api, partnerLine, PremiumPerk, PronunciationStatus } from "../api/client";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -61,8 +61,10 @@ export function PremiumScreen() {
     );
   }
 
-  const premium = status.premium && !!status.premiumUntil;
-  const daysLeft = premium ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
+  const partner = status.premium ? status.partnerName : null;
+  const timed = status.premium && !!status.premiumUntil && new Date(status.premiumUntil).getTime() > Date.now();
+  const premium = !!partner || timed;
+  const daysLeft = timed ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
   const usage = status.enabled ? `Hôm nay còn ${status.remaining}/${status.dailyLimit}` : null;
 
   return (
@@ -77,9 +79,16 @@ export function PremiumScreen() {
           <View style={styles.heroStatus}>
             <Ionicons name="checkmark-circle" size={16} color={colors.gold} />
             <Text style={styles.heroStatusText}>
-              Đang dùng đến {formatDayMonthYear(status.premiumUntil!)} · còn {daysLeft} ngày
+              {partner
+                ? partnerLine(partner, status.partnerUntil, formatDayMonthYear)
+                : `Đang dùng đến ${formatDayMonthYear(status.premiumUntil!)} · còn ${daysLeft} ngày`}
             </Text>
           </View>
+        ) : null}
+        {partner && status.pausedPremiumDays ? (
+          <Text style={styles.lead}>
+            Premium riêng của bạn đang tạm dừng ({status.pausedPremiumDays} ngày) và sẽ tiếp tục khi hết thời gian học ở trung tâm.
+          </Text>
         ) : null}
       </View>
 

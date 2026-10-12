@@ -32,6 +32,7 @@ import { PracticeHubScreen } from "../screens/PracticeHubScreen";
 import { PremiumScreen } from "../screens/PremiumScreen";
 import { AdRewardsScreen } from "../screens/AdRewardsScreen";
 import { WeeklyScreen } from "../screens/WeeklyScreen";
+import { InviteScreen } from "../screens/InviteScreen";
 import { WeakWordsScreen } from "../screens/WeakWordsScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
@@ -201,6 +202,7 @@ export function RootNavigator() {
             <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "4UME Premium" }} />
             <Stack.Screen name="AdRewards" component={AdRewardsScreen} options={{ title: "Thêm lượt kiểm tra" }} />
             <Stack.Screen name="Weekly" component={WeeklyScreen} options={{ title: "Tổng kết tuần" }} />
+            <Stack.Screen name="Invite" component={InviteScreen} options={{ title: "Mời bạn bè" }} />
             <Stack.Screen name="WeakWords" component={WeakWordsScreen} options={{ title: "Từ hay sai" }} />
             <Stack.Screen name="Feedback" component={FeedbackInboxScreen} options={{ title: "Góp ý & hỗ trợ" }} />
             <Stack.Screen

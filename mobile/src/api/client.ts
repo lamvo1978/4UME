@@ -128,9 +128,45 @@ export type Me = {
   /** Local "YYYY-MM-DD" of the last real (not frozen) study day. */
   lastStudyDate: string | null;
   settings: UserSettings;
-  /** Premium is active now (no ads). */
+  /** Premium is active now (no ads), from any source. */
   premium: boolean;
+  /** Hidden features unlocked by a partner code, e.g. "ielts". */
+  features?: string[];
+  /** Set while the learner is a partner centre's student. */
+  partnerName?: string | null;
+  /** End of the centre's access; null runs until the centre ends it. */
+  partnerUntil?: string | null;
 };
+
+export const FEATURE_IELTS = "ielts";
+export const hasFeature = (me: Me | null | undefined, key: string) => !!me?.features?.includes(key);
+
+export type Invitee = {
+  displayName: string;
+  joinedAt: string;
+  studyDays: number;
+  rewardedAt: string | null;
+  /** Counting is on hold while the friend studies with a partner centre. */
+  paused?: boolean;
+};
+export type MyReferral = {
+  enabled: boolean;
+  code: string;
+  link: string;
+  requiredStudyDays: number;
+  rewardDays: number;
+  maxRewards: number;
+  rewardsEarned: number;
+  /** The account is new enough and hasn't used an invite code yet. */
+  canEnterInviteCode: boolean;
+  invitedBy: string | null;
+  invitees: Invitee[];
+  /** Days after sign-up during which an invite code is accepted. */
+  joinWindowDays: number;
+  /** This learner's own invite reward is on hold while they study with a partner centre. */
+  invitePaused?: boolean;
+};
+export type RedeemResult = { kind: "partner" | "referral"; message: string };
 
 export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean };
 
@@ -338,7 +374,17 @@ export type PronunciationStatus = {
   /** 0 = no ads offered: Premium, ads switched off, or the scorer is paused. */
   adsDailyLimit: number;
   adsLeftToday: number;
+  /** Premium through a partner centre. */
+  partnerName?: string | null;
+  /** End of the centre's access; null runs until the centre ends it. */
+  partnerUntil?: string | null;
+  /** The learner's own Premium days on hold, resumed when the centre's access ends. */
+  pausedPremiumDays?: number;
 };
+
+/** "Học viên X · đến 30/06/2027" or "· không thời hạn". */
+export const partnerLine = (name: string, until: string | null | undefined, formatDate: (iso: string) => string) =>
+  `Học viên ${name} · ${until ? `đến ${formatDate(until)}` : "không thời hạn"}`;
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
 /** "open" waits for 4UME, "answered" waits for the learner. */
@@ -380,7 +426,9 @@ export type WeekDay = {
   newWords: number;
   reviews: number;
   grammarItems: number;
+  /** Pieces listened to the end, counted even when listening doesn't count toward the streak. */
   listens: number;
+  dictationLines: number;
   studied: boolean;
   frozen: boolean;
 };
@@ -394,13 +442,19 @@ export type WeekSummary = {
   reviews: number;
   grammarItems: number;
   listens: number;
+  dictationLines: number;
   /** Different words read with an accuracy of 80+. */
   goodPronunciations: number;
   streakAtEnd: number;
   days: WeekDay[];
 };
 /** Newest week first. */
-export type Weekly = { today: string; weeks: WeekSummary[] };
+export type Weekly = {
+  today: string;
+  /** Admin switch: when off, finishing a piece doesn't make a study day (dictation always does). */
+  listensCountTowardStreak: boolean;
+  weeks: WeekSummary[];
+};
 
 export type PhonemeScore = { phoneme: string; score: number };
 
@@ -546,6 +600,9 @@ export const api = {
   reviewForecast: (days = 7) => request<ReviewForecastDay[]>(`/api/review/forecast?days=${days}`),
   stats: () => request<Stats>("/api/me/stats"),
   weekly: (weeks: number) => request<Weekly>(`/api/me/weekly?weeks=${weeks}`),
+  referral: () => request<MyReferral>("/api/me/referral"),
+  /** Invite or partner code; the server tells them apart. */
+  redeemCode: (code: string) => request<RedeemResult>("/api/codes/redeem", { method: "POST", body: JSON.stringify({ code }) }),
   updateSettings: (changes: Partial<UserSettings> & { displayName?: string }) =>
     request<Me>("/api/me/settings", { method: "PUT", body: JSON.stringify(changes) }),
   changePassword: (currentPassword: string, newPassword: string) =>

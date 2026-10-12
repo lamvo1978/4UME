@@ -5,6 +5,7 @@ using FourUme.Application.Premium;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
+using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Pronunciation;
@@ -93,6 +94,9 @@ public class AdminAuditService(
             case AuditEntities.Settings when log.EntityId == PremiumPerks.SettingKey:
                 await settings.RestorePremiumPerksAsync(Read<PremiumPerks>(json), ct);
                 break;
+            case AuditEntities.Settings when log.EntityId == ReferralConfig.SettingKey:
+                await settings.RestoreReferralAsync(Read<ReferralConfig>(json), ct);
+                break;
             case AuditEntities.Settings when log.EntityId == FeedbackSettings.SettingKey:
                 await settings.RestoreFeedbackAsync(Read<FeedbackSettings>(json), ct);
                 break;
@@ -121,6 +125,7 @@ public class AdminAuditService(
         AuditEntities.Media => Guid.TryParse(id, out var g) && await db.MediaFiles.AnyAsync(m => m.Id == g, ct),
         AuditEntities.User => Guid.TryParse(id, out var u) && await db.Users.AnyAsync(x => x.Id == u, ct),
         AuditEntities.Settings => true,
+        AuditEntities.Partner => Guid.TryParse(id, out var p) && await db.Partners.AnyAsync(x => x.Id == p, ct),
         _ => false,
     };
 }

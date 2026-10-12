@@ -1,6 +1,7 @@
 import {
   IconBell,
   IconBook2,
+  IconBuildingCommunity,
   IconCards,
   IconHeadphones,
   IconHistory,
@@ -36,6 +37,7 @@ export const NAV: NavItem[] = [
   { to: "/images", label: "Hình ảnh", icon: IconPhoto },
   { to: "/history", label: "Lịch sử", icon: IconHistory },
   { to: "/users", label: "Người dùng", icon: IconUsers },
+  { to: "/partners", label: "Đối tác", icon: IconBuildingCommunity },
   { to: "/feedback", label: "Góp ý", icon: IconMessageCircle, badge: "feedback" },
   { to: "/notifications", label: "Thông báo", icon: IconBell },
   { to: "/premium", label: "Quyền lợi Premium", icon: IconSparkles },

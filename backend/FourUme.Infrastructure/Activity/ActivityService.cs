@@ -1,12 +1,15 @@
 using FourUme.Application.Activity;
+using FourUme.Application.Invites;
+using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
+using FourUme.Infrastructure.Listening;
 using FourUme.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FourUme.Infrastructure.Activity;
 
-public class ActivityService(AppDbContext db, IClientClock clock, ILogger<ActivityService> logger) : IActivityService
+public class ActivityService(AppDbContext db, IClientClock clock, IReferralService referrals, ILogger<ActivityService> logger) : IActivityService
 {
     private static readonly string[] CefrOrder = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -51,6 +54,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
                         "StreakFreezes" = LEAST({StreakRules.MaxFreezes}, "StreakFreezes" + {earned})
                     WHERE "Id" = {userId}
                     """, ct);
+                await referrals.OnStudyDayAsync(userId, ct);
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -177,7 +181,14 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
             .Where(a => a.UserId == userId && a.LocalDate >= oldest && a.LocalDate <= last && a.Score >= WeeklyRules.GoodPronunciationScore)
             .Select(a => new { a.LocalDate, a.WordId })
             .ToListAsync(ct);
+        var listening = (await db.ListeningLogs.AsNoTracking()
+                .Where(l => l.UserId == userId && l.LocalDate >= oldest && l.LocalDate <= last)
+                .GroupBy(l => new { l.LocalDate, l.Kind })
+                .Select(g => new { g.Key.LocalDate, g.Key.Kind, Count = g.Count() })
+                .ToListAsync(ct))
+            .ToDictionary(x => (x.LocalDate, x.Kind), x => x.Count);
         var dates = await LoadDatesAsync(userId, ct);
+        var countsTowardStreak = (await ListeningService.LoadConfigAsync(db, ct)).CountsTowardStreak;
 
         var result = new List<WeekSummaryDto>();
         for (var start = current; start >= oldest; start = start.AddDays(-7))
@@ -187,16 +198,18 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
             {
                 var date = start.AddDays(i);
                 var row = rows.GetValueOrDefault(date);
-                return new WeekDayDto(date, row?.NewWords ?? 0, row?.Reviews ?? 0, row?.GrammarItems ?? 0, row?.Listens ?? 0,
+                return new WeekDayDto(date, row?.NewWords ?? 0, row?.Reviews ?? 0, row?.GrammarItems ?? 0,
+                    listening.GetValueOrDefault((date, ListeningLogKind.Listen)),
+                    listening.GetValueOrDefault((date, ListeningLogKind.Dictation)),
                     row is { Frozen: false }, row?.Frozen ?? false);
             }).ToList();
             var goodWords = good.Where(g => g.LocalDate >= start && g.LocalDate <= end).Select(g => g.WordId).Distinct().Count();
             var streak = end >= today ? CurrentStreak(dates, today) : RunEndingOn(dates, end);
             result.Add(new WeekSummaryDto(start, end, end >= today, days.Count(d => d.Studied),
                 days.Sum(d => d.NewWords), days.Sum(d => d.Reviews), days.Sum(d => d.GrammarItems), days.Sum(d => d.Listens),
-                goodWords, streak, days));
+                days.Sum(d => d.DictationLines), goodWords, streak, days));
         }
-        return new WeeklyDto(today, result);
+        return new WeeklyDto(today, countsTowardStreak, result);
     }
 
     private static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)

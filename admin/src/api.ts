@@ -85,6 +85,27 @@ export type AdminUser = {
   grammarPassed: number;
   /** Premium is active while this is in the future. */
   premiumUntil: string | null;
+  /** Set while the user is an active partner student. */
+  partnerName?: string | null;
+};
+export type AdminUserPartnerCode = {
+  id: string;
+  partnerId: string;
+  partnerName: string;
+  code: string;
+  usedAt: string | null;
+  revokedAt: string | null;
+  expiresAt: string | null;
+  /** Own Premium days paused by this code. */
+  heldDays: number;
+};
+export type AdminUserInvites = {
+  referralCode: string | null;
+  invitedById: string | null;
+  invitedByEmail: string | null;
+  invites: number;
+  inviteRewards: number;
+  partnerCodes: AdminUserPartnerCode[];
 };
 export type CreateUser = { email: string; displayName: string; password: string; role: AdminUser["role"] };
 export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean; listens: number };
@@ -109,6 +130,7 @@ export type AdminUserDetail = {
   isSelf: boolean;
   /** Owner account: can never be locked or lose admin rights. */
   isProtected: boolean;
+  invites: AdminUserInvites | null;
 };
 
 /** Mirrors backend NotificationConfig; times are local "HH:mm", weeklyDay 0 = Sunday. */
@@ -144,7 +166,66 @@ export type AdminSettings = {
     usage: { attempts: number; users: number; minutes: number; adRewards: number };
     azureConfigured: boolean;
   };
+  referral: { value: ReferralConfig; defaults: ReferralConfig; updatedAt: string | null };
 };
+export type ReferralConfig = {
+  enabled: boolean;
+  /** Two letters starting new invite codes, e.g. "MB" → MB-K7P2X9; partners can't use it. */
+  codePrefix: string;
+  requiredStudyDays: number;
+  rewardDays: number;
+  maxRewardsPerUser: number;
+  joinWindowDays: number;
+};
+
+/** Hidden app features a partner can unlock; same keys as FeatureKeys on the server. */
+export const FEATURES: { value: string; label: string }[] = [{ value: "ielts", label: "IELTS" }];
+export const featureLabel = (key: string) => FEATURES.find((f) => f.value === key)?.label ?? key;
+export type AdminPartner = {
+  id: string;
+  name: string;
+  /** Two letters every code of this partner starts with. */
+  prefix: string;
+  features: string[];
+  note: string | null;
+  createdAt: string;
+  codes: number;
+  unused: number;
+  students: number;
+  /** Revoked or past the batch end date. */
+  ended: number;
+  /** Billable months so far in the current month. */
+  monthUnits: number;
+};
+export type AdminPartnerCode = {
+  id: string;
+  code: string;
+  batch: string;
+  createdAt: string;
+  /** End of the batch; null runs until revoked. */
+  expiresAt: string | null;
+  usedAt: string | null;
+  userId: string | null;
+  userEmail: string | null;
+  userName: string | null;
+  revokedAt: string | null;
+  /** The student's own Premium days paused by this code. */
+  heldDays: number;
+};
+export type AdminPartnerDetail = { partner: AdminPartner; codes: AdminPartnerCode[] };
+export type SavePartner = { name: string; prefix: string; features: string[]; note: string | null };
+export type PartnerBillingRow = {
+  code: string;
+  batch: string;
+  userId: string | null;
+  userEmail: string | null;
+  userName: string | null;
+  startedAt: string;
+  endedAt: string | null;
+  /** 0.5 per half of the month (days 1–15, 16–end) the code was active in. */
+  units: number;
+};
+export type PartnerBilling = { month: string; units: number; rows: PartnerBillingRow[] };
 
 /** The app's "Giới thiệu & bản quyền" screen; the CEFR-J citation is fixed in the app and not part of it. */
 export type AboutItem = { icon: string; title: string; body: string; url: string | null; visible: boolean };
@@ -194,7 +275,8 @@ export type AdminFeedbackTicket = {
 };
 export type FeedbackQuery = { status?: string; category?: string; q?: string; page?: number; pageSize?: number };
 
-export const isPremium = (u: Pick<AdminUser, "premiumUntil">) => !!u.premiumUntil && new Date(u.premiumUntil) > new Date();
+export const isPremium = (u: Pick<AdminUser, "premiumUntil" | "partnerName">) =>
+  !!u.partnerName || (!!u.premiumUntil && new Date(u.premiumUntil) > new Date());
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
 
@@ -551,6 +633,20 @@ export const api = {
   savePronunciationSettings: (c: PronunciationConfig) =>
     request<AdminSettings>("/api/admin/settings/pronunciation", json("PUT", c)),
   resetPronunciationSettings: () => request<AdminSettings>("/api/admin/settings/pronunciation/reset", { method: "POST" }),
+  saveReferralSettings: (c: ReferralConfig) => request<AdminSettings>("/api/admin/settings/referral", json("PUT", c)),
+  resetReferralSettings: () => request<AdminSettings>("/api/admin/settings/referral/reset", { method: "POST" }),
+  partners: () => request<AdminPartner[]>("/api/admin/partners"),
+  partner: (id: string) => request<AdminPartnerDetail>(`/api/admin/partners/${id}`),
+  createPartner: (p: SavePartner) => request<AdminPartnerDetail>("/api/admin/partners", json("POST", p)),
+  updatePartner: (id: string, p: SavePartner) => request<AdminPartnerDetail>(`/api/admin/partners/${id}`, json("PUT", p)),
+  generatePartnerCodes: (id: string, batch: string, count: number, expiresAt: string | null) =>
+    request<AdminPartnerDetail>(`/api/admin/partners/${id}/codes`, json("POST", { batch, count, expiresAt })),
+  setPartnerBatchExpiry: (id: string, batch: string, expiresAt: string | null) =>
+    request<AdminPartnerDetail>(`/api/admin/partners/${id}/batch-expiry`, json("PUT", { batch, expiresAt })),
+  partnerBilling: (id: string, month: string) =>
+    request<PartnerBilling>(`/api/admin/partners/${id}/billing?month=${encodeURIComponent(month)}`),
+  setPartnerCodeRevoked: (id: string, revoked: boolean) =>
+    request<AdminPartnerCode>(`/api/admin/partner-codes/${id}/revoked`, json("PUT", { revoked })),
   about: () => request<AdminAbout>("/api/admin/about"),
   saveAbout: (c: AboutContent) => request<AdminAbout>("/api/admin/about", json("PUT", c)),
   resetAbout: () => request<AdminAbout>("/api/admin/about/reset", { method: "POST" }),

@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Alert,
+  Anchor,
   Badge,
   Button,
   Grid,
@@ -27,13 +28,15 @@ import {
   IconShieldCheck,
   IconShieldLock,
   IconShieldOff,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { api, isPremium, type AdminUserDetail } from "../api";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { api, isPremium, type AdminUserDetail, type AdminUserInvites } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { fullTime, notifyError, notifySaved, shortDate, studyAgo, timeAgo } from "../lib";
+import { isExpired } from "../partners/dates";
 import { ActivityCalendar } from "../users/ActivityCalendar";
 import { UserAvatar, UserBadges } from "../users/UserBadges";
 
@@ -194,6 +197,7 @@ export function UserDetailPage() {
       </Grid>
 
       <PremiumCard detail={d} onDone={applied} />
+      {d.invites ? <InvitesCard invites={d.invites} onChanged={() => queryClient.invalidateQueries({ queryKey: ["user", id] })} /> : null}
 
       <Card title="Thiết bị nhận thông báo">
         {d.devices.length === 0 ? (
@@ -288,7 +292,8 @@ const PREMIUM_MONTHS = [
 /** Premium is granted by hand until in-app purchases exist; extending adds to the current end date. */
 function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: AdminUserDetail) => void }) {
   const u = detail.user;
-  const premium = isPremium(u);
+  // Time-limited Premium only; partner Premium has no end date and is managed through the code below.
+  const premium = isPremium({ premiumUntil: u.premiumUntil });
   const [mode, setMode] = useState<"extend" | "remove" | null>(null);
   const [months, setMonths] = useState("1");
   const [busy, setBusy] = useState(false);
@@ -297,6 +302,9 @@ function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: 
   const until = new Date(from);
   until.setMonth(until.getMonth() + Number(months));
   const daysLeft = premium ? Math.ceil((new Date(u.premiumUntil!).getTime() - Date.now()) / 86_400_000) : 0;
+  const activeCodes = (detail.invites?.partnerCodes ?? []).filter((c) => !c.revokedAt && !isExpired(c.expiresAt));
+  const held = activeCodes.reduce((sum, c) => sum + c.heldDays, 0);
+  const partnerEnd = activeCodes.some((c) => !c.expiresAt) ? null : (activeCodes.map((c) => c.expiresAt!).sort().at(-1) ?? null);
 
   async function run() {
     setBusy(true);
@@ -315,13 +323,19 @@ function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: 
     <Paper p="md" radius="lg" shadow="xs">
       <Group justify="space-between" wrap="wrap" gap="sm">
         <Group gap="sm" wrap="nowrap">
-          <IconCrown size={22} color={premium ? "var(--mantine-color-yellow-7)" : "var(--mantine-color-gray-5)"} />
+          <IconCrown size={22} color={premium || u.partnerName ? "var(--mantine-color-yellow-7)" : "var(--mantine-color-gray-5)"} />
           <div>
-            <Text fw={700}>{premium ? `Premium đến ${shortDate(u.premiumUntil!)}` : "Gói miễn phí"}</Text>
+            <Text fw={700}>
+              {premium ? `Premium đến ${shortDate(u.premiumUntil!)}` : u.partnerName ? "Premium qua đối tác" : "Gói miễn phí"}
+            </Text>
             <Text fz="sm" c="dimmed">
-              {premium
-                ? `Còn ${daysLeft} ngày · chấm phát âm chi tiết nhiều lượt hơn mỗi ngày.`
-                : "Premium cho chấm phát âm chi tiết nhiều lượt hơn mỗi ngày (số lượt chỉnh ở Cài đặt)."}
+              {u.partnerName
+                ? `Học viên ${u.partnerName}${partnerEnd ? ` đến ${shortDate(partnerEnd)}` : " · không thời hạn, cho đến khi thu hồi mã"}.${
+                    held > 0 ? ` Premium riêng đang tạm dừng, còn ${held} ngày.` : ""
+                  }`
+                : premium
+                  ? `Còn ${daysLeft} ngày · chấm phát âm chi tiết nhiều lượt hơn mỗi ngày.`
+                  : "Premium cho chấm phát âm chi tiết nhiều lượt hơn mỗi ngày (số lượt chỉnh ở Cài đặt)."}
             </Text>
           </div>
         </Group>
@@ -361,6 +375,81 @@ function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: 
           </Group>
         </Stack>
       </Modal>
+    </Paper>
+  );
+}
+
+function InvitesCard({ invites, onChanged }: { invites: AdminUserInvites; onChanged: () => void }) {
+  const [busy, setBusy] = useState<string | null>(null);
+
+  async function setRevoked(codeId: string, revoked: boolean) {
+    setBusy(codeId);
+    try {
+      await api.setPartnerCodeRevoked(codeId, revoked);
+      notifySaved(revoked ? "Đã thu hồi mã" : "Đã khôi phục mã");
+      onChanged();
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <Paper p="md" radius="lg" shadow="xs">
+      <Group gap="sm" wrap="nowrap" align="flex-start">
+        <IconUsersGroup size={22} color="var(--mantine-color-gray-6)" />
+        <Stack gap={6} flex={1}>
+          <Text fw={700}>Mời bạn & mã trung tâm</Text>
+          <Text fz="sm" c="dimmed">
+            Mã mời: <b>{invites.referralCode ?? "chưa mở màn mời bạn"}</b> · đã mời {invites.invites} người · nhận thưởng {invites.inviteRewards} lần
+            {invites.invitedById ? (
+              <>
+                {" "}
+                · được mời bởi{" "}
+                <Anchor component={Link} to={`/users/${invites.invitedById}`} fz="sm">
+                  {invites.invitedByEmail}
+                </Anchor>
+              </>
+            ) : null}
+          </Text>
+          {invites.partnerCodes.map((c) => (
+            <Group key={c.id} gap="sm" justify="space-between" wrap="wrap">
+              <Text fz="sm">
+                <Anchor component={Link} to={`/partners/${c.partnerId}`} fz="sm">
+                  {c.partnerName}
+                </Anchor>{" "}
+                · mã <Text span ff="monospace">{c.code}</Text>
+                {c.usedAt ? ` · nhập ngày ${shortDate(c.usedAt)}` : ""}
+                {c.expiresAt ? ` · hết hạn ${shortDate(c.expiresAt)}` : ""}
+                {c.heldDays > 0 ? ` · giữ ${c.heldDays} ngày Premium riêng` : ""}{" "}
+                {c.revokedAt ? (
+                  <Badge color="red" variant="light" size="sm">
+                    Đã thu hồi
+                  </Badge>
+                ) : isExpired(c.expiresAt) ? (
+                  <Badge color="orange" variant="light" size="sm">
+                    Hết hạn
+                  </Badge>
+                ) : (
+                  <Badge color="teal" variant="light" size="sm">
+                    Đang dùng
+                  </Badge>
+                )}
+              </Text>
+              <Button
+                size="compact-sm"
+                variant="subtle"
+                color={c.revokedAt ? undefined : "red"}
+                loading={busy === c.id}
+                onClick={() => setRevoked(c.id, !c.revokedAt)}
+              >
+                {c.revokedAt ? "Khôi phục" : "Thu hồi"}
+              </Button>
+            </Group>
+          ))}
+        </Stack>
+      </Group>
     </Paper>
   );
 }

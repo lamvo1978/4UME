@@ -1,5 +1,6 @@
 using FourUme.Application.About;
 using FourUme.Application.Feedback;
+using FourUme.Application.Invites;
 using FourUme.Application.Premium;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
@@ -22,10 +23,14 @@ public record AdminPronunciationSettingsDto(
     PronunciationUsageDto Usage,
     bool AzureConfigured);
 
+/// <param name="UpdatedAt">null while the defaults are in use.</param>
+public record AdminReferralSettingsDto(ReferralConfig Value, ReferralConfig Defaults, DateTimeOffset? UpdatedAt);
+
 public record AdminSettingsDto(
     AdminNotificationSettingsDto Notifications,
     AdminListeningSettingsDto Listening,
-    AdminPronunciationSettingsDto Pronunciation);
+    AdminPronunciationSettingsDto Pronunciation,
+    AdminReferralSettingsDto Referral);
 
 public interface IAdminSettingsService
 {
@@ -42,6 +47,10 @@ public interface IAdminSettingsService
     Task<AdminSettingsDto> SavePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
     Task<AdminSettingsDto> ResetPronunciationAsync(CancellationToken ct = default);
     Task RestorePronunciationAsync(PronunciationConfig config, CancellationToken ct = default);
+    /// <summary>Validates with <see cref="ReferralRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminSettingsDto> SaveReferralAsync(ReferralConfig config, CancellationToken ct = default);
+    Task<AdminSettingsDto> ResetReferralAsync(CancellationToken ct = default);
+    Task RestoreReferralAsync(ReferralConfig config, CancellationToken ct = default);
     Task<AdminAboutDto> GetAboutAsync(CancellationToken ct = default);
     /// <summary>Validates with <see cref="AboutRules"/>; throws InvalidOperationException listing the problems.</summary>
     Task<AdminAboutDto> SaveAboutAsync(AboutContent content, CancellationToken ct = default);

@@ -28,6 +28,7 @@ public static class AuditEntities
     public const string Media = "media";
     public const string User = "user";
     public const string Settings = "settings";
+    public const string Partner = "partner";
 }
 
 public static class AuditActions

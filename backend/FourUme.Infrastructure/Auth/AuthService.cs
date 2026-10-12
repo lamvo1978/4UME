@@ -9,6 +9,7 @@ using FourUme.Application.Auth;
 using FourUme.Application.Feedback;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
+using FourUme.Infrastructure.Invites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -71,7 +72,8 @@ public class AuthService(
         var user = new User
         {
             Email = email,
-            DisplayName = string.IsNullOrWhiteSpace(request.DisplayName) ? email.Split('@')[0] : request.DisplayName.Trim()
+            DisplayName = string.IsNullOrWhiteSpace(request.DisplayName) ? email.Split('@')[0] : request.DisplayName.Trim(),
+            ReferralCode = await InviteCodes.NewReferralCodeAsync(db, ct),
         };
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
         db.Users.Add(user);
@@ -108,6 +110,7 @@ public class AuthService(
         var hard = await db.WordProgresses.CountAsync(p => p.UserId == userId && p.Status == WordStatus.Hard, ct);
         var grammarPassed = await db.GrammarProgresses.CountAsync(p => p.UserId == userId && p.ReviewLevel > 0, ct);
         var grammarTotal = await db.GrammarLessons.CountAsync(l => l.Published, ct);
+        var access = await Entitlements.GetAsync(db, userId, ct);
 
         return new MeResponse(
             user.Id, user.Email, user.DisplayName, known, hard, grammarPassed, grammarTotal,
@@ -117,7 +120,7 @@ public class AuthService(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
                 user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt),
-            user.PremiumUntil > DateTimeOffset.UtcNow);
+            access.Premium, access.Features, access.PartnerName, access.PartnerUntil);
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)
@@ -179,6 +182,10 @@ public class AuthService(
         if (AdminUserRules.IsProtected(user.Email))
             throw new InvalidOperationException("Đây là tài khoản quản trị gốc, không thể xoá.");
         await feedback.DeleteUserFilesAsync(userId, ct);
+        // Ends the centre's billing for this student; the code itself stays spent.
+        var now = DateTimeOffset.UtcNow;
+        await db.PartnerCodes.Where(c => c.UsedById == userId && c.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(c => c.RevokedAt, now), ct);
         db.Users.Remove(user);
         await db.SaveChangesAsync(ct);
     }

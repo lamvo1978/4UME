@@ -3,6 +3,7 @@ using FourUme.Application.About;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Feedback;
+using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Premium;
@@ -22,8 +23,10 @@ public class AdminSettingsService(
     IAboutService about,
     IPremiumPerksService premiumPerks,
     IFeedbackSettingsService feedback,
+    IReferralService referral,
     Auditor auditor) : IAdminSettingsService
 {
+    private const string ReferralSummary = "Thông số mời bạn bè";
     private const string PremiumSummary = "Quyền lợi Premium";
     private const string FeedbackSummary = "Cài đặt góp ý";
     private const string NotificationsSummary = "Thông số thông báo";
@@ -35,7 +38,8 @@ public class AdminSettingsService(
     public async Task<AdminSettingsDto> GetAsync(CancellationToken ct = default)
     {
         var updated = await db.AppSettings.AsNoTracking()
-            .Where(s => s.Key == NotificationConfig.SettingKey || s.Key == ListeningConfig.SettingKey || s.Key == PronunciationConfig.SettingKey)
+            .Where(s => s.Key == NotificationConfig.SettingKey || s.Key == ListeningConfig.SettingKey || s.Key == PronunciationConfig.SettingKey
+                || s.Key == ReferralConfig.SettingKey)
             .ToDictionaryAsync(s => s.Key, s => s.UpdatedAt, ct);
         return new AdminSettingsDto(
             new AdminNotificationSettingsDto(await notifications.GetConfigAsync(ct), new NotificationConfig(),
@@ -44,7 +48,34 @@ public class AdminSettingsService(
                 updated.TryGetValue(ListeningConfig.SettingKey, out var l) ? l : null),
             new AdminPronunciationSettingsDto(await pronunciation.GetConfigAsync(ct), new PronunciationConfig(),
                 updated.TryGetValue(PronunciationConfig.SettingKey, out var p) ? p : null,
-                await pronunciation.GetMonthUsageAsync(ct), azure.Configured));
+                await pronunciation.GetMonthUsageAsync(ct), azure.Configured),
+            new AdminReferralSettingsDto(await referral.GetConfigAsync(ct), new ReferralConfig(),
+                updated.TryGetValue(ReferralConfig.SettingKey, out var r) ? r : null));
+    }
+
+    public async Task<AdminSettingsDto> SaveReferralAsync(ReferralConfig config, CancellationToken ct = default)
+    {
+        await ApplyReferralAsync(config, AuditActions.Update, ct);
+        return await GetAsync(ct);
+    }
+
+    public async Task<AdminSettingsDto> ResetReferralAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(ReferralConfig.SettingKey, ReferralSummary, await referral.GetConfigAsync(ct), new ReferralConfig(), ct);
+        return await GetAsync(ct);
+    }
+
+    public Task RestoreReferralAsync(ReferralConfig config, CancellationToken ct = default) =>
+        ApplyReferralAsync(config, AuditActions.Restore, ct);
+
+    private async Task ApplyReferralAsync(ReferralConfig config, string action, CancellationToken ct)
+    {
+        var problems = ReferralRules.Validate(config);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        config = config with { CodePrefix = ReferralRules.NormalizePrefix(config.CodePrefix)! };
+        if (await db.Partners.AnyAsync(p => p.Prefix == config.CodePrefix, ct))
+            throw new InvalidOperationException($"Tiền tố {config.CodePrefix} đang thuộc một đối tác, bạn chọn tiền tố khác cho mã mời nhé.");
+        await WriteAsync(ReferralConfig.SettingKey, ReferralSummary, action, await referral.GetConfigAsync(ct), config, ct);
     }
 
     public async Task<AdminSettingsDto> SaveNotificationsAsync(NotificationConfig config, CancellationToken ct = default)

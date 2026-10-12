@@ -66,6 +66,11 @@ export function WeeklyScreen() {
           <Text style={styles.heroOf}>/{elapsed}</Text>
         </Text>
         <Text style={styles.heroLabel}>{week.inProgress ? "ngày đã học tuần này" : "ngày học trong tuần"}</Text>
+        {week.streakAtEnd > 0 ? (
+          <Text style={styles.heroStreak}>
+            {week.inProgress ? "Chuỗi hiện tại" : "Chuỗi cuối tuần"}: {week.streakAtEnd} ngày
+          </Text>
+        ) : null}
         {compare ? (
           <View style={styles.compare}>
             <Ionicons name="trending-up" size={14} color={colors.white} />
@@ -83,10 +88,20 @@ export function WeeklyScreen() {
         <Stat icon="sparkles-outline" value={week.newWords} label="từ mới" />
         <Stat icon="repeat-outline" value={week.reviews} label="lượt ôn từ" />
         <Stat icon="create-outline" value={week.grammarItems} label="lượt ngữ pháp" />
-        <Stat icon="headset-outline" value={week.listens} label="bài nghe" />
+        <Stat icon="headset-outline" value={week.listens} label="bài nghe hết" />
+        <Stat icon="pencil-outline" value={week.dictationLines} label="câu chép chính tả" />
         <Stat icon="mic-outline" value={week.goodPronunciations} label="từ đọc chuẩn" />
-        <Stat icon="flame-outline" value={week.streakAtEnd} label={week.inProgress ? "ngày liên tiếp" : "chuỗi cuối tuần"} />
       </View>
+
+      {!data.listensCountTowardStreak ? (
+        <View style={styles.info}>
+          <Ionicons name="information-circle-outline" size={16} color={colors.muted} />
+          <Text style={styles.infoText}>
+            Nghe hết bài hiện chưa tính vào chuỗi ngày học, nên ngày chỉ nghe sẽ không có cột trong biểu đồ. Chép chính tả
+            vẫn được tính.
+          </Text>
+        </View>
+      ) : null}
 
       {week.studyDays === 0 ? (
         <Text style={styles.empty}>
@@ -179,6 +194,16 @@ const styles = StyleSheet.create({
   heroValue: { fontSize: 52, fontWeight: "800", color: colors.white, lineHeight: 60 },
   heroOf: { fontSize: 26, fontWeight: "700", color: colors.white, opacity: 0.7 },
   heroLabel: { fontSize: 15, fontWeight: "600", color: colors.white, opacity: 0.9 },
+  heroStreak: { fontSize: 13, fontWeight: "700", color: colors.white, opacity: 0.85 },
+  info: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 6,
+    padding: spacing.sm,
+    borderRadius: 14,
+    backgroundColor: colors.bgAlt,
+  },
+  infoText: { flex: 1, fontSize: 12, lineHeight: 17, color: colors.muted },
   compare: {
     flexDirection: "row",
     alignItems: "center",
