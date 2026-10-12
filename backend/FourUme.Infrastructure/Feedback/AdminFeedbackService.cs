@@ -1,12 +1,13 @@
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Feedback;
+using FourUme.Application.Notifications;
 using FourUme.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FourUme.Infrastructure.Feedback;
 
-public class AdminFeedbackService(IAppDbContext db, ICurrentAdmin admin, FeedbackShared shared) : IAdminFeedbackService
+public class AdminFeedbackService(IAppDbContext db, ICurrentAdmin admin, FeedbackShared shared, IPushNotifier push) : IAdminFeedbackService
 {
     public async Task<AdminFeedbackPageDto> ListAsync(AdminFeedbackQuery query, CancellationToken ct = default)
     {
@@ -101,6 +102,7 @@ public class AdminFeedbackService(IAppDbContext db, ICurrentAdmin admin, Feedbac
             ticket.ClosedBy = null;
         }
         await db.SaveChangesAsync(ct);
+        await push.FeedbackReplyAsync(ticket.UserId, ticket.Id, ticket.Subject, body, ct);
         return await ToDtoAsync(ticket, ct);
     }
 

@@ -622,6 +622,9 @@ export const api = {
     throw e;
   })),
   me: () => request<Me>("/api/me"),
+  registerDevice: (token: string, platform: string, appVersion: string) =>
+    request<void>("/api/me/devices", { method: "POST", body: JSON.stringify({ token, platform, appVersion }) }),
+  removeDevice: (token: string) => request<void>(`/api/me/devices/${encodeURIComponent(token)}`, { method: "DELETE" }),
   reviewForecast: (days = 7) => request<ReviewForecastDay[]>(`/api/review/forecast?days=${days}`),
   stats: () => request<Stats>("/api/me/stats"),
   weekly: (weeks: number) => request<Weekly>(`/api/me/weekly?weeks=${weeks}`),

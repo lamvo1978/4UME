@@ -68,6 +68,8 @@ public static class AdminEndpoints
             Results.Ok(await s.SetRoleAsync(id, r.Role, clock.Today, ct)));
         admin.MapPut("/users/{id:guid}/lock", async (Guid id, SetLockRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
             Results.Ok(await s.SetLockedAsync(id, r.Locked, clock.Today, ct)));
+        admin.MapPost("/users/{id:guid}/test-push", async (Guid id, IPushNotifier push, CancellationToken ct) =>
+            Results.Ok(await push.SendTestAsync(id, ct)));
         admin.MapPut("/users/{id:guid}/premium", async (Guid id, SetPremiumRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
             Results.Ok(await s.SetPremiumAsync(id, r.Until, clock.Today, ct)));
 

@@ -13,7 +13,7 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "../auth/AuthContext";
 import { ReminderPrompt } from "../components/streak/ReminderPrompt";
 import { StreakCelebration } from "../components/streak/StreakCelebration";
-import { onReminderTap, ReminderScreen, shouldOfferReminder } from "../notifications/reminders";
+import { NotificationTarget, onNotificationTap, ReminderScreen, shouldOfferReminder } from "../notifications/reminders";
 import { colors, shadow } from "../theme";
 import { AboutScreen } from "../screens/AboutScreen";
 import { FeedbackInboxScreen } from "../screens/FeedbackInboxScreen";
@@ -138,19 +138,21 @@ const TAB_FOR: Record<ReminderScreen, keyof MainTabParamList> = { practice: "Pra
 
 export function RootNavigator() {
   const { ready, user, onboarding } = useAuth();
-  const pendingTap = useRef<ReminderScreen | null>(null);
+  const pendingTap = useRef<NotificationTarget | null>(null);
 
   const openPendingTap = useCallback(() => {
-    const screen = pendingTap.current;
-    if (!screen || !navigationRef.isReady() || !navigationRef.getRootState()?.routeNames.includes("Main")) return;
+    const target = pendingTap.current;
+    if (!target || !navigationRef.isReady() || !navigationRef.getRootState()?.routeNames.includes("Main")) return;
     pendingTap.current = null;
-    navigationRef.navigate("Main", { screen: TAB_FOR[screen] });
+    if (target.screen === "weekly") navigationRef.navigate("Weekly", { start: target.start });
+    else if (target.screen === "feedback") navigationRef.navigate("FeedbackThread", { id: target.id });
+    else navigationRef.navigate("Main", { screen: TAB_FOR[target.screen] });
   }, []);
 
   useEffect(() => {
     if (!user) return;
-    return onReminderTap((screen) => {
-      pendingTap.current = screen;
+    return onNotificationTap((target) => {
+      pendingTap.current = target;
       openPendingTap();
     });
   }, [user, openPendingTap]);

@@ -62,6 +62,12 @@ public static class DependencyInjection
         services.AddScoped<IReferralService, ReferralService>();
         services.AddScoped<IAdminPartnerService, AdminPartnerService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.Configure<PushOptions>(configuration.GetSection(PushOptions.SectionName));
+        services.AddHttpClient(ExpoPushClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(15));
+        services.AddSingleton<ExpoPushClient>();
+        services.AddScoped<PushNotifier>();
+        services.AddScoped<IPushNotifier>(sp => sp.GetRequiredService<PushNotifier>());
+        services.AddHostedService<PushScheduler>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminContentService, AdminContentService>();
         services.AddScoped<IAdminGrammarService, AdminGrammarService>();

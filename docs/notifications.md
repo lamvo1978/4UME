@@ -69,30 +69,30 @@ Dòng phụ luôn nhắc chuỗi nếu đang có: "Giữ chuỗi **N** ngày nh�
   - `POST /api/me/devices` (đăng ký mã), `DELETE /api/me/devices/{token}` (khi đăng xuất).
   - Bảng `NotificationLogs`: `UserId`, `Kind`, `LocalDate`, `Title`, `Body`, `SentAt`, `Status` — chống gửi trùng (duy nhất theo `UserId + Kind + LocalDate`) và giới hạn 2 / ngày.
 
-## Giai đoạn 2 — khi có tài khoản Apple và Google
+## Giai đoạn 2 — thông báo đẩy từ máy chủ (đã làm, iOS trước)
 
-### Việc của bạn (mình hướng dẫn từng bước khi tới lúc)
+Máy chủ chỉ gửi những gì lịch trên máy không làm được; nhắc học, cứu chuỗi và quay lại học ở các mốc *trên máy* (3, 7 ngày) vẫn do app tự hẹn, nên không bị trùng.
 
-1. Đăng ký **Apple Developer Program** và **Google Play Console**.
-2. Tạo tài khoản **Expo** (miễn phí), cài `eas-cli`.
-3. Tạo dự án **Firebase** (miễn phí) cho Android, tải `google-services.json` và khoá dịch vụ FCM v1.
-4. Tạo khoá **APNs** (.p8) trên trang Apple Developer.
-5. Tải 2 khoá trên lên Expo (`eas credentials`).
+| Loại | Khi nào | Điều kiện | Chạm mở |
+|---|---|---|---|
+| `weekly` | Ngày + giờ tổng kết tuần (mặc định thứ Hai 08:30) theo giờ của người dùng | Bật *Tổng kết tuần*; tuần trước (thứ Hai – Chủ nhật) có học ít nhất 1 ngày | `Weekly` của tuần trước |
+| `comeback` | Giờ nhắc học của người dùng (dời ra khỏi giờ yên tĩnh như app) | Bật *Nhắc học*; số ngày từ lần học cuối nằm trong *Ngày nhắc quay lại (từ server)* nhưng không có trong mốc *trên máy* (mặc định 14, 30) | Ôn tập nếu có từ đến hạn, không thì Học |
+| `feedback` | Ngay khi admin trả lời góp ý | Không gửi trong giờ yên tĩnh của người dùng (vẫn thấy chấm đỏ trong app) | Đúng góp ý đó |
+| `test` | Admin bấm **Gửi thông báo thử** ở trang người dùng | Không theo giờ yên tĩnh hay công tắc | — |
 
-### App
+- Nội dung `weekly`, `comeback`, `feedback` sửa ở web admin, mục **Thông báo**.
+- **App** (từ build 3): khi đã được cho phép thông báo, lấy Expo push token → `POST /api/me/devices` (mỗi lần mở app, và khi bật nhắc học). Đăng xuất → `DELETE /api/me/devices/{token}`. Công tắc **Tổng kết tuần** trong Cài đặt.
+- **Backend:** `PushScheduler` chạy mỗi 5 phút, gọi `PushNotifier.RunScheduledAsync`: tính giờ địa phương theo `User.TimeZone` (thiếu thì giờ Việt Nam), gửi trong 60 phút sau giờ hẹn. Trước khi gửi ghi một dòng `NotificationLogs` (duy nhất theo người dùng + loại + ngày) nên mỗi loại chỉ đi một lần mỗi ngày; `weekly` + `comeback` cộng lại không quá *Số thông báo tối đa / ngày*. Gửi qua Expo Push API (`ExpoPushClient`); Expo báo `DeviceNotRegistered` thì xoá mã máy đó. `feedback` và `test` không ghi log.
+- Cấu hình (`Push__…`, không bắt buộc): `ExpoAccessToken` chỉ cần khi bật *Enhanced security for push* trong dự án Expo; `SchedulerEnabled=false` để tắt lịch gửi.
 
-- Build bằng EAS (bản development để thử, bản production để lên store).
-- Sau khi đăng nhập và được cấp quyền: lấy Expo push token → `POST /api/me/devices`. Đăng xuất → xoá token.
-- Khi server báo đã bật push (`/api/me` trả `serverPush: true`): app **ngừng hẹn local** cho `rescue` và `comeback` để không bị trùng; `daily` vẫn là local.
+### Việc của bạn
 
-### Backend
+- **iOS:** khoá APNs do EAS giữ. Lúc chạy `eas build -p ios` lần tới, khi được hỏi về Push Notifications thì chọn **Yes** để EAS tự tạo khoá; hoặc làm trước bằng `npx eas-cli credentials` → iOS → production → Push Notifications.
+- **Android (sau khi Google Play xong):** tạo dự án Firebase, thêm `google-services.json` vào app, tải khoá FCM v1 lên EAS (`eas credentials`).
 
-- Tác vụ nền (`BackgroundService`) chạy mỗi 5 phút:
-  - Tìm người dùng đang trong khung giờ cần gửi theo `TimeZone` của họ (`rescue` theo giờ cứu chuỗi, `freeze` 08:00, `weekly` thứ Hai 08:30, `comeback` vào giờ nhắc của họ — đều đọc từ *Thông số hệ thống*).
-  - Kiểm tra điều kiện (chưa học hôm nay, chuỗi ≥ 2…), giới hạn 2 / ngày, giờ yên tĩnh, công tắc của người dùng.
-  - Gửi theo lô 100 qua Expo Push API, ghi `NotificationLogs`.
-  - 15 phút sau đọc biên nhận (receipts); token báo `DeviceNotRegistered` → xoá.
-- Cấu hình: `Push__ExpoAccessToken` trong `docker-compose.yml` (biến môi trường, không đưa vào git).
+### Để làm sau
+
+- `rescue`/`freeze` từ máy chủ (khi đó app ngừng hẹn local các loại này), đọc biên nhận (receipts) sau 15 phút.
 
 ## Giai đoạn 3 — trong web admin
 
