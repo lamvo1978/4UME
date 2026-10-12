@@ -59,7 +59,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#E7F2EC"
         }
-      ]
+      ],
+      "@sentry/react-native"
     ],
     "extra": {
       "eas": {
