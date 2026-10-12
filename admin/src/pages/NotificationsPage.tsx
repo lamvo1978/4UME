@@ -385,7 +385,13 @@ function Banner({ caption, title, body }: { caption: string; title: string; body
       </Text>
       <Paper p="sm" radius={18} bg="gray.1" withBorder>
         <Group gap="sm" wrap="nowrap" align="flex-start">
-          <img src="/logo-emblem.png" alt="" width={36} height={36} style={{ borderRadius: 9, flexShrink: 0 }} />
+          <img
+            src="/app-icon.png"
+            alt=""
+            width={38}
+            height={38}
+            style={{ borderRadius: 9, flexShrink: 0, border: "1px solid var(--mantine-color-gray-3)" }}
+          />
           <Box flex={1} miw={0}>
             <Group justify="space-between" wrap="nowrap" gap="xs">
               <Text fz="sm" fw={700} lineClamp={2}>
