@@ -27,6 +27,8 @@ const LEVEL_CAPTION: Record<VocabLevel, string> = {
   B2: "Khá",
 };
 
+const WEEKDAYS = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
 const REMINDER_TIMES = ["07:00", "12:00", "19:00", "20:00", "21:00", "22:00"];
 
 export function SettingsSection({
@@ -46,15 +48,19 @@ export function SettingsSection({
   const rate = RATES.reduce((best, r) => (Math.abs(r.value - s.speechRate) < Math.abs(best.value - s.speechRate) ? r : best));
 
   const [rescueTime, setRescueTime] = useState<string | null>(null);
+  const [weeklyAt, setWeeklyAt] = useState<string | null>(null);
 
   useEffect(() => {
     api
       .config()
-      .then((c) => setRescueTime(c.notifications.rescueTime))
+      .then((c) => {
+        setRescueTime(c.notifications.rescueTime);
+        setWeeklyAt(`${WEEKDAYS[c.notifications.weeklyDay] ?? "Thứ Hai"} ${c.notifications.weeklyTime}`);
+      })
       .catch(() => undefined);
   }, []);
 
-  async function toggleNotification(key: "reminderEnabled" | "notifyRescue", enabled: boolean) {
+  async function toggleNotification(key: "reminderEnabled" | "notifyRescue" | "notifyWeekly", enabled: boolean) {
     if (enabled && !(await ensureReminderPermission())) {
       Alert.alert("Chưa bật thông báo", "Hãy cho phép 4UME gửi thông báo trong Cài đặt của máy để nhận nhắc học.", [
         { text: "Để sau", style: "cancel" },
@@ -180,6 +186,19 @@ export function SettingsSection({
           <Switch
             value={s.notifyRescue}
             onValueChange={(v) => toggleNotification("notifyRescue", v)}
+            trackColor={{ true: colors.accent }}
+          />
+        }
+      />
+
+      <Row
+        icon="calendar-outline"
+        title="Tổng kết tuần"
+        subtitle={`${weeklyAt ?? "Sáng thứ Hai"}, nhìn lại tuần học vừa qua`}
+        right={
+          <Switch
+            value={s.notifyWeekly}
+            onValueChange={(v) => toggleNotification("notifyWeekly", v)}
             trackColor={{ true: colors.accent }}
           />
         }

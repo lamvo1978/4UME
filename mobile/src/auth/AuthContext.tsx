@@ -11,6 +11,7 @@ import {
 } from "../api/client";
 import { configureSpeech } from "../components/SpeakButton";
 import { resolveTexts } from "../notifications/copy";
+import { forgetPushToken, registerPushToken, unregisterPushToken } from "../notifications/push";
 import { syncReminders } from "../notifications/reminders";
 
 type SettingsChange = Partial<UserSettings> & { displayName?: string };
@@ -114,6 +115,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     me?.todayNewWords,
   ]);
 
+  // Turning a reminder on is when permission usually gets granted.
+  useEffect(() => {
+    if (!me) return;
+    registerPushToken().catch(() => undefined);
+  }, [me?.userId, me?.settings.reminderEnabled, me?.settings.notifyRescue]);
+
   useEffect(() => {
     if (!me) return;
     const zone = deviceTimeZone();
@@ -125,6 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setUnauthorizedHandler(() => {
       api.clearToken().catch(() => undefined);
+      forgetPushToken();
       syncReminders(null).catch(() => undefined);
       setUser(null);
       setMe(null);
@@ -182,6 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await signIn(await api.resetPassword(email, code, newPassword));
       },
       async logout() {
+        await unregisterPushToken();
         await api.clearToken();
         syncReminders(null).catch(() => undefined);
         setUser(null);

@@ -172,27 +172,37 @@ export async function syncReminders(
   }
 }
 
-function screenOf(response: Notifications.NotificationResponse | null): ReminderScreen | null {
-  const screen = response?.notification.request.content.data?.screen;
-  return screen === "practice" || screen === "study" ? screen : null;
+/** Where a tapped notification leads: local reminders open a tab, server pushes also open a screen. */
+export type NotificationTarget =
+  | { screen: ReminderScreen }
+  | { screen: "weekly"; start?: string }
+  | { screen: "feedback"; id: string };
+
+function targetOf(response: Notifications.NotificationResponse | null): NotificationTarget | null {
+  const data = response?.notification.request.content.data;
+  const screen = data?.screen;
+  if (screen === "practice" || screen === "study") return { screen };
+  if (screen === "weekly") return { screen, start: typeof data?.start === "string" ? data.start : undefined };
+  if (screen === "feedback" && typeof data?.id === "string") return { screen, id: data.id };
+  return null;
 }
 
-/** Calls `open` for reminder taps, including the one that launched the app. Returns an unsubscribe function. */
-export function onReminderTap(open: (screen: ReminderScreen) => void) {
+/** Calls `open` for notification taps, including the one that launched the app. Returns an unsubscribe function. */
+export function onNotificationTap(open: (target: NotificationTarget) => void) {
   if (Platform.OS === "web") return () => undefined;
   let active = true;
   Notifications.getLastNotificationResponseAsync()
     .then((response) => {
-      const screen = screenOf(response);
-      if (active && screen) {
-        open(screen);
+      const target = targetOf(response);
+      if (active && target) {
+        open(target);
         Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
       }
     })
     .catch(() => undefined);
   const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-    const screen = screenOf(response);
-    if (screen) open(screen);
+    const target = targetOf(response);
+    if (target) open(target);
   });
   return () => {
     active = false;

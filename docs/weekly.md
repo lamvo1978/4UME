@@ -25,4 +25,4 @@ Nhìn lại một tuần học (thứ Hai – Chủ nhật, theo giờ máy ngư
 
 ## Sau này
 
-- (Làm ở đợt build EAS, bằng thông báo đẩy từ máy chủ để có số liệu thật.) Thông báo `weekly` **thứ Hai 08:30**, nội dung kiểu "Tuần qua bạn học 5/7 ngày, 42 từ mới", bấm vào mở `Weekly` với `start` = thứ Hai tuần trước. Chỉ gửi khi tuần trước có học ít nhất một ngày, tôn trọng công tắc *Tổng kết tuần* và giờ yên tĩnh — xem [notifications.md](notifications.md). Ngày/giờ đặt trong admin *Thông số hệ thống*.
+- (Đã làm, từ build 3.) Thông báo `weekly` **thứ Hai 08:30**, nội dung kiểu "Tuần qua bạn học 5/7 ngày, 42 từ mới", bấm vào mở `Weekly` với `start` = thứ Hai tuần trước. Chỉ gửi khi tuần trước có học ít nhất một ngày, tôn trọng công tắc *Tổng kết tuần* và giờ yên tĩnh — xem [notifications.md](notifications.md). Ngày/giờ đặt trong admin *Thông số hệ thống*.

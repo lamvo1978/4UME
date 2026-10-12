@@ -256,9 +256,14 @@ export type NotificationTexts = {
   comebackTitles: string[];
   comebackDueBody: string;
   comebackNewBody: string;
+  weeklyTitle: string;
+  weeklyBody: string;
+  feedbackReplyTitle: string;
+  feedbackReplyBody: string;
   promptTitle: string;
   promptBody: string;
 };
+export type PushResult = { devices: number; sent: number; errors: string[] };
 export type AdminNotificationTexts = { value: NotificationTexts; defaults: NotificationTexts; updatedAt: string | null };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -677,6 +682,7 @@ export const api = {
   feedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings"),
   saveFeedbackSettings: (s: FeedbackSettings) => request<AdminFeedbackSettings>("/api/admin/feedback-settings", json("PUT", s)),
   resetFeedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings/reset", { method: "POST" }),
+  testPush: (userId: string) => request<PushResult>(`/api/admin/users/${userId}/test-push`, { method: "POST" }),
   notificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts"),
   saveNotificationTexts: (t: NotificationTexts) => request<AdminNotificationTexts>("/api/admin/notification-texts", json("PUT", t)),
   resetNotificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts/reset", { method: "POST" }),

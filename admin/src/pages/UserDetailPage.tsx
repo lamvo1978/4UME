@@ -19,6 +19,7 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconArrowLeft,
+  IconBell,
   IconBrandAndroid,
   IconBrandApple,
   IconCrown,
@@ -33,7 +34,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, isPremium, type AdminUserDetail, type AdminUserInvites } from "../api";
+import { api, isPremium, type AdminUserDetail, type AdminUserInvites, type PushResult } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { fullTime, notifyError, notifySaved, shortDate, studyAgo, timeAgo } from "../lib";
 import { isExpired } from "../partners/dates";
@@ -202,10 +203,11 @@ export function UserDetailPage() {
       <Card title="Thiết bị nhận thông báo">
         {d.devices.length === 0 ? (
           <Text fz="sm" c="dimmed">
-            Chưa có thiết bị nào đăng ký. Danh sách này sẽ có dữ liệu khi app bật thông báo đẩy (giai đoạn thông báo 2).
+            Chưa có thiết bị nào. Máy được thêm vào khi người dùng cho phép thông báo trên app (từ bản 1.0.0 build 3).
           </Text>
         ) : (
           <Stack gap="xs">
+            <TestPushButton userId={u.id} onDone={() => queryClient.invalidateQueries({ queryKey: ["user", id] })} />
             {d.devices.map((dev, i) => (
               <Group key={i} gap="sm" wrap="nowrap">
                 {dev.platform === "ios" ? <IconBrandApple size={20} /> : <IconBrandAndroid size={20} />}
@@ -224,6 +226,40 @@ export function UserDetailPage() {
 
       <ChangeModal change={change} detail={d} onClose={() => setChange(null)} onDone={applied} />
       <HistoryDrawer opened={historyOpen} onClose={() => setHistoryOpen(false)} entityType="user" entityId={u.id} title={u.displayName} />
+    </Stack>
+  );
+}
+
+/** Sends a fixed test message to every registered phone of the user; devices the store reports as gone are dropped. */
+function TestPushButton({ userId, onDone }: { userId: string; onDone: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<PushResult | null>(null);
+
+  async function send() {
+    setBusy(true);
+    try {
+      setResult(await api.testPush(userId));
+      onDone();
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Stack gap={6} mb="xs">
+      <Button variant="light" leftSection={<IconBell size={18} />} loading={busy} onClick={send} style={{ alignSelf: "flex-start" }}>
+        Gửi thông báo thử
+      </Button>
+      {result ? (
+        <Text fz="sm" c={result.sent > 0 ? "teal.7" : "red.7"}>
+          {result.sent > 0
+            ? `Đã gửi tới ${result.sent}/${result.devices} máy. Thông báo thường hiện sau vài giây.`
+            : `Chưa gửi được (${result.errors.join(", ") || "không có máy nào"}).`}
+          {result.sent > 0 && result.errors.length ? ` Lỗi ở máy còn lại: ${result.errors.join(", ")}.` : ""}
+        </Text>
+      ) : null}
     </Stack>
   );
 }

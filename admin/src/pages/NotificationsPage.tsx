@@ -17,6 +17,10 @@ const MAX_BODY = 180;
 const VAR_HINTS: Record<string, string> = {
   what: "số từ/bài cần ôn, ví dụ “12 từ và 2 bài ngữ pháp”",
   count: "số từ",
+  words: "số từ mới",
+  reviews: "số lượt ôn",
+  subject: "tiêu đề góp ý",
+  reply: "đầu câu trả lời của admin",
   streak: "số ngày của chuỗi",
   milestone: "mốc chuỗi sắp đạt (7, 14, 30…)",
   days: "số ngày",
@@ -28,6 +32,11 @@ type Key = keyof NotificationTexts;
 type Field = { key: Key; label: string; vars: string[]; max: number };
 
 const SAMPLE = { what: "12 từ và 2 bài ngữ pháp", count: 10, streak: 12, milestone: 14, left: "3 tiếng", time: "20:00" };
+const WEEKLY_SAMPLE = { days: 5, words: 42, reviews: 120 };
+const FEEDBACK_SAMPLE = {
+  subject: "Lỗi phát âm từ schedule",
+  reply: "Cảm ơn bạn đã báo lỗi! Mình đã sửa phát âm của từ này, bạn cập nhật lại app là thấy nhé.",
+};
 
 function fill(template: string, values: Record<string, string | number>) {
   return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
@@ -157,7 +166,8 @@ export function NotificationsPage() {
       </Group>
 
       <Alert variant="light" icon={<IconInfoCircle size={18} />}>
-        Đây là lời nhắc app tự đặt lịch ngay trên điện thoại. Mỗi ngày app lấy lần lượt một câu trong danh sách để không lặp lại. Chữ trong
+        Nhắc học, cứu chuỗi và quay lại học do app tự đặt lịch ngay trên điện thoại; tổng kết tuần, trả lời góp ý và quay lại học sau thời
+        gian dài do máy chủ gửi. Mỗi ngày dùng lần lượt một câu trong danh sách để không lặp lại. Chữ trong
         ngoặc nhọn như <Code>{"{streak}"}</Code> được app thay bằng số thật. Sửa xong, app nhận nội dung mới khi mở lại. Giờ gửi, giờ yên tĩnh
         và số thông báo mỗi ngày nằm ở{" "}
         <Anchor component={Link} to="/settings" fz="sm">
@@ -221,7 +231,7 @@ export function NotificationsPage() {
 
       <Section
         title="Quay lại học"
-        description="Gửi khi người dùng đã nghỉ vài ngày và mất chuỗi (số ngày chọn ở Cài đặt). Có từ cần ôn thì gợi ý ôn tối đa 5 từ."
+        description="Gửi vào giờ nhắc học khi người dùng đã nghỉ vài ngày (số ngày chọn ở Cài đặt): máy tự gửi ở các mốc “trên máy”, máy chủ gửi các mốc xa hơn như 14, 30 ngày. Có từ cần ôn thì gợi ý ôn tối đa 5 từ."
         fields={
           <>
             {editor({ key: "comebackTitles", label: "Tiêu đề", vars: ["days"], max: MAX_TITLE })}
@@ -235,6 +245,42 @@ export function NotificationsPage() {
             <Banner caption="Nghỉ 7 ngày, không có từ cần ôn" title={fill(pick(t.comebackTitles, seed + 1), { days: 7 })} body={fill(t.comebackNewBody, { days: 7 })} />
             {nextSample}
           </>
+        }
+      />
+
+      <Section
+        title="Tổng kết tuần · từ máy chủ"
+        description="Máy chủ gửi vào ngày giờ tổng kết tuần ở Cài đặt, chỉ khi tuần trước có học ít nhất một ngày và người dùng bật Tổng kết tuần. Bấm vào mở màn tổng kết của tuần đó."
+        fields={
+          <>
+            {editor({ key: "weeklyTitle", label: "Tiêu đề", vars: ["days", "words", "reviews"], max: MAX_TITLE })}
+            {editor({ key: "weeklyBody", label: "Nội dung", vars: ["days", "words", "reviews"], max: MAX_BODY })}
+          </>
+        }
+        preview={
+          <Banner
+            caption="Tuần trước học 5 ngày, 42 từ mới, 120 lượt ôn"
+            title={fill(t.weeklyTitle, WEEKLY_SAMPLE)}
+            body={fill(t.weeklyBody, WEEKLY_SAMPLE)}
+          />
+        }
+      />
+
+      <Section
+        title="Trả lời góp ý · từ máy chủ"
+        description="Gửi ngay khi admin trả lời một góp ý (trừ giờ yên tĩnh của người dùng). Bấm vào mở đúng góp ý đó."
+        fields={
+          <>
+            {editor({ key: "feedbackReplyTitle", label: "Tiêu đề", vars: ["subject"], max: MAX_TITLE })}
+            {editor({ key: "feedbackReplyBody", label: "Nội dung", vars: ["subject", "reply"], max: MAX_BODY })}
+          </>
+        }
+        preview={
+          <Banner
+            caption="Admin trả lời góp ý “Lỗi phát âm từ schedule”"
+            title={fill(t.feedbackReplyTitle, FEEDBACK_SAMPLE)}
+            body={fill(t.feedbackReplyBody, FEEDBACK_SAMPLE)}
+          />
         }
       />
 

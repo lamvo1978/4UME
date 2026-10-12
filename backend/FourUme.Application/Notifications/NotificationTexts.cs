@@ -35,6 +35,14 @@ public record NotificationTexts
     public string ComebackDueBody { get; init; } = "Đã {days} ngày rồi — ôn lại {count} từ cũ trong 2 phút nhé.";
     public string ComebackNewBody { get; init; } = "Đã {days} ngày rồi — học vài từ mới để bắt đầu lại chuỗi nhé.";
 
+    /// <summary>Sent by the server on the weekly day; numbers are last Monday–Sunday.</summary>
+    public string WeeklyTitle { get; init; } = "Tuần qua bạn học {days}/7 ngày";
+    public string WeeklyBody { get; init; } = "{words} từ mới, {reviews} lượt ôn. Xem tổng kết tuần nhé!";
+
+    /// <summary>Sent by the server when an admin answers; {reply} = the start of the answer.</summary>
+    public string FeedbackReplyTitle { get; init; } = "4UME đã trả lời góp ý của bạn";
+    public string FeedbackReplyBody { get; init; } = "{reply}";
+
     public string PromptTitle { get; init; } = "Giữ lửa mỗi ngày nhé?";
     public string PromptBody { get; init; } = "4UME sẽ nhắc bạn học lúc {time} mỗi ngày. Bạn đổi giờ hoặc tắt bất cứ lúc nào trong Hồ sơ › Cài đặt.";
 }
@@ -66,6 +74,10 @@ public static partial class NotificationTextRules
         new("Quay lại học · tiêu đề", t.ComebackTitles, MaxTitle, ["days"]),
         new("Quay lại học · nội dung khi có từ cần ôn", [t.ComebackDueBody], MaxBody, ["days", "count"]),
         new("Quay lại học · nội dung khi không có từ cần ôn", [t.ComebackNewBody], MaxBody, ["days"]),
+        new("Tổng kết tuần · tiêu đề", [t.WeeklyTitle], MaxTitle, ["days", "words", "reviews"]),
+        new("Tổng kết tuần · nội dung", [t.WeeklyBody], MaxBody, ["days", "words", "reviews"]),
+        new("Trả lời góp ý · tiêu đề", [t.FeedbackReplyTitle], MaxTitle, ["subject"]),
+        new("Trả lời góp ý · nội dung", [t.FeedbackReplyBody], MaxBody, ["subject", "reply"]),
         new("Hỏi bật nhắc học · tiêu đề", [t.PromptTitle], MaxTitle, ["time"]),
         new("Hỏi bật nhắc học · nội dung", [t.PromptBody], MaxBody * 2, ["time"]),
     ];
@@ -86,6 +98,10 @@ public static partial class NotificationTextRules
         ComebackTitles = List(t.ComebackTitles),
         ComebackDueBody = (t.ComebackDueBody ?? "").Trim(),
         ComebackNewBody = (t.ComebackNewBody ?? "").Trim(),
+        WeeklyTitle = (t.WeeklyTitle ?? "").Trim(),
+        WeeklyBody = (t.WeeklyBody ?? "").Trim(),
+        FeedbackReplyTitle = (t.FeedbackReplyTitle ?? "").Trim(),
+        FeedbackReplyBody = (t.FeedbackReplyBody ?? "").Trim(),
         PromptTitle = (t.PromptTitle ?? "").Trim(),
         PromptBody = (t.PromptBody ?? "").Trim(),
     };
@@ -111,6 +127,14 @@ public static partial class NotificationTextRules
         }
         return problems;
     }
+
+    /// <summary>Replaces known placeholders; unknown ones stay as typed.</summary>
+    public static string Fill(string template, IReadOnlyDictionary<string, object> values) =>
+        Placeholder().Replace(template, m => values.TryGetValue(m.Groups[1].Value, out var v) ? v.ToString() ?? "" : m.Value);
+
+    /// <summary>Same rotation as the app: consecutive days get different variants.</summary>
+    public static string Pick(IReadOnlyList<string> items, int seed) =>
+        items.Count == 0 ? "" : items[((seed % items.Count) + items.Count) % items.Count];
 
     private static List<string> List(IEnumerable<string>? items) =>
         (items ?? []).Select(s => (s ?? "").Trim()).Where(s => s.Length > 0).ToList();
