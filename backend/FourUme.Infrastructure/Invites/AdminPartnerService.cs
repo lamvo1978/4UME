@@ -33,7 +33,7 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
             })
             .ToListAsync(ct);
         return new AdminPartnerDetailDto(ToDto(row, units.GetValueOrDefault(id)), codes.Select(c => new AdminPartnerCodeDto(
-            c.Id, ReferralRules.FormatPartnerCode(c.Code), c.Batch, c.CreatedAt, c.ExpiresAt, c.UsedAt, c.UsedById, c.Email, c.Name,
+            c.Id, ReferralRules.FormatCode(c.Code), c.Batch, c.CreatedAt, c.ExpiresAt, c.UsedAt, c.UsedById, c.Email, c.Name,
             c.RevokedAt, HeldDays(c.HeldPremium))).ToList());
     }
 
@@ -75,10 +75,9 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
         for (var round = 0; round < 20 && codes.Count < request.Count; round++)
         {
             var fresh = new HashSet<string>();
-            while (fresh.Count < request.Count - codes.Count) fresh.Add(ReferralRules.NewPartnerCode(partner.Prefix));
+            while (fresh.Count < request.Count - codes.Count) fresh.Add(ReferralRules.NewPrefixedCode(partner.Prefix));
             fresh.ExceptWith(codes);
-            var taken = await db.PartnerCodes.Where(c => fresh.Contains(c.Code)).Select(c => c.Code).ToListAsync(ct);
-            fresh.ExceptWith(taken);
+            fresh.ExceptWith(await InviteCodes.TakenAsync(db, fresh, ct));
             codes.UnionWith(fresh);
         }
         if (codes.Count < request.Count) throw new InvalidOperationException("Chưa tạo đủ mã, bạn thử lại nhé.");
@@ -118,12 +117,12 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
             code.RevokedAt = revoked ? DateTimeOffset.UtcNow : null;
             var who = code.UsedBy is null ? "" : $" của {code.UsedBy.Email}";
             auditor.Record(AuditEntities.Partner, code.PartnerId.ToString(), AuditActions.Update,
-                $"{(revoked ? "Thu hồi" : "Khôi phục")} mã {ReferralRules.FormatPartnerCode(code.Code)}{who} ({code.Partner!.Name})", null, null);
+                $"{(revoked ? "Thu hồi" : "Khôi phục")} mã {ReferralRules.FormatCode(code.Code)}{who} ({code.Partner!.Name})", null, null);
             await db.SaveChangesAsync(ct);
             if (code.UsedById is { } userId) await PremiumHold.SyncAsync(db, userId, ct);
         }
         var held = await db.PartnerCodes.AsNoTracking().Where(c => c.Id == codeId).Select(c => c.HeldPremium).FirstAsync(ct);
-        return new AdminPartnerCodeDto(code.Id, ReferralRules.FormatPartnerCode(code.Code), code.Batch, code.CreatedAt, code.ExpiresAt,
+        return new AdminPartnerCodeDto(code.Id, ReferralRules.FormatCode(code.Code), code.Batch, code.CreatedAt, code.ExpiresAt,
             code.UsedAt, code.UsedById, code.UsedBy?.Email, code.UsedBy?.DisplayName, code.RevokedAt, HeldDays(held));
     }
 
@@ -144,7 +143,7 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
             .Select(c =>
             {
                 var ended = EndOf(c.RevokedAt, c.ExpiresAt);
-                return new PartnerBillingRowDto(ReferralRules.FormatPartnerCode(c.Code), c.Batch, c.UsedById, c.Email, c.Name, c.UsedAt!.Value,
+                return new PartnerBillingRowDto(ReferralRules.FormatCode(c.Code), c.Batch, c.UsedById, c.Email, c.Name, c.UsedAt!.Value,
                     ended, PartnerBilling.Units(c.UsedAt.Value, ended, year, m));
             })
             .Where(r => r.Units > 0)
@@ -195,6 +194,8 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
             if (hasCodes) throw new InvalidOperationException("Đối tác đã có mã nên không đổi được tiền tố.");
             if (await db.Partners.AnyAsync(p => p.Prefix == prefix && p.Id != partner.Id, ct))
                 throw new InvalidOperationException($"Tiền tố {prefix} đã thuộc đối tác khác.");
+            if (ReferralRules.NormalizePrefix((await ReferralService.LoadConfigAsync(db, ct)).CodePrefix) == prefix)
+                throw new InvalidOperationException($"Tiền tố {prefix} đang dùng cho mã mời bạn bè (Cài đặt → Mời bạn bè).");
         }
         partner.Name = name;
         partner.Prefix = prefix;

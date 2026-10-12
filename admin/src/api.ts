@@ -170,6 +170,8 @@ export type AdminSettings = {
 };
 export type ReferralConfig = {
   enabled: boolean;
+  /** Two letters starting new invite codes, e.g. "MB" → MB-K7P2X9; partners can't use it. */
+  codePrefix: string;
   requiredStudyDays: number;
   rewardDays: number;
   maxRewardsPerUser: number;

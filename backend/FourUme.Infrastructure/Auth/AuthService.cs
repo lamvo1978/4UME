@@ -72,7 +72,8 @@ public class AuthService(
         var user = new User
         {
             Email = email,
-            DisplayName = string.IsNullOrWhiteSpace(request.DisplayName) ? email.Split('@')[0] : request.DisplayName.Trim()
+            DisplayName = string.IsNullOrWhiteSpace(request.DisplayName) ? email.Split('@')[0] : request.DisplayName.Trim(),
+            ReferralCode = await InviteCodes.NewReferralCodeAsync(db, ct),
         };
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
         db.Users.Add(user);

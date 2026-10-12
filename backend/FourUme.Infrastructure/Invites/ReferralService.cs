@@ -51,7 +51,7 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
 
         return new MyReferralDto(
             config.Enabled,
-            code,
+            ReferralRules.FormatCode(code),
             ReferralRules.InviteUrl + code,
             config.RequiredStudyDays,
             config.RewardDays,
@@ -66,7 +66,7 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
     public async Task<RedeemResultDto> RedeemAsync(Guid userId, string? raw, CancellationToken ct = default)
     {
         var code = ReferralRules.Normalize(raw);
-        if (code.Length is < 4 or > 16) throw new InvalidOperationException(WrongCode);
+        if (code.Length is < 6 or > 16) throw new InvalidOperationException(WrongCode);
 
         var partnerCode = await db.PartnerCodes.AsNoTracking().Include(c => c.Partner).FirstOrDefaultAsync(c => c.Code == code, ct);
         if (partnerCode is not null) return await RedeemPartnerAsync(userId, partnerCode, ct);
@@ -177,15 +177,15 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
         user.CreatedAt > DateTimeOffset.UtcNow.AddDays(-config.JoinWindowDays);
 
     /// <summary>
-    /// Invite codes are shorter than partner codes, so the two kinds never collide. Only an empty column is filled,
-    /// so two first visits at once still end up with one code.
+    /// New accounts get their code at sign-up; this covers older accounts. Only an empty column is filled, so two first
+    /// visits at once still end up with one code.
     /// </summary>
     private async Task<string> EnsureCodeAsync(Guid userId, string? current, CancellationToken ct)
     {
         if (current is not null) return current;
         for (var attempt = 0; attempt < 5; attempt++)
         {
-            var code = ReferralRules.NewCode(ReferralRules.ReferralCodeLength);
+            var code = await InviteCodes.NewReferralCodeAsync(db, ct);
             try
             {
                 await db.Users.Where(u => u.Id == userId && u.ReferralCode == null)

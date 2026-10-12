@@ -133,12 +133,12 @@ public class AdminUserService(
             .Select(c => new { c.Id, c.PartnerId, c.Partner!.Name, c.Code, c.UsedAt, c.RevokedAt, c.ExpiresAt, c.HeldPremium })
             .ToListAsync(ct);
         return new AdminUserInvitesDto(
-            user.ReferralCode,
+            user.ReferralCode is { } own ? ReferralRules.FormatCode(own) : null,
             invitedBy?.InviterId,
             invitedBy?.Email,
             await db.Referrals.CountAsync(r => r.InviterId == user.Id, ct),
             await db.Referrals.CountAsync(r => r.InviterId == user.Id && r.InviterRewarded, ct),
-            codes.Select(c => new AdminUserPartnerCodeDto(c.Id, c.PartnerId, c.Name, ReferralRules.FormatPartnerCode(c.Code), c.UsedAt,
+            codes.Select(c => new AdminUserPartnerCodeDto(c.Id, c.PartnerId, c.Name, ReferralRules.FormatCode(c.Code), c.UsedAt,
                 c.RevokedAt, c.ExpiresAt, c.HeldPremium is { } h ? (int)Math.Ceiling(h.TotalDays) : 0)).ToList());
     }
 
@@ -154,7 +154,7 @@ public class AdminUserService(
         if (request.Role is not (UserRoles.Admin or UserRoles.User)) throw new InvalidOperationException("Quyền không hợp lệ.");
         if (await db.Users.AnyAsync(u => u.Email == email, ct)) throw new InvalidOperationException("Email đã được dùng.");
 
-        var user = new User { Email = email, DisplayName = name, Role = request.Role };
+        var user = new User { Email = email, DisplayName = name, Role = request.Role, ReferralCode = await InviteCodes.NewReferralCodeAsync(db, ct) };
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
         db.Users.Add(user);
         auditor.Record(AuditEntities.User, user.Id.ToString(), AuditActions.Create,

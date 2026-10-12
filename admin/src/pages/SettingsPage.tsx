@@ -528,6 +528,25 @@ function ReferralSettings({ settings }: { settings: AdminSettings }) {
           label="Đang chạy chương trình mời bạn"
           description="Tắt thì app không nhận mã mời mới và không trao thưởng nữa; ngày Premium đã trao vẫn giữ nguyên."
         />
+        <Group align="flex-start" gap="sm" wrap="nowrap">
+          <TextInput
+            w={96}
+            label="Tiền tố"
+            maxLength={2}
+            placeholder="MB"
+            value={form.codePrefix}
+            error={!/^[A-Z]{2}$/.test(form.codePrefix)}
+            onChange={(e) => setForm({ ...form, codePrefix: e.currentTarget.value.toUpperCase().replace(/[^A-Z]/g, "") })}
+            styles={{ input: { fontFamily: "monospace", fontWeight: 700, letterSpacing: 3, textAlign: "center" } }}
+          />
+          <Text fz="xs" c="dimmed" mt={30}>
+            Mã mời của mỗi tài khoản có dạng{" "}
+            <Text span ff="monospace" fz="xs" fw={700} c="var(--mantine-color-text)">
+              {form.codePrefix || "MB"}-K7P2X9
+            </Text>
+            , tạo một lần khi đăng ký. Đổi tiền tố chỉ áp dụng cho tài khoản mới; mã đã cấp giữ nguyên. Không trùng tiền tố đối tác.
+          </Text>
+        </Group>
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
           <NumberInput
             label="Bạn mới cần học"
@@ -582,7 +601,7 @@ function ReferralSettings({ settings }: { settings: AdminSettings }) {
           </Button>
           <Button
             leftSection={<IconDeviceFloppy size={18} />}
-            disabled={!dirty}
+            disabled={!dirty || !/^[A-Z]{2}$/.test(form.codePrefix)}
             loading={saving && dirty}
             onClick={() => run(() => api.saveReferralSettings(form), "Đã lưu cài đặt mời bạn bè")}
           >

@@ -1,6 +1,12 @@
 # Mời bạn bè và mã trung tâm đối tác
 
-Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nhận ra mã nào là mã nào (mã mời 6 ký tự, mã trung tâm 8 ký tự dạng `AB-K7P2X9`). Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Phần ngẫu nhiên của cả hai loại mã dùng bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
+Một ô **Nhập mã** trong app nhận cả hai loại mã. Hai loại cùng dạng **2 chữ cái tiền tố + 6 chữ và số ngẫu nhiên**, ví dụ `MB-K7P2X9`; khoá duy nhất là cả 8 ký tự, nên phần 6 ký tự trùng nhau giữa hai tiền tố vẫn là hai mã khác nhau. Máy chủ tìm trong mã trung tâm trước, rồi đến mã mời; lúc tạo mã luôn kiểm tra trùng với cả hai bảng.
+
+- **Mã mời** (của từng tài khoản): tạo **một lần khi đăng ký**, dùng để gửi bạn bè. Tiền tố đặt ở admin **Cài đặt → Mời bạn bè** (mặc định `MB`); đổi tiền tố chỉ áp dụng cho tài khoản mới, mã đã cấp giữ nguyên. Tài khoản cũ chưa có mã được tạo lúc mở màn *Mời bạn bè*.
+- **Mã trung tâm**: chỉ để nhập vào mở Premium/tính năng, không phải mã của tài khoản. Tiền tố đặt ở từng đối tác.
+- Tiền tố mã mời và tiền tố đối tác không được trùng nhau (admin chặn cả hai phía).
+
+Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Phần ngẫu nhiên dùng bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
 
 ## Người học thấy gì (app)
 

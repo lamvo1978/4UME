@@ -86,7 +86,7 @@ export function InviteScreen() {
       {data.enabled ? (
         <View style={styles.hero}>
           <Text style={styles.heroLabel}>Mã mời của bạn</Text>
-          <Text style={styles.code} selectable>
+          <Text style={styles.code} selectable numberOfLines={1} adjustsFontSizeToFit>
             {data.code}
           </Text>
           <Text style={styles.heroSub}>
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     ...shadow.card,
   },
   heroLabel: { fontSize: 14, fontWeight: "700", color: colors.white, opacity: 0.85 },
-  code: { fontSize: 40, fontWeight: "800", color: colors.white, letterSpacing: 6 },
+  code: { fontSize: 34, fontWeight: "800", color: colors.white, letterSpacing: 3 },
   heroSub: { fontSize: 13, color: colors.white, opacity: 0.9, textAlign: "center", lineHeight: 19 },
   shareButton: {
     marginTop: spacing.sm,

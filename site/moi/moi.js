@@ -3,6 +3,8 @@
   var code = raw.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 16);
   if (!code) return;
 
+  // Codes are a two-letter prefix plus six characters, shown as "MB-K7P2X9".
+  if (code.length === 8) code = code.slice(0, 2) + "-" + code.slice(2);
   document.getElementById("code").textContent = code;
   document.getElementById("code-card").hidden = false;
 

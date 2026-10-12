@@ -97,6 +97,7 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     freezeNoticeTime: "Giờ báo đóng băng",
     countsTowardStreak: "Nghe xong tính vào chuỗi ngày",
     enabled: "Đang bật",
+    codePrefix: "Tiền tố mã mời",
     freeDailyLimit: "Số lượt chấm miễn phí mỗi ngày",
     premiumDailyLimit: "Số lượt chấm Premium mỗi ngày",
     attemptsPerWord: "Số lần chấm mỗi từ",

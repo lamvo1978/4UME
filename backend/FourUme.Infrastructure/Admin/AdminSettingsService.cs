@@ -72,6 +72,9 @@ public class AdminSettingsService(
     {
         var problems = ReferralRules.Validate(config);
         if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        config = config with { CodePrefix = ReferralRules.NormalizePrefix(config.CodePrefix)! };
+        if (await db.Partners.AnyAsync(p => p.Prefix == config.CodePrefix, ct))
+            throw new InvalidOperationException($"Tiền tố {config.CodePrefix} đang thuộc một đối tác, bạn chọn tiền tố khác cho mã mời nhé.");
         await WriteAsync(ReferralConfig.SettingKey, ReferralSummary, action, await referral.GetConfigAsync(ct), config, ct);
     }
 
