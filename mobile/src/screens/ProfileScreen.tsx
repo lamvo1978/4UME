@@ -12,6 +12,7 @@ import { MemoryCard } from "../components/profile/MemoryCard";
 import { PlanRow } from "../components/profile/PlanRow";
 import { AdRewardsRow } from "../components/profile/AdRewardsRow";
 import { WeeklyRow } from "../components/profile/WeeklyRow";
+import { InviteRow } from "../components/profile/InviteRow";
 import { adsOffered } from "../ads/rewarded";
 import { StreakCard } from "../components/profile/StreakCard";
 import { Screen } from "../components/Screen";
@@ -89,6 +90,7 @@ export function ProfileScreen() {
         {stats ? (
           <WeeklyRow today={stats.streak.today} days={stats.streak.days} onPress={() => navigation.navigate("Weekly")} />
         ) : null}
+        <InviteRow onPress={() => navigation.navigate("Invite")} />
 
         {stats ? (
           <>

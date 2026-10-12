@@ -23,6 +23,8 @@ import { FeedbackPage } from "./pages/FeedbackPage";
 import { FeedbackSettingsPage } from "./pages/FeedbackSettingsPage";
 import { FeedbackTicketPage } from "./pages/FeedbackTicketPage";
 import { UserDetailPage } from "./pages/UserDetailPage";
+import { PartnersPage } from "./pages/PartnersPage";
+import { PartnerDetailPage } from "./pages/PartnerDetailPage";
 import { UsersPage } from "./pages/UsersPage";
 
 /** Pulls in the Excel/CSV libraries, so it is loaded only when opened. */
@@ -73,6 +75,8 @@ export function App() {
         <Route path="history" element={<HistoryPage />} />
         <Route path="users" element={<UsersPage />} />
         <Route path="users/:id" element={<UserDetailPage />} />
+        <Route path="partners" element={<PartnersPage />} />
+        <Route path="partners/:id" element={<PartnerDetailPage />} />
         <Route path="notifications" element={<ComingSoonPage title="Thông báo" phase="giai đoạn thông báo 2" />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="about" element={<AboutPage />} />

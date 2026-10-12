@@ -6,7 +6,8 @@ import { formatDayMonthYear } from "../../utils/dates";
 
 /** One-line plan summary on the profile; the details live on the Premium screen. */
 export function PlanRow({ status, onPress }: { status: PronunciationStatus; onPress: () => void }) {
-  const premium = status.premium && !!status.premiumUntil;
+  const partner = status.premium ? status.partnerName : null;
+  const premium = status.premium && (!!partner || !!status.premiumUntil);
   return (
     <Pressable style={({ pressed }) => [styles.row, premium && styles.rowPremium, pressed && styles.pressed]} onPress={onPress}>
       <View style={[styles.icon, premium && styles.iconPremium]}>
@@ -15,7 +16,11 @@ export function PlanRow({ status, onPress }: { status: PronunciationStatus; onPr
       <View style={styles.text}>
         <Text style={styles.title}>{premium ? "Premium" : "Gói miễn phí"}</Text>
         <Text style={styles.subtitle} numberOfLines={1}>
-          {premium ? `Đến ${formatDayMonthYear(status.premiumUntil!)}` : `${status.freeDailyLimit} lượt chấm phát âm chi tiết mỗi ngày`}
+          {partner
+            ? `Học viên ${partner}`
+            : premium
+              ? `Đến ${formatDayMonthYear(status.premiumUntil!)}`
+              : `${status.freeDailyLimit} lượt chấm phát âm chi tiết mỗi ngày`}
         </Text>
       </View>
       <Text style={styles.cta}>{premium ? "Chi tiết" : "Xem Premium"}</Text>

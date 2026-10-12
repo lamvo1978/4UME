@@ -6,6 +6,7 @@ export const ENTITY_TYPES = [
   { value: "media", label: "Hình ảnh" },
   { value: "user", label: "Người dùng" },
   { value: "settings", label: "Cài đặt" },
+  { value: "partner", label: "Đối tác" },
 ];
 
 export const WEEKDAY_NAMES = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
@@ -38,6 +39,8 @@ export function entityPath(type: string, id: string) {
       return "/images";
     case "user":
       return `/users/${id}`;
+    case "partner":
+      return `/partners/${id}`;
     case "settings":
       return id === "about" ? "/about" : id === "premium" ? "/premium" : id === "feedback" ? "/feedback/settings" : "/settings";
     default:
@@ -93,7 +96,7 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     weeklyTime: "Giờ tổng kết tuần",
     freezeNoticeTime: "Giờ báo đóng băng",
     countsTowardStreak: "Nghe xong tính vào chuỗi ngày",
-    enabled: "Bật kiểm tra giọng đọc",
+    enabled: "Đang bật",
     freeDailyLimit: "Số lượt chấm miễn phí mỗi ngày",
     premiumDailyLimit: "Số lượt chấm Premium mỗi ngày",
     attemptsPerWord: "Số lần chấm mỗi từ",
@@ -107,5 +110,10 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     replies: "Câu trả lời mẫu",
     dailyLimit: "Góp ý mới tối đa mỗi ngày",
     autoCloseDays: "Tự đóng sau (ngày)",
+    requiredStudyDays: "Bạn mới cần học (ngày)",
+    rewardDays: "Thưởng mỗi bên (ngày Premium)",
+    maxRewardsPerUser: "Thưởng tối đa mỗi người mời",
+    joinWindowDays: "Hạn nhập mã mời (ngày)",
   },
+  partner: { name: "Tên đối tác", features: "Tính năng mở", note: "Ghi chú" },
 };

@@ -40,7 +40,7 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
 1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
 2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
 3. [x] **Tổng kết tuần** (12/10) — màn chi tiết, mở từ Hồ sơ; xem [weekly.md](weekly.md). Còn lại: thông báo đẩy thứ Hai 08:30 (bấm mở màn tổng kết) khi có bản build EAS.
-4. [ ] **Giới thiệu bạn bè**: mỗi người có mã / link mời; bạn mới đăng ký và học đủ vài ngày thì cả hai được tặng ngày Premium (cộng vào `PremiumUntil` như admin gia hạn). Chống lạm dụng: chỉ tính tài khoản đã xác minh email, giới hạn số lần tặng.
+4. [x] **Giới thiệu bạn bè + mã trung tâm đối tác** (12/10) — xem [invites.md](invites.md). Còn lại: mở app thẳng từ link mời (universal link) và báo đẩy "bạn vừa nhận ngày Premium" khi có bản build EAS; nội dung phần IELTS.
 5. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
 6. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
 7. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.

@@ -6,6 +6,8 @@ using FourUme.Application.Premium;
 using FourUme.Infrastructure.Premium;
 using FourUme.Application.Feedback;
 using FourUme.Infrastructure.Feedback;
+using FourUme.Application.Invites;
+using FourUme.Infrastructure.Invites;
 using FourUme.Application.Admin;
 using FourUme.Infrastructure.Admin;
 using FourUme.Infrastructure.Media;
@@ -57,6 +59,8 @@ public static class DependencyInjection
         services.AddScoped<IGrammarService, GrammarService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<IActivityService, ActivityService>();
+        services.AddScoped<IReferralService, ReferralService>();
+        services.AddScoped<IAdminPartnerService, AdminPartnerService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminContentService, AdminContentService>();

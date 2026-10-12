@@ -24,6 +24,9 @@ public interface IAppDbContext
     DbSet<PronunciationAttempt> PronunciationAttempts { get; }
     DbSet<AdReward> AdRewards { get; }
     DbSet<ListeningLog> ListeningLogs { get; }
+    DbSet<Partner> Partners { get; }
+    DbSet<PartnerCode> PartnerCodes { get; }
+    DbSet<Referral> Referrals { get; }
     DbSet<FeedbackTicket> FeedbackTickets { get; }
     DbSet<FeedbackMessage> FeedbackMessages { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

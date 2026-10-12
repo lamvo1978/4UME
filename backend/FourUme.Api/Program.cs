@@ -10,6 +10,7 @@ using FourUme.Application.Admin;
 using FourUme.Application.Auth;
 using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
+using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
@@ -89,6 +90,10 @@ builder.Services.AddRateLimiter(options =>
     options.AddPolicy(LoginLimit, http => RateLimitPartition.GetFixedWindowLimiter(
         ClientIp(http),
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(15) }));
+    // Partner codes unlock Premium, so guessing them is capped per account (or per IP without one).
+    options.AddPolicy(RedeemLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+        GetUserId(http.User)?.ToString() ?? ClientIp(http),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(15) }));
 });
 
 var app = builder.Build();
@@ -240,6 +245,35 @@ app.MapGet("/api/me/weekly", async (ClaimsPrincipal principal, IActivityService 
     if (userId is null) return Results.Unauthorized();
     return Results.Ok(await activity.GetWeeklyAsync(userId.Value, weeks ?? 2, ct));
 }).RequireAuthorization();
+
+app.MapGet("/api/me/referral", async (ClaimsPrincipal principal, IReferralService referrals, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await referrals.GetMineAsync(userId.Value, ct));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireAuthorization();
+
+// One box in the app for both kinds of code; the server tells them apart.
+app.MapPost("/api/codes/redeem", async (RedeemCodeRequest request, ClaimsPrincipal principal, IReferralService referrals, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await referrals.RedeemAsync(userId.Value, request.Code, ct));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireAuthorization().RequireRateLimiting(RedeemLimit);
 
 app.MapPut("/api/me/settings", async (UpdateSettingsRequest request, ClaimsPrincipal principal, IAuthService auth) =>
 {
@@ -682,6 +716,7 @@ public partial class Program
 {
     private const string EmailCodeLimit = "email-code";
     private const string LoginLimit = "login";
+    private const string RedeemLimit = "redeem";
 
     /// <summary>
     /// The visitor's address. The edge nginx overwrites X-Real-IP with the connecting address, so it can't be

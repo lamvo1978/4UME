@@ -128,9 +128,34 @@ export type Me = {
   /** Local "YYYY-MM-DD" of the last real (not frozen) study day. */
   lastStudyDate: string | null;
   settings: UserSettings;
-  /** Premium is active now (no ads). */
+  /** Premium is active now (no ads), from any source. */
   premium: boolean;
+  /** Hidden features unlocked by a partner code, e.g. "ielts". */
+  features?: string[];
+  /** Set while the learner is a partner centre's student. */
+  partnerName?: string | null;
 };
+
+export const FEATURE_IELTS = "ielts";
+export const hasFeature = (me: Me | null | undefined, key: string) => !!me?.features?.includes(key);
+
+export type Invitee = { displayName: string; joinedAt: string; studyDays: number; rewardedAt: string | null };
+export type MyReferral = {
+  enabled: boolean;
+  code: string;
+  link: string;
+  requiredStudyDays: number;
+  rewardDays: number;
+  maxRewards: number;
+  rewardsEarned: number;
+  /** The account is new enough and hasn't used an invite code yet. */
+  canEnterInviteCode: boolean;
+  invitedBy: string | null;
+  invitees: Invitee[];
+  /** Days after sign-up during which an invite code is accepted. */
+  joinWindowDays: number;
+};
+export type RedeemResult = { kind: "partner" | "referral"; message: string };
 
 export type StudyDay = { date: string; newWords: number; reviews: number; grammarItems: number; frozen: boolean };
 
@@ -338,6 +363,8 @@ export type PronunciationStatus = {
   /** 0 = no ads offered: Premium, ads switched off, or the scorer is paused. */
   adsDailyLimit: number;
   adsLeftToday: number;
+  /** Premium through a partner centre, with no end date. */
+  partnerName?: string | null;
 };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -554,6 +581,9 @@ export const api = {
   reviewForecast: (days = 7) => request<ReviewForecastDay[]>(`/api/review/forecast?days=${days}`),
   stats: () => request<Stats>("/api/me/stats"),
   weekly: (weeks: number) => request<Weekly>(`/api/me/weekly?weeks=${weeks}`),
+  referral: () => request<MyReferral>("/api/me/referral"),
+  /** Invite or partner code; the server tells them apart. */
+  redeemCode: (code: string) => request<RedeemResult>("/api/codes/redeem", { method: "POST", body: JSON.stringify({ code }) }),
   updateSettings: (changes: Partial<UserSettings> & { displayName?: string }) =>
     request<Me>("/api/me/settings", { method: "PUT", body: JSON.stringify(changes) }),
   changePassword: (currentPassword: string, newPassword: string) =>

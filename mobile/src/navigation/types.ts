@@ -25,6 +25,7 @@ export type RootStackParamList = {
   Settings: undefined;
   Premium: undefined;
   AdRewards: undefined;
+  Invite: undefined;
   /** `start` = the week's Monday ("YYYY-MM-DD"); defaults to the current week. */
   Weekly: { start?: string } | undefined;
   WeakWords: undefined;
@@ -34,7 +35,8 @@ export type RootStackParamList = {
   FeedbackThread: { id: string; justSent?: boolean };
 };
 
-export type HubTab = "vocab" | "grammar";
+/** "ielts" only exists in the Study hub, for partner students with that feature. */
+export type HubTab = "vocab" | "grammar" | "ielts";
 
 export type GrammarReviewParams = { mode: "due" } | { mode: "practice"; slug?: string; title?: string };
 

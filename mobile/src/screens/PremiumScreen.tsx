@@ -61,8 +61,10 @@ export function PremiumScreen() {
     );
   }
 
-  const premium = status.premium && !!status.premiumUntil;
-  const daysLeft = premium ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
+  const partner = status.premium ? status.partnerName : null;
+  const timed = status.premium && !!status.premiumUntil && new Date(status.premiumUntil).getTime() > Date.now();
+  const premium = !!partner || timed;
+  const daysLeft = timed ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
   const usage = status.enabled ? `Hôm nay còn ${status.remaining}/${status.dailyLimit}` : null;
 
   return (
@@ -77,7 +79,9 @@ export function PremiumScreen() {
           <View style={styles.heroStatus}>
             <Ionicons name="checkmark-circle" size={16} color={colors.gold} />
             <Text style={styles.heroStatusText}>
-              Đang dùng đến {formatDayMonthYear(status.premiumUntil!)} · còn {daysLeft} ngày
+              {partner
+                ? `Học viên ${partner} · không thời hạn`
+                : `Đang dùng đến ${formatDayMonthYear(status.premiumUntil!)} · còn ${daysLeft} ngày`}
             </Text>
           </View>
         ) : null}

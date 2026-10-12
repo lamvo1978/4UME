@@ -34,7 +34,7 @@ export function Streak({ value }: { value: number }) {
 }
 
 /** Role, Premium and lock state; plain learners show nothing. */
-export function UserBadges({ user }: { user: Pick<AdminUser, "role" | "lockedAt" | "premiumUntil"> }) {
+export function UserBadges({ user }: { user: Pick<AdminUser, "role" | "lockedAt" | "premiumUntil" | "partnerName"> }) {
   const premium = isPremium(user);
   if (user.role !== "admin" && !user.lockedAt && !premium) return null;
   return (
@@ -45,9 +45,11 @@ export function UserBadges({ user }: { user: Pick<AdminUser, "role" | "lockedAt"
         </Badge>
       ) : null}
       {premium ? (
-        <Badge color="yellow" variant="light" size="sm" leftSection={<IconCrown size={12} />}>
-          Premium
-        </Badge>
+        <Tooltip label={user.partnerName ? `Học viên ${user.partnerName}` : "Premium có thời hạn"} disabled={!user.partnerName}>
+          <Badge color="yellow" variant="light" size="sm" leftSection={<IconCrown size={12} />}>
+            {user.partnerName ? "Premium · đối tác" : "Premium"}
+          </Badge>
+        </Tooltip>
       ) : null}
       {user.lockedAt ? (
         <Badge color="red" variant="light" size="sm" leftSection={<IconLock size={12} />}>

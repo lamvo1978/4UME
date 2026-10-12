@@ -3,6 +3,7 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
 using FourUme.Application.Pronunciation;
 using FourUme.Domain.Entities;
+using FourUme.Infrastructure.Invites;
 using Microsoft.EntityFrameworkCore;
 
 namespace FourUme.Infrastructure.Pronunciation;
@@ -65,8 +66,8 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         if (await db.AdRewards.AnyAsync(r => r.TransactionId == transactionId, ct)) return AdRewardOutcome.Duplicate;
 
         var config = await GetConfigAsync(ct);
-        var user = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => new { u.PremiumUntil }).FirstOrDefaultAsync(ct);
-        if (user is null || !config.Enabled || !config.AdRewardsEnabled || user.PremiumUntil > DateTimeOffset.UtcNow)
+        if (!await db.Users.AnyAsync(u => u.Id == userId, ct) || !config.Enabled || !config.AdRewardsEnabled
+            || (await Entitlements.GetAsync(db, userId, ct)).Premium)
             return AdRewardOutcome.NotCounted;
 
         var watched = await db.AdRewards.CountAsync(r => r.UserId == userId && r.LocalDate == localDate, ct);
@@ -98,8 +99,8 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
 
     private async Task<PronunciationStatusDto> BuildStatusAsync(Guid userId, PronunciationConfig config, CancellationToken ct)
     {
-        var premiumUntil = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.PremiumUntil).FirstOrDefaultAsync(ct);
-        var premium = premiumUntil > DateTimeOffset.UtcNow;
+        var access = await Entitlements.GetAsync(db, userId, ct);
+        var premium = access.Premium;
         var today = clock.Today;
         var used = await db.PronunciationAttempts.CountAsync(a => a.UserId == userId && a.LocalDate == today, ct);
         // Checks earned before going Premium stay valid for the rest of that day.
@@ -113,8 +114,8 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var on = config.Enabled && available;
         var remaining = on ? Math.Max(0, limit - used) : 0;
         var adsLimit = on && config.AdRewardsEnabled && !premium ? config.AdRewardsPerDay : 0;
-        return new PronunciationStatusDto(config.Enabled, premium, premiumUntil, limit, used, remaining, available,
-            config.PremiumDailyLimit, config.FreeDailyLimit, ads, adsLimit, Math.Max(0, adsLimit - ads));
+        return new PronunciationStatusDto(config.Enabled, premium, access.PremiumUntil, limit, used, remaining, available,
+            config.PremiumDailyLimit, config.FreeDailyLimit, ads, adsLimit, Math.Max(0, adsLimit - ads), access.PartnerName);
     }
 
     private static DateTimeOffset MonthStart()

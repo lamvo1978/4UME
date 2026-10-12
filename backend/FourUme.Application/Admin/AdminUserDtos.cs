@@ -29,7 +29,20 @@ public record AdminUserDto(
     int CurrentStreak,
     int KnownWords,
     int GrammarPassed,
-    DateTimeOffset? PremiumUntil);
+    DateTimeOffset? PremiumUntil,
+    /// <summary>Set while the user is an active partner student (Premium with no end date).</summary>
+    string? PartnerName = null);
+
+public record AdminUserPartnerCodeDto(Guid Id, Guid PartnerId, string PartnerName, string Code, DateTimeOffset? UsedAt, DateTimeOffset? RevokedAt);
+
+/// <param name="InviteRewards">Invites that earned this user Premium days.</param>
+public record AdminUserInvitesDto(
+    string? ReferralCode,
+    Guid? InvitedById,
+    string? InvitedByEmail,
+    int Invites,
+    int InviteRewards,
+    IReadOnlyList<AdminUserPartnerCodeDto> PartnerCodes);
 
 public record AdminUserSettingsDto(
     int DailyGoal,
@@ -54,7 +67,8 @@ public record AdminUserDetailDto(
     IReadOnlyList<AdminDeviceDto> Devices,
     IReadOnlyList<StudyDayDto> Days,
     bool IsSelf,
-    bool IsProtected);
+    bool IsProtected,
+    AdminUserInvitesDto? Invites = null);
 
 public static class AdminUserRules
 {

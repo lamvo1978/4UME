@@ -6,6 +6,7 @@ using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
+using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Pronunciation;
@@ -83,6 +84,22 @@ public static class AdminEndpoints
             Results.Ok(await s.SavePronunciationAsync(c, ct)));
         admin.MapPost("/settings/pronunciation/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetPronunciationAsync(ct)));
+        admin.MapPut("/settings/referral", async (ReferralConfig c, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveReferralAsync(c, ct)));
+        admin.MapPost("/settings/referral/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetReferralAsync(ct)));
+
+        admin.MapGet("/partners", async (IAdminPartnerService s, CancellationToken ct) => Results.Ok(await s.ListAsync(ct)));
+        admin.MapGet("/partners/{id:guid}", async (Guid id, IAdminPartnerService s, CancellationToken ct) => Results.Ok(await s.GetAsync(id, ct)));
+        admin.MapPost("/partners", async (SavePartnerRequest r, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateAsync(r, ct)));
+        admin.MapPut("/partners/{id:guid}", async (Guid id, SavePartnerRequest r, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateAsync(id, r, ct)));
+        admin.MapPost("/partners/{id:guid}/codes", async (Guid id, GeneratePartnerCodesRequest r, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.GenerateCodesAsync(id, r, ct)));
+        admin.MapPut("/partner-codes/{id:guid}/revoked", async (Guid id, SetRevokedRequest r, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.SetCodeRevokedAsync(id, r.Revoked, ct)));
+
         admin.MapGet("/about", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetAboutAsync(ct)));
         admin.MapPut("/about", async (AboutContent c, IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.SaveAboutAsync(c, ct)));

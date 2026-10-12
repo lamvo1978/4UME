@@ -21,7 +21,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck, IconDeviceFloppy, IconHistory, IconRestore } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
-import { api, type AdminSettings, type NotificationConfig, type PronunciationConfig } from "../api";
+import { api, type AdminSettings, type NotificationConfig, type PronunciationConfig, type ReferralConfig } from "../api";
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { WEEKDAY_NAMES } from "../history/meta";
@@ -160,6 +160,7 @@ export function SettingsPage() {
 
       <ListeningSettings settings={settings.data} />
       <PronunciationSettings settings={settings.data} />
+      <ReferralSettings settings={settings.data} />
 
       <Section title="Thông báo · Giờ gửi" description="Giờ địa phương của từng người dùng.">
         <DayTimeline config={form} />
@@ -479,6 +480,111 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
             disabled={!dirty}
             loading={saving && dirty}
             onClick={() => run(() => api.savePronunciationSettings(form), "Đã lưu cài đặt kiểm tra giọng đọc")}
+          >
+            Lưu
+          </Button>
+        </Group>
+      </Stack>
+    </Section>
+  );
+}
+
+function ReferralSettings({ settings }: { settings: AdminSettings }) {
+  const queryClient = useQueryClient();
+  const r = settings.referral;
+  const [form, setForm] = useState<ReferralConfig>(r.value);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => setForm(r.value), [r.value]);
+
+  const dirty = JSON.stringify(form) !== JSON.stringify(r.value);
+  const atDefaults = JSON.stringify(r.value) === JSON.stringify(r.defaults);
+  const number = (key: keyof ReferralConfig) => (v: string | number) =>
+    setForm({ ...form, [key]: typeof v === "number" ? Math.max(0, Math.round(v)) : 0 });
+
+  async function run(action: () => Promise<AdminSettings>, message: string) {
+    setSaving(true);
+    try {
+      queryClient.setQueryData(["settings"], await action());
+      queryClient.invalidateQueries({ queryKey: ["audit"] });
+      notifySaved(message);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Section
+      title="Mời bạn bè"
+      description="Mỗi người có một mã mời riêng. Bạn mới nhập mã và học đủ số ngày thì cả hai được Premium. Mã trung tâm quản lý ở trang Đối tác."
+    >
+      <Stack gap="md">
+        <Switch
+          size="md"
+          checked={form.enabled}
+          onChange={(e) => setForm({ ...form, enabled: e.currentTarget.checked })}
+          label="Đang chạy chương trình mời bạn"
+          description="Tắt thì app không nhận mã mời mới và không trao thưởng nữa; ngày Premium đã trao vẫn giữ nguyên."
+        />
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+          <NumberInput
+            label="Bạn mới cần học"
+            description="Số ngày học trước khi trao thưởng"
+            min={1}
+            max={30}
+            suffix=" ngày"
+            value={form.requiredStudyDays}
+            onChange={number("requiredStudyDays")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Thưởng mỗi bên"
+            description="Ngày Premium cộng thêm cho cả hai"
+            min={1}
+            max={365}
+            suffix=" ngày"
+            value={form.rewardDays}
+            onChange={number("rewardDays")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Tối đa mỗi người mời"
+            description="Quá số này người mời không nhận thêm, bạn mới vẫn nhận"
+            min={0}
+            max={1000}
+            suffix=" lần"
+            value={form.maxRewardsPerUser}
+            onChange={number("maxRewardsPerUser")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Hạn nhập mã mời"
+            description="Tính từ ngày tạo tài khoản"
+            min={1}
+            max={365}
+            suffix=" ngày"
+            value={form.joinWindowDays}
+            onChange={number("joinWindowDays")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+        </SimpleGrid>
+        <Group justify="flex-end" gap="sm">
+          <Button
+            variant="default"
+            leftSection={<IconRestore size={18} />}
+            disabled={atDefaults && !dirty}
+            loading={saving && !dirty}
+            onClick={() => run(api.resetReferralSettings, "Đã khôi phục mặc định")}
+          >
+            Mặc định
+          </Button>
+          <Button
+            leftSection={<IconDeviceFloppy size={18} />}
+            disabled={!dirty}
+            loading={saving && dirty}
+            onClick={() => run(() => api.saveReferralSettings(form), "Đã lưu cài đặt mời bạn bè")}
           >
             Lưu
           </Button>

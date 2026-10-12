@@ -1,4 +1,5 @@
 using FourUme.Application.Activity;
+using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure.Listening;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FourUme.Infrastructure.Activity;
 
-public class ActivityService(AppDbContext db, IClientClock clock, ILogger<ActivityService> logger) : IActivityService
+public class ActivityService(AppDbContext db, IClientClock clock, IReferralService referrals, ILogger<ActivityService> logger) : IActivityService
 {
     private static readonly string[] CefrOrder = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -53,6 +54,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, ILogger<Activi
                         "StreakFreezes" = LEAST({StreakRules.MaxFreezes}, "StreakFreezes" + {earned})
                     WHERE "Id" = {userId}
                     """, ct);
+                await referrals.OnStudyDayAsync(userId, ct);
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

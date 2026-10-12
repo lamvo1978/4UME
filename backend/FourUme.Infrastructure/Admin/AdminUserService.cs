@@ -2,6 +2,7 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
+using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure.Activity;
@@ -40,7 +41,8 @@ public class AdminUserService(
             UserFilters.Locked => users.Where(u => u.LockedAt != null),
             UserFilters.Active => users.Where(u => u.StudyDays.Any(d => !d.Frozen && d.Date >= activeFrom)),
             UserFilters.Inactive => users.Where(u => !u.StudyDays.Any(d => !d.Frozen && d.Date >= inactiveFrom)),
-            UserFilters.Premium => users.Where(u => u.PremiumUntil > DateTimeOffset.UtcNow),
+            UserFilters.Premium => users.Where(u => u.PremiumUntil > DateTimeOffset.UtcNow
+                || db.PartnerCodes.Any(c => c.UsedById == u.Id && c.RevokedAt == null)),
             _ => users,
         };
 
@@ -56,6 +58,7 @@ public class AdminUserService(
             LastStudy = u.StudyDays.Where(d => !d.Frozen).Max(d => (DateOnly?)d.Date),
             Known = u.WordProgresses.Count(p => p.Status == WordStatus.Known),
             Grammar = u.GrammarProgresses.Count(p => p.ReviewLevel > 0),
+            Partner = db.PartnerCodes.Where(c => c.UsedById == u.Id && c.RevokedAt == null).Select(c => c.Partner!.Name).FirstOrDefault(),
         });
         rows = query.Sort switch
         {
@@ -71,7 +74,7 @@ public class AdminUserService(
 
         return new PagedResult<AdminUserDto>(
             items.Select(r => new AdminUserDto(r.Id, r.Email, r.DisplayName, r.Role, r.CreatedAt, r.LockedAt, r.LastStudy,
-                streaks.GetValueOrDefault(r.Id), r.Known, r.Grammar, r.PremiumUntil)).ToList(),
+                streaks.GetValueOrDefault(r.Id), r.Known, r.Grammar, r.PremiumUntil, r.Partner)).ToList(),
             total, page, size);
     }
 
@@ -90,10 +93,12 @@ public class AdminUserService(
         var lastStudy = await db.StudyDays.AsNoTracking().Where(d => d.UserId == id && !d.Frozen).MaxAsync(d => (DateOnly?)d.Date, ct);
         var known = await db.WordProgresses.CountAsync(p => p.UserId == id && p.Status == WordStatus.Known, ct);
         var grammarPassed = await db.GrammarProgresses.CountAsync(p => p.UserId == id && p.ReviewLevel > 0, ct);
+        var invites = await InvitesAsync(user, ct);
+        var partner = invites.PartnerCodes.FirstOrDefault(c => c.RevokedAt is null)?.PartnerName;
 
         return new AdminUserDetailDto(
             new AdminUserDto(user.Id, user.Email, user.DisplayName, user.Role, user.CreatedAt, user.LockedAt, lastStudy,
-                ActivityService.CurrentStreak(dates, today), known, grammarPassed, user.PremiumUntil),
+                ActivityService.CurrentStreak(dates, today), known, grammarPassed, user.PremiumUntil, partner),
             Math.Max(user.BestStreak, ActivityService.LongestRun(dates)),
             user.StreakFreezes,
             await db.StudyDays.CountAsync(d => d.UserId == id && !d.Frozen, ct),
@@ -108,7 +113,28 @@ public class AdminUserService(
                 .ToListAsync(ct),
             days,
             user.Id == current.Id,
-            AdminUserRules.IsProtected(user.Email));
+            AdminUserRules.IsProtected(user.Email),
+            invites);
+    }
+
+    private async Task<AdminUserInvitesDto> InvitesAsync(User user, CancellationToken ct)
+    {
+        var invitedBy = await db.Referrals.AsNoTracking()
+            .Where(r => r.InviteeId == user.Id)
+            .Select(r => new { r.InviterId, r.Inviter!.Email })
+            .FirstOrDefaultAsync(ct);
+        var codes = await db.PartnerCodes.AsNoTracking()
+            .Where(c => c.UsedById == user.Id)
+            .OrderByDescending(c => c.UsedAt)
+            .Select(c => new AdminUserPartnerCodeDto(c.Id, c.PartnerId, c.Partner!.Name, c.Code, c.UsedAt, c.RevokedAt))
+            .ToListAsync(ct);
+        return new AdminUserInvitesDto(
+            user.ReferralCode,
+            invitedBy?.InviterId,
+            invitedBy?.Email,
+            await db.Referrals.CountAsync(r => r.InviterId == user.Id, ct),
+            await db.Referrals.CountAsync(r => r.InviterId == user.Id && r.InviterRewarded, ct),
+            codes.Select(c => c with { Code = ReferralRules.FormatPartnerCode(c.Code) }).ToList());
     }
 
     public async Task<AdminUserDetailDto> CreateAsync(CreateUserRequest request, DateOnly today, CancellationToken ct = default)

@@ -34,8 +34,12 @@ public record MeResponse(
     int? NextMilestone,
     DateOnly? LastStudyDate,
     UserSettingsDto Settings,
-    /// <summary>Premium is active now (no ads).</summary>
-    bool Premium = false);
+    /// <summary>Premium is active now (no ads), from any source.</summary>
+    bool Premium = false,
+    /// <summary>Hidden features unlocked by a partner code, e.g. "ielts".</summary>
+    IReadOnlyList<string>? Features = null,
+    /// <summary>Set while the learner is a partner's student.</summary>
+    string? PartnerName = null);
 
 /// <summary>Every field is optional; only the ones sent are changed.</summary>
 public record UpdateSettingsRequest(

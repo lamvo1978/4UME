@@ -25,6 +25,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PronunciationAttempt> PronunciationAttempts => Set<PronunciationAttempt>();
     public DbSet<AdReward> AdRewards => Set<AdReward>();
     public DbSet<ListeningLog> ListeningLogs => Set<ListeningLog>();
+    public DbSet<Partner> Partners => Set<Partner>();
+    public DbSet<PartnerCode> PartnerCodes => Set<PartnerCode>();
+    public DbSet<Referral> Referrals => Set<Referral>();
     public DbSet<FeedbackTicket> FeedbackTickets => Set<FeedbackTicket>();
     public DbSet<FeedbackMessage> FeedbackMessages => Set<FeedbackMessage>();
 
@@ -41,6 +44,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.TimeZone).HasMaxLength(64);
             e.Property(x => x.VocabLevel).HasMaxLength(2);
             e.Property(x => x.EasyWordMode).HasMaxLength(8).IsRequired().HasDefaultValue("skip");
+            e.Property(x => x.ReferralCode).HasMaxLength(16);
+            e.HasIndex(x => x.ReferralCode).IsUnique();
             e.Property(x => x.Role).HasMaxLength(16).IsRequired().HasDefaultValue(UserRoles.User);
         });
 
@@ -71,6 +76,34 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(x => new { x.UserId, x.LocalDate });
             e.Property(x => x.LessonSlug).HasMaxLength(128).IsRequired();
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Partner>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Name).HasMaxLength(80).IsRequired();
+            e.Property(x => x.Features).HasMaxLength(200).IsRequired();
+            e.Property(x => x.Note).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<PartnerCode>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => x.Code).IsUnique();
+            e.HasIndex(x => x.UsedById);
+            e.Property(x => x.Code).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Batch).HasMaxLength(80).IsRequired();
+            e.HasOne(x => x.Partner).WithMany(p => p.Codes).HasForeignKey(x => x.PartnerId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.UsedBy).WithMany().HasForeignKey(x => x.UsedById).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<Referral>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => x.InviteeId).IsUnique();
+            e.HasIndex(x => x.InviterId);
+            e.HasOne(x => x.Inviter).WithMany().HasForeignKey(x => x.InviterId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Invitee).WithMany().HasForeignKey(x => x.InviteeId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<FeedbackTicket>(e =>

@@ -728,6 +728,77 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.ToTable("NotificationLogs");
                 });
 
+            modelBuilder.Entity("FourUme.Domain.Entities.Partner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Features")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.PartnerCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Batch")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UsedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("PartnerId");
+
+                    b.HasIndex("UsedById");
+
+                    b.ToTable("PartnerCodes");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.PronunciationAttempt", b =>
                 {
                     b.Property<Guid>("Id")
@@ -766,6 +837,37 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId", "WordId", "CreatedAt");
 
                     b.ToTable("PronunciationAttempts");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.Referral", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InviteeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("InviterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("InviterRewarded")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("RewardedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InviteeId")
+                        .IsUnique();
+
+                    b.HasIndex("InviterId");
+
+                    b.ToTable("Referrals");
                 });
 
             modelBuilder.Entity("FourUme.Domain.Entities.StudyDay", b =>
@@ -863,6 +965,10 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("PremiumUntil")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ReferralCode")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
                     b.Property<bool>("ReminderEnabled")
                         .HasColumnType("boolean");
 
@@ -895,6 +1001,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("ReferralCode")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -1111,6 +1220,24 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FourUme.Domain.Entities.PartnerCode", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.Partner", "Partner")
+                        .WithMany("Codes")
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FourUme.Domain.Entities.User", "UsedBy")
+                        .WithMany()
+                        .HasForeignKey("UsedById")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Partner");
+
+                    b.Navigation("UsedBy");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.PronunciationAttempt", b =>
                 {
                     b.HasOne("FourUme.Domain.Entities.User", "User")
@@ -1120,6 +1247,25 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.Referral", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.User", "Invitee")
+                        .WithMany()
+                        .HasForeignKey("InviteeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FourUme.Domain.Entities.User", "Inviter")
+                        .WithMany()
+                        .HasForeignKey("InviterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invitee");
+
+                    b.Navigation("Inviter");
                 });
 
             modelBuilder.Entity("FourUme.Domain.Entities.StudyDay", b =>
@@ -1163,6 +1309,11 @@ namespace FourUme.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FourUme.Domain.Entities.FeedbackTicket", b =>
                 {
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.Partner", b =>
+                {
+                    b.Navigation("Codes");
                 });
 
             modelBuilder.Entity("FourUme.Domain.Entities.User", b =>
