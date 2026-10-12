@@ -21,7 +21,7 @@ export function WelcomeScreen({ navigation }: Props) {
         <Pressable style={styles.secondary} onPress={() => navigation.navigate("Register")}>
           <Text style={styles.secondaryText}>Tạo tài khoản</Text>
         </Pressable>
-        <Text style={styles.hint}>Dành cho bạn bè cùng học</Text>
+        <Text style={styles.hint}>Cùng bạn tiến bộ</Text>
       </View>
     </Screen>
   );

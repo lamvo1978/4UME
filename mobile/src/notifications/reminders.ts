@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import type { Me, NotificationConfig, ReviewForecastDay } from "../api/client";
@@ -34,6 +35,18 @@ export async function ensureReminderPermission(): Promise<boolean> {
   const asked = await Notifications.requestPermissionsAsync();
   return asked.granted;
 }
+
+const OFFERED_KEY = "reminderOffered";
+
+/** The one-time "turn on reminders?" offer: only while reminders are off and the system can still ask. */
+export async function shouldOfferReminder(me: Me | null): Promise<boolean> {
+  if (Platform.OS === "web" || !me || me.settings.reminderEnabled) return false;
+  if (await AsyncStorage.getItem(OFFERED_KEY)) return false;
+  const permission = await Notifications.getPermissionsAsync();
+  return permission.granted || permission.canAskAgain;
+}
+
+export const markReminderOffered = () => AsyncStorage.setItem(OFFERED_KEY, "1");
 
 function toMinutes(time: string) {
   const [h, m] = time.split(":").map(Number);
