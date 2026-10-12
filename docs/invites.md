@@ -1,6 +1,6 @@
 # Mời bạn bè và mã trung tâm đối tác
 
-Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nhận ra mã nào là mã nào (mã mời 6 ký tự, mã trung tâm 8 ký tự dạng `AB-482913`). Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Mã mời dùng bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
+Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nhận ra mã nào là mã nào (mã mời 6 ký tự, mã trung tâm 8 ký tự dạng `AB-K7P2X9`). Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Phần ngẫu nhiên của cả hai loại mã dùng bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
 
 ## Người học thấy gì (app)
 
@@ -34,7 +34,7 @@ Các con số trên chỉnh ở **Cài đặt → Mời bạn bè** trong admin 
 ## Mã trung tâm đối tác
 
 - Admin **Đối tác** → *Thêm đối tác*: tên (học viên thấy trong app), **tiền tố mã** 2 chữ cái (không trùng đối tác khác, cố định khi đã có mã), tính năng mở thêm (hiện có *IELTS*), ghi chú nội bộ.
-- Mã trung tâm = tiền tố + **6 số ngẫu nhiên**, ví dụ `AB-482913`; cả 8 ký tự là duy nhất toàn hệ thống. Số ngẫu nhiên (không đánh số liên tiếp) để học viên không đoán được mã của bạn khác.
+- Mã trung tâm = tiền tố + **6 chữ và số ngẫu nhiên**, ví dụ `AB-K7P2X9` (31 ký tự → khoảng 887 triệu tổ hợp mỗi tiền tố); cả 8 ký tự là duy nhất toàn hệ thống. Ngẫu nhiên (không đánh số liên tiếp) để học viên không đoán được mã của bạn khác.
 - Trong trang đối tác: **Tạo mã** theo lô (tên lô, ví dụ lớp/khoá; tối đa 500 mã mỗi lần; **ngày hết hạn** tuỳ chọn, bỏ trống = không thời hạn) → lọc theo lô / trạng thái → **Xuất Excel** để gửi trung tâm. Một lô có một ngày hết hạn; chọn lô ở bộ lọc rồi bấm *Hạn lô* để đổi (gia hạn lô đã hết hạn sẽ mở lại cho học viên trong lô). Hết hạn tính đến hết ngày đã chọn, giờ Việt Nam.
 - Mỗi mã **dùng một lần**. Người nhập mã là học viên: Premium và tính năng của đối tác **đến hết hạn lô**, hoặc đến khi admin **thu hồi** mã (trong trang đối tác, hoặc thẻ *Mời bạn & mã trung tâm* ở trang người dùng). Thu hồi xong có thể khôi phục.
 - Tài khoản nào cũng nhập được (mới hay cũ, Free hay Premium); tài khoản giữ nguyên. **Premium riêng được tạm dừng** trong lúc học ở trung tâm: phần còn lại được giữ trên mã (`PartnerCodes.HeldPremium`), ngày thưởng mời bạn hoặc admin cấp trong thời gian này cũng cộng vào phần giữ. Khi mã hết hạn hoặc bị thu hồi, phần giữ được trả lại tính từ lúc mã kết thúc. Không cần job chạy nền: mỗi lần đọc quyền lợi (`/api/me`, phát âm…) và mỗi thao tác của admin đều tự đồng bộ (`PremiumHold` trong `Entitlements.cs`).

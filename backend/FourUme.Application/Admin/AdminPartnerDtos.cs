@@ -17,7 +17,7 @@ public record AdminPartnerDto(
     int Ended,
     decimal MonthUnits);
 
-/// <param name="Code">Formatted for reading, e.g. "AB-482913".</param>
+/// <param name="Code">Formatted for reading, e.g. "AB-K7P2X9".</param>
 /// <param name="HeldDays">The student's own Premium days paused by this code.</param>
 public record AdminPartnerCodeDto(
     Guid Id,

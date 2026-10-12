@@ -70,10 +70,6 @@ public class AdminPartnerService(IAppDbContext db, Auditor auditor) : IAdminPart
         var current = await db.PartnerCodes.Where(c => c.PartnerId == id && c.Batch == batch).Select(c => new { c.ExpiresAt }).FirstOrDefaultAsync(ct);
         if (current is not null && current.ExpiresAt != expiresAt)
             throw new InvalidOperationException($"Lô {batch} đang {ExpiryText(current.ExpiresAt)}. Chọn đúng hạn đó, hoặc đổi hạn cả lô trước.");
-        var existing = await db.PartnerCodes.CountAsync(c => c.Code.StartsWith(partner.Prefix), ct);
-        // Six digits allow a million codes per prefix; stop well before random picks start to stall.
-        if (existing + request.Count > 500_000)
-            throw new InvalidOperationException($"Tiền tố {partner.Prefix} đã dùng gần hết số mã. Liên hệ kỹ thuật để mở rộng.");
 
         var codes = new HashSet<string>();
         for (var round = 0; round < 20 && codes.Count < request.Count; round++)

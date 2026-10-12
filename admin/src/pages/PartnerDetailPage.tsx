@@ -264,7 +264,7 @@ export function PartnerDetailPage() {
           </Button>
         </Group>
         <Text fz="xs" c="dimmed" mt="xs">
-          Mã có dạng {partner.prefix}-xxxxxx (6 số ngẫu nhiên), mỗi mã dùng được một lần. Hết hạn tính đến hết ngày đã chọn (giờ Việt Nam).
+          Mã có dạng {partner.prefix}-xxxxxx (6 chữ và số ngẫu nhiên), mỗi mã dùng được một lần. Hết hạn tính đến hết ngày đã chọn (giờ Việt Nam).
           Khi gửi mã cho trung tâm, nhắc học viên nhập trong app ở Hồ sơ → Mời bạn bè → “Nhập mã”.
         </Text>
       </Paper>

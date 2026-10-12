@@ -42,8 +42,8 @@ public static class ReferralRules
     public const string InviteUrl = "https://4ume.io.vn/moi/?ma=";
     public const int ReferralCodeLength = 6;
     public const int PartnerPrefixLength = 2;
-    public const int PartnerDigits = 6;
-    public const int PartnerCodeLength = PartnerPrefixLength + PartnerDigits;
+    public const int PartnerRandomLength = 6;
+    public const int PartnerCodeLength = PartnerPrefixLength + PartnerRandomLength;
     public const int MaxBatchSize = 500;
     /// <summary>No 0/O, 1/I/L, so codes read aloud or copied from paper survive.</summary>
     private const string Alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -64,9 +64,8 @@ public static class ReferralRules
             for (var i = 0; i < span.Length; i++) span[i] = Alphabet[RandomNumberGenerator.GetInt32(Alphabet.Length)];
         });
 
-    /// <summary>Partner prefix followed by random digits, e.g. "AB" + "482913".</summary>
-    public static string NewPartnerCode(string prefix) =>
-        prefix + RandomNumberGenerator.GetInt32((int)Math.Pow(10, PartnerDigits)).ToString($"D{PartnerDigits}");
+    /// <summary>Partner prefix followed by random letters and digits, e.g. "AB" + "K7P2X9".</summary>
+    public static string NewPartnerCode(string prefix) => prefix + NewCode(PartnerRandomLength);
 
     /// <summary>Two letters A–Z, upper-cased; null when invalid.</summary>
     public static string? NormalizePrefix(string? prefix)

@@ -56,10 +56,10 @@ export function PartnerFormModal({
           </Group>
           <Text fz="xs" c="dimmed" mt={6}>
             Học viên thấy tên trong app. Mã học viên có dạng{" "}
-            <Text span ff="monospace" fw={700} c="var(--mantine-color-text)">
-              {form.prefix || "AB"}-482913
+            <Text span ff="monospace" fz="xs" fw={700} c="var(--mantine-color-text)">
+              {form.prefix || "AB"}-K7P2X9
             </Text>{" "}
-            (6 số ngẫu nhiên).{" "}
+            (6 chữ và số ngẫu nhiên).{" "}
             {prefixLocked ? "Đối tác đã có mã nên tiền tố được giữ cố định." : "Tiền tố là 2 chữ cái, không trùng đối tác khác."}
           </Text>
         </div>

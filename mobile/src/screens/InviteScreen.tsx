@@ -109,7 +109,7 @@ export function InviteScreen() {
             style={styles.input}
             value={code}
             onChangeText={(t) => setCode(t.toUpperCase())}
-            placeholder="VD: AB-123456"
+            placeholder="VD: AB-K7P2X9"
             placeholderTextColor={colors.idle}
             autoCapitalize="characters"
             autoCorrect={false}
