@@ -119,7 +119,7 @@ public class AuthService(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
                 user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt),
-            access.Premium, access.Features, access.PartnerName);
+            access.Premium, access.Features, access.PartnerName, access.PartnerUntil);
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)
@@ -181,6 +181,10 @@ public class AuthService(
         if (AdminUserRules.IsProtected(user.Email))
             throw new InvalidOperationException("Đây là tài khoản quản trị gốc, không thể xoá.");
         await feedback.DeleteUserFilesAsync(userId, ct);
+        // Ends the centre's billing for this student; the code itself stays spent.
+        var now = DateTimeOffset.UtcNow;
+        await db.PartnerCodes.Where(c => c.UsedById == userId && c.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(c => c.RevokedAt, now), ct);
         db.Users.Remove(user);
         await db.SaveChangesAsync(ct);
     }

@@ -19,7 +19,17 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconArrowLeft, IconCheck, IconCopy, IconDownload, IconEdit, IconHistory, IconKey, IconSearch } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconCalendar,
+  IconCheck,
+  IconCopy,
+  IconDownload,
+  IconEdit,
+  IconHistory,
+  IconKey,
+  IconSearch,
+} from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -27,22 +37,28 @@ import { api, featureLabel, type AdminPartnerCode, type AdminPartnerDetail, type
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { notifyError, notifySaved, shortDate } from "../lib";
+import { PartnerBillingCard } from "../partners/PartnerBillingCard";
 import { PartnerFormModal } from "../partners/PartnerFormModal";
+import { endOfVnDay, isExpired, vnDateValue } from "../partners/dates";
 
-type Status = "all" | "unused" | "used" | "revoked";
+type Status = "all" | "unused" | "used" | "expired" | "revoked";
 const STATUSES: { value: Status; label: string }[] = [
   { value: "all", label: "Tất cả" },
   { value: "unused", label: "Chưa dùng" },
   { value: "used", label: "Đang dùng" },
+  { value: "expired", label: "Hết hạn" },
   { value: "revoked", label: "Đã thu hồi" },
 ];
 
-const codeStatus = (c: AdminPartnerCode): Exclude<Status, "all"> => (c.revokedAt ? "revoked" : c.usedAt ? "used" : "unused");
+const codeStatus = (c: AdminPartnerCode): Exclude<Status, "all"> =>
+  c.revokedAt ? "revoked" : isExpired(c.expiresAt) ? "expired" : c.usedAt ? "used" : "unused";
 const STATUS_BADGE: Record<Exclude<Status, "all">, { label: string; color: string }> = {
   unused: { label: "Chưa dùng", color: "gray" },
   used: { label: "Đang dùng", color: "teal" },
+  expired: { label: "Hết hạn", color: "orange" },
   revoked: { label: "Đã thu hồi", color: "red" },
 };
+const expiryLabel = (expiresAt: string | null) => (expiresAt ? shortDate(expiresAt) : "Không thời hạn");
 
 export function PartnerDetailPage() {
   const { id = "" } = useParams();
@@ -54,13 +70,17 @@ export function PartnerDetailPage() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [batch, setBatch] = useState("");
   const [count, setCount] = useState<number>(20);
+  const [expiry, setExpiry] = useState("");
   const [filterBatch, setFilterBatch] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("all");
   const [q, setQ] = useState("");
   const [confirm, setConfirm] = useState<AdminPartnerCode | null>(null);
+  const [batchExpiry, setBatchExpiry] = useState<string | null>(null);
 
   const codes = query.data?.codes ?? [];
   const batches = useMemo(() => [...new Set(codes.map((c) => c.batch))], [codes]);
+  const batchEnd = useMemo(() => new Map(codes.map((c) => [c.batch, c.expiresAt])), [codes]);
+  const today = vnDateValue(new Date().toISOString());
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return codes.filter(
@@ -98,11 +118,33 @@ export function PartnerDetailPage() {
     setSaving(true);
     try {
       const label = batch.trim();
-      applied(await api.generatePartnerCodes(id, label, count));
+      applied(await api.generatePartnerCodes(id, label, count, expiry ? endOfVnDay(expiry) : null));
       notifySaved(`Đã tạo ${count} mã cho lô “${label}”`);
       setFilterBatch(label);
       setStatus("all");
       setBatch("");
+      setExpiry("");
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function changeBatch(value: string) {
+    setBatch(value);
+    // An existing batch keeps one end date, so pick it up instead of letting the server reject a mismatch.
+    const existing = batchEnd.get(value.trim());
+    if (existing !== undefined) setExpiry(existing ? vnDateValue(existing) : "");
+  }
+
+  async function saveBatchExpiry() {
+    if (!filterBatch || batchExpiry === null) return;
+    setSaving(true);
+    try {
+      applied(await api.setPartnerBatchExpiry(id, filterBatch, batchExpiry ? endOfVnDay(batchExpiry) : null));
+      notifySaved(`Đã đổi hạn lô “${filterBatch}”`);
+      setBatchExpiry(null);
     } catch (e) {
       notifyError(e);
     } finally {
@@ -129,11 +171,19 @@ export function PartnerDetailPage() {
     const { downloadTableXlsx, datedName } = await import("../sheets");
     const slug = partner.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/gi, "d").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
     await downloadTableXlsx(
-      ["Mã", "Lô", "Trạng thái", "Học viên", "Email", "Ngày dùng"],
-      shown.map((c) => [c.code, c.batch, STATUS_BADGE[codeStatus(c)].label, c.userName ?? "", c.userEmail ?? "", c.usedAt ? shortDate(c.usedAt) : ""]),
+      ["Mã", "Lô", "Hết hạn", "Trạng thái", "Học viên", "Email", "Ngày dùng"],
+      shown.map((c) => [
+        c.code,
+        c.batch,
+        expiryLabel(c.expiresAt),
+        STATUS_BADGE[codeStatus(c)].label,
+        c.userName ?? "",
+        c.userEmail ?? "",
+        c.usedAt ? shortDate(c.usedAt) : "",
+      ]),
       `${datedName(`4ume-ma-${slug}`)}.xlsx`,
       "Mã học viên",
-      [14, 24, 14, 24, 30, 14],
+      [14, 24, 16, 14, 24, 30, 14],
     );
   }
 
@@ -147,6 +197,9 @@ export function PartnerDetailPage() {
       <Group justify="space-between" align="flex-start">
         <div>
           <Group gap="xs">
+            <Badge variant="outline" color="gray" size="lg" ff="monospace">
+              {partner.prefix}
+            </Badge>
             <Title order={2}>{partner.name}</Title>
             {partner.features.map((f) => (
               <Badge key={f} variant="light" color="grape">
@@ -155,7 +208,8 @@ export function PartnerDetailPage() {
             ))}
           </Group>
           <Text c="dimmed" fz="sm">
-            {partner.students} học viên · {partner.unused} mã chưa dùng · {partner.revoked} đã thu hồi · thêm ngày {shortDate(partner.createdAt)}
+            {partner.students} học viên · {partner.unused} mã chưa dùng · {partner.ended} đã thu hồi/hết hạn · thêm ngày{" "}
+            {shortDate(partner.createdAt)}
           </Text>
           {partner.note ? (
             <Text fz="sm" mt={4} style={{ whiteSpace: "pre-wrap" }}>
@@ -186,7 +240,16 @@ export function PartnerDetailPage() {
             placeholder="IELTS 6.5 – K10/2026"
             maxLength={80}
             value={batch}
-            onChange={(e) => setBatch(e.currentTarget.value)}
+            onChange={(e) => changeBatch(e.currentTarget.value)}
+          />
+          <TextInput
+            w={170}
+            type="date"
+            label="Hết hạn"
+            description="Bỏ trống = không thời hạn"
+            min={today}
+            value={expiry}
+            onChange={(e) => setExpiry(e.currentTarget.value)}
           />
           <NumberInput
             w={140}
@@ -201,7 +264,8 @@ export function PartnerDetailPage() {
           </Button>
         </Group>
         <Text fz="xs" c="dimmed" mt="xs">
-          Mỗi mã dùng được một lần. Khi gửi mã cho trung tâm, nhắc học viên nhập trong app ở Hồ sơ → Mời bạn bè → “Nhập mã”.
+          Mã có dạng {partner.prefix}-xxxxxx (6 số ngẫu nhiên), mỗi mã dùng được một lần. Hết hạn tính đến hết ngày đã chọn (giờ Việt Nam).
+          Khi gửi mã cho trung tâm, nhắc học viên nhập trong app ở Hồ sơ → Mời bạn bè → “Nhập mã”.
         </Text>
       </Paper>
 
@@ -218,6 +282,19 @@ export function PartnerDetailPage() {
               value={filterBatch}
               onChange={setFilterBatch}
             />
+            {filterBatch ? (
+              <Button
+                size="xs"
+                variant="light"
+                leftSection={<IconCalendar size={16} />}
+                onClick={() => {
+                  const end = batchEnd.get(filterBatch);
+                  setBatchExpiry(end ? vnDateValue(end) : "");
+                }}
+              >
+                Hạn lô: {expiryLabel(batchEnd.get(filterBatch) ?? null)}
+              </Button>
+            ) : null}
             <TextInput
               size="xs"
               w={200}
@@ -243,6 +320,7 @@ export function PartnerDetailPage() {
                 <Table.Tr>
                   <Table.Th>Mã</Table.Th>
                   <Table.Th>Lô</Table.Th>
+                  <Table.Th>Hết hạn</Table.Th>
                   <Table.Th>Trạng thái</Table.Th>
                   <Table.Th>Học viên</Table.Th>
                   <Table.Th>Ngày dùng</Table.Th>
@@ -274,6 +352,11 @@ export function PartnerDetailPage() {
                         <Text fz="sm">{c.batch}</Text>
                       </Table.Td>
                       <Table.Td>
+                        <Text fz="sm" c={c.expiresAt ? undefined : "dimmed"}>
+                          {expiryLabel(c.expiresAt)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
                         <Badge variant="light" color={STATUS_BADGE[s].color}>
                           {STATUS_BADGE[s].label}
                         </Badge>
@@ -282,6 +365,12 @@ export function PartnerDetailPage() {
                         {c.userId ? (
                           <Anchor component={Link} to={`/users/${c.userId}`} fz="sm">
                             {c.userName} <Text span c="dimmed" fz="xs">{c.userEmail}</Text>
+                            {c.heldDays > 0 ? (
+                              <Text span c="dimmed" fz="xs">
+                                {" "}
+                                · giữ {c.heldDays} ngày Premium riêng
+                              </Text>
+                            ) : null}
                           </Anchor>
                         ) : c.usedAt ? (
                           <Text fz="sm" c="dimmed">
@@ -312,12 +401,45 @@ export function PartnerDetailPage() {
         )}
       </Paper>
 
+      <PartnerBillingCard partnerId={id} partnerName={partner.name} />
+
+      <Modal
+        opened={batchExpiry !== null}
+        onClose={() => setBatchExpiry(null)}
+        title={`Đổi hạn lô “${filterBatch ?? ""}”`}
+        centered
+        size={desktop ? "md" : "100%"}
+      >
+        <Stack>
+          <TextInput
+            type="date"
+            label="Hết hạn"
+            description="Bỏ trống = không thời hạn. Áp dụng cho mọi mã trong lô, kể cả mã đang dùng."
+            min={today}
+            value={batchExpiry ?? ""}
+            onChange={(e) => setBatchExpiry(e.currentTarget.value)}
+          />
+          <Text fz="sm" c="dimmed">
+            Gia hạn lô đã hết hạn sẽ mở lại Premium cho học viên trong lô. Muốn dừng ngay một học viên thì thu hồi mã của người đó.
+          </Text>
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setBatchExpiry(null)}>
+              Huỷ
+            </Button>
+            <Button loading={saving} onClick={saveBatchExpiry}>
+              Lưu
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+
       <PartnerFormModal opened={editing} partner={partner} saving={saving} onClose={() => setEditing(false)} onSave={save} />
       <Modal opened={!!confirm} onClose={() => setConfirm(null)} title="Thu hồi mã đang dùng?" centered size={desktop ? "md" : "100%"}>
         <Stack>
           <Text fz="sm">
-            <b>{confirm?.userName}</b> ({confirm?.userEmail}) sẽ mất Premium và các tính năng của {partner.name} ngay lần mở app tiếp theo. Ngày
-            Premium có từ nguồn khác (mời bạn, admin cấp) vẫn giữ nguyên. Có thể khôi phục lại sau.
+            <b>{confirm?.userName}</b> ({confirm?.userEmail}) sẽ mất Premium và các tính năng của {partner.name} ngay lần mở app tiếp theo.
+            {confirm?.heldDays ? ` ${confirm.heldDays} ngày Premium riêng đang tạm dừng sẽ được trả lại.` : ""} Phí của học viên này
+            tính đến hết nửa tháng có ngày thu hồi. Có thể khôi phục lại sau.
           </Text>
           <Group justify="flex-end">
             <Button variant="default" onClick={() => setConfirm(null)}>

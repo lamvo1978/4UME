@@ -34,8 +34,8 @@ export function PartnersPage() {
         <div>
           <Title order={2}>Đối tác</Title>
           <Text c="dimmed" fz="sm" maw={640}>
-            Trung tâm có mã riêng cho học viên. Mỗi mã dùng một lần; người nhập mã có Premium không thời hạn và mở tính năng của đối tác cho
-            đến khi bạn thu hồi mã.
+            Trung tâm có mã riêng cho học viên. Mỗi mã dùng một lần; người nhập mã có Premium và tính năng của đối tác đến hết hạn lô mã
+            hoặc khi bạn thu hồi. Premium riêng của học viên (nếu có) được tạm dừng và tiếp tục sau đó.
           </Text>
         </div>
         <Button leftSection={<IconPlus size={18} />} onClick={() => setCreating(true)}>
@@ -58,9 +58,14 @@ export function PartnersPage() {
         {query.data?.map((p) => (
           <Card key={p.id} p="md" radius="lg" shadow="xs" style={{ cursor: "pointer" }} onClick={() => navigate(`/partners/${p.id}`)}>
             <Group justify="space-between" wrap="nowrap" align="flex-start">
-              <Text fw={700} lineClamp={2}>
-                {p.name}
-              </Text>
+              <Group gap="xs" wrap="nowrap">
+                <Badge variant="outline" color="gray" ff="monospace">
+                  {p.prefix}
+                </Badge>
+                <Text fw={700} lineClamp={2}>
+                  {p.name}
+                </Text>
+              </Group>
               <Group gap={4}>
                 {p.features.map((f) => (
                   <Badge key={f} variant="light" color="grape">
@@ -72,7 +77,7 @@ export function PartnersPage() {
             <Group gap="lg" mt="sm">
               <Stat value={p.students} label="học viên" />
               <Stat value={p.unused} label="mã chưa dùng" />
-              {p.revoked > 0 ? <Stat value={p.revoked} label="đã thu hồi" /> : null}
+              {p.monthUnits > 0 ? <Stat value={p.monthUnits} label="tháng phí tháng này" /> : null}
             </Group>
           </Card>
         ))}

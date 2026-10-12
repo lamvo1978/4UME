@@ -82,6 +82,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Name).HasMaxLength(80).IsRequired();
+            e.Property(x => x.Prefix).HasMaxLength(2).IsRequired();
+            e.HasIndex(x => x.Prefix).IsUnique();
             e.Property(x => x.Features).HasMaxLength(200).IsRequired();
             e.Property(x => x.Note).HasMaxLength(500);
         });

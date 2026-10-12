@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { PronunciationStatus } from "../../api/client";
+import { PronunciationStatus, partnerLine } from "../../api/client";
 import { colors, shadow, spacing } from "../../theme";
 import { formatDayMonthYear } from "../../utils/dates";
 
@@ -17,7 +17,7 @@ export function PlanRow({ status, onPress }: { status: PronunciationStatus; onPr
         <Text style={styles.title}>{premium ? "Premium" : "Gói miễn phí"}</Text>
         <Text style={styles.subtitle} numberOfLines={1}>
           {partner
-            ? `Học viên ${partner}`
+            ? partnerLine(partner, status.partnerUntil, formatDayMonthYear)
             : premium
               ? `Đến ${formatDayMonthYear(status.premiumUntil!)}`
               : `${status.freeDailyLimit} lượt chấm phát âm chi tiết mỗi ngày`}

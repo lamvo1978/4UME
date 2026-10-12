@@ -3,7 +3,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { adsOffered } from "../ads/rewarded";
-import { api, PremiumPerk, PronunciationStatus } from "../api/client";
+import { api, partnerLine, PremiumPerk, PronunciationStatus } from "../api/client";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -80,10 +80,15 @@ export function PremiumScreen() {
             <Ionicons name="checkmark-circle" size={16} color={colors.gold} />
             <Text style={styles.heroStatusText}>
               {partner
-                ? `Học viên ${partner} · không thời hạn`
+                ? partnerLine(partner, status.partnerUntil, formatDayMonthYear)
                 : `Đang dùng đến ${formatDayMonthYear(status.premiumUntil!)} · còn ${daysLeft} ngày`}
             </Text>
           </View>
+        ) : null}
+        {partner && status.pausedPremiumDays ? (
+          <Text style={styles.lead}>
+            Premium riêng của bạn đang tạm dừng ({status.pausedPremiumDays} ngày) và sẽ tiếp tục khi hết thời gian học ở trung tâm.
+          </Text>
         ) : null}
       </View>
 

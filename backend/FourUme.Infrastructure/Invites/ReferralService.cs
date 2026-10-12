@@ -83,23 +83,29 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
     private async Task<RedeemResultDto> RedeemPartnerAsync(Guid userId, PartnerCode code, CancellationToken ct)
     {
         var partner = code.Partner!;
-        if (code.UsedById == userId && code.RevokedAt is null) throw new InvalidOperationException("Bạn đã dùng mã này rồi.");
+        var now = DateTimeOffset.UtcNow;
+        var expired = code.ExpiresAt <= now;
+        if (code.UsedById == userId && code.RevokedAt is null && !expired) throw new InvalidOperationException("Bạn đã dùng mã này rồi.");
         if (code.RevokedAt is not null) throw new InvalidOperationException("Mã này đã bị thu hồi. Bạn liên hệ trung tâm để được cấp mã mới nhé.");
         if (code.UsedAt is not null) throw new InvalidOperationException("Mã này đã có người sử dụng. Bạn liên hệ trung tâm để được cấp mã mới nhé.");
-        if (await db.PartnerCodes.AnyAsync(c => c.UsedById == userId && c.PartnerId == partner.Id && c.RevokedAt == null, ct))
+        if (expired) throw new InvalidOperationException("Mã này đã hết hạn. Bạn liên hệ trung tâm để được cấp mã mới nhé.");
+        if (await db.PartnerCodes.AnyAsync(c => c.UsedById == userId && c.PartnerId == partner.Id && c.RevokedAt == null
+                && (c.ExpiresAt == null || c.ExpiresAt > now), ct))
             throw new InvalidOperationException($"Bạn đã là học viên của {partner.Name} rồi, không cần nhập thêm mã.");
 
         // Conditional update so two people typing the same code at once can't both get it.
-        var now = DateTimeOffset.UtcNow;
         var claimed = await db.PartnerCodes
             .Where(c => c.Id == code.Id && c.UsedAt == null && c.RevokedAt == null)
             .ExecuteUpdateAsync(s => s.SetProperty(c => c.UsedById, userId).SetProperty(c => c.UsedAt, now), ct);
         if (claimed == 0) throw new InvalidOperationException("Mã này đã có người sử dụng. Bạn liên hệ trung tâm để được cấp mã mới nhé.");
 
+        var ownPremium = await db.Users.AnyAsync(u => u.Id == userId && u.PremiumUntil > now, ct);
+        await PremiumHold.SyncAsync(db, userId, ct);
         logger.LogInformation("Partner code {CodeId} of {PartnerId} redeemed by {UserId}", code.Id, partner.Id, userId);
         var ielts = FeatureKeys.Parse(partner.Features).Contains(FeatureKeys.Ielts);
         return new RedeemResultDto("partner",
-            $"Chào mừng học viên {partner.Name}! Tài khoản của bạn đã có Premium{(ielts ? " và mở phần IELTS" : "")}.");
+            $"Chào mừng học viên {partner.Name}! Tài khoản của bạn đã có Premium{(ielts ? " và mở phần IELTS" : "")}."
+            + (ownPremium ? " Premium riêng của bạn được tạm dừng và sẽ tiếp tục khi hết thời gian học ở trung tâm." : ""));
     }
 
     private async Task<RedeemResultDto> RedeemReferralAsync(Guid userId, Guid inviterId, string inviterName, CancellationToken ct)
@@ -155,15 +161,16 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
         logger.LogInformation("Referral {ReferralId} rewarded (inviter rewarded: {InviterRewarded})", referral.Id, earned < config.MaxRewardsPerUser);
     }
 
-    /// <summary>Adds days after the current end date, or from now when Premium has lapsed.</summary>
-    private Task ExtendPremiumAsync(Guid userId, int days, CancellationToken ct)
+    /// <summary>Adds days after the current end date, or from now when Premium has lapsed; paused while a partner code is active.</summary>
+    private async Task ExtendPremiumAsync(Guid userId, int days, CancellationToken ct)
     {
         var now = DateTimeOffset.UtcNow;
-        return db.Database.ExecuteSqlAsync($"""
+        await db.Database.ExecuteSqlAsync($"""
             UPDATE "Users"
             SET "PremiumUntil" = GREATEST("PremiumUntil", {now}) + make_interval(days => {days})
             WHERE "Id" = {userId}
             """, ct);
+        await PremiumHold.SyncAsync(db, userId, ct);
     }
 
     private static bool InJoinWindow(User user, ReferralConfig config) =>

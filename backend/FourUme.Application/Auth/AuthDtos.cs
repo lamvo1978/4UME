@@ -39,7 +39,9 @@ public record MeResponse(
     /// <summary>Hidden features unlocked by a partner code, e.g. "ielts".</summary>
     IReadOnlyList<string>? Features = null,
     /// <summary>Set while the learner is a partner's student.</summary>
-    string? PartnerName = null);
+    string? PartnerName = null,
+    /// <summary>End of partner access; null runs until the code is revoked.</summary>
+    DateTimeOffset? PartnerUntil = null);
 
 /// <summary>Every field is optional; only the ones sent are changed.</summary>
 public record UpdateSettingsRequest(

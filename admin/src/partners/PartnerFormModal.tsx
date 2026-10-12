@@ -15,10 +15,17 @@ export function PartnerFormModal({
   onClose: () => void;
   onSave: (p: SavePartner) => void;
 }) {
-  const [form, setForm] = useState<SavePartner>({ name: "", features: ["ielts"], note: null });
+  const [form, setForm] = useState<SavePartner>({ name: "", prefix: "", features: ["ielts"], note: null });
+  const prefixLocked = !!partner && partner.codes > 0;
+  const prefixValid = /^[A-Z]{2}$/.test(form.prefix);
 
   useEffect(() => {
-    if (opened) setForm(partner ? { name: partner.name, features: partner.features, note: partner.note } : { name: "", features: ["ielts"], note: null });
+    if (opened)
+      setForm(
+        partner
+          ? { name: partner.name, prefix: partner.prefix, features: partner.features, note: partner.note }
+          : { name: "", prefix: "", features: ["ielts"], note: null },
+      );
   }, [opened, partner]);
 
   return (
@@ -31,6 +38,22 @@ export function PartnerFormModal({
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.currentTarget.value })}
           data-autofocus
+        />
+        <TextInput
+          label="Tiền tố mã"
+          description={
+            prefixLocked
+              ? "Đối tác đã có mã nên tiền tố được giữ cố định."
+              : "2 chữ cái, không trùng đối tác khác. Mã sẽ có dạng AB-482913 (6 số ngẫu nhiên)."
+          }
+          w={200}
+          maxLength={2}
+          placeholder="AB"
+          disabled={prefixLocked}
+          value={form.prefix}
+          error={form.prefix && !prefixValid ? "Cần đúng 2 chữ cái A–Z" : undefined}
+          onChange={(e) => setForm({ ...form, prefix: e.currentTarget.value.toUpperCase().replace(/[^A-Z]/g, "") })}
+          styles={{ input: { fontFamily: "monospace", letterSpacing: 2 } }}
         />
         <Checkbox.Group
           label="Mở tính năng ẩn"
@@ -46,7 +69,7 @@ export function PartnerFormModal({
         </Checkbox.Group>
         <Textarea
           label="Ghi chú"
-          description="Chỉ quản trị viên thấy: người liên hệ, thoả thuận…"
+          description="Chỉ quản trị viên thấy: người liên hệ, thoả thuận, giá theo tháng…"
           autosize
           minRows={2}
           maxLength={500}
@@ -57,7 +80,7 @@ export function PartnerFormModal({
           <Button variant="default" onClick={onClose}>
             Huỷ
           </Button>
-          <Button loading={saving} disabled={!form.name.trim()} onClick={() => onSave(form)}>
+          <Button loading={saving} disabled={!form.name.trim() || !prefixValid} onClick={() => onSave(form)}>
             {partner ? "Lưu" : "Thêm"}
           </Button>
         </Group>

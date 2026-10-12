@@ -751,7 +751,15 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Prefix")
+                        .IsUnique();
 
                     b.ToTable("Partners");
                 });
@@ -774,6 +782,12 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeSpan?>("HeldPremium")
+                        .HasColumnType("interval");
 
                     b.Property<Guid>("PartnerId")
                         .HasColumnType("uuid");

@@ -115,5 +115,5 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     maxRewardsPerUser: "Thưởng tối đa mỗi người mời",
     joinWindowDays: "Hạn nhập mã mời (ngày)",
   },
-  partner: { name: "Tên đối tác", features: "Tính năng mở", note: "Ghi chú" },
+  partner: { name: "Tên đối tác", prefix: "Tiền tố mã", features: "Tính năng mở", note: "Ghi chú" },
 };

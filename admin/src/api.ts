@@ -85,10 +85,20 @@ export type AdminUser = {
   grammarPassed: number;
   /** Premium is active while this is in the future. */
   premiumUntil: string | null;
-  /** Set while the user is an active partner student (Premium with no end date). */
+  /** Set while the user is an active partner student. */
   partnerName?: string | null;
 };
-export type AdminUserPartnerCode = { id: string; partnerId: string; partnerName: string; code: string; usedAt: string | null; revokedAt: string | null };
+export type AdminUserPartnerCode = {
+  id: string;
+  partnerId: string;
+  partnerName: string;
+  code: string;
+  usedAt: string | null;
+  revokedAt: string | null;
+  expiresAt: string | null;
+  /** Own Premium days paused by this code. */
+  heldDays: number;
+};
 export type AdminUserInvites = {
   referralCode: string | null;
   invitedById: string | null;
@@ -172,27 +182,48 @@ export const featureLabel = (key: string) => FEATURES.find((f) => f.value === ke
 export type AdminPartner = {
   id: string;
   name: string;
+  /** Two letters every code of this partner starts with. */
+  prefix: string;
   features: string[];
   note: string | null;
   createdAt: string;
   codes: number;
   unused: number;
   students: number;
-  revoked: number;
+  /** Revoked or past the batch end date. */
+  ended: number;
+  /** Billable months so far in the current month. */
+  monthUnits: number;
 };
 export type AdminPartnerCode = {
   id: string;
   code: string;
   batch: string;
   createdAt: string;
+  /** End of the batch; null runs until revoked. */
+  expiresAt: string | null;
   usedAt: string | null;
   userId: string | null;
   userEmail: string | null;
   userName: string | null;
   revokedAt: string | null;
+  /** The student's own Premium days paused by this code. */
+  heldDays: number;
 };
 export type AdminPartnerDetail = { partner: AdminPartner; codes: AdminPartnerCode[] };
-export type SavePartner = { name: string; features: string[]; note: string | null };
+export type SavePartner = { name: string; prefix: string; features: string[]; note: string | null };
+export type PartnerBillingRow = {
+  code: string;
+  batch: string;
+  userId: string | null;
+  userEmail: string | null;
+  userName: string | null;
+  startedAt: string;
+  endedAt: string | null;
+  /** 0.5 per half of the month (days 1–15, 16–end) the code was active in. */
+  units: number;
+};
+export type PartnerBilling = { month: string; units: number; rows: PartnerBillingRow[] };
 
 /** The app's "Giới thiệu & bản quyền" screen; the CEFR-J citation is fixed in the app and not part of it. */
 export type AboutItem = { icon: string; title: string; body: string; url: string | null; visible: boolean };
@@ -606,8 +637,12 @@ export const api = {
   partner: (id: string) => request<AdminPartnerDetail>(`/api/admin/partners/${id}`),
   createPartner: (p: SavePartner) => request<AdminPartnerDetail>("/api/admin/partners", json("POST", p)),
   updatePartner: (id: string, p: SavePartner) => request<AdminPartnerDetail>(`/api/admin/partners/${id}`, json("PUT", p)),
-  generatePartnerCodes: (id: string, batch: string, count: number) =>
-    request<AdminPartnerDetail>(`/api/admin/partners/${id}/codes`, json("POST", { batch, count })),
+  generatePartnerCodes: (id: string, batch: string, count: number, expiresAt: string | null) =>
+    request<AdminPartnerDetail>(`/api/admin/partners/${id}/codes`, json("POST", { batch, count, expiresAt })),
+  setPartnerBatchExpiry: (id: string, batch: string, expiresAt: string | null) =>
+    request<AdminPartnerDetail>(`/api/admin/partners/${id}/batch-expiry`, json("PUT", { batch, expiresAt })),
+  partnerBilling: (id: string, month: string) =>
+    request<PartnerBilling>(`/api/admin/partners/${id}/billing?month=${encodeURIComponent(month)}`),
   setPartnerCodeRevoked: (id: string, revoked: boolean) =>
     request<AdminPartnerCode>(`/api/admin/partner-codes/${id}/revoked`, json("PUT", { revoked })),
   about: () => request<AdminAbout>("/api/admin/about"),

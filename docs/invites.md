@@ -1,6 +1,6 @@
 # Mời bạn bè và mã trung tâm đối tác
 
-Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nhận ra mã nào là mã nào (mã mời 6 ký tự, mã trung tâm 8 ký tự dạng `ABCD-EFGH`). Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
+Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nhận ra mã nào là mã nào (mã mời 6 ký tự, mã trung tâm 8 ký tự dạng `AB-482913`). Chữ hoa/thường, dấu cách và dấu gạch ngang đều được bỏ qua. Mã mời dùng bảng chữ không có 0/O, 1/I/L để đọc hay chép tay không nhầm.
 
 ## Người học thấy gì (app)
 
@@ -9,7 +9,7 @@ Một ô **Nhập mã** trong app nhận cả hai loại mã; máy chủ tự nh
   - ô **Nhập mã**: mã mời của bạn bè hoặc mã do trung tâm cấp;
   - danh sách bạn đã mời, mỗi người "Đã học x/3 ngày" hoặc "Đã nhận thưởng";
   - số lần đã nhận thưởng / tối đa.
-- Học viên trung tâm: khung vàng "Học viên *tên trung tâm*", dòng gói ở Hồ sơ và màn Premium ghi "Học viên *tên* · không thời hạn".
+- Học viên trung tâm: khung vàng "Học viên *tên trung tâm*", dòng gói ở Hồ sơ và màn Premium ghi "Học viên *tên* · đến *ngày*" (hoặc "· không thời hạn"). Nếu đang có Premium riêng, màn Premium ghi thêm số ngày đang tạm dừng.
 - Tính năng ẩn **IELTS**: thêm mục *IELTS* cạnh *Từ vựng | Ngữ pháp* ở tab **Học**, chỉ hiện với học viên của đối tác có bật IELTS. Hiện là trang giới thiệu bốn kỹ năng "Sắp có"; nội dung làm sau.
 - Trang web `site/moi/`: hiện mã từ đường dẫn, nút chép mã và cách nhận quà. Chưa mở thẳng app (cần universal link ở bản build EAS).
 
@@ -33,14 +33,21 @@ Các con số trên chỉnh ở **Cài đặt → Mời bạn bè** trong admin 
 
 ## Mã trung tâm đối tác
 
-- Admin **Đối tác** → *Thêm đối tác*: tên (học viên thấy trong app), tính năng mở thêm (hiện có *IELTS*), ghi chú nội bộ.
-- Trong trang đối tác: **Tạo mã** theo lô (tên lô, ví dụ lớp/khoá; tối đa 500 mã mỗi lần) → lọc theo lô / trạng thái → **Xuất Excel** để gửi trung tâm.
-- Mỗi mã **dùng một lần**. Người nhập mã là học viên: **Premium không thời hạn** và mở tính năng của đối tác, cho đến khi admin **thu hồi** mã (trong trang đối tác, hoặc thẻ *Mời bạn & mã trung tâm* ở trang người dùng). Thu hồi xong có thể khôi phục.
-- Thu hồi chỉ bỏ quyền lợi từ trung tâm; ngày Premium có từ nguồn khác (admin cấp, mời bạn) vẫn giữ.
-- Mã chưa dùng mà bị thu hồi thì không nhập được nữa. Xoá tài khoản thì mã đã dùng vẫn tính là đã dùng.
-- Mọi thao tác (thêm/sửa đối tác, tạo lô, thu hồi/khôi phục) ghi vào **Lịch sử**, mục *Đối tác*.
+- Admin **Đối tác** → *Thêm đối tác*: tên (học viên thấy trong app), **tiền tố mã** 2 chữ cái (không trùng đối tác khác, cố định khi đã có mã), tính năng mở thêm (hiện có *IELTS*), ghi chú nội bộ.
+- Mã trung tâm = tiền tố + **6 số ngẫu nhiên**, ví dụ `AB-482913`; cả 8 ký tự là duy nhất toàn hệ thống. Số ngẫu nhiên (không đánh số liên tiếp) để học viên không đoán được mã của bạn khác.
+- Trong trang đối tác: **Tạo mã** theo lô (tên lô, ví dụ lớp/khoá; tối đa 500 mã mỗi lần; **ngày hết hạn** tuỳ chọn, bỏ trống = không thời hạn) → lọc theo lô / trạng thái → **Xuất Excel** để gửi trung tâm. Một lô có một ngày hết hạn; chọn lô ở bộ lọc rồi bấm *Hạn lô* để đổi (gia hạn lô đã hết hạn sẽ mở lại cho học viên trong lô). Hết hạn tính đến hết ngày đã chọn, giờ Việt Nam.
+- Mỗi mã **dùng một lần**. Người nhập mã là học viên: Premium và tính năng của đối tác **đến hết hạn lô**, hoặc đến khi admin **thu hồi** mã (trong trang đối tác, hoặc thẻ *Mời bạn & mã trung tâm* ở trang người dùng). Thu hồi xong có thể khôi phục.
+- Tài khoản nào cũng nhập được (mới hay cũ, Free hay Premium); tài khoản giữ nguyên. **Premium riêng được tạm dừng** trong lúc học ở trung tâm: phần còn lại được giữ trên mã (`PartnerCodes.HeldPremium`), ngày thưởng mời bạn hoặc admin cấp trong thời gian này cũng cộng vào phần giữ. Khi mã hết hạn hoặc bị thu hồi, phần giữ được trả lại tính từ lúc mã kết thúc. Không cần job chạy nền: mỗi lần đọc quyền lợi (`/api/me`, phát âm…) và mỗi thao tác của admin đều tự đồng bộ (`PremiumHold` trong `Entitlements.cs`).
+- Mã chưa dùng mà bị thu hồi hoặc hết hạn thì không nhập được nữa. Xoá tài khoản thì mã đã dùng được thu hồi (dừng tính phí) và vẫn tính là đã dùng.
+- Mọi thao tác (thêm/sửa đối tác, tạo lô, đổi hạn lô, thu hồi/khôi phục) ghi vào **Lịch sử**, mục *Đối tác*.
 
-Premium hiệu lực = `PremiumUntil` còn hạn **hoặc** có mã trung tâm đang dùng (`Infrastructure/Invites/Entitlements.cs`). `/api/me` trả `premium`, `features` (vd `["ielts"]`) và `partnerName`; `/api/pronunciation/status` trả thêm `partnerName`. Bộ lọc *Premium* ở trang người dùng của admin cũng tính cả học viên trung tâm.
+### Thống kê tháng và tính phí trung tâm
+
+Trang đối tác có thẻ **Thống kê tháng** (chọn tháng, xuất Excel gửi trung tâm): mọi học viên còn dùng mã trong tháng, ngày bắt đầu/kết thúc và số tháng tính phí. Danh sách đối tác hiện số tháng phí của tháng hiện tại.
+
+Quy tắc (giờ Việt Nam): mỗi nửa tháng (ngày 1–15, ngày 16–cuối tháng) có dùng thì tính **1/2 tháng**. Nghĩa là bắt đầu ngày 1–15 tính trọn tháng, bắt đầu từ ngày 16 tính 1/2 tháng; tháng kết thúc thì kết thúc ngày 1–15 tính 1/2, từ ngày 16 tính trọn. Không thu hồi thì học viên vẫn được tính phí các tháng sau.
+
+Premium hiệu lực = `PremiumUntil` còn hạn **hoặc** có mã trung tâm đang dùng (chưa thu hồi, chưa hết hạn). `/api/me` trả `premium`, `features` (vd `["ielts"]`), `partnerName`, `partnerUntil`; `/api/pronunciation/status` trả thêm `partnerName`, `partnerUntil`, `pausedPremiumDays`. Bộ lọc *Premium* ở trang người dùng của admin cũng tính cả học viên trung tâm.
 
 ## API
 
@@ -49,7 +56,9 @@ Premium hiệu lực = `PremiumUntil` còn hạn **hoặc** có mã trung tâm �
 | `GET /api/me/referral` | người học | mã mời, link, cấu hình, danh sách đã mời |
 | `POST /api/codes/redeem` `{ code }` | người học | nhập mã mời hoặc mã trung tâm |
 | `GET/POST /api/admin/partners`, `GET/PUT /api/admin/partners/{id}` | admin | đối tác |
-| `POST /api/admin/partners/{id}/codes` `{ batch, count }` | admin | tạo lô mã |
+| `POST /api/admin/partners/{id}/codes` `{ batch, count, expiresAt }` | admin | tạo lô mã |
+| `PUT /api/admin/partners/{id}/batch-expiry` `{ batch, expiresAt }` | admin | đổi hạn cả lô |
+| `GET /api/admin/partners/{id}/billing?month=yyyy-MM` | admin | thống kê tháng |
 | `PUT /api/admin/partner-codes/{id}/revoked` `{ revoked }` | admin | thu hồi / khôi phục |
 | `PUT /api/admin/settings/referral`, `POST …/reset` | admin | cấu hình mời bạn |
 

@@ -97,6 +97,10 @@ public static class AdminEndpoints
             Results.Ok(await s.UpdateAsync(id, r, ct)));
         admin.MapPost("/partners/{id:guid}/codes", async (Guid id, GeneratePartnerCodesRequest r, IAdminPartnerService s, CancellationToken ct) =>
             Results.Ok(await s.GenerateCodesAsync(id, r, ct)));
+        admin.MapPut("/partners/{id:guid}/batch-expiry", async (Guid id, SetBatchExpiryRequest r, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.SetBatchExpiryAsync(id, r, ct)));
+        admin.MapGet("/partners/{id:guid}/billing", async (Guid id, string month, IAdminPartnerService s, CancellationToken ct) =>
+            Results.Ok(await s.BillingAsync(id, month, ct)));
         admin.MapPut("/partner-codes/{id:guid}/revoked", async (Guid id, SetRevokedRequest r, IAdminPartnerService s, CancellationToken ct) =>
             Results.Ok(await s.SetCodeRevokedAsync(id, r.Revoked, ct)));
 

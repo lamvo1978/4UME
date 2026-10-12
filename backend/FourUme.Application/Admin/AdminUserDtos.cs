@@ -30,10 +30,19 @@ public record AdminUserDto(
     int KnownWords,
     int GrammarPassed,
     DateTimeOffset? PremiumUntil,
-    /// <summary>Set while the user is an active partner student (Premium with no end date).</summary>
+    /// <summary>Set while the user is an active partner student.</summary>
     string? PartnerName = null);
 
-public record AdminUserPartnerCodeDto(Guid Id, Guid PartnerId, string PartnerName, string Code, DateTimeOffset? UsedAt, DateTimeOffset? RevokedAt);
+/// <param name="HeldDays">The user's own Premium days paused by this code.</param>
+public record AdminUserPartnerCodeDto(
+    Guid Id,
+    Guid PartnerId,
+    string PartnerName,
+    string Code,
+    DateTimeOffset? UsedAt,
+    DateTimeOffset? RevokedAt,
+    DateTimeOffset? ExpiresAt = null,
+    int HeldDays = 0);
 
 /// <param name="InviteRewards">Invites that earned this user Premium days.</param>
 public record AdminUserInvitesDto(

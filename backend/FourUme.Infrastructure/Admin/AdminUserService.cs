@@ -6,6 +6,7 @@ using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure.Activity;
+using FourUme.Infrastructure.Invites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
@@ -26,6 +27,7 @@ public class AdminUserService(
         var page = Math.Max(1, query.Page);
         var size = Math.Clamp(query.PageSize, 1, MaxPageSize);
         var users = db.Users.AsNoTracking().AsQueryable();
+        var now = DateTimeOffset.UtcNow;
 
         if (!string.IsNullOrWhiteSpace(query.Q))
         {
@@ -41,8 +43,8 @@ public class AdminUserService(
             UserFilters.Locked => users.Where(u => u.LockedAt != null),
             UserFilters.Active => users.Where(u => u.StudyDays.Any(d => !d.Frozen && d.Date >= activeFrom)),
             UserFilters.Inactive => users.Where(u => !u.StudyDays.Any(d => !d.Frozen && d.Date >= inactiveFrom)),
-            UserFilters.Premium => users.Where(u => u.PremiumUntil > DateTimeOffset.UtcNow
-                || db.PartnerCodes.Any(c => c.UsedById == u.Id && c.RevokedAt == null)),
+            UserFilters.Premium => users.Where(u => u.PremiumUntil > now
+                || db.PartnerCodes.Any(c => c.UsedById == u.Id && c.RevokedAt == null && (c.ExpiresAt == null || c.ExpiresAt > now))),
             _ => users,
         };
 
@@ -58,7 +60,8 @@ public class AdminUserService(
             LastStudy = u.StudyDays.Where(d => !d.Frozen).Max(d => (DateOnly?)d.Date),
             Known = u.WordProgresses.Count(p => p.Status == WordStatus.Known),
             Grammar = u.GrammarProgresses.Count(p => p.ReviewLevel > 0),
-            Partner = db.PartnerCodes.Where(c => c.UsedById == u.Id && c.RevokedAt == null).Select(c => c.Partner!.Name).FirstOrDefault(),
+            Partner = db.PartnerCodes.Where(c => c.UsedById == u.Id && c.RevokedAt == null && (c.ExpiresAt == null || c.ExpiresAt > now))
+                .Select(c => c.Partner!.Name).FirstOrDefault(),
         });
         rows = query.Sort switch
         {
@@ -94,7 +97,8 @@ public class AdminUserService(
         var known = await db.WordProgresses.CountAsync(p => p.UserId == id && p.Status == WordStatus.Known, ct);
         var grammarPassed = await db.GrammarProgresses.CountAsync(p => p.UserId == id && p.ReviewLevel > 0, ct);
         var invites = await InvitesAsync(user, ct);
-        var partner = invites.PartnerCodes.FirstOrDefault(c => c.RevokedAt is null)?.PartnerName;
+        var partner = invites.PartnerCodes.FirstOrDefault(c => c.RevokedAt is null && (c.ExpiresAt is null || c.ExpiresAt > DateTimeOffset.UtcNow))
+            ?.PartnerName;
 
         return new AdminUserDetailDto(
             new AdminUserDto(user.Id, user.Email, user.DisplayName, user.Role, user.CreatedAt, user.LockedAt, lastStudy,
@@ -126,7 +130,7 @@ public class AdminUserService(
         var codes = await db.PartnerCodes.AsNoTracking()
             .Where(c => c.UsedById == user.Id)
             .OrderByDescending(c => c.UsedAt)
-            .Select(c => new AdminUserPartnerCodeDto(c.Id, c.PartnerId, c.Partner!.Name, c.Code, c.UsedAt, c.RevokedAt))
+            .Select(c => new { c.Id, c.PartnerId, c.Partner!.Name, c.Code, c.UsedAt, c.RevokedAt, c.ExpiresAt, c.HeldPremium })
             .ToListAsync(ct);
         return new AdminUserInvitesDto(
             user.ReferralCode,
@@ -134,7 +138,8 @@ public class AdminUserService(
             invitedBy?.Email,
             await db.Referrals.CountAsync(r => r.InviterId == user.Id, ct),
             await db.Referrals.CountAsync(r => r.InviterId == user.Id && r.InviterRewarded, ct),
-            codes.Select(c => c with { Code = ReferralRules.FormatPartnerCode(c.Code) }).ToList());
+            codes.Select(c => new AdminUserPartnerCodeDto(c.Id, c.PartnerId, c.Name, ReferralRules.FormatPartnerCode(c.Code), c.UsedAt,
+                c.RevokedAt, c.ExpiresAt, c.HeldPremium is { } h ? (int)Math.Ceiling(h.TotalDays) : 0)).ToList());
     }
 
     public async Task<AdminUserDetailDto> CreateAsync(CreateUserRequest request, DateOnly today, CancellationToken ct = default)
@@ -201,6 +206,7 @@ public class AdminUserService(
         auditor.Record(AuditEntities.User, user.Id.ToString(), AuditActions.Update,
             until is null ? $"Tắt Premium: {user.Email}" : $"Premium đến {until:dd/MM/yyyy}: {user.Email}", before, Snapshot(user));
         await db.SaveChangesAsync(ct);
+        await PremiumHold.SyncAsync(db, user.Id, ct);
         return (await GetUserAsync(id, today, ct))!;
     }
 

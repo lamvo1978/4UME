@@ -3,6 +3,7 @@ import { ComponentProps, useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api, MyReferral } from "../api/client";
+import { formatDayMonthYear } from "../utils/dates";
 import { useAuth } from "../auth/AuthContext";
 import { colors, shadow, spacing } from "../theme";
 
@@ -75,7 +76,9 @@ export function InviteScreen() {
           <Ionicons name="school" size={20} color={colors.white} />
           <View style={styles.flex}>
             <Text style={styles.partnerTitle}>Học viên {me.partnerName}</Text>
-            <Text style={styles.partnerSub}>Tài khoản đang có Premium không thời hạn.</Text>
+            <Text style={styles.partnerSub}>
+              {me.partnerUntil ? `Tài khoản có Premium đến ${formatDayMonthYear(me.partnerUntil)}.` : "Tài khoản đang có Premium không thời hạn."}
+            </Text>
           </View>
         </View>
       ) : null}
@@ -106,7 +109,7 @@ export function InviteScreen() {
             style={styles.input}
             value={code}
             onChangeText={(t) => setCode(t.toUpperCase())}
-            placeholder="VD: ABCD-EFGH"
+            placeholder="VD: AB-123456"
             placeholderTextColor={colors.idle}
             autoCapitalize="characters"
             autoCorrect={false}

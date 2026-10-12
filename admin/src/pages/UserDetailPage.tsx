@@ -36,6 +36,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, isPremium, type AdminUserDetail, type AdminUserInvites } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { fullTime, notifyError, notifySaved, shortDate, studyAgo, timeAgo } from "../lib";
+import { isExpired } from "../partners/dates";
 import { ActivityCalendar } from "../users/ActivityCalendar";
 import { UserAvatar, UserBadges } from "../users/UserBadges";
 
@@ -301,6 +302,9 @@ function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: 
   const until = new Date(from);
   until.setMonth(until.getMonth() + Number(months));
   const daysLeft = premium ? Math.ceil((new Date(u.premiumUntil!).getTime() - Date.now()) / 86_400_000) : 0;
+  const activeCodes = (detail.invites?.partnerCodes ?? []).filter((c) => !c.revokedAt && !isExpired(c.expiresAt));
+  const held = activeCodes.reduce((sum, c) => sum + c.heldDays, 0);
+  const partnerEnd = activeCodes.some((c) => !c.expiresAt) ? null : (activeCodes.map((c) => c.expiresAt!).sort().at(-1) ?? null);
 
   async function run() {
     setBusy(true);
@@ -326,7 +330,9 @@ function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: 
             </Text>
             <Text fz="sm" c="dimmed">
               {u.partnerName
-                ? `Học viên ${u.partnerName} · không thời hạn, cho đến khi thu hồi mã.${premium ? ` Hạn riêng còn ${daysLeft} ngày.` : ""}`
+                ? `Học viên ${u.partnerName}${partnerEnd ? ` đến ${shortDate(partnerEnd)}` : " · không thời hạn, cho đến khi thu hồi mã"}.${
+                    held > 0 ? ` Premium riêng đang tạm dừng, còn ${held} ngày.` : ""
+                  }`
                 : premium
                   ? `Còn ${daysLeft} ngày · chấm phát âm chi tiết nhiều lượt hơn mỗi ngày.`
                   : "Premium cho chấm phát âm chi tiết nhiều lượt hơn mỗi ngày (số lượt chỉnh ở Cài đặt)."}
@@ -414,10 +420,16 @@ function InvitesCard({ invites, onChanged }: { invites: AdminUserInvites; onChan
                   {c.partnerName}
                 </Anchor>{" "}
                 · mã <Text span ff="monospace">{c.code}</Text>
-                {c.usedAt ? ` · nhập ngày ${shortDate(c.usedAt)}` : ""}{" "}
+                {c.usedAt ? ` · nhập ngày ${shortDate(c.usedAt)}` : ""}
+                {c.expiresAt ? ` · hết hạn ${shortDate(c.expiresAt)}` : ""}
+                {c.heldDays > 0 ? ` · giữ ${c.heldDays} ngày Premium riêng` : ""}{" "}
                 {c.revokedAt ? (
                   <Badge color="red" variant="light" size="sm">
                     Đã thu hồi
+                  </Badge>
+                ) : isExpired(c.expiresAt) ? (
+                  <Badge color="orange" variant="light" size="sm">
+                    Hết hạn
                   </Badge>
                 ) : (
                   <Badge color="teal" variant="light" size="sm">

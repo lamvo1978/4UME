@@ -41,7 +41,9 @@ public static class ReferralRules
 {
     public const string InviteUrl = "https://4ume.io.vn/moi/?ma=";
     public const int ReferralCodeLength = 6;
-    public const int PartnerCodeLength = 8;
+    public const int PartnerPrefixLength = 2;
+    public const int PartnerDigits = 6;
+    public const int PartnerCodeLength = PartnerPrefixLength + PartnerDigits;
     public const int MaxBatchSize = 500;
     /// <summary>No 0/O, 1/I/L, so codes read aloud or copied from paper survive.</summary>
     private const string Alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -62,17 +64,37 @@ public static class ReferralRules
             for (var i = 0; i < span.Length; i++) span[i] = Alphabet[RandomNumberGenerator.GetInt32(Alphabet.Length)];
         });
 
-    /// <summary>Upper-cases and drops spaces and dashes, so "abcd-1234" and "ABCD1234" match.</summary>
+    /// <summary>Partner prefix followed by random digits, e.g. "AB" + "482913".</summary>
+    public static string NewPartnerCode(string prefix) =>
+        prefix + RandomNumberGenerator.GetInt32((int)Math.Pow(10, PartnerDigits)).ToString($"D{PartnerDigits}");
+
+    /// <summary>Two letters A–Z, upper-cased; null when invalid.</summary>
+    public static string? NormalizePrefix(string? prefix)
+    {
+        var p = (prefix ?? "").Trim().ToUpperInvariant();
+        return p.Length == PartnerPrefixLength && p.All(c => c is >= 'A' and <= 'Z') ? p : null;
+    }
+
+    /// <summary>Upper-cases and drops spaces and dashes, so "ab-123456" and "AB123456" match.</summary>
     public static string Normalize(string? code) =>
         new((code ?? "").ToUpperInvariant().Where(char.IsLetterOrDigit).ToArray());
 
-    public static string FormatPartnerCode(string code) => code.Length == PartnerCodeLength ? $"{code[..4]}-{code[4..]}" : code;
+    public static string FormatPartnerCode(string code) =>
+        code.Length == PartnerCodeLength ? $"{code[..PartnerPrefixLength]}-{code[PartnerPrefixLength..]}" : code;
 }
 
 /// <summary>What the learner currently has: Premium from any source plus partner features.</summary>
-/// <param name="PremiumUntil">End of time-limited Premium (admin or invite rewards); partner Premium has no end.</param>
+/// <param name="PremiumUntil">End of the learner's own Premium (admin or invite rewards); null while paused by a partner code.</param>
 /// <param name="PartnerName">Set while the learner is an active partner student.</param>
-public record AccessDto(bool Premium, DateTimeOffset? PremiumUntil, string? PartnerName, IReadOnlyList<string> Features);
+/// <param name="PartnerUntil">When partner access ends; null when it runs until revoked.</param>
+/// <param name="PausedPremiumDays">Own Premium days on hold, given back when partner access ends.</param>
+public record AccessDto(
+    bool Premium,
+    DateTimeOffset? PremiumUntil,
+    string? PartnerName,
+    IReadOnlyList<string> Features,
+    DateTimeOffset? PartnerUntil = null,
+    int PausedPremiumDays = 0);
 
 /// <param name="DisplayName">The invited friend's display name.</param>
 /// <param name="StudyDays">Days studied so far (capped at the requirement).</param>

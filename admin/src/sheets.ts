@@ -106,10 +106,16 @@ export function downloadWordsCsv(words: ExportWord[], fileName: string) {
 }
 
 /** A plain table with a bold header row; every cell is written as text. */
-export async function downloadTableXlsx(headers: string[], rows: string[][], fileName: string, sheet: string, widths: number[] = []) {
+export async function downloadTableXlsx(
+  headers: string[],
+  rows: (string | number)[][],
+  fileName: string,
+  sheet: string,
+  widths: number[] = [],
+) {
   const data = [
     headers.map((h) => ({ value: h, fontWeight: "bold" as const })),
-    ...rows.map((r) => r.map((value) => ({ value, type: String }))),
+    ...rows.map((r) => r.map((value) => (typeof value === "number" ? { value, type: Number } : { value, type: String }))),
   ];
   const blob = await writeXlsxFile(data, { columns: headers.map((_, i) => ({ width: widths[i] ?? 20 })), stickyRowsCount: 1, sheet }).toBlob();
   downloadBlob(blob, fileName);

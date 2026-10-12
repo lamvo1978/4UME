@@ -134,6 +134,8 @@ export type Me = {
   features?: string[];
   /** Set while the learner is a partner centre's student. */
   partnerName?: string | null;
+  /** End of the centre's access; null runs until the centre ends it. */
+  partnerUntil?: string | null;
 };
 
 export const FEATURE_IELTS = "ielts";
@@ -363,9 +365,17 @@ export type PronunciationStatus = {
   /** 0 = no ads offered: Premium, ads switched off, or the scorer is paused. */
   adsDailyLimit: number;
   adsLeftToday: number;
-  /** Premium through a partner centre, with no end date. */
+  /** Premium through a partner centre. */
   partnerName?: string | null;
+  /** End of the centre's access; null runs until the centre ends it. */
+  partnerUntil?: string | null;
+  /** The learner's own Premium days on hold, resumed when the centre's access ends. */
+  pausedPremiumDays?: number;
 };
+
+/** "Học viên X · đến 30/06/2027" or "· không thời hạn". */
+export const partnerLine = (name: string, until: string | null | undefined, formatDate: (iso: string) => string) =>
+  `Học viên ${name} · ${until ? `đến ${formatDate(until)}` : "không thời hạn"}`;
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
 /** "open" waits for 4UME, "answered" waits for the learner. */
