@@ -15,7 +15,15 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 ## 3. Chuẩn bị hồ sơ store
 
-- [ ] Mô tả ngắn / đầy đủ, từ khoá, danh mục *Giáo dục*.
+Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho người duyệt: [store-listing.md](store-listing.md).
+
+- [x] iOS: bản 4 gửi duyệt TestFlight bên ngoài (nhóm *Friends*, 13/10) → duyệt xong bật **Public Link** gửi bạn bè.
+- [ ] **Android** (Google đã xác minh danh tính 13/10):
+  1. Firebase: tạo project `4UME` (tắt Analytics), thêm app Android `com.fourume.app`, tải `google-services.json` vào `mobile/`; tạo khoá *service account* FCM V1 rồi `npx eas-cli credentials` → Android → *Push Notifications (FCM V1)* → tải khoá lên. Agent nối `android.googleServicesFile` trong `app.json`.
+  2. Play Console: tạo app *4UME - Học tiếng Anh*, điền *Nội dung ứng dụng* + *An toàn dữ liệu* theo [store-listing.md](store-listing.md#google-play-play-console), khai quyền phát nền (*Media playback*).
+  3. `npx eas-cli build -p android --profile production` → tải `.aab` lên *Thử nghiệm kín* bằng tay (lần đầu bắt buộc).
+  4. Gom **12 người thử Android** (Gmail), giữ đủ **14 ngày** → xin phát hành chính thức.
+- [ ] Mô tả ngắn / đầy đủ, từ khoá, danh mục *Giáo dục* (đã có nháp, chờ dán vào store).
 - [ ] Ảnh chụp màn hình iPhone 6,9" và 6,5", Android; ảnh nổi bật Google Play 1024×500.
 - [ ] Biểu tượng 1024×1024 không trong suốt.
 - [ ] **Tài khoản demo** cho người duyệt (có sẵn ít tiến độ học, không phải tài khoản quản trị).
