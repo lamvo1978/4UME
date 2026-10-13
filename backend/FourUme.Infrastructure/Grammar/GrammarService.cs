@@ -103,10 +103,10 @@ public class GrammarService(IAppDbContext db, IActivityService activity) : IGram
             join l in db.GrammarLessons.AsNoTracking() on p.LessonSlug equals l.Slug
             where p.UserId == userId && p.ReviewLevel > 0 && p.NextReviewAt <= now && l.Published
             orderby p.NextReviewAt
-            select new { l.Slug, l.TitleVi, p.ReviewLevel, l.ExercisesJson }
+            select new { l.Slug, l.TitleVi, p.ReviewLevel, l.ExercisesJson, l.PracticeJson }
         ).Take(Math.Clamp(limit, 1, 20)).ToListAsync(ct);
 
-        return due.Select(d => new GrammarReviewItemDto(d.Slug, d.TitleVi, d.ReviewLevel, Parse(d.ExercisesJson))).ToList();
+        return due.Select(d => new GrammarReviewItemDto(d.Slug, d.TitleVi, d.ReviewLevel, Parse(d.ExercisesJson), Parse(d.PracticeJson))).ToList();
     }
 
     public async Task<IReadOnlyList<GrammarReviewItemDto>> GetPracticeAsync(Guid userId, string? slug, int limit, CancellationToken ct = default)
@@ -115,7 +115,7 @@ public class GrammarService(IAppDbContext db, IActivityService activity) : IGram
             from p in db.GrammarProgresses.AsNoTracking()
             join l in db.GrammarLessons.AsNoTracking() on p.LessonSlug equals l.Slug
             where p.UserId == userId && p.ReviewLevel > 0 && l.Published
-            select new { l.Slug, l.TitleVi, p.ReviewLevel, p.LapseCount, l.ExercisesJson };
+            select new { l.Slug, l.TitleVi, p.ReviewLevel, p.LapseCount, l.ExercisesJson, l.PracticeJson };
         if (!string.IsNullOrWhiteSpace(slug)) query = query.Where(q => q.Slug == slug);
 
         var candidates = await query.ToListAsync(ct);
@@ -123,8 +123,47 @@ public class GrammarService(IAppDbContext db, IActivityService activity) : IGram
             .OrderBy(c => c.ReviewLevel <= ReviewSchedule.WeakLevel || c.LapseCount > 0 ? 0 : 1)
             .ThenBy(_ => Random.Shared.Next())
             .Take(Math.Clamp(limit, 1, 20))
-            .Select(c => new GrammarReviewItemDto(c.Slug, c.TitleVi, c.ReviewLevel, Parse(c.ExercisesJson)))
+            .Select(c => new GrammarReviewItemDto(c.Slug, c.TitleVi, c.ReviewLevel, Parse(c.ExercisesJson), Parse(c.PracticeJson)))
             .ToList();
+    }
+
+    public async Task<IReadOnlyList<GrammarReviewItemDto>> GetMixedAsync(Guid userId, string scope, int limit, CancellationToken ct = default)
+    {
+        var lessons = db.GrammarLessons.AsNoTracking().Where(l => l.Published);
+        if (scope == GrammarMixedScopes.Learned)
+            lessons = lessons.Where(l => db.GrammarAttempts.Any(a => a.UserId == userId && a.LessonSlug == l.Slug));
+        else if (GrammarValidator.Levels.Contains(scope))
+            lessons = lessons.Where(l => l.Level == scope);
+        else
+            throw new InvalidOperationException("Phạm vi luyện tập không hợp lệ.");
+
+        var rows = await (
+            from l in lessons
+            join p in db.GrammarProgresses.AsNoTracking().Where(p => p.UserId == userId) on l.Slug equals p.LessonSlug into pj
+            from p in pj.DefaultIfEmpty()
+            select new { l.Slug, l.TitleVi, ReviewLevel = p == null ? 0 : p.ReviewLevel, l.ExercisesJson, l.PracticeJson }
+        ).ToListAsync(ct);
+
+        return rows
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(Math.Clamp(limit, 2, GrammarMixedScopes.MaxLessons))
+            .Select(r => new GrammarReviewItemDto(r.Slug, r.TitleVi, r.ReviewLevel, Parse(r.ExercisesJson), Parse(r.PracticeJson)))
+            .ToList();
+    }
+
+    /// <summary>Counts as study; lessons already in review that went badly come back tomorrow, the rest of the schedule is untouched.</summary>
+    public async Task<GrammarMixedCompleteResponse> CompleteMixedAsync(Guid userId, GrammarMixedCompleteRequest request, CancellationToken ct = default)
+    {
+        var mistakes = request.Mistakes ?? [];
+        var slugs = mistakes.Keys.ToList();
+        var progresses = await db.GrammarProgresses
+            .Where(p => p.UserId == userId && p.ReviewLevel > 0 && slugs.Contains(p.LessonSlug))
+            .ToListAsync(ct);
+        var now = DateTimeOffset.UtcNow;
+        var pulled = progresses.Count(p => ReviewSchedule.ApplyPractice(p, Math.Max(0, mistakes[p.LessonSlug]), now));
+        if (pulled > 0) await db.SaveChangesAsync(ct);
+        await activity.RecordAsync(userId, ActivityKind.Grammar, ct);
+        return new GrammarMixedCompleteResponse(pulled);
     }
 
     public async Task<GrammarReviewAnswerResponse> AnswerReviewAsync(Guid userId, GrammarReviewAnswerRequest request, CancellationToken ct = default)

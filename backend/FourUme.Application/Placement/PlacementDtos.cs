@@ -32,5 +32,6 @@ public record ApplyPlacementResponse(MeResponse Me, int MarkedKnown, int Cleared
 public interface IPlacementService
 {
     Task<IReadOnlyList<PlacementLevelDto>> GetQuestionsAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<PlacementGrammarLevelDto>> GetGrammarQuestionsAsync(CancellationToken ct = default);
     Task<ApplyPlacementResponse> ApplyAsync(Guid userId, ApplyPlacementRequest request, CancellationToken ct = default);
 }

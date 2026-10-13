@@ -8,6 +8,7 @@ import { GrammarEditPage } from "./pages/GrammarEditPage";
 import { GrammarPage } from "./pages/GrammarPage";
 import { ListeningEditPage } from "./pages/ListeningEditPage";
 import { ListeningPage } from "./pages/ListeningPage";
+import { PlacementPage } from "./pages/PlacementPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ImageAssignPage } from "./pages/ImageAssignPage";
 import { MediaPage } from "./pages/MediaPage";
@@ -70,6 +71,7 @@ export function App() {
         <Route path="grammar" element={<GrammarPage />} />
         <Route path="grammar/new" element={<GrammarEditPage key="new" />} />
         <Route path="grammar/:slug" element={<GrammarEditPage />} />
+        <Route path="placement" element={<PlacementPage />} />
         <Route path="listening" element={<ListeningPage />} />
         <Route path="listening/new" element={<ListeningEditPage key="new" />} />
         <Route path="listening/:slug" element={<ListeningEditPage />} />

@@ -35,19 +35,21 @@ import {
   IconDownload,
   IconHistory,
   IconPlus,
+  IconSparkles,
   IconTrash,
 } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, type GrammarExercise, type GrammarLesson } from "../api";
+import { api, type GrammarBank, type GrammarExercise, type GrammarLesson } from "../api";
 import { ExerciseEditor } from "../grammar/ExerciseEditor";
 import { ExercisePreview } from "../grammar/ExercisePreview";
+import { GrammarDraftModal } from "../grammar/GrammarDraftModal";
 import {
+  BANKS,
   cleanLesson,
   displayAnswer,
   EMPTY_LESSON,
-  EXERCISE_TYPES,
   exerciseMeta,
   groupProblems,
   LEVELS,
@@ -57,6 +59,7 @@ import {
   nextExerciseId,
   SECTION_TYPES,
   sectionLabel,
+  typesFor,
 } from "../grammar/meta";
 import { SectionBodyEditor, SectionCard } from "../grammar/SectionEditor";
 import { TheoryPreview } from "../grammar/TheoryPreview";
@@ -93,6 +96,8 @@ export function GrammarEditPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [bank, setBank] = useState<GrammarBank>("exercises");
+  const [draftOpen, setDraftOpen] = useState(false);
 
   useEffect(() => {
     if (initial) setForm(structuredClone(initial));
@@ -130,8 +135,11 @@ export function GrammarEditPage() {
 
   const set = (patch: Partial<GrammarLesson>) => setForm((f) => (f ? { ...f, ...patch } : f));
   const learners = existing.data?.learners ?? 0;
-  const selectedExercise = form.exercises.find((e) => e.id === selected) ?? null;
+  const practice = form.practice ?? [];
+  const selectedExercise = [...form.exercises, ...practice].find((e) => e.id === selected) ?? null;
   const pool = form.quizSize ?? 8;
+  const items = bank === "practice" ? practice : form.exercises;
+  const setItems = (next: GrammarExercise[]) => set(bank === "practice" ? { practice: next } : { exercises: next });
 
   function back() {
     if (dirty && !window.confirm("Bạn có thay đổi chưa lưu. Rời trang?")) return;
@@ -181,14 +189,35 @@ export function GrammarEditPage() {
   }
 
   const setExercise = (id: string, next: GrammarExercise) => {
-    set({ exercises: form.exercises.map((e) => (e.id === id ? next : e)) });
+    setItems(items.map((e) => (e.id === id ? next : e)));
     if (next.id !== id) setSelected(next.id);
   };
   const addExercise = (type: string) => {
     const ex = newExercise(type, nextExerciseId(form));
-    set({ exercises: [...form.exercises, ex] });
+    setItems([...items, ex]);
     setSelected(ex.id);
     setTypeFilter("all");
+  };
+  const switchBank = (next: GrammarBank) => {
+    setBank(next);
+    setTypeFilter("all");
+    setSelected(null);
+  };
+  /** Ids from the AI were picked against the lesson at request time; renumber any that were taken since. */
+  const addDrafted = (target: GrammarBank, drafted: GrammarExercise[]) => {
+    let lesson = form;
+    const added: GrammarExercise[] = [];
+    for (const ex of drafted) {
+      const taken = [...lesson.exercises, ...(lesson.practice ?? [])].some((e) => e.id === ex.id);
+      const item = taken ? { ...ex, id: nextExerciseId(lesson) } : ex;
+      added.push(item);
+      lesson = target === "practice" ? { ...lesson, practice: [...(lesson.practice ?? []), item] } : { ...lesson, exercises: [...lesson.exercises, item] };
+    }
+    setForm(lesson);
+    setBank(target);
+    setTypeFilter("all");
+    setSelected(added[0]?.id ?? null);
+    notifySaved(`Đã thêm ${added.length} câu, nhớ bấm Lưu thay đổi`);
   };
 
   // ---------- panels ----------
@@ -307,19 +336,33 @@ export function GrammarEditPage() {
     </Stack>
   );
 
-  const counts = EXERCISE_TYPES.map((t) => ({ ...t, count: form.exercises.filter((e) => e.type === t.type).length }));
-  const visible = form.exercises.filter((e) => typeFilter === "all" || e.type === typeFilter);
+  const counts = typesFor(bank).map((t) => ({ ...t, count: items.filter((e) => e.type === t.type).length }));
+  const visible = items.filter((e) => typeFilter === "all" || e.type === typeFilter);
 
   const exercisesPanel = (
     <Stack gap="sm">
-      {form.exercises.length < pool + 4 ? (
+      <SegmentedControl
+        fullWidth
+        data={BANKS.map((b) => ({ value: b.value, label: `${b.label} (${(b.value === "practice" ? practice : form.exercises).length})` }))}
+        value={bank}
+        onChange={(v) => switchBank(v as GrammarBank)}
+      />
+      <Text fz="xs" c="dimmed" mt={-4}>
+        {BANKS.find((b) => b.value === bank)!.hint}
+      </Text>
+      {bank === "exercises" && items.length < pool + 4 ? (
         <Alert color="orange" icon={<IconAlertTriangle size={18} />} radius="lg">
-          Có {form.exercises.length} câu; nên có ít nhất {pool + 4} câu (số câu mỗi lượt + 4) để mỗi lần luyện tập khác nhau.
+          Có {items.length} câu; nên có ít nhất {pool + 4} câu (số câu mỗi lượt + 4) để mỗi lần luyện tập khác nhau.
+        </Alert>
+      ) : null}
+      {bank === "practice" && items.length < 30 ? (
+        <Alert color="blue" icon={<IconSparkles size={18} />} radius="lg">
+          Có {items.length} câu luyện thêm; nên có 30–50 câu. Bấm <b>AI soạn thêm câu</b> để soạn nhanh rồi chọn câu muốn giữ.
         </Alert>
       ) : null}
       <Chip.Group value={typeFilter} onChange={(v) => setTypeFilter(v as string)}>
         <Group gap={6}>
-          {[{ value: "all", label: `Tất cả (${form.exercises.length})` }, ...counts.map((c) => ({ value: c.type, label: `${c.label} (${c.count})` }))].map((o) => (
+          {[{ value: "all", label: `Tất cả (${items.length})` }, ...counts.map((c) => ({ value: c.type, label: `${c.label} (${c.count})` }))].map((o) => (
             <Chip key={o.value} value={o.value} size="sm" variant="light">
               {o.label}
             </Chip>
@@ -327,7 +370,7 @@ export function GrammarEditPage() {
         </Group>
       </Chip.Group>
       {visible.map((ex) => {
-        const index = form.exercises.indexOf(ex);
+        const index = items.indexOf(ex);
         const meta = exerciseMeta(ex.type);
         const exProblems = grouped.exercises.get(ex.id);
         const open = ex.id === selected;
@@ -362,13 +405,13 @@ export function GrammarEditPage() {
                     {exProblems.join(" ")}
                   </Text>
                 ) : null}
-                <ExerciseEditor exercise={ex} onChange={(next) => setExercise(ex.id, next)} />
+                <ExerciseEditor exercise={ex} bank={bank} onChange={(next) => setExercise(ex.id, next)} />
                 <Group justify="space-between">
                   <Group gap={4}>
-                    <ActionIcon variant="light" disabled={index === 0} onClick={() => set({ exercises: move(form.exercises, index, -1) })} aria-label="Lên">
+                    <ActionIcon variant="light" disabled={index === 0} onClick={() => setItems(move(items, index, -1))} aria-label="Lên">
                       <IconArrowUp size={16} />
                     </ActionIcon>
-                    <ActionIcon variant="light" disabled={index === form.exercises.length - 1} onClick={() => set({ exercises: move(form.exercises, index, 1) })} aria-label="Xuống">
+                    <ActionIcon variant="light" disabled={index === items.length - 1} onClick={() => setItems(move(items, index, 1))} aria-label="Xuống">
                       <IconArrowDown size={16} />
                     </ActionIcon>
                   </Group>
@@ -379,7 +422,7 @@ export function GrammarEditPage() {
                       leftSection={<IconCopy size={16} />}
                       onClick={() => {
                         const copy = { ...structuredClone(ex), id: nextExerciseId(form) };
-                        set({ exercises: [...form.exercises.slice(0, index + 1), copy, ...form.exercises.slice(index + 1)] });
+                        setItems([...items.slice(0, index + 1), copy, ...items.slice(index + 1)]);
                         setSelected(copy.id);
                       }}
                     >
@@ -389,7 +432,7 @@ export function GrammarEditPage() {
                       variant="default"
                       size="sm"
                       leftSection={<IconTrash size={16} color="var(--mantine-color-red-6)" />}
-                      onClick={() => window.confirm(`Xoá câu ${ex.id}?`) && set({ exercises: form.exercises.filter((_, j) => j !== index) })}
+                      onClick={() => window.confirm(`Xoá câu ${ex.id}?`) && setItems(items.filter((_, j) => j !== index))}
                     >
                       Xoá câu
                     </Button>
@@ -400,11 +443,16 @@ export function GrammarEditPage() {
           </Paper>
         );
       })}
-      <AddMenu
-        label="Thêm câu bài tập"
-        items={EXERCISE_TYPES.map((t) => ({ value: t.type, label: t.label, hint: t.hint }))}
-        onPick={addExercise}
-      />
+      <Group gap="sm">
+        <AddMenu
+          label="Thêm câu bài tập"
+          items={typesFor(bank).map((t) => ({ value: t.type, label: t.label, hint: t.hint }))}
+          onPick={addExercise}
+        />
+        <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDraftOpen(true)}>
+          AI soạn thêm câu
+        </Button>
+      </Group>
     </Stack>
   );
 
@@ -482,7 +530,7 @@ export function GrammarEditPage() {
       <Tabs.Tab value="theory" rightSection={<CountBadge n={form.sections.length} warn={grouped.sections.size > 0} />}>
         Lý thuyết
       </Tabs.Tab>
-      <Tabs.Tab value="exercises" rightSection={<CountBadge n={form.exercises.length} warn={grouped.exercises.size > 0} />}>
+      <Tabs.Tab value="exercises" rightSection={<CountBadge n={form.exercises.length + practice.length} warn={grouped.exercises.size > 0} />}>
         Bài tập
       </Tabs.Tab>
       {!desktop ? <Tabs.Tab value="preview">Xem trước</Tabs.Tab> : null}
@@ -581,6 +629,8 @@ export function GrammarEditPage() {
           onRestored={() => setHistoryOpen(false)}
         />
       ) : null}
+
+      <GrammarDraftModal opened={draftOpen} onClose={() => setDraftOpen(false)} lesson={form} bank={bank} onAdd={addDrafted} />
 
       <Modal opened={confirmDelete} onClose={() => setConfirmDelete(false)} title="Xoá bài này?">
         {learners > 0 ? (

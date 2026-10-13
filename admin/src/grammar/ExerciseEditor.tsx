@@ -1,8 +1,8 @@
 import { ActionIcon, Autocomplete, Button, Group, Radio, Stack, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
 import { IconPlus, IconX } from "@tabler/icons-react";
-import type { GrammarExercise } from "../api";
+import type { GrammarBank, GrammarExercise } from "../api";
 import { Select } from "../components/AppSelect";
-import { convertExercise, EXERCISE_TYPES } from "./meta";
+import { convertExercise, countBlanks, typesFor } from "./meta";
 
 const INSTRUCTIONS = [
   "Chuyển sang câu phủ định",
@@ -15,14 +15,14 @@ const INSTRUCTIONS = [
 
 type Props = { exercise: GrammarExercise; onChange: (e: GrammarExercise) => void };
 
-export function ExerciseEditor({ exercise: ex, onChange }: Props) {
+export function ExerciseEditor({ exercise: ex, onChange, bank = "exercises" }: Props & { bank?: GrammarBank }) {
   const set = (patch: Partial<GrammarExercise>) => onChange({ ...ex, ...patch });
   return (
     <Stack gap="sm">
       <Group grow gap="sm" align="flex-start">
         <Select
           label="Dạng bài"
-          data={EXERCISE_TYPES.map((t) => ({ value: t.type, label: t.label }))}
+          data={typesFor(bank).map((t) => ({ value: t.type, label: t.label }))}
           value={ex.type}
           allowDeselect={false}
           onChange={(v) => v && v !== ex.type && window.confirm("Đổi dạng bài sẽ xoá nội dung câu hỏi hiện tại (giữ giải thích). Tiếp tục?") && onChange(convertExercise(ex, v))}
@@ -125,6 +125,8 @@ function TypeFields({ exercise: ex, onChange }: Props) {
           <Distractors exercise={ex} onChange={onChange} />
         </>
       );
+    case "cloze":
+      return <ClozeFields exercise={ex} onChange={onChange} />;
     default:
       return <ErrorFields exercise={ex} onChange={onChange} />;
   }
@@ -139,6 +141,38 @@ function Distractors({ exercise: ex, onChange }: Props) {
       onChange={(distractors) => onChange({ ...ex, distractors })}
       splitChars={[",", " "]}
     />
+  );
+}
+
+/** One answer list per ___ in the text; the list follows the number of gaps as the text changes. */
+function ClozeFields({ exercise: ex, onChange }: Props) {
+  const count = countBlanks(ex.prompt);
+  const blanks = Array.from({ length: count }, (_, i) => ex.blanks?.[i] ?? []);
+  return (
+    <>
+      <Textarea
+        label="Đoạn văn"
+        required
+        autosize
+        minRows={3}
+        description="Mỗi chỗ trống là ___ (3 gạch dưới), nên gợi ý từ gốc trong ngoặc ngay sau: Yesterday I ___ (visit) my grandma. Nên có 3–6 chỗ trống."
+        value={ex.prompt ?? ""}
+        onChange={(e) => {
+          const prompt = e.currentTarget.value;
+          onChange({ ...ex, prompt, blanks: Array.from({ length: countBlanks(prompt) }, (_, i) => ex.blanks?.[i] ?? []) });
+        }}
+      />
+      {blanks.map((answers, i) => (
+        <TagsInput
+          key={i}
+          label={`Chỗ trống ${i + 1}`}
+          description={i === 0 ? "Mỗi cách viết đúng là một thẻ (vd: didn't go, did not go)." : undefined}
+          value={answers}
+          onChange={(next) => onChange({ ...ex, blanks: blanks.map((b, j) => (j === i ? next : b)) })}
+          splitChars={[]}
+        />
+      ))}
+    </>
   );
 }
 

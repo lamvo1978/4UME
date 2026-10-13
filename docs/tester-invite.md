@@ -2,7 +2,7 @@
 
 Mẫu tin nhắn để dán vào Zalo/Messenger. Thay phần trong `[...]` trước khi gửi.
 
-- Link tham gia Android: lấy ở Play Console → Thử nghiệm khép kín - Alpha → tab **Nhân viên kiểm thử** → **Sao chép đường liên kết** (chỉ hiện sau khi Google duyệt bản phát hành). Thường có dạng `https://play.google.com/apps/testing/com.fourume.app`.
+- Link tham gia Android: `https://play.google.com/apps/testing/com.fourume.app` (Play Console → Thử nghiệm khép kín - Alpha → tab **Nhân viên kiểm thử** → Tham gia trên web).
 - Link TestFlight iPhone: `https://testflight.apple.com/join/wjwduEM2`
 
 ---
@@ -21,7 +21,7 @@ Nếu họ dùng iPhone, gửi mẫu số 3.
 
 > Mình đã thêm Gmail của bạn rồi nha. Bạn cài app giúp mình theo 3 bước:
 >
-> 1. Mở link này **trên điện thoại** (đăng nhập đúng Gmail đã gửi mình): [LINK THAM GIA]
+> 1. Mở link này **trên điện thoại** (đăng nhập đúng Gmail đã gửi mình): https://play.google.com/apps/testing/com.fourume.app
 > 2. Bấm **"Trở thành người thử nghiệm"** (Become a tester).
 > 3. Bấm **"Tải xuống trên Google Play"** rồi cài như app bình thường.
 >

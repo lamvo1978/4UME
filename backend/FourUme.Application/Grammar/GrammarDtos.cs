@@ -30,8 +30,22 @@ public record GrammarCompleteRequest(int Score, int Total);
 
 public record GrammarCompleteResponse(int Score, int Total, bool Passed, bool AddedToReview, DateTimeOffset? NextReviewAt);
 
-/// <summary>A lesson due for review with its whole exercise pool; the client samples a few questions.</summary>
-public record GrammarReviewItemDto(string Slug, string TitleVi, int Level, JsonElement Exercises);
+/// <summary>A lesson with its whole exercise pool; the client samples a few questions, preferring <c>Practice</c>.</summary>
+/// <param name="Level">Review level (0 = not in the review schedule).</param>
+public record GrammarReviewItemDto(string Slug, string TitleVi, int Level, JsonElement Exercises, JsonElement Practice);
+
+public static class GrammarMixedScopes
+{
+    /// <summary>Lessons the learner has already done at least once.</summary>
+    public const string Learned = "learned";
+    public const int MaxLessons = 10;
+}
+
+/// <param name="Mistakes">Wrong answers per lesson slug in a mixed session.</param>
+public record GrammarMixedCompleteRequest(Dictionary<string, int> Mistakes);
+
+/// <param name="Pulled">Lessons in review that went badly and were scheduled for tomorrow.</param>
+public record GrammarMixedCompleteResponse(int Pulled);
 
 public record GrammarReviewAnswerRequest(string Slug, int Mistakes);
 

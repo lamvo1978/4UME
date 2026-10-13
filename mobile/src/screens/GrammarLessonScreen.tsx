@@ -8,7 +8,7 @@ import { useAuth } from "../auth/AuthContext";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { TheoryView } from "../components/grammar/TheoryView";
 import { KeyboardScreen } from "../components/KeyboardScreen";
-import { displayAnswer, QuizItem, QuizResult, sampleExercises } from "../grammar/quiz";
+import { displayAnswer, playable, QuizItem, QuizResult, sampleExercises } from "../grammar/quiz";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 
@@ -47,7 +47,7 @@ export function GrammarLessonScreen({ route, navigation }: Props) {
 
   function startQuiz() {
     if (!lesson) return;
-    const items = sampleExercises(lesson.exercises, lesson.quizSize).map((exercise) => ({
+    const items = sampleExercises(playable(lesson.exercises), lesson.quizSize).map((exercise) => ({
       key: exercise.id,
       slug: lesson.slug,
       exercise,

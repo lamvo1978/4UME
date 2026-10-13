@@ -29,6 +29,7 @@ public static class AuditEntities
     public const string User = "user";
     public const string Settings = "settings";
     public const string Partner = "partner";
+    public const string Placement = "placement";
 }
 
 public static class AuditActions

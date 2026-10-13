@@ -17,6 +17,8 @@ public sealed class GrammarLessonDocument
     public bool? Published { get; set; }
     public List<GrammarSection> Sections { get; set; } = [];
     public List<GrammarExercise> Exercises { get; set; } = [];
+    /// <summary>Extra questions for practice and review only, so learners don't meet the lesson quiz again.</summary>
+    public List<GrammarExercise> Practice { get; set; } = [];
 }
 
 public sealed class Bilingual
@@ -69,6 +71,8 @@ public sealed class GrammarExercise
     public List<string>? Answers { get; set; }
     public List<string>? Distractors { get; set; }
     public string? Correction { get; set; }
+    /// <summary>cloze: accepted answers for each ___ in <see cref="Prompt"/>, in order.</summary>
+    public List<List<string>>? Blanks { get; set; }
     public string ExplanationVi { get; set; } = "";
 }
 
@@ -86,6 +90,10 @@ public static partial class GrammarValidator
     public static readonly string[] Levels = ["A1", "A2", "B1", "B2"];
     public static readonly string[] SectionTypes = ["usage", "formula", "table", "examples", "signals", "mistakes", "tip"];
     public static readonly string[] ExerciseTypes = ["mcq", "fill", "order", "transform", "error"];
+    /// <summary>Builds before the practice bank only know <see cref="ExerciseTypes"/>, so newer types stay out of the lesson quiz.</summary>
+    public static readonly string[] PracticeTypes = [.. ExerciseTypes, "cloze"];
+    public const int ClozeMinBlanks = 2;
+    public const int ClozeMaxBlanks = 8;
     public static readonly string[] FormulaKinds = ["affirmative", "negative", "question", "short-answer", "note"];
 
     [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*$")]
@@ -119,13 +127,25 @@ public static partial class GrammarValidator
         var ids = new HashSet<string>();
         foreach (var e in l.Exercises)
         {
-            var where = $"Bài tập {e.Id}";
-            if (string.IsNullOrWhiteSpace(e.Id) || !ids.Add(e.Id)) errors.Add($"{where}: mã trống hoặc trùng.");
-            if (string.IsNullOrWhiteSpace(e.ExplanationVi)) errors.Add($"{where}: thiếu giải thích.");
-            ValidateExercise(e, where, errors);
+            if (!ExerciseTypes.Contains(e.Type) && PracticeTypes.Contains(e.Type))
+                errors.Add($"Bài tập {e.Id}: dạng này chỉ dùng cho phần luyện thêm.");
+            else ValidateItem(e, ids, errors);
         }
+        foreach (var e in l.Practice ?? []) ValidateItem(e, ids, errors);
         return errors;
     }
+
+    /// <summary>Checks one question; <paramref name="ids"/> collects ids so they stay unique across the quiz and the practice bank.</summary>
+    public static void ValidateItem(GrammarExercise e, HashSet<string> ids, List<string> errors)
+    {
+        var where = $"Bài tập {e.Id}";
+        if (string.IsNullOrWhiteSpace(e.Id) || !ids.Add(e.Id)) errors.Add($"{where}: mã trống hoặc trùng.");
+        if (string.IsNullOrWhiteSpace(e.ExplanationVi)) errors.Add($"{where}: thiếu giải thích.");
+        ValidateExercise(e, where, errors);
+    }
+
+    public static int BlankCount(string? prompt) =>
+        prompt is null ? 0 : System.Text.RegularExpressions.Regex.Matches(prompt, "_{3,}").Count;
 
     private static bool Blank(string? s) => string.IsNullOrWhiteSpace(s);
 
@@ -189,6 +209,15 @@ public static partial class GrammarValidator
                     || e.Sentence.IndexOf('[') > e.Sentence.IndexOf(']'))
                     errors.Add($"{where}: câu cần đúng một [từ sai] trong ngoặc vuông.");
                 if (Blank(e.Correction)) errors.Add($"{where}: thiếu từ sửa đúng.");
+                break;
+            case "cloze":
+                var blanks = BlankCount(e.Prompt);
+                if (blanks < ClozeMinBlanks || blanks > ClozeMaxBlanks)
+                    errors.Add($"{where}: đoạn văn cần {ClozeMinBlanks}–{ClozeMaxBlanks} chỗ trống ___.");
+                if (e.Blanks is null || e.Blanks.Count != blanks)
+                    errors.Add($"{where}: số đáp án ({e.Blanks?.Count ?? 0}) phải bằng số chỗ trống ({blanks}).");
+                else if (e.Blanks.Any(b => b.Count == 0 || b.Any(Blank)))
+                    errors.Add($"{where}: mỗi chỗ trống cần ít nhất một đáp án.");
                 break;
             default:
                 errors.Add($"{where}: dạng bài không hợp lệ: {e.Type}.");

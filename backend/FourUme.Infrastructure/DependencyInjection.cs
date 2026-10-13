@@ -27,6 +27,7 @@ using FourUme.Infrastructure.Auth;
 using FourUme.Infrastructure.Email;
 using FourUme.Infrastructure.Grammar;
 using FourUme.Infrastructure.Listening;
+using FourUme.Infrastructure.Ai;
 using FourUme.Application.Listening;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Review;
@@ -73,6 +74,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminContentService, AdminContentService>();
         services.AddScoped<IAdminGrammarService, AdminGrammarService>();
+        services.AddScoped<IAdminPlacementService, AdminPlacementService>();
         services.AddScoped<IListeningService, ListeningService>();
         services.AddScoped<IAdminListeningService, AdminListeningService>();
         services.Configure<SpeechOptions>(configuration.GetSection(SpeechOptions.SectionName));
@@ -90,8 +92,10 @@ public static class DependencyInjection
         services.AddScoped<IFeedbackService, FeedbackService>();
         services.AddScoped<IAdminFeedbackService, AdminFeedbackService>();
         services.Configure<GeminiOptions>(configuration.GetSection(GeminiOptions.SectionName));
-        services.AddHttpClient(GeminiDraftService.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(90));
+        services.AddHttpClient(GeminiClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(120));
+        services.AddScoped<GeminiClient>();
         services.AddScoped<IListeningDraftService, GeminiDraftService>();
+        services.AddScoped<IGrammarDraftService, GrammarDraftService>();
         services.AddScoped<IAdminAuditService, AdminAuditService>();
         services.AddScoped<IAdminUserService, AdminUserService>();
         services.AddScoped<IAdminSettingsService, AdminSettingsService>();

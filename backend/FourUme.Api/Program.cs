@@ -415,6 +415,9 @@ app.MapPost("/api/vocabulary/progress", async (UpdateProgressRequest request, Cl
 app.MapGet("/api/placement/questions", async (IPlacementService placement, CancellationToken ct) =>
     Results.Ok(await placement.GetQuestionsAsync(ct))).RequireAuthorization();
 
+app.MapGet("/api/placement/grammar", async (IPlacementService placement, CancellationToken ct) =>
+    Results.Ok(await placement.GetGrammarQuestionsAsync(ct))).RequireAuthorization();
+
 app.MapPost("/api/placement/apply", async (ApplyPlacementRequest request, ClaimsPrincipal principal, IPlacementService placement, CancellationToken ct) =>
 {
     var userId = GetUserId(principal);
@@ -694,6 +697,27 @@ app.MapPost("/api/grammar/review/answer", async (GrammarReviewAnswerRequest requ
     {
         return Results.BadRequest(new { error = ex.Message });
     }
+}).RequireAuthorization();
+
+app.MapGet("/api/grammar/mixed", async (ClaimsPrincipal principal, IGrammarService grammar, string? scope, int? limit) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await grammar.GetMixedAsync(userId.Value, scope ?? GrammarMixedScopes.Learned, limit ?? 6));
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+}).RequireAuthorization();
+
+app.MapPost("/api/grammar/mixed/complete", async (GrammarMixedCompleteRequest request, ClaimsPrincipal principal, IGrammarService grammar) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await grammar.CompleteMixedAsync(userId.Value, request));
 }).RequireAuthorization();
 
 app.MapPost("/api/grammar/review/practice/answer", async (GrammarReviewAnswerRequest request, ClaimsPrincipal principal, IGrammarService grammar) =>

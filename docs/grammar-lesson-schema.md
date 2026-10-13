@@ -20,7 +20,8 @@ Mỗi bài ngữ pháp là **một tài liệu JSON** theo khung dưới đây. 
 | `quizSize` |  | Số câu mỗi lượt luyện tập (mặc định 8). Kho bài tập nên có ≥ `quizSize + 4` câu để mỗi lần làm lại khác nhau. |
 | `published` |  | `false` để ẩn bài (mặc định `true`). |
 | `sections` | ✔ | Phần lý thuyết, danh sách khối theo thứ tự hiển thị. |
-| `exercises` | ✔ | Kho bài tập. |
+| `exercises` | ✔ | Kho bài tập của bài kiểm tra cuối bài. |
+| `practice` |  | Kho **luyện thêm**: dùng cho ôn tập, luyện thêm và *Luyện tập tổng hợp* (thiếu thì lấy thêm từ `exercises`). Nên có ≥ 30 câu, khác với `exercises`. `id` không được trùng với `exercises`. |
 
 ## Khối lý thuyết (`sections`)
 
@@ -47,14 +48,24 @@ Trường chung: `id` (duy nhất trong bài, ví dụ `ps-01`), `type`, `explan
 | `order` | `promptVi` (câu tiếng Việt), `answer` (câu đúng), `distractors?: string[]` | Chạm các mảnh từ để ghép câu. Mảnh = `answer` tách theo khoảng trắng (+ mảnh gây nhiễu). |
 | `transform` | `instructionVi`, `source`, `answer`, `distractors?` | Đổi câu (phủ định, nghi vấn, bị động…) bằng cách ghép mảnh như `order`. |
 | `error` | `sentence` với từ sai đặt trong `[ ]`, `correction` | Chạm vào từ sai. Ví dụ: `"She [are] a doctor."`, `correction: "is"`. |
+| `cloze` | `prompt` là đoạn văn có 2–8 chỗ `___` (mỗi chỗ có thể kèm `(từ gốc)`), `blanks: string[][]` (đáp án chấp nhận cho từng chỗ, theo thứ tự) | **Chỉ dùng trong `practice`** (app cũ không hiển thị được). Điền từng ô; đúng khi mọi ô đều đúng. |
 
-Quy tắc chấm: không phân biệt hoa thường, bỏ khoảng trắng thừa, coi `’` như `'`; với `fill` bỏ dấu câu ở cuối.
+Quy tắc chấm: không phân biệt hoa thường, bỏ khoảng trắng thừa, coi `’` như `'`; với `fill` và `cloze` bỏ dấu câu ở cuối.
+
+App bỏ qua những dạng nó chưa biết, nên thêm dạng mới vào `practice` không làm hỏng bản app cũ.
+
+Trong admin, nút **AI soạn thêm câu** (Gemini) soạn nháp cho `exercises` hoặc `practice` dựa trên phần lý thuyết, chọn số câu / dạng / độ khó, rồi tự kiểm tra đáp án; chỉ câu được chọn mới được thêm vào bài.
 
 ## Học và ôn
 
 - Mỗi lượt luyện tập lấy ngẫu nhiên `quizSize` câu, xen kẽ các dạng. Câu sai quay lại cuối lượt.
 - Làm đúng ngay lần đầu ≥ 70% số câu → bài được đưa vào **lịch ôn** (cấp 1, ôn sau 1 ngày) giống từ vựng.
 - Mỗi lượt ôn lấy vài câu từ mỗi bài đến hạn, trộn lẫn. Lên cấp / giữ cấp / về cấp 1 theo cùng quy tắc với từ vựng (0 lỗi / 1 lỗi / ≥ 2 lỗi).
+- **Luyện tập tổng hợp** (đầu danh sách bài ngữ pháp): 15 câu trộn từ tối đa 6 bài, chọn phạm vi *Bài đã học* (bài đã làm kiểm tra ít nhất một lần) hoặc cả một cấp độ. Không đổi lịch ôn, trừ bài đang ôn mà sai nhiều thì được hẹn ôn lại ngày mai (như *Luyện thêm*). Tính là một ngày học.
+
+## Ngữ pháp trong kiểm tra đầu vào
+
+Sau phần từ vựng, app hỏi tối đa 4 câu trắc nghiệm mỗi cấp (qua cấp khi đúng 3, dừng khi sai 2), lấy từ bộ câu riêng ở admin → **Kiểm tra đầu vào** (bảng `PlacementGrammarQuestions`; cấp nào có dưới 4 câu đang dùng thì bỏ qua). Mỗi câu nên gắn với một bài ngữ pháp: kết quả chỉ **gợi ý** bài bắt đầu (bài sớm nhất bị sai ở cấp chưa qua, không thì bài đầu của cấp đó), không đánh dấu bài nào là đã học. Người học có thể bỏ qua phần này.
 
 ## Ví dụ rút gọn
 

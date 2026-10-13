@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -7,24 +6,13 @@ using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
 using FourUme.Application.Listening;
 using FourUme.Domain.Entities;
+using FourUme.Infrastructure.Ai;
 using FourUme.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using static FourUme.Infrastructure.Ai.GeminiClient;
 
 namespace FourUme.Infrastructure.Listening;
-
-public class GeminiOptions
-{
-    public const string SectionName = "Gemini";
-    public const string DefaultModel = "gemini-flash-latest";
-    /// <summary>Google AI Studio key (aistudio.google.com → Get API key); the free tier is enough for drafting.</summary>
-    public string? ApiKey { get; set; }
-    public string? Model { get; set; }
-
-    public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
-    public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
-}
 
 /// <summary>
 /// Writes a first draft of a listening piece with Google Gemini. The reply is forced into the lesson's JSON shape;
@@ -32,12 +20,9 @@ public class GeminiOptions
 /// </summary>
 public sealed partial class GeminiDraftService(
     AppDbContext db,
-    IHttpClientFactory httpFactory,
-    IOptions<GeminiOptions> options,
+    GeminiClient gemini,
     ILogger<GeminiDraftService> logger) : IListeningDraftService
 {
-    public const string HttpClientName = "gemini";
-
     private static readonly Dictionary<string, (string Lines, string Words)> Lengths = new()
     {
         ["short"] = ("8–12", "100–150"),
@@ -81,12 +66,11 @@ public sealed partial class GeminiDraftService(
         - Do not reuse the titles or situations of the existing lessons listed in the request.
         """;
 
-    public ListeningDraftStatusDto GetStatus() => new(options.Value.Configured, options.Value.ModelName);
+    public ListeningDraftStatusDto GetStatus() => new(gemini.Configured, gemini.ModelName);
 
     public async Task<ListeningDraftDto> DraftAsync(ListeningDraftRequest request, CancellationToken ct = default)
     {
-        var o = options.Value;
-        if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
         var level = request.Level.Trim().ToUpperInvariant();
         var kind = request.Kind.Trim();
         if (!LevelGuide.ContainsKey(level)) throw new InvalidOperationException($"Cấp độ không hợp lệ: {request.Level}.");
@@ -124,7 +108,7 @@ public sealed partial class GeminiDraftService(
             prompt.AppendLine(JsonSerializer.Serialize(new { doc.TitleEn, doc.TitleVi, doc.Topic, doc.SummaryVi, doc.Speakers, Lines = doc.Lines.Take(6) }, GrammarJson.Options));
         }
 
-        var reply = await GenerateAsync(o, prompt.ToString(), ct);
+        var reply = await gemini.GenerateJsonAsync(Instructions, prompt.ToString(), Schema(), 0.9, ct);
         ListeningLessonDocument draft;
         try
         {
@@ -147,64 +131,8 @@ public sealed partial class GeminiDraftService(
         return new ListeningDraftDto(draft, ListeningRules.Validate(draft));
     }
 
-    private async Task<string> GenerateAsync(GeminiOptions o, string prompt, CancellationToken ct)
-    {
-        var body = new JsonObject
-        {
-            ["systemInstruction"] = new JsonObject { ["parts"] = new JsonArray(new JsonObject { ["text"] = Instructions }) },
-            ["contents"] = new JsonArray(new JsonObject
-            {
-                ["role"] = "user",
-                ["parts"] = new JsonArray(new JsonObject { ["text"] = prompt }),
-            }),
-            ["generationConfig"] = new JsonObject
-            {
-                ["temperature"] = 0.9,
-                ["responseMimeType"] = "application/json",
-                ["responseSchema"] = Schema(),
-            },
-        };
-
-        using var request = new HttpRequestMessage(HttpMethod.Post,
-            $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(o.ModelName)}:generateContent")
-        {
-            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
-        };
-        request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
-
-        using var response = await httpFactory.CreateClient(HttpClientName).SendAsync(request, ct);
-        var text = await response.Content.ReadAsStringAsync(ct);
-        if (!response.IsSuccessStatusCode)
-        {
-            logger.LogWarning("Gemini failed {Status}: {Body}", (int)response.StatusCode, text.Length > 400 ? text[..400] : text);
-            throw new InvalidOperationException(response.StatusCode switch
-            {
-                HttpStatusCode.TooManyRequests => "Gemini đang giới hạn lượt gọi của gói miễn phí, hãy thử lại sau khoảng 1 phút.",
-                HttpStatusCode.BadRequest when text.Contains("API_KEY", StringComparison.OrdinalIgnoreCase) => "Gemini từ chối khoá (GEMINI_API_KEY không đúng).",
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "Gemini từ chối khoá (GEMINI_API_KEY không đúng hoặc chưa bật).",
-                HttpStatusCode.NotFound => $"Gemini không có model \"{o.ModelName}\" (đổi GEMINI_MODEL).",
-                _ => $"Gemini lỗi {(int)response.StatusCode}, hãy thử lại.",
-            });
-        }
-
-        var json = JsonNode.Parse(text);
-        var parts = json?["candidates"]?[0]?["content"]?["parts"]?.AsArray();
-        var reply = parts is null ? null : string.Concat(parts.Select(p => p?["text"]?.GetValue<string>() ?? ""));
-        if (string.IsNullOrWhiteSpace(reply))
-        {
-            var reason = json?["candidates"]?[0]?["finishReason"]?.GetValue<string>() ?? json?["promptFeedback"]?["blockReason"]?.GetValue<string>();
-            logger.LogWarning("Gemini returned no text ({Reason})", reason);
-            throw new InvalidOperationException("Gemini không trả về bài, hãy đổi chủ đề hoặc bấm viết lại.");
-        }
-        return reply;
-    }
-
     private static JsonObject Schema()
     {
-        static JsonObject Str(string? description = null) =>
-            description is null ? new() { ["type"] = "STRING" } : new() { ["type"] = "STRING", ["description"] = description };
-        static JsonArray Names(params string[] names) => new(names.Select(n => (JsonNode)n).ToArray());
-
         return new JsonObject
         {
             ["type"] = "OBJECT",

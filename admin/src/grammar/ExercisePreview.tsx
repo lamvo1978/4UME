@@ -1,7 +1,13 @@
 import { Alert, Badge, Button, Group, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useMemo, useState } from "react";
 import type { GrammarExercise } from "../api";
-import { displayAnswer, exerciseMeta, parseErrorSentence } from "./meta";
+import { countBlanks, displayAnswer, exerciseMeta, parseErrorSentence } from "./meta";
+
+/** "I ___ (go) and ___." → "I (1) ___ (go) and (2) ___." */
+const numberGaps = (prompt: string) => {
+  let i = 0;
+  return prompt.replace(/_{3,}/g, () => `(${++i}) ____`);
+};
 
 const norm = (s: string, stripEnd = false) => {
   let out = s.replace(/[’‘]/g, "'").trim().toLowerCase().replace(/\s+/g, " ");
@@ -64,6 +70,8 @@ function Question({ exercise: ex, onAnswer, locked }: QuestionProps) {
     case "order":
     case "transform":
       return <Tiles key={`${ex.answer}|${ex.distractors?.join()}`} exercise={ex} onAnswer={onAnswer} locked={locked} />;
+    case "cloze":
+      return <Cloze exercise={ex} onAnswer={onAnswer} locked={locked} />;
     default:
       return <ErrorPick exercise={ex} onAnswer={onAnswer} locked={locked} />;
   }
@@ -122,6 +130,42 @@ function Fill({ exercise: ex, onAnswer, locked }: QuestionProps) {
           Kiểm tra
         </Button>
       </Group>
+    </>
+  );
+}
+
+/** Same layout as the app: the text with numbered gaps, one input per gap below it. */
+function Cloze({ exercise: ex, onAnswer, locked }: QuestionProps) {
+  const count = countBlanks(ex.prompt);
+  const [values, setValues] = useState<string[]>(() => Array(count).fill(""));
+  const ok = (i: number) => (ex.blanks?.[i] ?? []).some((a) => norm(a, true) === norm(values[i] ?? "", true));
+  return (
+    <>
+      <Text c="dimmed" fz="sm" fw={600}>
+        Điền vào các chỗ trống
+      </Text>
+      <Text fz="md" lh={1.7}>
+        {numberGaps(ex.prompt ?? "")}
+      </Text>
+      <Stack gap={6}>
+        {Array.from({ length: count }, (_, i) => (
+          <TextInput
+            key={i}
+            leftSection={<Text fz="sm" fw={700}>{i + 1}</Text>}
+            placeholder="Gõ đáp án…"
+            value={values[i] ?? ""}
+            disabled={locked}
+            error={locked && !ok(i) ? (ex.blanks?.[i]?.[0] ?? "") : undefined}
+            onChange={(e) => {
+              const v = e.currentTarget.value;
+              setValues((old) => old.map((x, j) => (j === i ? v : x)));
+            }}
+          />
+        ))}
+      </Stack>
+      <Button disabled={locked || values.some((v) => !v.trim())} onClick={() => onAnswer(values.every((_, i) => ok(i)))}>
+        Kiểm tra
+      </Button>
     </>
   );
 }

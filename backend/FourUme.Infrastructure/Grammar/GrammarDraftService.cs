@@ -1,0 +1,325 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using FourUme.Application.Admin;
+using FourUme.Application.Grammar;
+using FourUme.Infrastructure.Ai;
+using Microsoft.Extensions.Logging;
+using static FourUme.Infrastructure.Ai.GeminiClient;
+
+namespace FourUme.Infrastructure.Grammar;
+
+/// <summary>
+/// Drafts grammar questions for one lesson with Gemini, then asks Gemini again to check every answer.
+/// Nothing is saved; the admin picks which questions to add to the lesson.
+/// </summary>
+public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<GrammarDraftService> logger) : IGrammarDraftService
+{
+    private static readonly Dictionary<string, string> TypeGuide = new()
+    {
+        ["mcq"] = """
+            mcq: "prompt" (a sentence with ___ for the gap, or an instruction such as "Chọn câu đúng." when the options are whole sentences),
+            "options" (3 or 4 distinct, plausible options), "answer" (exactly one of the options). Only one option may be correct.
+            """,
+        ["fill"] = """
+            fill: "prompt" with exactly one ___ and, right after it, the base word in brackets whenever more than one form could fit,
+            e.g. "She ___ (go) to school every day."; "answers" = every correct way to write it (include contractions like "doesn't" and "does not").
+            """,
+        ["order"] = """
+            order: "promptVi" (a natural Vietnamese sentence), "answer" (its English translation, 4–12 words, with final punctuation),
+            "distractors" (1–2 extra wrong words that test the grammar point, e.g. the wrong verb form). The learner builds "answer" from its words.
+            """,
+        ["transform"] = """
+            transform: "instructionVi" (e.g. "Chuyển sang câu phủ định", "Chuyển sang câu hỏi", "Viết lại dùng thì quá khứ đơn"),
+            "source" (the original sentence), "answer" (the rewritten sentence), "distractors" (1–2 wrong words). Only one correct rewrite may exist.
+            """,
+        ["error"] = """
+            error: "sentence" with exactly one wrong word or short phrase in square brackets, e.g. "She [go] to school every day.",
+            "correction" (what replaces the bracketed part, e.g. "goes"). The rest of the sentence must be correct.
+            """,
+        ["cloze"] = """
+            cloze: "prompt" is a short connected text (a message, diary entry, short story or dialogue on one line, 40–90 words) with 3–6 gaps ___,
+            each followed by the base word in brackets when needed, e.g. "Yesterday I ___ (visit) my grandma."; "blanks" = one list per gap, in order,
+            with every accepted answer for that gap. Every gap must test the lesson's grammar point.
+            """,
+    };
+
+    private static readonly Dictionary<string, string> DifficultyGuide = new()
+    {
+        ["easy"] = "Difficulty: easy — short, clear sentences; test the basic form only.",
+        ["mixed"] = "Difficulty: mixed — about one third easy, one third medium, one third harder (negatives, questions, exceptions, signal words, contrast with similar structures).",
+        ["hard"] = "Difficulty: harder — longer sentences, exceptions, tricky contrasts with similar structures, but still within the lesson's level.",
+    };
+
+    private const string Instructions = """
+        You write grammar exercises for 4UME, an English-learning app for Vietnamese adults.
+
+        Rules:
+        - Test ONLY the grammar point of the given lesson (you may contrast it with easier structures the learner already knows).
+        - Vocabulary and sentence length must match the lesson's CEFR level; never go above it.
+        - English must be natural, correct and unambiguous: exactly one correct answer (or every correct variant listed).
+        - Use everyday situations Vietnamese learners relate to; friendly content suitable for all ages; no brands, politics or celebrities.
+        - Vary subjects, situations and sentence patterns; never repeat or lightly reword the existing questions given in the request.
+        - "explanationVi": 1–2 short Vietnamese sentences explaining WHY the answer is right (the rule), not just repeating the answer.
+        - Every field must be present: fill ALL fields the question type uses (never skip options/answer/answers/blanks),
+          and give "" or [] for the fields it does not use. No markdown, no numbering inside prompts.
+        """;
+
+    private const string CheckInstructions = """
+        You are a strict English teacher checking grammar exercises written for Vietnamese learners.
+        For each exercise decide whether it is correct and usable:
+        - the given answer is grammatically correct and natural;
+        - no other option / answer would also be correct (for mcq and error) unless it is listed as accepted (for fill and cloze);
+        - for error: the bracketed part is really wrong and the correction fixes it, and nothing else in the sentence is wrong;
+        - for order/transform: the answer is the only natural sentence that can be built;
+        - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
+        Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
+        """;
+
+    public async Task<GrammarDraftDto> DraftAsync(GrammarDraftRequest request, CancellationToken ct = default)
+    {
+        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        var lesson = request.Lesson ?? throw new InvalidOperationException("Thiếu nội dung bài.");
+        if (string.IsNullOrWhiteSpace(lesson.TitleVi) && string.IsNullOrWhiteSpace(lesson.TitleEn))
+            throw new InvalidOperationException("Bài chưa có tên, AI không biết soạn về chủ điểm nào.");
+
+        var allowed = request.Target == GrammarDraftRules.TargetPractice ? GrammarValidator.PracticeTypes : GrammarValidator.ExerciseTypes;
+        var types = (request.Types ?? []).Where(allowed.Contains).Distinct().ToList();
+        if (types.Count == 0) types = [.. allowed];
+        var count = Math.Clamp(request.Count, 1, GrammarDraftRules.MaxCount);
+        var difficulty = GrammarDraftRules.Difficulties.Contains(request.Difficulty) ? request.Difficulty! : "mixed";
+
+        var existing = lesson.Exercises.Concat(lesson.Practice ?? []).ToList();
+        var prompt = new StringBuilder();
+        prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
+        if (!string.IsNullOrWhiteSpace(lesson.SummaryVi)) prompt.AppendLine($"Summary (Vietnamese): {lesson.SummaryVi}");
+        if (lesson.Sections.Count > 0)
+        {
+            prompt.AppendLine("Theory taught in the lesson (JSON):");
+            prompt.AppendLine(JsonSerializer.Serialize(lesson.Sections, GrammarJson.Options));
+        }
+        prompt.AppendLine();
+        prompt.AppendLine($"Write {count} new exercises. Spread them evenly over these types: {string.Join(", ", types)}.");
+        prompt.AppendLine(DifficultyGuide[difficulty]);
+        prompt.AppendLine("Formats:");
+        foreach (var t in types) prompt.AppendLine("- " + TypeGuide[t].ReplaceLineEndings(" ").Trim());
+        if (!string.IsNullOrWhiteSpace(request.Notes)) prompt.AppendLine($"Extra wishes from the editor (may be in Vietnamese): {request.Notes.Trim()}");
+        if (existing.Count > 0)
+        {
+            prompt.AppendLine();
+            prompt.AppendLine("Existing questions (do not repeat them):");
+            foreach (var e in existing) prompt.AppendLine("- " + Summary(e));
+        }
+
+        var reply = await gemini.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
+        List<GrammarExercise> drafted;
+        try
+        {
+            drafted = JsonSerializer.Deserialize<DraftReply>(reply, GrammarJson.Options)?.Exercises ?? [];
+        }
+        catch (JsonException ex)
+        {
+            logger.LogWarning(ex, "Gemini returned invalid grammar JSON");
+            throw new InvalidOperationException("Gemini trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
+        }
+        drafted = drafted.Where(e => types.Contains(e.Type)).Select(Normalize).Take(count).ToList();
+        if (drafted.Count == 0) throw new InvalidOperationException("Gemini không soạn được câu nào, hãy thử lại.");
+
+        AssignIds(drafted, existing, lesson.Slug);
+
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, ct);
+        var ids = existing.Select(e => e.Id).ToHashSet();
+        var items = drafted.Select((e, i) =>
+        {
+            var problems = new List<string>();
+            GrammarValidator.ValidateItem(e, ids, problems);
+            var prefix = $"Bài tập {e.Id}: ";
+            return new GrammarDraftItemDto(e, problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList(), warnings.GetValueOrDefault(i));
+        }).ToList();
+        return new GrammarDraftDto(items, isChecked);
+    }
+
+    /// <summary>Second pass; a failure here only means the admin gets no warnings, the draft is still returned.</summary>
+    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(GrammarLessonDocument lesson, List<GrammarExercise> drafted, CancellationToken ct)
+    {
+        var prompt = new StringBuilder();
+        prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
+        prompt.AppendLine("Exercises (JSON, check each one by its index):");
+        prompt.AppendLine(JsonSerializer.Serialize(drafted.Select((e, i) => new { index = i, exercise = WithoutId(e) }), GrammarJson.Options));
+        try
+        {
+            var reply = await gemini.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var results = JsonSerializer.Deserialize<CheckReply>(reply, GrammarJson.Options)?.Results ?? [];
+            return (results
+                .Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count)
+                .GroupBy(r => r.Index)
+                .ToDictionary(g => g.Key, g => string.IsNullOrWhiteSpace(g.First().ProblemVi) ? "AI nghi câu này có vấn đề." : g.First().ProblemVi!.Trim()), true);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or HttpRequestException or TaskCanceledException)
+        {
+            logger.LogWarning(ex, "Grammar draft check failed");
+            return ([], false);
+        }
+
+        static object WithoutId(GrammarExercise e) => new
+        {
+            e.Type, e.Prompt, e.PromptVi, e.InstructionVi, e.Source, e.Sentence, e.Options, e.Answer, e.Answers, e.Blanks, e.Distractors, e.Correction, e.ExplanationVi,
+        };
+    }
+
+    private static string Summary(GrammarExercise e) => e.Type switch
+    {
+        "order" => $"order: {e.Answer}",
+        "transform" => $"transform: {e.Source} → {e.Answer}",
+        "error" => $"error: {e.Sentence}",
+        _ => $"{e.Type}: {e.Prompt}",
+    };
+
+    private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : WhiteSpace().Replace(s.Trim(), " ");
+
+    private static List<string>? CleanList(List<string>? list)
+    {
+        var cleaned = list?.Select(Clean).OfType<string>().Distinct().ToList();
+        return cleaned is { Count: > 0 } ? cleaned : null;
+    }
+
+    /// <summary>Keeps only the fields the type uses and tidies whitespace, so the editor shows a clean question.</summary>
+    private static GrammarExercise Normalize(GrammarExercise e)
+    {
+        var n = new GrammarExercise { Type = e.Type, ExplanationVi = Clean(e.ExplanationVi) ?? "" };
+        switch (e.Type)
+        {
+            case "mcq":
+                n.Prompt = Clean(e.Prompt);
+                n.Options = CleanList(e.Options);
+                n.Answer = Clean(e.Answer);
+                break;
+            case "fill":
+                n.Prompt = Clean(e.Prompt);
+                n.Answers = CleanList(e.Answers);
+                break;
+            case "order":
+                n.PromptVi = Clean(e.PromptVi);
+                n.Answer = Clean(e.Answer);
+                n.Distractors = CleanList(e.Distractors);
+                break;
+            case "transform":
+                n.InstructionVi = Clean(e.InstructionVi);
+                n.Source = Clean(e.Source);
+                n.Answer = Clean(e.Answer);
+                n.Distractors = CleanList(e.Distractors);
+                break;
+            case "error":
+                n.Sentence = Clean(e.Sentence);
+                n.Correction = Clean(e.Correction);
+                break;
+            case "cloze":
+                n.Prompt = Clean(e.Prompt);
+                n.Blanks = e.Blanks?.Select(b => CleanList(b) ?? []).ToList();
+                break;
+        }
+        return n;
+    }
+
+    /// <summary>Continues the lesson's own id pattern ("pc-14" → "pc-15"), same as the admin editor.</summary>
+    private static void AssignIds(List<GrammarExercise> drafted, List<GrammarExercise> existing, string slug)
+    {
+        var prefix = existing.Select(e => IdPattern().Match(e.Id)).FirstOrDefault(m => m.Success)?.Groups[1].Value;
+        if (string.IsNullOrEmpty(prefix))
+        {
+            var initials = string.Concat(slug.Split('-', StringSplitOptions.RemoveEmptyEntries).Select(p => p[0]));
+            prefix = (initials.Length > 0 ? initials[..Math.Min(3, initials.Length)] : "ex") + "-";
+        }
+        var max = existing.Select(e => IdPattern().Match(e.Id)).Where(m => m.Success).Select(m => int.Parse(m.Groups[2].Value)).DefaultIfEmpty(0).Max();
+        foreach (var e in drafted) e.Id = $"{prefix}{++max:00}";
+    }
+
+    private static JsonObject DraftSchema(IReadOnlyList<string> types)
+    {
+        var strings = new JsonObject { ["type"] = "ARRAY", ["items"] = Str() };
+        return new JsonObject
+        {
+            ["type"] = "OBJECT",
+            ["properties"] = new JsonObject
+            {
+                ["exercises"] = new JsonObject
+                {
+                    ["type"] = "ARRAY",
+                    ["items"] = new JsonObject
+                    {
+                        ["type"] = "OBJECT",
+                        ["properties"] = new JsonObject
+                        {
+                            ["type"] = new JsonObject { ["type"] = "STRING", ["enum"] = new JsonArray(types.Select(t => (JsonNode)t).ToArray()) },
+                            ["prompt"] = Str(),
+                            ["promptVi"] = Str(),
+                            ["instructionVi"] = Str(),
+                            ["source"] = Str(),
+                            ["sentence"] = Str(),
+                            ["options"] = strings.DeepClone(),
+                            ["answer"] = Str(),
+                            ["answers"] = strings.DeepClone(),
+                            ["blanks"] = new JsonObject { ["type"] = "ARRAY", ["items"] = strings.DeepClone() },
+                            ["distractors"] = strings.DeepClone(),
+                            ["correction"] = Str(),
+                            ["explanationVi"] = Str(),
+                        },
+                        // Every field is required: with optional fields Gemini sometimes drops the ones that matter (e.g. mcq options).
+                        // Fields the type doesn't use come back empty and Normalize drops them.
+                        ["required"] = Names("type", "prompt", "promptVi", "instructionVi", "source", "sentence", "options", "answer",
+                            "answers", "blanks", "distractors", "correction", "explanationVi"),
+                    },
+                },
+            },
+            ["required"] = Names("exercises"),
+        };
+    }
+
+    private static JsonObject CheckSchema() => new()
+    {
+        ["type"] = "OBJECT",
+        ["properties"] = new JsonObject
+        {
+            ["results"] = new JsonObject
+            {
+                ["type"] = "ARRAY",
+                ["items"] = new JsonObject
+                {
+                    ["type"] = "OBJECT",
+                    ["properties"] = new JsonObject
+                    {
+                        ["index"] = new JsonObject { ["type"] = "INTEGER" },
+                        ["ok"] = new JsonObject { ["type"] = "BOOLEAN" },
+                        ["problemVi"] = Str(),
+                    },
+                    ["required"] = Names("index", "ok"),
+                },
+            },
+        },
+        ["required"] = Names("results"),
+    };
+
+    private sealed class DraftReply
+    {
+        public List<GrammarExercise> Exercises { get; set; } = [];
+    }
+
+    private sealed class CheckReply
+    {
+        public List<CheckResult> Results { get; set; } = [];
+    }
+
+    private sealed class CheckResult
+    {
+        public int Index { get; set; }
+        public bool Ok { get; set; }
+        public string? ProblemVi { get; set; }
+    }
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex WhiteSpace();
+
+    [GeneratedRegex(@"^(.*?)(\d+)$")]
+    private static partial Regex IdPattern();
+}

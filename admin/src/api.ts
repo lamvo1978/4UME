@@ -453,6 +453,8 @@ export type GrammarExercise = {
   answers?: string[];
   distractors?: string[];
   correction?: string;
+  /** cloze: accepted answers for each ___ in `prompt`, in order. */
+  blanks?: string[][];
   explanationVi: string;
 };
 export type GrammarLesson = {
@@ -467,7 +469,22 @@ export type GrammarLesson = {
   published?: boolean | null;
   sections: GrammarSection[];
   exercises: GrammarExercise[];
+  /** Practice bank, used only by practice / review sessions. */
+  practice: GrammarExercise[];
 };
+export type GrammarBank = "exercises" | "practice";
+export type GrammarDraftDifficulty = "easy" | "mixed" | "hard";
+export type GrammarDraftRequest = {
+  lesson: GrammarLesson;
+  target: GrammarBank;
+  count: number;
+  types: string[];
+  difficulty: GrammarDraftDifficulty;
+  notes?: string;
+  skipCheck?: boolean;
+};
+export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
+export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean };
 export type AdminGrammarSummary = {
   slug: string;
   titleVi: string;
@@ -478,6 +495,7 @@ export type AdminGrammarSummary = {
   quizSize: number;
   sectionCount: number;
   exerciseCount: number;
+  practiceCount: number;
   version: number;
   updatedAt: string;
   editedAt: string | null;
@@ -650,6 +668,23 @@ export type AuditDetail = {
 };
 export type AuditFilters = { entityType?: string; entityId?: string; q?: string; page?: number; pageSize?: number };
 
+export type PlacementLevel = "A1" | "A2" | "B1" | "B2";
+export type PlacementGrammarInput = {
+  level: PlacementLevel;
+  prompt: string;
+  options: string[];
+  answer: string;
+  explanationVi: string | null;
+  lessonSlug: string | null;
+  published: boolean;
+};
+export type PlacementGrammarQuestion = PlacementGrammarInput & { id: string; explanationVi: string; updatedAt: string };
+export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean };
+export type PlacementGrammarDraft = {
+  items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
+  checked: boolean;
+};
+
 const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });
 
 function query(params: Record<string, string | number | undefined>) {
@@ -753,9 +788,20 @@ export const api = {
   createGrammar: (l: GrammarLesson) => request<AdminGrammarDetail>("/api/admin/grammar", json("POST", l)),
   updateGrammar: (slug: string, l: GrammarLesson) => request<AdminGrammarDetail>(`/api/admin/grammar/${slug}`, json("PUT", l)),
   validateGrammar: (l: GrammarLesson) => request<{ problems: string[] }>("/api/admin/grammar/validate", json("POST", l)),
+  draftGrammar: (r: GrammarDraftRequest) => request<GrammarDraft>("/api/admin/grammar/draft", json("POST", r)),
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  placementGrammar: () => request<PlacementGrammarQuestion[]>("/api/admin/placement/grammar"),
+  createPlacementGrammar: (q: PlacementGrammarInput) =>
+    request<PlacementGrammarQuestion>("/api/admin/placement/grammar", json("POST", q)),
+  createPlacementGrammarBatch: (questions: PlacementGrammarInput[]) =>
+    request<{ created: number }>("/api/admin/placement/grammar/batch", json("POST", { questions })),
+  updatePlacementGrammar: (id: string, q: PlacementGrammarInput) =>
+    request<PlacementGrammarQuestion>(`/api/admin/placement/grammar/${id}`, json("PUT", q)),
+  deletePlacementGrammar: (id: string) => request<void>(`/api/admin/placement/grammar/${id}`, { method: "DELETE" }),
+  draftPlacementGrammar: (r: PlacementGrammarDraftRequest) =>
+    request<PlacementGrammarDraft>("/api/admin/placement/grammar/draft", json("POST", r)),
   listeningLessons: () => request<AdminListeningSummary[]>("/api/admin/listening"),
   listeningLesson: (slug: string) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`),
   createListening: (l: ListeningLesson) => request<AdminListeningDetail>("/api/admin/listening", json("POST", l)),

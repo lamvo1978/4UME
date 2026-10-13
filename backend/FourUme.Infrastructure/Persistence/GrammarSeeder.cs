@@ -78,6 +78,7 @@ public static class GrammarSeeder
         lesson.Published = doc.Published ?? true;
         lesson.SectionsJson = JsonSerializer.Serialize(doc.Sections, GrammarJson.Options);
         lesson.ExercisesJson = JsonSerializer.Serialize(doc.Exercises, GrammarJson.Options);
+        lesson.PracticeJson = JsonSerializer.Serialize(doc.Practice ?? [], GrammarJson.Options);
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

@@ -3,7 +3,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, SectionList, StyleSheet, Text, View } from "react-native";
-import { api, GrammarLesson } from "../api/client";
+import { api, GrammarLesson, GrammarMixedScope } from "../api/client";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 
@@ -52,6 +52,8 @@ export function GrammarListScreen() {
   }, [lessons]);
 
   const numbers = useMemo(() => new Map(lessons.map((l, i) => [l.slug, i + 1])), [lessons]);
+  const learned = lessons.filter((l) => l.bestScore != null).length;
+  const mix = (scope: GrammarMixedScope) => navigation.navigate("GrammarReview", { mode: "mixed", scope });
 
   return (
     <View style={styles.root}>
@@ -62,6 +64,27 @@ export function GrammarListScreen() {
         keyExtractor={(item) => item.slug}
         contentContainerStyle={styles.list}
         stickySectionHeadersEnabled={false}
+        ListHeaderComponent={
+          lessons.length > 0 ? (
+            <View style={styles.mixCard}>
+              <View style={styles.mixHead}>
+                <Ionicons name="shuffle" size={22} color={colors.accent} />
+                <View style={styles.flex}>
+                  <Text style={styles.mixTitle}>Luyện tập tổng hợp</Text>
+                  <Text style={styles.mixSub}>15 câu trộn từ nhiều bài, đổi dạng liên tục</Text>
+                </View>
+              </View>
+              <View style={styles.chips}>
+                {learned > 0 ? (
+                  <Chip label={`Bài đã học (${learned})`} primary onPress={() => mix("learned")} />
+                ) : null}
+                {sections.map((s) => (
+                  <Chip key={s.level} label={`Cả ${s.level}`} onPress={() => mix(s.level as GrammarMixedScope)} />
+                ))}
+              </View>
+            </View>
+          ) : null
+        }
         renderSectionHeader={({ section }) => (
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{LEVEL_NAMES[section.level] ?? section.level}</Text>
@@ -79,6 +102,14 @@ export function GrammarListScreen() {
         )}
       />
     </View>
+  );
+}
+
+function Chip({ label, primary, onPress }: { label: string; primary?: boolean; onPress: () => void }) {
+  return (
+    <Pressable style={({ pressed }) => [styles.chip, primary && styles.chipPrimary, pressed && styles.pressed]} onPress={onPress}>
+      <Text style={[styles.chipText, primary && styles.chipTextPrimary]}>{label}</Text>
+    </Pressable>
   );
 }
 
@@ -139,6 +170,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
   },
   pressed: { opacity: 0.7 },
+  flex: { flex: 1 },
+  mixCard: {
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: colors.surface,
+    gap: 12,
+    marginTop: spacing.sm,
+    ...shadow.card,
+    shadowOpacity: 0.05,
+  },
+  mixHead: { flexDirection: "row", alignItems: "center", gap: 12 },
+  mixTitle: { fontSize: 16, fontWeight: "800", color: colors.ink },
+  mixSub: { fontSize: 13, color: colors.muted, marginTop: 2 },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  chip: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 99,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
+  chipPrimary: { backgroundColor: colors.accent },
+  chipText: { fontSize: 14, fontWeight: "700", color: colors.accent },
+  chipTextPrimary: { color: colors.white },
   badge: {
     width: 44,
     height: 44,

@@ -3,6 +3,7 @@ export const ENTITY_TYPES = [
   { value: "deck", label: "Bộ từ" },
   { value: "grammar", label: "Ngữ pháp" },
   { value: "listening", label: "Bài nghe" },
+  { value: "placement", label: "Kiểm tra đầu vào" },
   { value: "media", label: "Hình ảnh" },
   { value: "user", label: "Người dùng" },
   { value: "settings", label: "Cài đặt" },
@@ -36,6 +37,8 @@ export function entityPath(type: string, id: string) {
       return `/listening/${id}`;
     case "deck":
       return "/decks";
+    case "placement":
+      return "/placement";
     case "media":
       return "/images";
     case "user":
