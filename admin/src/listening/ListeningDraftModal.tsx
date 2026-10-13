@@ -13,7 +13,7 @@ const LENGTHS: { value: ListeningDraftLength; label: string }[] = [
   { value: "long", label: "Dài (2–3 phút)" },
 ];
 
-/** Asks Gemini for a draft, then opens it unsaved in the editor. */
+/** Asks the AI for a draft, then opens it unsaved in the editor. */
 export function ListeningDraftModal({ opened, onClose }: { opened: boolean; onClose: () => void }) {
   const navigate = useNavigate();
   const status = useQuery({ queryKey: ["listening-draft-status"], queryFn: api.listeningDraftStatus, enabled: opened, staleTime: 60_000 });
@@ -45,12 +45,12 @@ export function ListeningDraftModal({ opened, onClose }: { opened: boolean; onCl
     <Modal opened={opened} onClose={busy ? () => {} : onClose} title="AI viết nháp bài nghe" size="lg" radius="lg">
       <Stack>
         {notConfigured ? (
-          <Alert color="yellow" title="Chưa bật Gemini">
-            Máy chủ chưa có <b>GEMINI_API_KEY</b>. Tạo key miễn phí ở aistudio.google.com rồi thêm vào <b>.env</b> — xem docs/listening.md.
+          <Alert color="yellow" title="Chưa bật AI">
+            Máy chủ chưa có <b>GROQ_API_KEY</b> hoặc <b>GEMINI_API_KEY</b>. Tạo key miễn phí (console.groq.com hoặc aistudio.google.com) rồi thêm vào <b>.env</b> — xem docs/listening.md.
           </Alert>
         ) : (
           <Text size="sm" c="dimmed">
-            Gemini viết bản nháp theo cấp độ và thể loại bạn chọn. Bài <b>chưa được lưu</b>: bạn đọc lại, sửa trong trang soạn bài rồi mới lưu và tạo âm thanh.
+            AI viết bản nháp theo cấp độ và thể loại bạn chọn. Bài <b>chưa được lưu</b>: bạn đọc lại, sửa trong trang soạn bài rồi mới lưu và tạo âm thanh.
           </Text>
         )}
         <Input.Wrapper label="Cấp độ">

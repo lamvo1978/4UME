@@ -11,10 +11,10 @@ using static FourUme.Infrastructure.Ai.GeminiClient;
 namespace FourUme.Infrastructure.Grammar;
 
 /// <summary>
-/// Drafts grammar questions for one lesson with Gemini, then asks Gemini again to check every answer.
+/// Drafts grammar questions for one lesson with the AI, then asks it again to check every answer.
 /// Nothing is saved; the admin picks which questions to add to the lesson.
 /// </summary>
-public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<GrammarDraftService> logger) : IGrammarDraftService
+public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraftService> logger) : IGrammarDraftService
 {
     private static readonly Dictionary<string, string> TypeGuide = new()
     {
@@ -79,7 +79,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
 
     public async Task<GrammarDraftDto> DraftAsync(GrammarDraftRequest request, CancellationToken ct = default)
     {
-        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        if (!ai.Configured) throw new InvalidOperationException(AiClient.NotConfiguredMessage);
         var lesson = request.Lesson ?? throw new InvalidOperationException("Thiếu nội dung bài.");
         if (string.IsNullOrWhiteSpace(lesson.TitleVi) && string.IsNullOrWhiteSpace(lesson.TitleEn))
             throw new InvalidOperationException("Bài chưa có tên, AI không biết soạn về chủ điểm nào.");
@@ -112,19 +112,19 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             foreach (var e in existing) prompt.AppendLine("- " + Summary(e));
         }
 
-        var reply = await gemini.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
         List<GrammarExercise> drafted;
         try
         {
-            drafted = JsonSerializer.Deserialize<DraftReply>(reply, GrammarJson.Options)?.Exercises ?? [];
+            drafted = JsonSerializer.Deserialize<DraftReply>(reply.Text, GrammarJson.Options)?.Exercises ?? [];
         }
         catch (JsonException ex)
         {
-            logger.LogWarning(ex, "Gemini returned invalid grammar JSON");
-            throw new InvalidOperationException("Gemini trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
+            logger.LogWarning(ex, "AI returned invalid grammar JSON");
+            throw new InvalidOperationException("AI trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
         }
         drafted = drafted.Where(e => types.Contains(e.Type)).Select(Normalize).Take(count).ToList();
-        if (drafted.Count == 0) throw new InvalidOperationException("Gemini không soạn được câu nào, hãy thử lại.");
+        if (drafted.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
         AssignIds(drafted, existing, lesson.Slug);
 
@@ -137,7 +137,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             var prefix = $"Bài tập {e.Id}: ";
             return new GrammarDraftItemDto(e, problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList(), warnings.GetValueOrDefault(i));
         }).ToList();
-        return new GrammarDraftDto(items, isChecked);
+        return new GrammarDraftDto(items, isChecked, reply.Model);
     }
 
     /// <summary>Second pass; a failure here only means the admin gets no warnings, the draft is still returned.</summary>
@@ -149,8 +149,8 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
         prompt.AppendLine(JsonSerializer.Serialize(drafted.Select((e, i) => new { index = i, exercise = WithoutId(e) }), GrammarJson.Options));
         try
         {
-            var reply = await gemini.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
-            var results = JsonSerializer.Deserialize<CheckReply>(reply, GrammarJson.Options)?.Results ?? [];
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count)
                 .GroupBy(r => r.Index)
@@ -265,7 +265,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
                             ["correction"] = Str(),
                             ["explanationVi"] = Str(),
                         },
-                        // Every field is required: with optional fields Gemini sometimes drops the ones that matter (e.g. mcq options).
+                        // Every field is required: with optional fields the AI sometimes drops the ones that matter (e.g. mcq options).
                         // Fields the type doesn't use come back empty and Normalize drops them.
                         ["required"] = Names("type", "prompt", "promptVi", "instructionVi", "source", "sentence", "options", "answer",
                             "answers", "blanks", "distractors", "correction", "explanationVi"),

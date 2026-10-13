@@ -21,7 +21,7 @@ type Props = {
   onAdd: (bank: GrammarBank, exercises: GrammarExercise[]) => void;
 };
 
-/** Gemini drafts questions for the lesson being edited; the admin ticks the ones to add. Nothing is saved until the lesson is saved. */
+/** The AI drafts questions for the lesson being edited; the admin ticks the ones to add. Nothing is saved until the lesson is saved. */
 export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, onAdd }: Props) {
   const status = useQuery({ queryKey: ["listening-draft-status"], queryFn: api.listeningDraftStatus, enabled: opened, staleTime: 60_000 });
   const [bank, setBank] = useState<GrammarBank>(initialBank);
@@ -86,11 +86,14 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
     <Modal opened={opened} onClose={busy ? () => {} : onClose} title="AI soạn bài tập" size="xl" radius="lg">
       {draft ? (
         <Stack>
+          <Text fz="xs" c="dimmed">
+            Soạn bởi {draft.model}
+          </Text>
           {!draft.checked ? (
             <Alert color="yellow" icon={<IconAlertTriangle size={18} />}>
               {skipped
                 ? "Đã bỏ bước AI tự kiểm tra. Hãy đọc kỹ đáp án từng câu trước khi thêm."
-                : "Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi thêm."}
+                : "Chưa tự kiểm tra lại được đáp án (AI đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi thêm."}
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
@@ -173,8 +176,8 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
       ) : (
         <Stack>
           {notConfigured ? (
-            <Alert color="yellow" title="Chưa bật Gemini">
-              Máy chủ chưa có <b>GEMINI_API_KEY</b> — xem docs/listening.md.
+            <Alert color="yellow" title="Chưa bật AI">
+              Máy chủ chưa có <b>GROQ_API_KEY</b> hoặc <b>GEMINI_API_KEY</b> — xem docs/listening.md.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">

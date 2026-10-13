@@ -44,6 +44,9 @@ services:
       Gemini__ApiKey: ${GEMINI_API_KEY:-}
       Gemini__Model: ${GEMINI_MODEL:-}
       Gemini__FallbackModels: ${GEMINI_FALLBACK_MODELS:-}
+      Groq__ApiKey: ${GROQ_API_KEY:-}
+      Groq__Model: ${GROQ_MODEL:-}
+      Groq__FallbackModels: ${GROQ_FALLBACK_MODELS:-}
     volumes:
       - fourume_media:/app/media
     ports:

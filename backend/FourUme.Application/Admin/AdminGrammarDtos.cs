@@ -38,7 +38,7 @@ public static class GrammarDraftRules
 
 /// <param name="Lesson">The lesson as currently edited (may be unsaved), so the AI sees the theory and avoids existing questions.</param>
 /// <param name="Target"><see cref="GrammarDraftRules.TargetExercises"/> or <see cref="GrammarDraftRules.TargetPractice"/>; decides which types are allowed.</param>
-/// <param name="SkipCheck">Skip the AI check pass: one Gemini call instead of two, the admin reads answers carefully.</param>
+/// <param name="SkipCheck">Skip the AI check pass: one AI call instead of two, the admin reads answers carefully.</param>
 public record GrammarDraftRequest(
     GrammarLessonDocument Lesson,
     string Target,
@@ -52,7 +52,8 @@ public record GrammarDraftRequest(
 public record GrammarDraftItemDto(GrammarExercise Exercise, IReadOnlyList<string> Problems, string? Warning);
 
 /// <param name="Checked">False when the checking pass failed (e.g. rate limit), so no item carries a warning.</param>
-public record GrammarDraftDto(IReadOnlyList<GrammarDraftItemDto> Items, bool Checked);
+/// <param name="Model">The AI model that wrote the draft.</param>
+public record GrammarDraftDto(IReadOnlyList<GrammarDraftItemDto> Items, bool Checked, string Model);
 
 public interface IGrammarDraftService
 {

@@ -94,6 +94,10 @@ public static class DependencyInjection
         services.Configure<GeminiOptions>(configuration.GetSection(GeminiOptions.SectionName));
         services.AddHttpClient(GeminiClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(120));
         services.AddScoped<GeminiClient>();
+        services.Configure<GroqOptions>(configuration.GetSection(GroqOptions.SectionName));
+        services.AddHttpClient(GroqClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(120));
+        services.AddScoped<GroqClient>();
+        services.AddScoped<AiClient>();
         services.AddScoped<IListeningDraftService, GeminiDraftService>();
         services.AddScoped<IGrammarDraftService, GrammarDraftService>();
         services.AddScoped<IAdminAuditService, AdminAuditService>();

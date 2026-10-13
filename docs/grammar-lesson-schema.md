@@ -54,7 +54,7 @@ Quy tắc chấm: không phân biệt hoa thường, bỏ khoảng trắng thừ
 
 App bỏ qua những dạng nó chưa biết, nên thêm dạng mới vào `practice` không làm hỏng bản app cũ.
 
-Trong admin, nút **AI soạn thêm câu** (Gemini) soạn nháp cho `exercises` hoặc `practice` dựa trên phần lý thuyết, chọn số câu / dạng / độ khó, rồi tự kiểm tra đáp án; chỉ câu được chọn mới được thêm vào bài.
+Trong admin, nút **AI soạn thêm câu** (Groq, Gemini dự phòng — xem [listening.md](listening.md)) soạn nháp cho `exercises` hoặc `practice` dựa trên phần lý thuyết, chọn số câu / dạng / độ khó, rồi tự kiểm tra đáp án; chỉ câu được chọn mới được thêm vào bài.
 
 ## Học và ôn
 

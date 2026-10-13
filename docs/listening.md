@@ -63,7 +63,7 @@ Nghe **thư giãn cho quen tai**: hội thoại ngắn, câu chuyện, bản tin
 
 ### Thêm bài mới
 
-- **AI viết nháp** (nút trên trang *Bài nghe*): chọn cấp độ, thể loại, độ dài, chủ đề → Google Gemini viết bản nháp, mở sẵn trong trang soạn bài (**chưa lưu**, đang ẩn khỏi app). Đọc lại, sửa, *Tạo bài* → *Tạo âm thanh* → bật *Hiện trong app*. Máy chủ gửi kèm mục đích bài nghe, quy tắc theo cấp độ, danh sách giọng, tên các bài đã có (để tránh trùng) và một bài mẫu cùng thể loại; Gemini buộc trả đúng khung JSON.
+- **AI viết nháp** (nút trên trang *Bài nghe*): chọn cấp độ, thể loại, độ dài, chủ đề → AI (Groq, hoặc Google Gemini nếu chưa bật Groq) viết bản nháp, mở sẵn trong trang soạn bài (**chưa lưu**, đang ẩn khỏi app). Đọc lại, sửa, *Tạo bài* → *Tạo âm thanh* → bật *Hiện trong app*. Máy chủ gửi kèm mục đích bài nghe, quy tắc theo cấp độ, danh sách giọng, tên các bài đã có (để tránh trùng) và một bài mẫu cùng thể loại; bài trả về phải đúng khung JSON.
 - **Nhờ Cursor viết nhiều bài một lúc**: dán prompt mẫu trong [listening-prompt.md](listening-prompt.md), Cursor lưu một file JSON → *Nhập từ file JSON*.
 
 #### Bật Gemini (miễn phí)
@@ -76,7 +76,22 @@ Nghe **thư giãn cho quen tai**: hội thoại ngắn, câu chuyện, bản tin
    # GEMINI_MODEL=gemini-flash-latest   (mặc định, chỉ đổi khi cần)
    ```
 
-Gói miễn phí giới hạn số lượt gọi mỗi phút / mỗi ngày (dư cho việc soạn bài); Google có thể dùng nội dung gửi lên để cải thiện dịch vụ — ở đây chỉ là bài học, không có dữ liệu người dùng.
+Gói miễn phí giới hạn số lượt gọi mỗi phút / mỗi ngày (khoảng 20 lượt / ngày / model); Google có thể dùng nội dung gửi lên để cải thiện dịch vụ — ở đây chỉ là bài học, không có dữ liệu người dùng.
+
+#### Bật Groq (miễn phí, ưu tiên hơn Gemini)
+
+Khi có `GROQ_API_KEY`, mọi nút AI soạn (bài nghe, bài tập ngữ pháp, câu hỏi đầu vào) gọi Groq trước, chỉ dùng model Llama của Meta; Groq lỗi hoặc hết lượt thì chuyển sang Gemini. Hộp soạn trong admin ghi rõ model đã soạn.
+
+1. https://console.groq.com → đăng nhập → **API Keys** → **Create API Key** (không cần thẻ).
+2. Thêm vào `.env` (máy dev và VPS, **không** gửi qua chat), rồi `docker compose up -d api`:
+
+   ```bash
+   GROQ_API_KEY=...
+   # GROQ_MODEL=llama-3.3-70b-versatile                                   (mặc định)
+   # GROQ_FALLBACK_MODELS=meta-llama/llama-4-scout-17b-16e-instruct        (mặc định, khi model chính hết lượt)
+   ```
+
+Groq (công ty Mỹ) không trả lời theo khung JSON cố định như Gemini: máy chủ gửi khung trong lời dặn và vẫn kiểm tra kết quả như cũ. Gói miễn phí giới hạn theo số token mỗi phút / mỗi ngày; nếu báo hết lượt thì soạn ít câu hơn mỗi lần hoặc chờ ít phút.
 
 ## Dữ liệu
 
