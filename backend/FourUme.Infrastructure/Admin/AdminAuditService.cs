@@ -129,6 +129,7 @@ public class AdminAuditService(
         AuditEntities.User => Guid.TryParse(id, out var u) && await db.Users.AnyAsync(x => x.Id == u, ct),
         AuditEntities.Settings => true,
         AuditEntities.Partner => Guid.TryParse(id, out var p) && await db.Partners.AnyAsync(x => x.Id == p, ct),
+        AuditEntities.Placement => Guid.TryParse(id, out var q) && await db.PlacementGrammarQuestions.AnyAsync(x => x.Id == q, ct),
         _ => false,
     };
 }

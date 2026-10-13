@@ -154,12 +154,13 @@ public class GrammarService(IAppDbContext db, IActivityService activity) : IGram
     /// <summary>Counts as study; lessons already in review that went badly come back tomorrow, the rest of the schedule is untouched.</summary>
     public async Task<GrammarMixedCompleteResponse> CompleteMixedAsync(Guid userId, GrammarMixedCompleteRequest request, CancellationToken ct = default)
     {
-        var slugs = request.Mistakes.Keys.ToList();
+        var mistakes = request.Mistakes ?? [];
+        var slugs = mistakes.Keys.ToList();
         var progresses = await db.GrammarProgresses
             .Where(p => p.UserId == userId && p.ReviewLevel > 0 && slugs.Contains(p.LessonSlug))
             .ToListAsync(ct);
         var now = DateTimeOffset.UtcNow;
-        var pulled = progresses.Count(p => ReviewSchedule.ApplyPractice(p, Math.Max(0, request.Mistakes[p.LessonSlug]), now));
+        var pulled = progresses.Count(p => ReviewSchedule.ApplyPractice(p, Math.Max(0, mistakes[p.LessonSlug]), now));
         if (pulled > 0) await db.SaveChangesAsync(ct);
         await activity.RecordAsync(userId, ActivityKind.Grammar, ct);
         return new GrammarMixedCompleteResponse(pulled);
