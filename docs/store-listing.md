@@ -41,7 +41,7 @@ Dài 76 ký tự / 94 byte: chữ có dấu tốn 2–3 byte, nếu App Store Co
 **Promotional Text** (≤ 170, sửa được mà không cần duyệt lại):
 
 ```
-Mỗi ngày vài phút: học từ mới, ôn đúng lúc sắp quên, đọc to để được chấm phát âm. Hoàn toàn miễn phí, không quảng cáo.
+Mỗi ngày vài phút: học từ mới, ôn đúng lúc sắp quên, đọc to để được chấm phát âm. Miễn phí, không có quảng cáo chen ngang khi học.
 ```
 
 **Description** (≤ 4000):
@@ -73,7 +73,7 @@ HỌC THÀNH THÓI QUEN
 MỜI BẠN BÈ
 • Rủ bạn cùng học, cả hai cùng nhận thêm ngày Premium.
 
-4UME miễn phí và không có quảng cáo. Mọi góp ý, bạn nhắn cho chúng tôi ngay trong app.
+4UME - MIỄN PHÍ và không có quảng cáo chen ngang làm ảnh hưởng đến việc học. Mọi góp ý, bạn nhắn cho chúng tôi ngay trong app.
 ```
 
 **What's New** (bản 1.0): `Phiên bản đầu tiên của 4UME.`
