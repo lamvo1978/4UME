@@ -33,8 +33,11 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
 {
     public const string HttpClientName = "gemini";
 
-    /// <summary>Waits before retrying an overloaded / briefly failing Gemini; drafting has two calls inside the 120 s client timeout.</summary>
-    private static readonly TimeSpan[] RetryDelays = [TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5)];
+    /// <summary>
+    /// Waits before retrying an overloaded Gemini. Kept short: failed calls also count against the free-tier quota,
+    /// so after this the next model is tried instead.
+    /// </summary>
+    private static readonly TimeSpan[] RetryDelays = [TimeSpan.FromSeconds(3)];
 
     private static bool Transient(HttpStatusCode s) =>
         s is HttpStatusCode.ServiceUnavailable or HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway or HttpStatusCode.GatewayTimeout;
@@ -66,7 +69,8 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
         var payload = body.ToJsonString();
         var client = httpFactory.CreateClient(HttpClientName);
         var models = o.Models;
-        var mainOverloaded = false;
+        var overloaded = false;
+        var quotaHit = false;
         HttpStatusCode status = default;
         string text = "";
         for (var m = 0; m < models.Count; m++)
@@ -88,19 +92,25 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
                 logger.LogInformation("Gemini {Model} {Status}, retrying (attempt {Attempt})", models[m], (int)status, attempt);
                 await Task.Delay(RetryDelays[attempt - 1], ct);
             }
-            if (m == 0 && Transient(status)) mainOverloaded = true;
-            var fallbackSkippable = m > 0 && status == HttpStatusCode.NotFound;
-            if ((int)status < 400 || !(Transient(status) || fallbackSkippable) || m == models.Count - 1) break;
+            if ((int)status < 400) break;
+            if (status == HttpStatusCode.TooManyRequests) quotaHit = true;
+            else if (Transient(status)) overloaded = true;
+            // Quotas are per model, so a model out of quota or overloaded hands over to the next one.
+            var tryNext = Transient(status) || status == HttpStatusCode.TooManyRequests || (m > 0 && status == HttpStatusCode.NotFound);
+            if (!tryNext || m == models.Count - 1) break;
             logger.LogWarning("Gemini {Model} failed {Status}, trying {Next}", models[m], (int)status, models[m + 1]);
         }
 
         if ((int)status >= 400)
         {
-            logger.LogWarning("Gemini failed {Status}: {Body}", (int)status, text.Length > 400 ? text[..400] : text);
+            logger.LogWarning("Gemini failed {Status}: {Body}", (int)status, text.Length > 1500 ? text[..1500] : text);
+            var perDay = text.Contains("PerDay", StringComparison.OrdinalIgnoreCase);
             throw new InvalidOperationException(status switch
             {
-                _ when mainOverloaded && (Transient(status) || status == HttpStatusCode.NotFound) =>
-                    "Gemini đang quá tải (lỗi phía Google), đã thử lại và thử model dự phòng vẫn chưa được. Hãy bấm lại sau ít phút.",
+                _ when quotaHit && (perDay || status != HttpStatusCode.TooManyRequests) =>
+                    "Đã hết lượt gọi Gemini miễn phí trong ngày của các model (gói miễn phí chỉ vài chục lượt / ngày / model, mỗi lần soạn tốn 2 lượt). Hãy thử lại vào ngày mai hoặc bật thanh toán cho khoá Gemini.",
+                _ when overloaded && (Transient(status) || status == HttpStatusCode.NotFound) =>
+                    "Gemini đang quá tải (lỗi phía Google), đã thử cả model dự phòng vẫn chưa được. Hãy bấm lại sau ít phút.",
                 HttpStatusCode.ServiceUnavailable => "Gemini đang quá tải (lỗi phía Google). Hãy bấm lại sau ít phút.",
                 HttpStatusCode.TooManyRequests => "Gemini đang giới hạn lượt gọi của gói miễn phí, hãy thử lại sau khoảng 1 phút.",
                 HttpStatusCode.BadRequest when text.Contains("API_KEY", StringComparison.OrdinalIgnoreCase) => "Gemini từ chối khoá (GEMINI_API_KEY không đúng).",
