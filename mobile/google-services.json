@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1087083145589",
+    "project_id": "ume-3232d",
+    "storage_bucket": "ume-3232d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087083145589:android:64a887cf86ec49c001cb3c",
+        "android_client_info": {
+          "package_name": "com.fourume.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVcei6LOCJyryKtqu_7U2XDm3YFzkV184"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
