@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { api, type GrammarBank, type GrammarDraft, type GrammarDraftDifficulty, type GrammarExercise, type GrammarLesson } from "../api";
 import { BANKS, cleanLesson, displayAnswer, exerciseMeta, typesFor } from "./meta";
 
-const COUNTS = ["5", "10", "15", "20"];
+const COUNTS = ["1", "5", "10", "15", "20"];
 const DIFFICULTIES: { value: GrammarDraftDifficulty; label: string }[] = [
   { value: "easy", label: "Dễ" },
   { value: "mixed", label: "Trộn" },

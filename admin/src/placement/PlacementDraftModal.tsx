@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { api, type AdminGrammarSummary, type PlacementGrammarDraft, type PlacementGrammarInput, type PlacementLevel } from "../api";
 import { PLACEMENT_LEVELS } from "./meta";
 
-const COUNTS = ["5", "10", "15", "20"];
+const COUNTS = ["1", "5", "10", "15", "20"];
 
 type Props = {
   opened: boolean;
