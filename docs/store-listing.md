@@ -154,6 +154,7 @@ Học từ vựng, chấm phát âm, luyện nghe và ngữ pháp tiếng Anh m�
 | Âm thanh → **Bản ghi giọng nói** | Tuỳ chọn | Chức năng ứng dụng | *Xử lý tạm thời* = Có |
 | Ảnh và video → **Ảnh** | Tuỳ chọn | Hỗ trợ khách hàng | ảnh đính kèm góp ý |
 | Hoạt động trong ứng dụng → **Tương tác trong ứng dụng** | Bắt buộc | Chức năng ứng dụng | tiến độ học |
+| Hoạt động trong ứng dụng → **Lịch sử tìm kiếm trong ứng dụng** | Tuỳ chọn | Chức năng ứng dụng | ô tra từ; *Xử lý tạm thời* = Có |
 | Hoạt động trong ứng dụng → **Nội dung khác do người dùng tạo** | Tuỳ chọn | Hỗ trợ khách hàng | nội dung góp ý |
 | Thông tin và hiệu suất ứng dụng → **Nhật ký sự cố**, **Chẩn đoán** | Bắt buộc | Phân tích sự cố | Sentry |
 | Mã thiết bị hoặc mã khác → **Mã thiết bị hoặc mã khác** | Tuỳ chọn | Chức năng ứng dụng | mã nhận thông báo |
