@@ -187,14 +187,14 @@ export async function syncReminders(
 
 /** Where a tapped notification leads: local reminders open a tab, server pushes also open a screen. */
 export type NotificationTarget =
-  | { screen: ReminderScreen }
+  | { screen: ReminderScreen | "listen" | "invite" }
   | { screen: "weekly"; start?: string }
   | { screen: "feedback"; id: string };
 
 function targetOf(response: Notifications.NotificationResponse | null): NotificationTarget | null {
   const data = response?.notification.request.content.data;
   const screen = data?.screen;
-  if (screen === "practice" || screen === "study") return { screen };
+  if (screen === "practice" || screen === "study" || screen === "listen" || screen === "invite") return { screen };
   if (screen === "weekly") return { screen, start: typeof data?.start === "string" ? data.start : undefined };
   if (screen === "feedback" && typeof data?.id === "string") return { screen, id: data.id };
   return null;

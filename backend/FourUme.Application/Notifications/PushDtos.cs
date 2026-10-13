@@ -21,6 +21,9 @@ public interface IPushNotifier
     /// <summary>Admin check that pushes reach the user's phones; ignores quiet hours and switches.</summary>
     Task<PushResult> SendTestAsync(Guid userId, CancellationToken ct = default);
 
+    /// <summary>Sends straight to every phone of the user, ignoring quiet hours and switches.</summary>
+    Task<PushResult> SendToUserAsync(Guid userId, PushMessage message, CancellationToken ct = default);
+
     /// <summary>Tells the learner an admin answered; skipped during their quiet hours. Never throws.</summary>
     Task FeedbackReplyAsync(Guid userId, Guid ticketId, string subject, string reply, CancellationToken ct = default);
 }

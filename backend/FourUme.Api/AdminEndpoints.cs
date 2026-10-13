@@ -129,6 +129,16 @@ public static class AdminEndpoints
         admin.MapPost("/notification-texts/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetNotificationTextsAsync(ct)));
 
+        admin.MapGet("/broadcasts", async (IBroadcastService s, CancellationToken ct) => Results.Ok(await s.ListAsync(ct)));
+        admin.MapPost("/broadcasts", async (CreateBroadcastRequest r, IBroadcastService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateAsync(r, ct)));
+        admin.MapPost("/broadcasts/estimate", async (BroadcastAudienceRequest r, IBroadcastService s, CancellationToken ct) =>
+            Results.Ok(await s.EstimateAsync(r, ct)));
+        admin.MapPost("/broadcasts/test", async (BroadcastContent c, IBroadcastService s, CancellationToken ct) =>
+            Results.Ok(await s.SendTestAsync(c, ct)));
+        admin.MapPost("/broadcasts/{id:guid}/cancel", async (Guid id, IBroadcastService s, CancellationToken ct) =>
+            Results.Ok(await s.CancelAsync(id, ct)));
+
         admin.MapGet("/feedback", async ([AsParameters] AdminFeedbackQuery q, IAdminFeedbackService s, CancellationToken ct) =>
             Results.Ok(await s.ListAsync(q, ct)));
         admin.MapGet("/feedback/counts", async (IAdminFeedbackService s, CancellationToken ct) => Results.Ok(await s.CountsAsync(ct)));

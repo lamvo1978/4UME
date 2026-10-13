@@ -29,5 +29,7 @@ public interface IAppDbContext
     DbSet<Referral> Referrals { get; }
     DbSet<FeedbackTicket> FeedbackTickets { get; }
     DbSet<FeedbackMessage> FeedbackMessages { get; }
+    DbSet<Broadcast> Broadcasts { get; }
+    DbSet<BroadcastRecipient> BroadcastRecipients { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
