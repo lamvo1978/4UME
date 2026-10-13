@@ -38,6 +38,25 @@ public class PlacementService(IAppDbContext db, IAuthService auth) : IPlacementS
         }).ToList();
     }
 
+    public async Task<IReadOnlyList<PlacementGrammarLevelDto>> GetGrammarQuestionsAsync(CancellationToken ct = default)
+    {
+        var pool = await db.PlacementGrammarQuestions.AsNoTracking().Where(q => q.Published).ToListAsync(ct);
+        return PlacementRules.Levels
+            .Select(level => pool.Where(q => q.Level == level).ToList())
+            .Where(qs => qs.Count >= GrammarPlacementRules.MinPerLevel)
+            .Select(qs => new PlacementGrammarLevelDto(
+                qs[0].Level,
+                qs.OrderBy(_ => Random.Shared.Next())
+                    .Take(GrammarPlacementRules.QuestionsPerLevel)
+                    .Select(q =>
+                    {
+                        var options = q.Options.OrderBy(_ => Random.Shared.Next()).ToList();
+                        return new PlacementGrammarQuestionDto(q.Id, q.Prompt, options, options.IndexOf(q.Answer), q.LessonSlug);
+                    })
+                    .ToList()))
+            .ToList();
+    }
+
     /// <summary>Distractors come from the same level and part of speech, so the word itself is the only clue.</summary>
     private static PlacementQuestionDto? BuildQuestion(PoolWord word, IReadOnlyList<PoolWord> sameLevel)
     {

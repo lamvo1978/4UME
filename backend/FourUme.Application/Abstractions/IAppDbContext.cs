@@ -31,5 +31,6 @@ public interface IAppDbContext
     DbSet<FeedbackMessage> FeedbackMessages { get; }
     DbSet<Broadcast> Broadcasts { get; }
     DbSet<BroadcastRecipient> BroadcastRecipients { get; }
+    DbSet<PlacementGrammarQuestion> PlacementGrammarQuestions { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

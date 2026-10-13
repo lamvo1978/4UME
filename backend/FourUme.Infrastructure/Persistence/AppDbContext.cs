@@ -32,6 +32,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<FeedbackMessage> FeedbackMessages => Set<FeedbackMessage>();
     public DbSet<Broadcast> Broadcasts => Set<Broadcast>();
     public DbSet<BroadcastRecipient> BroadcastRecipients => Set<BroadcastRecipient>();
+    public DbSet<PlacementGrammarQuestion> PlacementGrammarQuestions => Set<PlacementGrammarQuestion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -272,6 +273,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.ExercisesJson).HasColumnType("jsonb").IsRequired();
             e.Property(x => x.PracticeJson).HasColumnType("jsonb").IsRequired().HasDefaultValueSql("'[]'::jsonb");
             e.HasIndex(x => x.SortOrder);
+        });
+
+        modelBuilder.Entity<PlacementGrammarQuestion>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.Prompt).HasMaxLength(400).IsRequired();
+            e.Property(x => x.Answer).HasMaxLength(200).IsRequired();
+            e.Property(x => x.ExplanationVi).HasMaxLength(600).IsRequired();
+            e.Property(x => x.LessonSlug).HasMaxLength(80);
+            e.HasIndex(x => new { x.Level, x.Published });
         });
 
         modelBuilder.Entity<ListeningLesson>(e =>

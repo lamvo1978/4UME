@@ -9,6 +9,7 @@ using FourUme.Application.Grammar;
 using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
+using FourUme.Application.Placement;
 using FourUme.Application.Pronunciation;
 
 namespace FourUme.Api;
@@ -219,6 +220,21 @@ public static class AdminEndpoints
         admin.MapDelete("/grammar/{slug}", async (string slug, IAdminGrammarService s, CancellationToken ct) =>
         {
             await s.DeleteLessonAsync(slug, ct);
+            return Results.NoContent();
+        });
+
+        admin.MapGet("/placement/grammar", async (IAdminPlacementService s, CancellationToken ct) => Results.Ok(await s.GetGrammarAsync(ct)));
+        admin.MapPost("/placement/grammar", async (SavePlacementGrammarRequest r, IAdminPlacementService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateGrammarAsync(r, ct)));
+        admin.MapPost("/placement/grammar/batch", async (SavePlacementGrammarBatchRequest r, IAdminPlacementService s, CancellationToken ct) =>
+            Results.Ok(new { created = await s.CreateGrammarBatchAsync(r, ct) }));
+        admin.MapPost("/placement/grammar/draft", async (PlacementGrammarDraftRequest r, IAdminPlacementService s, CancellationToken ct) =>
+            Results.Ok(await s.DraftGrammarAsync(r, ct)));
+        admin.MapPut("/placement/grammar/{id:guid}", async (Guid id, SavePlacementGrammarRequest r, IAdminPlacementService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateGrammarAsync(id, r, ct)));
+        admin.MapDelete("/placement/grammar/{id:guid}", async (Guid id, IAdminPlacementService s, CancellationToken ct) =>
+        {
+            await s.DeleteGrammarAsync(id, ct);
             return Results.NoContent();
         });
 

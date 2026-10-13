@@ -42,6 +42,7 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 ## 5. Nội dung
 
 - [ ] Thêm bài nghe (có prompt mẫu: [listening-prompt.md](listening-prompt.md)), bài ngữ pháp.
+- [ ] **Ngữ pháp (13/10)**: dùng *AI soạn thêm câu* trong admin để mỗi bài có kho **luyện thêm** khoảng 30 câu (có dạng *điền đoạn văn*), và soạn bộ câu **kiểm tra đầu vào** khoảng 20 câu mỗi cấp A1–B1 (tối thiểu 4 câu / cấp thì app mới hỏi) — trước khi build bản nộp store. Xem [grammar-lesson-schema.md](grammar-lesson-schema.md#ngữ-pháp-trong-kiểm-tra-đầu-vào).
 - [ ] Duyệt ảnh tự gán cho từ vựng.
 
 ## 6. Tính năng mới (thứ tự đã chốt 11/10)

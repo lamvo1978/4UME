@@ -234,7 +234,7 @@ function Prompt({ ex }: { ex: GrammarExercise }) {
               {text}
               {i < hints.length ? (
                 <Text style={styles.gap}>
-                  {` (${i + 1}) _____`}
+                  {`(${i + 1}) _____`}
                   {hints[i] ? <Text style={styles.gapHint}>{` (${hints[i]})`}</Text> : null}
                 </Text>
               ) : null}

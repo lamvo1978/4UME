@@ -3,7 +3,15 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ComponentProps, ReactNode, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { api, EasyWordMode, PlacementLevel, VOCAB_LEVELS, VocabLevel } from "../api/client";
+import {
+  api,
+  EasyWordMode,
+  GrammarLesson,
+  PlacementGrammarLevel,
+  PlacementLevel,
+  VOCAB_LEVELS,
+  VocabLevel,
+} from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { SpeakButton, stopSpeaking } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
@@ -12,11 +20,15 @@ import { posLabel } from "../vocabulary/deckMeta";
 import {
   answerPlacement,
   easierLabel,
+  GRAMMAR_RULES,
   LEVEL_BLURB,
   levelRank,
   PlacementState,
   startPlacement,
+  suggestGrammarLesson,
 } from "../vocabulary/placement";
+
+type GrammarOutcome = { state: PlacementState; suggestion: GrammarLesson | null };
 
 type Props = NativeStackScreenProps<RootStackParamList, "Placement">;
 
@@ -25,9 +37,14 @@ const FEEDBACK_MS = 650;
 
 export function PlacementScreen({ navigation }: Props) {
   const { me, onboarding, applyPlacement, finishOnboarding } = useAuth();
-  const [phase, setPhase] = useState<"intro" | "quiz" | "result">("intro");
+  const [phase, setPhase] = useState<"intro" | "quiz" | "grammarIntro" | "grammar" | "result">("intro");
   const [levels, setLevels] = useState<PlacementLevel[]>([]);
   const [state, setState] = useState<PlacementState | null>(null);
+  const [grammarLevels, setGrammarLevels] = useState<PlacementGrammarLevel[]>([]);
+  const [grammarLessons, setGrammarLessons] = useState<GrammarLesson[]>([]);
+  const [grammarState, setGrammarState] = useState<PlacementState | null>(null);
+  const [grammar, setGrammar] = useState<GrammarOutcome | null>(null);
+  const missedSlugs = useRef<string[]>([]);
   const [picked, setPicked] = useState<number | "skip" | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,10 +62,22 @@ export function PlacementScreen({ navigation }: Props) {
     setLoading(true);
     setError("");
     try {
-      const data = (await api.placementQuestions()).filter((l) => l.questions.length > 0);
+      // The grammar part is optional: if it fails to load, the test is vocabulary only.
+      const [vocab, grammarData, lessons] = await Promise.all([
+        api.placementQuestions(),
+        api.placementGrammar().catch(() => []),
+        api.grammarLessons().catch(() => []),
+      ]);
+      const data = vocab.filter((l) => l.questions.length > 0);
       if (data.length === 0) throw new Error("Chưa có câu hỏi, hãy thử lại sau.");
       setLevels(data);
       setState(startPlacement(data));
+      const gLevels = lessons.length > 0 ? grammarData.filter((l) => l.questions.length > 0) : [];
+      setGrammarLevels(gLevels);
+      setGrammarLessons(lessons);
+      setGrammarState(null);
+      setGrammar(null);
+      missedSlugs.current = [];
       setPicked(null);
       setPhase("quiz");
     } catch (e) {
@@ -58,16 +87,19 @@ export function PlacementScreen({ navigation }: Props) {
     }
   }
 
-  function leave() {
+  function leave(lesson?: GrammarLesson) {
+    const lessonRoute = lesson ? { name: "GrammarLesson" as const, params: { slug: lesson.slug, titleVi: lesson.titleVi } } : null;
     if (onboarding) {
       finishOnboarding();
-      navigation.reset({ index: 0, routes: [{ name: "Main" }] });
+      navigation.reset({ index: lessonRoute ? 1 : 0, routes: lessonRoute ? [{ name: "Main" }, lessonRoute] : [{ name: "Main" }] });
+    } else if (lessonRoute) {
+      navigation.replace(lessonRoute.name, lessonRoute.params);
     } else {
       navigation.goBack();
     }
   }
 
-  async function apply(level: VocabLevel, mode: EasyWordMode, tested: boolean) {
+  async function apply(level: VocabLevel, mode: EasyWordMode, tested: boolean, lesson?: GrammarLesson) {
     setLoading(true);
     setError("");
     try {
@@ -78,7 +110,7 @@ export function PlacementScreen({ navigation }: Props) {
           `${result.markedKnown} từ ${easierLabel(level)} được tính là đã nhớ. Thỉnh thoảng chúng sẽ xuất hiện trong Ôn tập để kiểm tra lại.`
         );
       }
-      leave();
+      leave(lesson);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Không lưu được kết quả");
       setLoading(false);
@@ -93,7 +125,30 @@ export function PlacementScreen({ navigation }: Props) {
       const next = answerPlacement(state, levels, choice === q.answer);
       setState(next);
       setPicked(null);
-      if (next.result) setPhase("result");
+      if (next.result) setPhase(grammarLevels.length > 0 ? "grammarIntro" : "result");
+    }, FEEDBACK_MS);
+  }
+
+  function startGrammar() {
+    setGrammarState(startPlacement(grammarLevels));
+    setPicked(null);
+    setPhase("grammar");
+  }
+
+  function answerGrammar(choice: number | "skip") {
+    if (!grammarState || picked !== null) return;
+    const q = grammarLevels[grammarState.levelIndex].questions[grammarState.questionIndex];
+    setPicked(choice);
+    timer.current = setTimeout(() => {
+      const correct = choice === q.answer;
+      if (!correct && q.lessonSlug) missedSlugs.current.push(q.lessonSlug);
+      const next = answerPlacement(grammarState, grammarLevels, correct, GRAMMAR_RULES);
+      setGrammarState(next);
+      setPicked(null);
+      if (next.result) {
+        setGrammar({ state: next, suggestion: suggestGrammarLesson(next, missedSlugs.current, grammarLessons) });
+        setPhase("result");
+      }
     }, FEEDBACK_MS);
   }
 
@@ -104,10 +159,10 @@ export function PlacementScreen({ navigation }: Props) {
           <View style={styles.heroIcon}>
             <Ionicons name="school" size={40} color={colors.white} />
           </View>
-          <Text style={styles.title}>Bạn biết bao nhiêu từ tiếng Anh?</Text>
+          <Text style={styles.title}>Bạn đang ở trình độ nào?</Text>
           <Text style={styles.sub}>
-            Trả lời vài câu chọn nghĩa, khoảng 2–3 phút. 4UME sẽ tìm cấp độ phù hợp để bạn không phải học lại những từ
-            đã biết.
+            Phần từ vựng chọn nghĩa, sau đó vài câu ngữ pháp, khoảng 3–5 phút. 4UME sẽ tìm cấp độ phù hợp để bạn không
+            phải học lại những gì đã biết.
           </Text>
         </View>
         <View style={styles.points}>
@@ -150,20 +205,7 @@ export function PlacementScreen({ navigation }: Props) {
     const score = state.scores[state.levelIndex];
     return (
       <Shell onboarding={onboarding}>
-        <View style={styles.steps}>
-          {state.scores.map((s, i) => (
-            <View key={s.level} style={styles.step}>
-              <View
-                style={[
-                  styles.stepBar,
-                  s.passed && styles.stepBarDone,
-                  i === state.levelIndex && styles.stepBarActive,
-                ]}
-              />
-              <Text style={[styles.stepLabel, i === state.levelIndex && styles.stepLabelActive]}>{s.level}</Text>
-            </View>
-          ))}
-        </View>
+        <Steps scores={state.scores} current={state.levelIndex} />
 
         <View style={styles.card}>
           <Text style={styles.instruction}>Chọn nghĩa đúng</Text>
@@ -175,37 +217,50 @@ export function PlacementScreen({ navigation }: Props) {
           <Text style={styles.pos}>{posLabel(q.pos)}</Text>
         </View>
 
-        <View style={styles.options}>
-          {q.options.map((opt, i) => {
-            const revealed = picked !== null;
-            const isAnswer = i === q.answer;
-            const isPicked = picked === i;
-            return (
-              <Pressable
-                key={`${q.wordId}-${i}`}
-                disabled={revealed}
-                onPress={() => answer(i)}
-                style={({ pressed }) => [
-                  styles.option,
-                  revealed && isAnswer && styles.optionCorrect,
-                  revealed && isPicked && !isAnswer && styles.optionWrong,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <Text style={styles.optionText}>{opt}</Text>
-                {revealed && isAnswer ? <Ionicons name="checkmark-circle" size={22} color={colors.accent} /> : null}
-                {revealed && isPicked && !isAnswer ? <Ionicons name="close-circle" size={22} color={colors.danger} /> : null}
-              </Pressable>
-            );
-          })}
-          <Pressable
-            disabled={picked !== null}
-            onPress={() => answer("skip")}
-            style={({ pressed }) => [styles.skip, pressed && styles.pressed]}
-          >
-            <Text style={styles.skipText}>Không biết</Text>
+        <Options keyPrefix={q.wordId} options={q.options} answer={q.answer} picked={picked} onPick={answer} />
+        <Text style={styles.tally}>
+          Cấp {level.level}: đúng {score.correct} · sai {score.wrong}
+        </Text>
+      </Shell>
+    );
+  }
+
+  if (phase === "grammarIntro") {
+    return (
+      <Shell onboarding={onboarding}>
+        <View style={styles.hero}>
+          <View style={styles.heroIcon}>
+            <Ionicons name="document-text-outline" size={38} color={colors.white} />
+          </View>
+          <Text style={styles.title}>Phần 2: Ngữ pháp</Text>
+          <Text style={styles.sub}>
+            Xong phần từ vựng rồi! Thêm vài câu chọn đáp án đúng, khoảng 1–2 phút, để 4UME gợi ý bài ngữ pháp nên bắt đầu.
+          </Text>
+        </View>
+        <View style={styles.actions}>
+          <Pressable style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]} onPress={startGrammar}>
+            <Text style={styles.primaryBtnText}>Tiếp tục</Text>
+          </Pressable>
+          <Pressable style={({ pressed }) => [styles.secondaryBtn, pressed && styles.pressed]} onPress={() => setPhase("result")}>
+            <Text style={styles.secondaryBtnText}>Bỏ qua phần ngữ pháp</Text>
           </Pressable>
         </View>
+      </Shell>
+    );
+  }
+
+  if (phase === "grammar" && grammarState) {
+    const level = grammarLevels[grammarState.levelIndex];
+    const q = level.questions[grammarState.questionIndex];
+    const score = grammarState.scores[grammarState.levelIndex];
+    return (
+      <Shell onboarding={onboarding}>
+        <Steps scores={grammarState.scores} current={grammarState.levelIndex} />
+        <View style={[styles.card, styles.cardLeft]}>
+          <Text style={styles.instruction}>Ngữ pháp · Chọn đáp án đúng</Text>
+          <Text style={styles.sentence}>{q.prompt.replace(/_{3,}/g, "_____")}</Text>
+        </View>
+        <Options keyPrefix={q.id} options={q.options} answer={q.answer} picked={picked} onPick={answerGrammar} />
         <Text style={styles.tally}>
           Cấp {level.level}: đúng {score.correct} · sai {score.wrong}
         </Text>
@@ -220,10 +275,11 @@ export function PlacementScreen({ navigation }: Props) {
         suggested={state.result}
         initialMode={me?.settings.easyWordMode ?? "skip"}
         scores={state.scores}
+        grammar={grammar}
         loading={loading}
         error={error}
         onRetry={start}
-        onApply={(level, mode) => apply(level, mode, true)}
+        onApply={(level, mode, lesson) => apply(level, mode, true, lesson)}
       />
     );
   }
@@ -231,11 +287,118 @@ export function PlacementScreen({ navigation }: Props) {
   return null;
 }
 
+function Steps({ scores, current }: { scores: PlacementState["scores"]; current: number }) {
+  return (
+    <View style={styles.steps}>
+      {scores.map((s, i) => (
+        <View key={s.level} style={styles.step}>
+          <View style={[styles.stepBar, s.passed && styles.stepBarDone, i === current && styles.stepBarActive]} />
+          <Text style={[styles.stepLabel, i === current && styles.stepLabelActive]}>{s.level}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function Options({
+  keyPrefix,
+  options,
+  answer,
+  picked,
+  onPick,
+}: {
+  keyPrefix: string;
+  options: string[];
+  answer: number;
+  picked: number | "skip" | null;
+  onPick: (choice: number | "skip") => void;
+}) {
+  const revealed = picked !== null;
+  return (
+    <View style={styles.options}>
+      {options.map((opt, i) => {
+        const isAnswer = i === answer;
+        const isPicked = picked === i;
+        return (
+          <Pressable
+            key={`${keyPrefix}-${i}`}
+            disabled={revealed}
+            onPress={() => onPick(i)}
+            style={({ pressed }) => [
+              styles.option,
+              revealed && isAnswer && styles.optionCorrect,
+              revealed && isPicked && !isAnswer && styles.optionWrong,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Text style={styles.optionText}>{opt}</Text>
+            {revealed && isAnswer ? <Ionicons name="checkmark-circle" size={22} color={colors.accent} /> : null}
+            {revealed && isPicked && !isAnswer ? <Ionicons name="close-circle" size={22} color={colors.danger} /> : null}
+          </Pressable>
+        );
+      })}
+      <Pressable disabled={revealed} onPress={() => onPick("skip")} style={({ pressed }) => [styles.skip, pressed && styles.pressed]}>
+        <Text style={styles.skipText}>Không biết</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function GrammarResult({ grammar, onOpen, loading }: { grammar: GrammarOutcome; onOpen: () => void; loading: boolean }) {
+  const { state, suggestion } = grammar;
+  const allPassed = state.scores.every((s) => s.passed);
+  const last = state.scores[state.scores.length - 1]?.level;
+  return (
+    <View style={styles.grammarCard}>
+      <View style={styles.grammarHead}>
+        <Text style={styles.sectionTitle}>Ngữ pháp</Text>
+        <Text style={styles.grammarLevel}>{allPassed ? `Vững ${last}` : state.result}</Text>
+      </View>
+      <View style={[styles.scoreRow, styles.scoreRowLeft]}>
+        {state.scores
+          .filter((s) => s.passed !== null)
+          .map((s) => (
+            <View key={s.level} style={[styles.scoreChip, s.passed ? styles.scoreChipOk : styles.scoreChipBad]}>
+              <Ionicons
+                name={s.passed ? "checkmark-circle" : "close-circle"}
+                size={16}
+                color={s.passed ? colors.accent : colors.danger}
+              />
+              <Text style={styles.scoreText}>
+                {s.level} · {s.correct}/{s.correct + s.wrong}
+              </Text>
+            </View>
+          ))}
+      </View>
+      {suggestion ? (
+        <>
+          <Text style={styles.modeText}>
+            Gợi ý bắt đầu từ bài <Text style={styles.grammarLesson}>{suggestion.titleVi}</Text> ({suggestion.level}). Các bài
+            trước đó bạn vẫn mở học được bất cứ lúc nào.
+          </Text>
+          <Pressable
+            style={({ pressed }) => [styles.secondaryBtn, pressed && styles.pressed]}
+            onPress={onOpen}
+            disabled={loading}
+          >
+            <Text style={styles.secondaryBtnText}>Lưu cấp độ và học bài này</Text>
+          </Pressable>
+        </>
+      ) : (
+        <Text style={styles.modeText}>
+          Bạn đã vững các bài ngữ pháp hiện có. Thử Luyện tập tổng hợp trong mục Ngữ pháp để giữ phong độ nhé.
+        </Text>
+      )}
+    </View>
+  );
+}
+
 function ResultView({
   onboarding,
   suggested,
   initialMode,
   scores,
+  grammar,
   loading,
   error,
   onRetry,
@@ -245,10 +408,11 @@ function ResultView({
   suggested: VocabLevel;
   initialMode: EasyWordMode;
   scores: PlacementState["scores"];
+  grammar: GrammarOutcome | null;
   loading: boolean;
   error: string;
   onRetry: () => void;
-  onApply: (level: VocabLevel, mode: EasyWordMode) => void;
+  onApply: (level: VocabLevel, mode: EasyWordMode, lesson?: GrammarLesson) => void;
 }) {
   const [level, setLevel] = useState<VocabLevel>(suggested);
   const [mode, setMode] = useState<EasyWordMode>(initialMode);
@@ -257,7 +421,7 @@ function ResultView({
   return (
     <Shell onboarding={onboarding}>
       <View style={styles.hero}>
-        <Text style={styles.resultKicker}>Cấp độ phù hợp với bạn</Text>
+        <Text style={styles.resultKicker}>{grammar ? "Cấp độ từ vựng phù hợp với bạn" : "Cấp độ phù hợp với bạn"}</Text>
         <View style={styles.resultBadge}>
           <Text style={styles.resultLevel}>{suggested}</Text>
         </View>
@@ -317,6 +481,14 @@ function ResultView({
             onPress={() => setMode("known")}
           />
         </View>
+      ) : null}
+
+      {grammar ? (
+        <GrammarResult
+          grammar={grammar}
+          loading={loading}
+          onOpen={() => onApply(level, levelRank(level) > 0 ? mode : "skip", grammar.suggestion ?? undefined)}
+        />
       ) : null}
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -416,6 +588,13 @@ const styles = StyleSheet.create({
   stepLabelActive: { color: colors.flameDeep },
   card: { backgroundColor: colors.surface, borderRadius: 24, padding: spacing.lg, alignItems: "center", gap: 6, ...shadow.card },
   instruction: { color: colors.muted, fontWeight: "600" },
+  cardLeft: { alignItems: "stretch" },
+  sentence: { fontSize: 21, lineHeight: 30, fontWeight: "700", color: colors.ink, marginTop: spacing.xs },
+  scoreRowLeft: { justifyContent: "flex-start" },
+  grammarCard: { backgroundColor: colors.surface, borderRadius: 20, padding: spacing.md, gap: spacing.sm, ...shadow.card },
+  grammarHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  grammarLevel: { fontSize: 18, fontWeight: "800", color: colors.accent },
+  grammarLesson: { fontWeight: "800", color: colors.ink },
   word: { fontSize: 38, fontWeight: "700", color: colors.ink, textAlign: "center", marginTop: spacing.xs },
   ipaRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   ipa: { fontSize: 17, color: colors.muted },

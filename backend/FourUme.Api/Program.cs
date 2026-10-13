@@ -415,6 +415,9 @@ app.MapPost("/api/vocabulary/progress", async (UpdateProgressRequest request, Cl
 app.MapGet("/api/placement/questions", async (IPlacementService placement, CancellationToken ct) =>
     Results.Ok(await placement.GetQuestionsAsync(ct))).RequireAuthorization();
 
+app.MapGet("/api/placement/grammar", async (IPlacementService placement, CancellationToken ct) =>
+    Results.Ok(await placement.GetGrammarQuestionsAsync(ct))).RequireAuthorization();
+
 app.MapPost("/api/placement/apply", async (ApplyPlacementRequest request, ClaimsPrincipal principal, IPlacementService placement, CancellationToken ct) =>
 {
     var userId = GetUserId(principal);

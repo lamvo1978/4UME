@@ -74,6 +74,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminContentService, AdminContentService>();
         services.AddScoped<IAdminGrammarService, AdminGrammarService>();
+        services.AddScoped<IAdminPlacementService, AdminPlacementService>();
         services.AddScoped<IListeningService, ListeningService>();
         services.AddScoped<IAdminListeningService, AdminListeningService>();
         services.Configure<SpeechOptions>(configuration.GetSection(SpeechOptions.SectionName));

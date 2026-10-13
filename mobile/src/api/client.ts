@@ -57,6 +57,9 @@ export type PlacementQuestion = {
   answer: number;
 };
 export type PlacementLevel = { level: VocabLevel; questions: PlacementQuestion[] };
+/** `prompt` has ___ for the gap; `lessonSlug` is the grammar lesson the question tests. */
+export type PlacementGrammarQuestion = { id: string; prompt: string; options: string[]; answer: number; lessonSlug: string | null };
+export type PlacementGrammarLevel = { level: VocabLevel; questions: PlacementGrammarQuestion[] };
 export type PlacementResult = { me: Me; markedKnown: number; cleared: number };
 
 /** Server-tunable notification rules; times are local "HH:mm", weeklyDay 0 = Sunday. */
@@ -685,6 +688,7 @@ export const api = {
   replyFeedback,
   resolveFeedback: (id: string) => request<FeedbackTicket>(`/api/feedback/${id}/resolve`, { method: "POST" }),
   placementQuestions: () => request<PlacementLevel[]>("/api/placement/questions"),
+  placementGrammar: () => request<PlacementGrammarLevel[]>("/api/placement/grammar"),
   /** Replaces the previous result: words the last test marked known (and never studied since) are cleared first. */
   applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) =>
     request<PlacementResult>("/api/placement/apply", { method: "POST", body: JSON.stringify({ level, mode, tested }) }),
