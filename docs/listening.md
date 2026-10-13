@@ -80,18 +80,18 @@ Gói miễn phí giới hạn số lượt gọi mỗi phút / mỗi ngày (kho�
 
 #### Bật Groq (miễn phí, ưu tiên hơn Gemini)
 
-Khi có `GROQ_API_KEY`, mọi nút AI soạn (bài nghe, bài tập ngữ pháp, câu hỏi đầu vào) gọi Groq trước, chỉ dùng model Llama của Meta; Groq lỗi hoặc hết lượt thì chuyển sang Gemini. Hộp soạn trong admin ghi rõ model đã soạn.
+Khi có `GROQ_API_KEY`, mọi nút AI soạn (bài nghe, bài tập ngữ pháp, câu hỏi đầu vào) gọi Groq trước, dùng model mã nguồn mở gpt-oss của OpenAI (Groq không còn model chat Llama); Groq lỗi hoặc hết lượt thì chuyển sang Gemini. Hộp soạn trong admin ghi rõ model đã soạn.
 
 1. https://console.groq.com → đăng nhập → **API Keys** → **Create API Key** (không cần thẻ).
 2. Thêm vào `.env` (máy dev và VPS, **không** gửi qua chat), rồi `docker compose up -d api`:
 
    ```bash
    GROQ_API_KEY=...
-   # GROQ_MODEL=llama-3.3-70b-versatile                                   (mặc định)
-   # GROQ_FALLBACK_MODELS=meta-llama/llama-4-scout-17b-16e-instruct        (mặc định, khi model chính hết lượt)
+   # GROQ_MODEL=openai/gpt-oss-120b            (mặc định)
+   # GROQ_FALLBACK_MODELS=openai/gpt-oss-20b   (mặc định, khi model chính hết lượt)
    ```
 
-Groq (công ty Mỹ) không trả lời theo khung JSON cố định như Gemini: máy chủ gửi khung trong lời dặn và vẫn kiểm tra kết quả như cũ. Gói miễn phí giới hạn theo số token mỗi phút / mỗi ngày; nếu báo hết lượt thì soạn ít câu hơn mỗi lần hoặc chờ ít phút.
+Groq (công ty Mỹ) không trả lời theo khung JSON cố định như Gemini: máy chủ gửi khung trong lời dặn và vẫn kiểm tra kết quả như cũ. Gói miễn phí giới hạn theo số token mỗi phút (gpt-oss-120b: 8.000) / mỗi ngày; nếu báo hết lượt thì soạn ít câu hơn mỗi lần hoặc chờ ít phút.
 
 ## Dữ liệu
 

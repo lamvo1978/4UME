@@ -10,13 +10,13 @@ namespace FourUme.Infrastructure.Ai;
 public class GroqOptions
 {
     public const string SectionName = "Groq";
-    public const string DefaultModel = "llama-3.3-70b-versatile";
+    public const string DefaultModel = "openai/gpt-oss-120b";
     /// <summary>console.groq.com → API Keys; the free tier is enough for drafting.</summary>
     public string? ApiKey { get; set; }
     public string? Model { get; set; }
     /// <summary>Comma-separated models tried in order when <see cref="Model"/> is out of quota or overloaded; unknown names are skipped.</summary>
     public string? FallbackModels { get; set; }
-    public const string DefaultFallbackModels = "meta-llama/llama-4-scout-17b-16e-instruct";
+    public const string DefaultFallbackModels = "openai/gpt-oss-20b";
 
     public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
     public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
@@ -67,7 +67,7 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
         string text = "";
         for (var m = 0; m < models.Count; m++)
         {
-            var payload = new JsonObject
+            var body = new JsonObject
             {
                 ["model"] = models[m],
                 ["messages"] = new JsonArray(
@@ -76,7 +76,10 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
                 ["temperature"] = temperature,
                 ["max_completion_tokens"] = MaxOutputTokens,
                 ["response_format"] = new JsonObject { ["type"] = "json_object" },
-            }.ToJsonString();
+            };
+            // Reasoning tokens count against the output cap and the per-minute limit; "medium" keeps answer checks careful without using them up.
+            if (models[m].StartsWith("openai/gpt-oss", StringComparison.OrdinalIgnoreCase)) body["reasoning_effort"] = "medium";
+            var payload = body.ToJsonString();
 
             for (var attempt = 1; ; attempt++)
             {

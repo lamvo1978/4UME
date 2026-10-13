@@ -19,27 +19,44 @@ public sealed class AiClient(GroqClient groq, GeminiClient gemini, ILogger<AiCli
     public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
     {
         if (!Configured) throw new InvalidOperationException(NotConfiguredMessage);
-        if (!groq.Configured) return await gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct);
+        if (!groq.Configured) return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+        if (!gemini.Configured) return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
 
         string groqError;
         try
         {
-            return await groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct);
+            return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
         }
-        catch (Exception ex) when (gemini.Configured && !ct.IsCancellationRequested
-                                   && ex is InvalidOperationException or HttpRequestException or TaskCanceledException)
+        catch (InvalidOperationException ex) when (!ct.IsCancellationRequested)
         {
             logger.LogWarning("Groq failed, falling back to Gemini: {Message}", ex.Message);
-            groqError = ex is InvalidOperationException ? ex.Message : "không kết nối được.";
+            groqError = ex.Message;
         }
 
         try
         {
-            return await gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct);
+            return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
         }
         catch (InvalidOperationException ex)
         {
             throw new InvalidOperationException($"Groq: {groqError} Gemini: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>Turns timeouts and network errors into a message the admin can read instead of a 500.</summary>
+    private static async Task<AiReply> Call(string provider, Func<Task<AiReply>> call, CancellationToken ct)
+    {
+        try
+        {
+            return await call();
+        }
+        catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
+        {
+            throw new InvalidOperationException($"{provider} trả lời quá lâu (quá 2 phút), hãy thử lại hoặc soạn ít câu hơn.", ex);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new InvalidOperationException($"Không kết nối được tới {provider}, hãy thử lại.", ex);
         }
     }
 }
