@@ -62,7 +62,8 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
         - Use everyday situations Vietnamese learners relate to; friendly content suitable for all ages; no brands, politics or celebrities.
         - Vary subjects, situations and sentence patterns; never repeat or lightly reword the existing questions given in the request.
         - "explanationVi": 1–2 short Vietnamese sentences explaining WHY the answer is right (the rule), not just repeating the answer.
-        - Only fill the fields that the question type uses; no markdown, no numbering inside prompts.
+        - Every field must be present: fill ALL fields the question type uses (never skip options/answer/answers/blanks),
+          and give "" or [] for the fields it does not use. No markdown, no numbering inside prompts.
         """;
 
     private const string CheckInstructions = """
@@ -264,7 +265,10 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
                             ["correction"] = Str(),
                             ["explanationVi"] = Str(),
                         },
-                        ["required"] = Names("type", "explanationVi"),
+                        // Every field is required: with optional fields Gemini sometimes drops the ones that matter (e.g. mcq options).
+                        // Fields the type doesn't use come back empty and Normalize drops them.
+                        ["required"] = Names("type", "prompt", "promptVi", "instructionVi", "source", "sentence", "options", "answer",
+                            "answers", "blanks", "distractors", "correction", "explanationVi"),
                     },
                 },
             },
