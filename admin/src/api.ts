@@ -26,7 +26,10 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
   const token = tokenStore.get();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } });
+  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } }).catch(() => {
+    // Browsers only say "Load failed" / "Failed to fetch" when the connection drops or times out.
+    throw new ApiError("Mất kết nối tới máy chủ hoặc máy chủ phản hồi quá lâu. Thử lại sau giây lát.", 0);
+  });
   if (res.status === 401 && token) onUnauthorized();
   if (!res.ok) {
     const body = await res.json().catch(() => null);

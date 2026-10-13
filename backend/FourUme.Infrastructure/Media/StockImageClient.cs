@@ -85,21 +85,32 @@ public class StockImageClient(HttpClient http, IOptions<StockImageOptions> optio
             || !DownloadHosts.Contains(uri.Host, StringComparer.OrdinalIgnoreCase))
             throw new InvalidOperationException("Đường dẫn ảnh không hợp lệ.");
 
-        using var response = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
-        if (!response.IsSuccessStatusCode) throw new InvalidOperationException($"Không tải được ảnh ({(int)response.StatusCode}).");
-        if (response.Content.Headers.ContentLength > MaxDownloadBytes) throw new InvalidOperationException("Ảnh quá lớn.");
-
-        await using var stream = await response.Content.ReadAsStreamAsync(ct);
-        using var buffer = new MemoryStream();
-        var chunk = new byte[81920];
-        int read;
-        while ((read = await stream.ReadAsync(chunk, ct)) > 0)
+        try
         {
-            if (buffer.Length + read > MaxDownloadBytes) throw new InvalidOperationException("Ảnh quá lớn.");
-            buffer.Write(chunk, 0, read);
+            using var response = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
+            if (!response.IsSuccessStatusCode) throw new InvalidOperationException($"Không tải được ảnh ({(int)response.StatusCode}).");
+            if (response.Content.Headers.ContentLength > MaxDownloadBytes) throw new InvalidOperationException("Ảnh quá lớn.");
+
+            await using var stream = await response.Content.ReadAsStreamAsync(ct);
+            using var buffer = new MemoryStream();
+            var chunk = new byte[81920];
+            int read;
+            while ((read = await stream.ReadAsync(chunk, ct)) > 0)
+            {
+                if (buffer.Length + read > MaxDownloadBytes) throw new InvalidOperationException("Ảnh quá lớn.");
+                buffer.Write(chunk, 0, read);
+            }
+            return buffer.ToArray();
         }
-        return buffer.ToArray();
+        catch (Exception ex) when (ex is HttpRequestException or IOException || IsTimeout(ex, ct))
+        {
+            logger.LogWarning(ex, "Downloading {Url} failed", uri);
+            throw new InvalidOperationException("Không tải được ảnh, nguồn ảnh phản hồi quá chậm. Thử lại sau.");
+        }
     }
+
+    /// <summary>HttpClient.Timeout surfaces as a cancellation the caller never asked for.</summary>
+    private static bool IsTimeout(Exception ex, CancellationToken ct) => ex is TaskCanceledException && !ct.IsCancellationRequested;
 
     // ---------- Pexels ----------
 
@@ -189,6 +200,11 @@ public class StockImageClient(HttpClient http, IOptions<StockImageOptions> optio
             {
                 logger.LogWarning(ex, "{Source} request failed", source);
                 throw new StockProviderException(source, $"{Label(source)}: không kết nối được.");
+            }
+            catch (TaskCanceledException ex) when (IsTimeout(ex, ct))
+            {
+                logger.LogWarning("{Source} request timed out", source);
+                throw new StockProviderException(source, $"{Label(source)}: phản hồi quá chậm, thử lại sau ít phút.");
             }
             using (response)
             {

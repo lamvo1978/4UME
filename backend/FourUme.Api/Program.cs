@@ -115,6 +115,19 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 
+// A client that hangs up mid-request is not a server error; keep it out of the logs and Sentry.
+app.Use(async (ctx, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (OperationCanceledException) when (ctx.RequestAborted.IsCancellationRequested)
+    {
+        if (!ctx.Response.HasStarted) ctx.Response.StatusCode = 499;
+    }
+});
+
 var mediaPath = Path.GetFullPath(builder.Configuration[$"{MediaOptions.SectionName}:Path"] ?? "media");
 Directory.CreateDirectory(mediaPath);
 app.UseStaticFiles(new StaticFileOptions

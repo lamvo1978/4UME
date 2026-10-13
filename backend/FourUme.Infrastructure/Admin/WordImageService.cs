@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Domain.Entities;
@@ -18,6 +19,8 @@ public class WordImageService(
     ILogger<WordImageService> logger) : IWordImageService
 {
     public const int MaxBatch = 20;
+    /// <summary>Keeps one auto-assign request well under the browser / Cloudflare timeout; the admin page resumes from the cursor.</summary>
+    private static readonly TimeSpan AutoBudget = TimeSpan.FromSeconds(30);
     private readonly string _mediaFolder = Path.GetFullPath(mediaOptions.Value.Path);
 
     public async Task<StockSearchResult> SearchAsync(string query, int page, CancellationToken ct = default)
@@ -92,8 +95,15 @@ public class WordImageService(
         var items = new List<AutoImageItem>();
         string? warning = null;
         string? last = request.After;
+        var started = Stopwatch.StartNew();
+        var outOfTime = false;
         foreach (var word in words)
         {
+            if (items.Count > 0 && started.Elapsed > AutoBudget)
+            {
+                outOfTime = true;
+                break;
+            }
             StockPhoto? photo = null;
             foreach (var source in sources.ToList())
             {
@@ -134,7 +144,7 @@ public class WordImageService(
         if (items.Any(i => i.ImageUrl is not null)) WordSearchIndex.Invalidate();
 
         var stopped = sources.Count == 0;
-        var next = stopped || words.Count == batch ? last : null;
+        var next = stopped || outOfTime || words.Count == batch ? last : null;
         var remaining = next is null ? 0 : await MissingImage(request, last).CountAsync(ct);
         return new AutoImageResult(items.Count(i => i.ImageUrl is not null), items, next, remaining, warning, stopped);
     }
