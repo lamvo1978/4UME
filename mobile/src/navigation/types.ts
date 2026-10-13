@@ -1,5 +1,5 @@
 import type { NavigatorScreenParams } from "@react-navigation/native";
-import type { FeedbackCategory } from "../api/client";
+import type { FeedbackCategory, GrammarMixedScope } from "../api/client";
 
 /** No params (or mode "due") = today's scheduled review; "practice" never raises levels; `weak` = "Ôn từ hay sai". */
 export type ReviewParams =
@@ -38,7 +38,10 @@ export type RootStackParamList = {
 /** "ielts" only exists in the Study hub, for partner students with that feature. */
 export type HubTab = "vocab" | "grammar" | "ielts";
 
-export type GrammarReviewParams = { mode: "due" } | { mode: "practice"; slug?: string; title?: string };
+export type GrammarReviewParams =
+  | { mode: "due" }
+  | { mode: "practice"; slug?: string; title?: string }
+  | { mode: "mixed"; scope: GrammarMixedScope };
 
 export type MainTabParamList = {
   Home: undefined;

@@ -2,7 +2,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { GrammarExercise } from "../../api/client";
-import { displayAnswer, isCorrect, parseErrorSentence, QuizItem, QuizResult } from "../../grammar/quiz";
+import {
+  clozeGapCorrect,
+  displayAnswer,
+  isCorrect,
+  parseErrorSentence,
+  QuizItem,
+  QuizResult,
+  splitCloze,
+} from "../../grammar/quiz";
 import { colors, shadow, spacing } from "../../theme";
 import { SentenceBuilder, sentenceTokens } from "../SentenceBuilder";
 import { SpeakButton } from "../SpeakButton";
@@ -15,6 +23,7 @@ const INSTRUCTIONS: Record<GrammarExercise["type"], string> = {
   order: "Sắp xếp thành câu đúng",
   transform: "Đổi câu",
   error: "Chạm vào từ sai trong câu",
+  cloze: "Điền vào đoạn văn",
 };
 
 /**
@@ -157,6 +166,10 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
         </View>
       ) : null}
 
+      {ex.type === "cloze" ? (
+        <ClozeInputs key={item.key} ex={ex} feedback={feedback} onCheck={check} onReveal={reveal} />
+      ) : null}
+
       {ex.type === "order" || ex.type === "transform" ? (
         <SentenceBuilder
           key={item.key}
@@ -212,7 +225,86 @@ function Prompt({ ex }: { ex: GrammarExercise }) {
       return <Text style={styles.prompt}>{ex.source}</Text>;
     case "error":
       return null;
+    case "cloze": {
+      const { parts, hints } = splitCloze(ex.prompt);
+      return (
+        <Text style={styles.paragraph}>
+          {parts.map((text, i) => (
+            <Text key={i}>
+              {text}
+              {i < hints.length ? (
+                <Text style={styles.gap}>
+                  {` (${i + 1}) _____`}
+                  {hints[i] ? <Text style={styles.gapHint}>{` (${hints[i]})`}</Text> : null}
+                </Text>
+              ) : null}
+            </Text>
+          ))}
+        </Text>
+      );
+    }
   }
+}
+
+function ClozeInputs({
+  ex,
+  feedback,
+  onCheck,
+  onReveal,
+}: {
+  ex: Extract<GrammarExercise, { type: "cloze" }>;
+  feedback: Feedback | null;
+  onCheck: (given: string) => void;
+  onReveal: () => void;
+}) {
+  const [values, setValues] = useState(() => ex.blanks.map(() => ""));
+  const inputs = useRef<(TextInput | null)[]>([]);
+  const { hints } = splitCloze(ex.prompt);
+  const filled = values.every((v) => v.trim());
+  const submit = () => filled && onCheck(JSON.stringify(values));
+
+  return (
+    <View style={styles.fillBox}>
+      {ex.blanks.map((accepted, i) => {
+        const ok = clozeGapCorrect(accepted, values[i]);
+        return (
+          <View key={i} style={styles.gapRow}>
+            <Text style={styles.gapNumber}>{i + 1}</Text>
+            <View style={styles.flex}>
+              <TextInput
+                ref={(r) => {
+                  inputs.current[i] = r;
+                }}
+                style={[styles.input, styles.gapInput, feedback && (ok ? styles.inputCorrect : styles.inputWrong)]}
+                value={values[i]}
+                onChangeText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))}
+                placeholder={hints[i] ?? "Gõ đáp án"}
+                placeholderTextColor={colors.muted}
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!feedback}
+                returnKeyType={i < ex.blanks.length - 1 ? "next" : "done"}
+                blurOnSubmit={i === ex.blanks.length - 1}
+                onSubmitEditing={() => (i < ex.blanks.length - 1 ? inputs.current[i + 1]?.focus() : submit())}
+              />
+              {feedback && !ok ? <Text style={styles.gapAnswer}>{accepted[0]}</Text> : null}
+            </View>
+          </View>
+        );
+      })}
+      {!feedback ? (
+        <View style={styles.fillActions}>
+          <Pressable onPress={onReveal} style={({ pressed }) => [styles.revealBtn, pressed && styles.pressed]} hitSlop={6}>
+            <Ionicons name="eye-outline" size={18} color={colors.accent} />
+            <Text style={styles.revealText}>Xem đáp án</Text>
+          </Pressable>
+          <Pressable style={[styles.primaryBtn, styles.flex, !filled && styles.disabled]} disabled={!filled} onPress={submit}>
+            <Text style={styles.primaryBtnText}>Kiểm tra</Text>
+          </Pressable>
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 function ErrorTokens({
@@ -277,6 +369,13 @@ const styles = StyleSheet.create({
   instruction: { color: colors.muted, fontWeight: "600" },
   prompt: { fontSize: 22, lineHeight: 31, fontWeight: "700", color: colors.ink },
   promptVi: { fontSize: 20, lineHeight: 28, fontWeight: "700", color: colors.accent },
+  paragraph: { fontSize: 17, lineHeight: 27, color: colors.ink },
+  gap: { fontWeight: "800", color: colors.accent },
+  gapHint: { fontWeight: "600", color: colors.muted },
+  gapRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+  gapNumber: { width: 24, paddingTop: 14, fontSize: 16, fontWeight: "800", color: colors.accent, textAlign: "center" },
+  gapInput: { paddingVertical: 12, fontSize: 18, textAlign: "left" },
+  gapAnswer: { marginTop: 4, marginLeft: 4, fontSize: 15, fontWeight: "700", color: colors.accent },
   options: { gap: 10 },
   option: {
     flexDirection: "row",

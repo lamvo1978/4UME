@@ -207,7 +207,11 @@ export function RootNavigator() {
               component={GrammarReviewScreen}
               options={({ route }) => ({
                 title:
-                  route.params?.mode === "practice" ? (route.params.title ?? "Luyện ngữ pháp") : "Ôn ngữ pháp hôm nay",
+                  route.params?.mode === "practice"
+                    ? (route.params.title ?? "Luyện ngữ pháp")
+                    : route.params?.mode === "mixed"
+                      ? "Luyện tập tổng hợp"
+                      : "Ôn ngữ pháp hôm nay",
               })}
             />
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />

@@ -7,7 +7,7 @@ import { useAuth } from "../auth/AuthContext";
 import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { KeyboardScreen } from "../components/KeyboardScreen";
-import { QuizItem, QuizResult, sampleExercises } from "../grammar/quiz";
+import { QuizItem, QuizResult, sampleForSession } from "../grammar/quiz";
 import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
 import { shuffle } from "../utils/shuffle";
@@ -17,6 +17,9 @@ type Props = NativeStackScreenProps<RootStackParamList, "GrammarReview">;
 /** Mixed sessions take a few questions per lesson; practicing one lesson takes a full quiz. */
 const PER_LESSON_MIXED = 3;
 const PER_LESSON_SINGLE = 8;
+/** "Luyện tập tổng hợp": questions spread over this many lessons. */
+const MIXED_LESSONS = 6;
+const MIXED_TOTAL = 15;
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -27,8 +30,9 @@ type Outcome = { levelUp: number; withMistakes: number; pulled: number; relearn:
 
 export function GrammarReviewScreen({ route, navigation }: Props) {
   const params = route.params ?? { mode: "due" };
-  const practice = params.mode === "practice";
-  const slug = practice ? params.slug : undefined;
+  const practice = params.mode !== "due";
+  const mixedScope = params.mode === "mixed" ? params.scope : undefined;
+  const slug = params.mode === "practice" ? params.slug : undefined;
   const { refreshMe } = useAuth();
   const [lessons, setLessons] = useState<GrammarReviewItem[]>([]);
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
@@ -43,13 +47,21 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
     setOutcome(null);
     try {
       const [items, s] = await Promise.all([
-        practice ? api.grammarPractice(slug, slug ? 1 : 4) : api.grammarReviewDue(),
+        mixedScope
+          ? api.grammarMixed(mixedScope, MIXED_LESSONS)
+          : practice
+            ? api.grammarPractice(slug, slug ? 1 : 4)
+            : api.grammarReviewDue(),
         api.grammarReviewSummary(),
       ]);
-      const perLesson = items.length === 1 ? PER_LESSON_SINGLE : PER_LESSON_MIXED;
-      const quizItems = shuffle(
+      const perLesson = mixedScope
+        ? Math.ceil(MIXED_TOTAL / Math.max(items.length, 1))
+        : items.length === 1
+          ? PER_LESSON_SINGLE
+          : PER_LESSON_MIXED;
+      let quizItems = shuffle(
         items.flatMap((l) =>
-          sampleExercises(l.exercises, perLesson).map((exercise) => ({
+          sampleForSession(l, perLesson).map((exercise) => ({
             key: `${l.slug}:${exercise.id}`,
             slug: l.slug,
             label: items.length > 1 ? l.titleVi : undefined,
@@ -57,7 +69,9 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
           }))
         )
       );
-      setLessons(items);
+      if (mixedScope) quizItems = quizItems.slice(0, MIXED_TOTAL);
+      const inSession = new Set(quizItems.map((q) => q.slug));
+      setLessons(items.filter((l) => inSession.has(l.slug)));
       setSummary(s);
       setQuiz((q) => ({ run: q.run + 1, items: quizItems }));
     } catch (e) {
@@ -65,7 +79,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [practice, slug]);
+  }, [practice, slug, mixedScope]);
 
   useEffect(() => {
     load();
@@ -75,6 +89,19 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
     const clean = lessons.filter((l) => !result.mistakesBySlug[l.slug]).length;
     const next: Outcome = { levelUp: clean, withMistakes: lessons.length - clean, pulled: 0, relearn: [] };
     setOutcome(next);
+    if (mixedScope) {
+      try {
+        const res = await api.completeGrammarMixed(
+          Object.fromEntries(lessons.map((l) => [l.slug, result.mistakesBySlug[l.slug] ?? 0]))
+        );
+        next.pulled = res.pulled;
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Không lưu được kết quả");
+      }
+      setOutcome({ ...next });
+      refreshMe().catch(() => undefined);
+      return;
+    }
     for (const l of lessons) {
       const mistakes = result.mistakesBySlug[l.slug] ?? 0;
       try {
@@ -110,7 +137,11 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
         </View>
         <Text style={styles.doneTitle}>{practice ? "Chưa có bài để luyện" : "Không có bài ngữ pháp cần ôn"}</Text>
         <Text style={styles.doneSub}>
-          {!canPractice
+          {mixedScope
+            ? mixedScope === "learned"
+              ? "Làm bài kiểm tra cuối ít nhất một bài ngữ pháp, rồi quay lại luyện tổng hợp nhé."
+              : `Trình độ ${mixedScope} chưa có bài ngữ pháp.`
+            : !canPractice
             ? "Hoàn thành bài học ngữ pháp (đúng từ 70%) để bài được đưa vào lịch ôn."
             : summary?.nextDueAt
               ? `Lần ôn tiếp theo: ngày ${formatDate(summary.nextDueAt)}. Bạn vẫn có thể luyện thêm.`
@@ -118,7 +149,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
         </Text>
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <View style={styles.actions}>
-          {!practice && canPractice ? (
+          {!practice && canPractice && !mixedScope ? (
             <Pressable style={styles.primaryBtn} onPress={startPractice}>
               <Text style={styles.primaryBtnText}>Luyện thêm</Text>
             </Pressable>

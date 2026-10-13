@@ -292,7 +292,8 @@ export type GrammarExercise =
   | (ExerciseBase & { type: "fill"; prompt: string; answers: string[] })
   | (ExerciseBase & { type: "order"; promptVi: string; answer: string; distractors?: string[] })
   | (ExerciseBase & { type: "transform"; instructionVi: string; source: string; answer: string; distractors?: string[] })
-  | (ExerciseBase & { type: "error"; sentence: string; correction: string });
+  | (ExerciseBase & { type: "error"; sentence: string; correction: string })
+  | (ExerciseBase & { type: "cloze"; prompt: string; blanks: string[][] });
 
 export type GrammarDetail = {
   slug: string;
@@ -319,7 +320,11 @@ export type GrammarReviewItem = {
   titleVi: string;
   level: number;
   exercises: GrammarExercise[];
+  practice?: GrammarExercise[];
 };
+
+/** "learned" = lessons done at least once, or a CEFR level. */
+export type GrammarMixedScope = "learned" | "A1" | "A2" | "B1" | "B2";
 
 export type GrammarReviewAnswerResult = {
   slug: string;
@@ -711,5 +716,12 @@ export const api = {
     request<GrammarReviewAnswerResult>("/api/grammar/review/practice/answer", {
       method: "POST",
       body: JSON.stringify({ slug, mistakes }),
+    }),
+  grammarMixed: (scope: GrammarMixedScope, limit = 6) =>
+    request<GrammarReviewItem[]>(`/api/grammar/mixed?scope=${scope}&limit=${limit}`),
+  completeGrammarMixed: (mistakes: Record<string, number>) =>
+    request<{ pulled: number }>("/api/grammar/mixed/complete", {
+      method: "POST",
+      body: JSON.stringify({ mistakes }),
     }),
 };

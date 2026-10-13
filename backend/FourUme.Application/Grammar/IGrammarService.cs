@@ -13,4 +13,8 @@ public interface IGrammarService
     Task<IReadOnlyList<GrammarReviewItemDto>> GetPracticeAsync(Guid userId, string? slug, int limit, CancellationToken ct = default);
     Task<GrammarReviewAnswerResponse> AnswerReviewAsync(Guid userId, GrammarReviewAnswerRequest request, CancellationToken ct = default);
     Task<GrammarReviewAnswerResponse> AnswerPracticeAsync(Guid userId, GrammarReviewAnswerRequest request, CancellationToken ct = default);
+
+    /// <param name="scope"><see cref="GrammarMixedScopes.Learned"/> or a CEFR level (A1–B2).</param>
+    Task<IReadOnlyList<GrammarReviewItemDto>> GetMixedAsync(Guid userId, string scope, int limit, CancellationToken ct = default);
+    Task<GrammarMixedCompleteResponse> CompleteMixedAsync(Guid userId, GrammarMixedCompleteRequest request, CancellationToken ct = default);
 }
