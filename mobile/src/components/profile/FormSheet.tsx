@@ -57,7 +57,7 @@ export function FormSheet({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
-      <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === "web" ? undefined : "padding"}>
         <Pressable style={styles.backdrop} onPress={close} />
         <View style={styles.sheet}>
           <View style={styles.handle} />

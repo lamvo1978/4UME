@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { api } from "../api/client";
+import { ensureChannels } from "./reminders";
 
 /** Token sent to the server in this session, so it is posted once and can be removed on logout. */
 let registered: string | null = null;
@@ -14,6 +15,7 @@ export async function registerPushToken() {
   if (Platform.OS === "web") return;
   const { granted } = await Notifications.getPermissionsAsync();
   if (!granted) return;
+  await ensureChannels().catch(() => undefined);
   const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
   const { data: token } = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
   if (token === registered) return;

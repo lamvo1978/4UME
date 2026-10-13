@@ -29,7 +29,25 @@ Notifications.setNotificationHandler({
   }),
 });
 
+/**
+ * Android 13+ only shows the permission prompt once a channel exists. "default" is the channel Expo's push service
+ * uses for server pushes; creating it here gives it a Vietnamese name instead of the system's "Miscellaneous".
+ */
+export async function ensureChannels() {
+  if (Platform.OS !== "android") return;
+  await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
+    name: "Nhắc học",
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
+  await Notifications.setNotificationChannelAsync("default", {
+    name: "Tin từ 4UME",
+    description: "Tổng kết tuần, trả lời góp ý và tin mới",
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
+}
+
 export async function ensureReminderPermission(): Promise<boolean> {
+  await ensureChannels().catch(() => undefined);
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
   if (!current.canAskAgain) return false;
@@ -157,12 +175,7 @@ export async function syncReminders(
   const { granted } = await Notifications.getPermissionsAsync();
   if (!granted) return;
 
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
-      name: "Nhắc học",
-      importance: Notifications.AndroidImportance.DEFAULT,
-    });
-  }
+  await ensureChannels();
 
   for (const p of planned) {
     await Notifications.scheduleNotificationAsync({

@@ -101,7 +101,7 @@ export function FeedbackThreadScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.root}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "web" ? undefined : "padding"}
       keyboardVerticalOffset={headerHeight}
     >
       <ScrollView
