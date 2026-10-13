@@ -86,11 +86,24 @@ MỜI BẠN BÈ
 Demo account is provided above. New accounts need an email verification code, so please use the demo account.
 
 - Microphone is used only for pronunciation scoring when the user taps the record button. Audio is sent to Microsoft Azure Speech for scoring and is not stored.
-- Notifications are optional study reminders, a weekly summary and replies to the user's feedback.
+- Notifications are optional: study reminders, a weekly summary, replies to the user's feedback, and occasional news about new lessons or features (can be turned off in Profile > Settings > "Tin mới từ 4UME"). No promotional or marketing messages are sent.
 - The app is free and has no in-app purchases or ads. The "Premium" screen only describes upcoming features ("coming soon"); nothing can be bought.
 - Premium days can be earned for free by inviting friends, or are provided to students of partner English centers that enroll them through an access code (Guideline 3.1.3(c), access purchased by the organization for its students). No payment is made by users in or outside the app.
 - Account deletion: Profile > Settings > Delete account.
 ```
+
+### Các bước nộp trên App Store Connect
+
+Làm sau 5–7 ngày bạn bè thử trên TestFlight. Điền trước được, chỉ bấm *Add for Review* khi đã chọn bản build cuối.
+
+1. **Tài khoản demo** (làm trước): admin → *Người dùng* → *Thêm tài khoản* với email demo ở trên, cấp Premium (để người duyệt chấm phát âm không bị hết lượt). Đăng nhập tài khoản này trên điện thoại, học vài thẻ từ, một bài nghe, một bài ngữ pháp để màn hình có dữ liệu. Không gắn mã trung tâm (tab IELTS chỉ có chữ *Sắp có*, dễ bị coi là chưa hoàn thiện).
+2. **App Information**: Name, Subtitle, danh mục *Education*, *Content Rights* → **Yes, contains third-party content** và có quyền dùng (ảnh Pexels / Pixabay, giọng đọc máy). *Age Rating* → bảng câu hỏi mới của Apple: trả lời **No / None** hết, kể cả *Messaging and Chat*, *User-Generated Content* (góp ý chỉ gửi 4UME), *Advertising*, *Parental Controls*, *Age Assurance* → ra **4+**.
+3. **Pricing and Availability**: *Free*. Quốc gia: chỉ **Vietnam** cho lần đầu. Nếu chọn cả EU, Apple bắt khai *trader status* (Digital Services Act) và hiện công khai địa chỉ, số điện thoại.
+4. **App Privacy**: Privacy Policy URL + bảng bên dưới, bấm *Publish*.
+5. **Phiên bản 1.0**: ảnh `store/ios/screenshots-6.9/` (1290×2796, Apple nhận cho ô 6,9"), Promotional Text, Description, Keywords, Support URL, Copyright.
+6. **Build**: chọn bản build mới nhất đã thử trên TestFlight. Mã hoá đã khai trong `app.json` (`ITSAppUsesNonExemptEncryption: false`), nên không bị hỏi.
+7. **App Review Information**: *Sign-in required* → nhập email + mật khẩu demo (chỉ gõ ở đây), số điện thoại liên hệ, dán *Notes* ở trên.
+8. *Version Release*: **Manually release** để tự chọn ngày lên store sau khi được duyệt. Bấm *Add for Review* → *Submit*.
 
 ### App Privacy (Apple)
 
