@@ -259,7 +259,6 @@ function ClozeInputs({
 }) {
   const [values, setValues] = useState(() => ex.blanks.map(() => ""));
   const inputs = useRef<(TextInput | null)[]>([]);
-  const { hints } = splitCloze(ex.prompt);
   const filled = values.every((v) => v.trim());
   const submit = () => filled && onCheck(JSON.stringify(values));
 
@@ -278,7 +277,7 @@ function ClozeInputs({
                 style={[styles.input, styles.gapInput, feedback && (ok ? styles.inputCorrect : styles.inputWrong)]}
                 value={values[i]}
                 onChangeText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))}
-                placeholder={hints[i] ?? "Gõ đáp án"}
+                placeholder={`Chỗ trống ${i + 1}`}
                 placeholderTextColor={colors.muted}
                 autoCapitalize="none"
                 autoCorrect={false}

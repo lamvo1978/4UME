@@ -54,11 +54,17 @@ export function sampleForSession(item: { exercises: GrammarExercise[]; practice?
 /** A gap in a cloze paragraph: `___` with an optional "(hint)" right after it. */
 const CLOZE_GAP = /_{3,}(\s*\([^)]*\))?/g;
 
+/** Dialogues are stored on one line ("A: … B: …"); each speaker turn starts a new line on screen. */
+export function clozeLines(text: string) {
+  return text.replace(/\s+(?=[A-Z][a-z]{0,10}: )/g, "\n");
+}
+
 /** Splits a cloze paragraph into text runs around the gaps; `hints[i]` belongs to gap i. */
 export function splitCloze(prompt: string) {
   const parts: string[] = [];
   const hints: (string | null)[] = [];
   let last = 0;
+  prompt = clozeLines(prompt);
   for (const m of prompt.matchAll(CLOZE_GAP)) {
     parts.push(prompt.slice(last, m.index));
     hints.push(m[1] ? m[1].trim().slice(1, -1).trim() : null);
@@ -114,7 +120,7 @@ export function displayAnswer(ex: GrammarExercise) {
       return correctedErrorSentence(ex.sentence, ex.correction);
     case "cloze": {
       let i = 0;
-      return ex.prompt.replace(CLOZE_GAP, () => ex.blanks[i++]?.[0] ?? "___");
+      return clozeLines(ex.prompt.replace(CLOZE_GAP, () => ex.blanks[i++]?.[0] ?? "___"));
     }
   }
 }
