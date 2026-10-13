@@ -26,7 +26,11 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
   const token = tokenStore.get();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } });
+  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...(init.headers as object) } }).catch((e) => {
+    if (init.signal?.aborted) throw e;
+    // Browsers only say "Load failed" / "Failed to fetch" when the connection drops or times out.
+    throw new ApiError("Mất kết nối tới máy chủ hoặc máy chủ phản hồi quá lâu. Thử lại sau giây lát.", 0);
+  });
   if (res.status === 401 && token) onUnauthorized();
   if (!res.ok) {
     const body = await res.json().catch(() => null);
@@ -761,7 +765,8 @@ export const api = {
     request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image`, json("PUT", ref)),
   approveWordImage: (id: string) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image/approve`, { method: "POST" }),
   removeWordImage: (id: string) => request<AdminWord>(`/api/admin/words/${encodeURIComponent(id)}/image`, { method: "DELETE" }),
-  autoImages: (r: AutoImageRequest) => request<AutoImageResult>("/api/admin/words/auto-images", json("POST", r)),
+  autoImages: (r: AutoImageRequest, signal?: AbortSignal) =>
+    request<AutoImageResult>("/api/admin/words/auto-images", { ...json("POST", r), signal }),
 };
 
 export const stockLabel = (source: string) => (source === "pexels" ? "Pexels" : source === "pixabay" ? "Pixabay" : source);

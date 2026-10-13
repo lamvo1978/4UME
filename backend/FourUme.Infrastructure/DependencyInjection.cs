@@ -100,7 +100,7 @@ public static class DependencyInjection
         services.AddMemoryCache();
         services.AddHttpClient<StockImageClient>(c =>
         {
-            c.Timeout = TimeSpan.FromSeconds(20);
+            c.Timeout = TimeSpan.FromSeconds(15);
             c.DefaultRequestHeaders.UserAgent.ParseAdd("4UME/1.0 (+https://admin.4ume.io.vn)");
         });
         services.AddScoped<IWordImageService, WordImageService>();

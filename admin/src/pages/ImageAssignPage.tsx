@@ -531,7 +531,19 @@ function AutoAssignModal({
   const [stats, setStats] = useState<AutoStats | null>(null);
   const [message, setMessage] = useState<{ color: string; text: string } | null>(null);
   const [cursor, setCursor] = useState<string | null>(null);
+  const [stopping, setStopping] = useState(false);
   const stop = useRef(false);
+  const abort = useRef<AbortController | null>(null);
+
+  function stopNow() {
+    stop.current = true;
+    abort.current?.abort();
+  }
+
+  function close() {
+    stopNow();
+    onClose();
+  }
 
   function reset(next: Filters) {
     setFilters(next);
@@ -542,6 +554,7 @@ function AutoAssignModal({
 
   async function start() {
     stop.current = false;
+    setStopping(false);
     setRunning(true);
     setMessage(null);
     let after = cursor ?? undefined;
@@ -549,7 +562,8 @@ function AutoAssignModal({
     try {
       for (;;) {
         const request: AutoImageRequest = { ...filters, after, batch: 8 };
-        const r = await api.autoImages(request);
+        abort.current = new AbortController();
+        const r = await api.autoImages(request, abort.current.signal);
         current = {
           processed: current.processed + r.items.length,
           assigned: current.assigned + r.assigned,
@@ -572,9 +586,15 @@ function AutoAssignModal({
         if (stop.current) break;
       }
     } catch (e) {
-      setMessage({ color: "red", text: e instanceof Error ? e.message : String(e) });
+      if (abort.current?.signal.aborted) {
+        setMessage({ color: "yellow", text: 'Đã dừng. Ảnh đã gán vẫn được giữ; bấm "Tiếp tục" để làm tiếp.' });
+      } else {
+        setMessage({ color: "red", text: e instanceof Error ? e.message : String(e) });
+      }
     } finally {
+      abort.current = null;
       setRunning(false);
+      setStopping(false);
     }
   }
 
@@ -582,7 +602,7 @@ function AutoAssignModal({
   const totalKnown = stats?.remaining != null ? done + stats.remaining : null;
 
   return (
-    <Modal opened={opened} onClose={() => !running && onClose()} title="Tự gán ảnh" size="lg" closeOnClickOutside={!running}>
+    <Modal opened={opened} onClose={close} title="Tự gán ảnh" size="lg" closeOnClickOutside={!running}>
       <Stack>
         <Text fz="sm">
           Với mỗi từ chưa có ảnh, máy chủ tìm theo chính từ đó và lấy <b>ảnh đầu tiên</b> (Pexels trước, không có thì Pixabay). Ảnh được
@@ -648,10 +668,14 @@ function AutoAssignModal({
               color="orange"
               leftSection={<IconPlayerPause size={16} />}
               onClick={() => {
-                stop.current = true;
+                if (stopping) stopNow();
+                else {
+                  stop.current = true;
+                  setStopping(true);
+                }
               }}
             >
-              Dừng sau lượt này
+              {stopping ? "Dừng ngay" : "Dừng sau lượt này"}
             </Button>
           ) : (
             <Button leftSection={<IconPlayerPlay size={16} />} onClick={start}>
