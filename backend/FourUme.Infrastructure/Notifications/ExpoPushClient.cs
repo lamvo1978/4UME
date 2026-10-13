@@ -38,6 +38,8 @@ public class ExpoPushClient(IHttpClientFactory http, IOptions<PushOptions> optio
             data = message.Data,
             sound = "default",
             priority = "high",
+            // Created by the app ("Tin từ 4UME") before it registers a token; Android drops pushes to a missing channel.
+            channelId = "default",
         });
         using var request = new HttpRequestMessage(HttpMethod.Post, Url) { Content = JsonContent.Create(payload) };
         if (!string.IsNullOrWhiteSpace(options.Value.ExpoAccessToken))

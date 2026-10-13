@@ -423,7 +423,7 @@ function TextsField({ field, value, onChange }: { field: Field; value: string | 
 }
 
 /** Roughly how the reminder looks on a phone's lock screen. */
-function Banner({ caption, title, body }: { caption: string; title: string; body: string }) {
+export function Banner({ caption, title, body }: { caption: string; title: string; body: string }) {
   return (
     <div>
       <Text fz="xs" c="dimmed" mb={4}>

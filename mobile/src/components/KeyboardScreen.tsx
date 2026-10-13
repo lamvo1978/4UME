@@ -14,7 +14,7 @@ export function KeyboardScreen({ children, style, contentContainerStyle }: Props
   return (
     <KeyboardAvoidingView
       style={[styles.flex, style]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "web" ? undefined : "padding"}
       keyboardVerticalOffset={headerHeight}
     >
       <ScrollView

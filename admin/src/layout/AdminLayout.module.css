@@ -10,6 +10,55 @@
   font-weight: 600;
 }
 
+.groupLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--mantine-radius-md);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mantine-color-gray-6);
+}
+
+.groupLabel:hover {
+  background: var(--mantine-color-gray-1);
+}
+
+.chevron {
+  transition: transform 150ms ease;
+}
+
+.chevron[data-open] {
+  transform: rotate(90deg);
+}
+
+.railItem {
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-gray-7);
+}
+
+.railItem:hover {
+  background: var(--mantine-color-gray-1);
+}
+
+.railItem[data-active] {
+  background: var(--mantine-color-brand-light);
+  color: var(--mantine-color-brand-7);
+}
+
+.railMenuItem[data-active] {
+  background: var(--mantine-color-brand-light);
+  color: var(--mantine-color-brand-7);
+  font-weight: 600;
+}
+
 .account {
   border-top: 1px solid var(--mantine-color-gray-3);
 }

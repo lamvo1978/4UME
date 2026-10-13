@@ -1,8 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ComponentProps, useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, Share, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api, MyReferral } from "../api/client";
+import { KeyboardScreen } from "../components/KeyboardScreen";
 import { formatDayMonthYear } from "../utils/dates";
 import { useAuth } from "../auth/AuthContext";
 import { colors, shadow, spacing } from "../theme";
@@ -65,12 +66,7 @@ export function InviteScreen() {
 
   const left = Math.max(0, data.maxRewards - data.rewardsEarned);
   return (
-    <ScrollView
-      style={styles.root}
-      contentContainerStyle={[styles.content, { paddingBottom: spacing.xl + insets.bottom }]}
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
-    >
+    <KeyboardScreen style={styles.root} contentContainerStyle={[styles.content, { paddingBottom: spacing.xl + insets.bottom }]}>
       {me?.partnerName ? (
         <View style={styles.partner}>
           <Ionicons name="school" size={20} color={colors.white} />
@@ -178,7 +174,7 @@ export function InviteScreen() {
       ) : (
         <Text style={styles.hint}>Chương trình mời bạn đang tạm dừng.</Text>
       )}
-    </ScrollView>
+    </KeyboardScreen>
   );
 }
 

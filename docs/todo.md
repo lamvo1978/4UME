@@ -15,7 +15,15 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 
 ## 3. Chuẩn bị hồ sơ store
 
-- [ ] Mô tả ngắn / đầy đủ, từ khoá, danh mục *Giáo dục*.
+Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho người duyệt: [store-listing.md](store-listing.md).
+
+- [x] iOS: bản 4 gửi duyệt TestFlight bên ngoài (nhóm *Friends*, 13/10) → duyệt xong bật **Public Link** gửi bạn bè.
+- [ ] **Android** (Google đã xác minh danh tính 13/10):
+  1. Firebase: tạo project `4UME` (tắt Analytics), thêm app Android `com.fourume.app`, tải `google-services.json` vào `mobile/`; tạo khoá *service account* FCM V1 rồi `npx eas-cli credentials` → Android → *Push Notifications (FCM V1)* → tải khoá lên. Agent nối `android.googleServicesFile` trong `app.json`.
+  2. Play Console: tạo app *4UME - Học tiếng Anh*, điền *Nội dung ứng dụng* + *An toàn dữ liệu* theo [store-listing.md](store-listing.md#google-play-play-console), khai quyền phát nền (*Media playback*).
+  3. `npx eas-cli build -p android --profile production` → tải `.aab` lên *Thử nghiệm kín* bằng tay (lần đầu bắt buộc).
+  4. Gom **12 người thử Android** (Gmail), giữ đủ **14 ngày** → xin phát hành chính thức.
+- [ ] Mô tả ngắn / đầy đủ, từ khoá, danh mục *Giáo dục* (đã có nháp, chờ dán vào store).
 - [ ] Ảnh chụp màn hình iPhone 6,9" và 6,5", Android; ảnh nổi bật Google Play 1024×500.
 - [ ] Biểu tượng 1024×1024 không trong suốt.
 - [ ] **Tài khoản demo** cho người duyệt (có sẵn ít tiến độ học, không phải tài khoản quản trị).
@@ -24,7 +32,8 @@ Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật k
 ## 4. Bản build riêng (EAS) — cần tài khoản Apple Developer
 
 - [x] Thông báo đẩy thật từ máy chủ (13/10, iOS từ build 3): tổng kết tuần, gọi quay lại sau 14/30 ngày, báo khi 4UME trả lời góp ý, nút *Gửi thông báo thử* ở trang người dùng; nội dung sửa ở admin *Thông báo* — xem [notifications.md](notifications.md#giai-đoạn-2--thông-báo-đẩy-từ-máy-chủ-đã-làm-ios-trước). Android chờ Firebase (sau khi Google Play xong).
-- [ ] **Gửi thông báo hàng loạt** trên admin *Thông báo*: soạn tiêu đề / nội dung / màn mở khi chạm, xem trước; chọn người nhận (tất cả, học trong 7 ngày, lâu không học, Premium, học viên một trung tâm) kèm số người ước tính; gửi thử cho mình trước, xác nhận rồi mới gửi thật; gửi ngay hoặc hẹn giờ (tránh giờ yên tĩnh từng người); lịch sử số máy nhận / lỗi. Cần thêm công tắc **Tin mới từ 4UME** (`NotifyNews`) vào Cài đặt app — Apple chỉ cho gửi tin quảng cáo / khuyến mãi khi người dùng đồng ý và tắt được (Guideline 4.5.4).
+- [x] **Gửi thông báo hàng loạt** (13/10): admin *Gửi thông báo* + công tắc **Tin mới từ 4UME** trong Cài đặt app (từ build sau build 4) — xem [notifications.md](notifications.md#giai-đoạn-3--gửi-thông-báo-hàng-loạt-đã-làm). Còn lại: đếm số lần chạm mở. Tin khuyến mãi cần người dùng đồng ý rõ ràng (Apple Guideline 4.5.4): `NotifyNews` đang mặc định bật, nên chỉ gửi tin về nội dung / tính năng mới.
+- [x] **Rà soát Android** (13/10): tạo kênh thông báo trước khi xin quyền (Android 13+ không hiện hộp thoại nếu chưa có kênh), kênh `default` tên "Tin từ 4UME" cho thông báo từ máy chủ; né bàn phím trên Android (giao diện tràn viền). Có từ build Android thứ 2.
 - [ ] Nhận dạng giọng của máy (`expo-speech-recognition`) khi hết lượt chấm Azure.
 - [ ] Nền cho AdMob và mua Premium trong app (In‑App Purchase / Google Play Billing) — xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
 - [x] **Báo lỗi crash tự động** (Sentry, gói miễn phí, 13/10): app (bản build thật, từ build 4) và API; chỉ gửi mã tài khoản, không email / IP / quay màn hình. Bật bằng biến môi trường: app `EXPO_PUBLIC_SENTRY_DSN` + `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` trên EAS, API `SENTRY_DSN_API` trong `.env` của VPS. Đã thêm vào `privacy/`. Khi khai App Privacy / Data safety: *Crash data* + *User ID*, không dùng để theo dõi. Web admin chưa gắn.

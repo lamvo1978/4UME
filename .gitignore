@@ -12,3 +12,4 @@ mobile/dist/
 !.env.example
 backups/
 drafts/
+store/raw/

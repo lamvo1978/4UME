@@ -60,7 +60,7 @@ export function SettingsSection({
       .catch(() => undefined);
   }, []);
 
-  async function toggleNotification(key: "reminderEnabled" | "notifyRescue" | "notifyWeekly", enabled: boolean) {
+  async function toggleNotification(key: "reminderEnabled" | "notifyRescue" | "notifyWeekly" | "notifyNews", enabled: boolean) {
     if (enabled && !(await ensureReminderPermission())) {
       Alert.alert("Chưa bật thông báo", "Hãy cho phép 4UME gửi thông báo trong Cài đặt của máy để nhận nhắc học.", [
         { text: "Để sau", style: "cancel" },
@@ -199,6 +199,19 @@ export function SettingsSection({
           <Switch
             value={s.notifyWeekly}
             onValueChange={(v) => toggleNotification("notifyWeekly", v)}
+            trackColor={{ true: colors.accent }}
+          />
+        }
+      />
+
+      <Row
+        icon="megaphone-outline"
+        title="Tin mới từ 4UME"
+        subtitle="Bài học, tính năng mới và lời nhắn từ 4UME, thỉnh thoảng mới gửi"
+        right={
+          <Switch
+            value={s.notifyNews}
+            onValueChange={(v) => toggleNotification("notifyNews", v)}
             trackColor={{ true: colors.accent }}
           />
         }

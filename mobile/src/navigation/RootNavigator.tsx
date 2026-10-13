@@ -134,7 +134,7 @@ function MainTabs() {
 
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
-const TAB_FOR: Record<ReminderScreen, keyof MainTabParamList> = { practice: "Practice", study: "Study" };
+const TAB_FOR: Record<ReminderScreen | "listen", keyof MainTabParamList> = { practice: "Practice", study: "Study", listen: "Listen" };
 
 export function RootNavigator() {
   const { ready, user, onboarding } = useAuth();
@@ -146,6 +146,7 @@ export function RootNavigator() {
     pendingTap.current = null;
     if (target.screen === "weekly") navigationRef.navigate("Weekly", { start: target.start });
     else if (target.screen === "feedback") navigationRef.navigate("FeedbackThread", { id: target.id });
+    else if (target.screen === "invite") navigationRef.navigate("Invite");
     else navigationRef.navigate("Main", { screen: TAB_FOR[target.screen] });
   }, []);
 

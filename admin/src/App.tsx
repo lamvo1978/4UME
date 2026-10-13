@@ -15,6 +15,7 @@ import { WordEditPage } from "./pages/WordEditPage";
 import { WordsPage } from "./pages/WordsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
+import { BroadcastsPage } from "./pages/BroadcastsPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { AboutPage } from "./pages/AboutPage";
@@ -78,6 +79,7 @@ export function App() {
         <Route path="partners" element={<PartnersPage />} />
         <Route path="partners/:id" element={<PartnerDetailPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="broadcasts" element={<BroadcastsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="premium" element={<PremiumPerksPage />} />

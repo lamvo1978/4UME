@@ -7,6 +7,7 @@ export const ENTITY_TYPES = [
   { value: "user", label: "Người dùng" },
   { value: "settings", label: "Cài đặt" },
   { value: "partner", label: "Đối tác" },
+  { value: "broadcast", label: "Gửi thông báo" },
 ];
 
 export const WEEKDAY_NAMES = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
@@ -41,6 +42,8 @@ export function entityPath(type: string, id: string) {
       return `/users/${id}`;
     case "partner":
       return `/partners/${id}`;
+    case "broadcast":
+      return "/broadcasts";
     case "settings":
       return id === "about"
         ? "/about"
@@ -145,4 +148,12 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     promptBody: "Hỏi bật nhắc học · nội dung",
   },
   partner: { name: "Tên đối tác", prefix: "Tiền tố mã", features: "Tính năng mở", note: "Ghi chú" },
+  broadcast: {
+    title: "Tiêu đề",
+    body: "Nội dung",
+    screen: "Mở khi chạm",
+    audience: "Người nhận",
+    scheduledAt: "Thời điểm gửi",
+    status: "Trạng thái",
+  },
 };

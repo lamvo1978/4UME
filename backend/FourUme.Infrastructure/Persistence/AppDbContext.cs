@@ -30,6 +30,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Referral> Referrals => Set<Referral>();
     public DbSet<FeedbackTicket> FeedbackTickets => Set<FeedbackTicket>();
     public DbSet<FeedbackMessage> FeedbackMessages => Set<FeedbackMessage>();
+    public DbSet<Broadcast> Broadcasts => Set<Broadcast>();
+    public DbSet<BroadcastRecipient> BroadcastRecipients => Set<BroadcastRecipient>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -131,6 +133,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.AuthorName).HasMaxLength(120);
             e.Property(x => x.Body).HasMaxLength(4000).IsRequired();
             e.HasOne(x => x.Ticket).WithMany(x => x.Messages).HasForeignKey(x => x.TicketId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Broadcast>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.Status, x.ScheduledAt });
+            e.HasIndex(x => x.CreatedAt);
+            e.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            e.Property(x => x.Body).HasMaxLength(500).IsRequired();
+            e.Property(x => x.Screen).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Audience).HasMaxLength(16).IsRequired();
+            e.Property(x => x.CreatedBy).HasMaxLength(256).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.Property(x => x.LastError).HasMaxLength(300);
+            e.HasOne(x => x.Partner).WithMany().HasForeignKey(x => x.PartnerId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<BroadcastRecipient>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.BroadcastId, x.UserId }).IsUnique();
+            e.HasIndex(x => new { x.BroadcastId, x.Status });
+            e.HasIndex(x => x.ClaimId);
+            e.HasIndex(x => x.UserId);
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.HasOne(x => x.Broadcast).WithMany(x => x.Recipients).HasForeignKey(x => x.BroadcastId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmailCode>(e =>

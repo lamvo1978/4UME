@@ -156,6 +156,9 @@ public class PushNotifier(AppDbContext db, INotificationService notifications, E
         await db.SaveChangesAsync(ct);
     }
 
+    public Task<PushResult> SendToUserAsync(Guid userId, PushMessage message, CancellationToken ct = default) =>
+        DeliverAsync(userId, message, ct);
+
     private async Task<PushResult> DeliverAsync(Guid userId, PushMessage message, CancellationToken ct)
     {
         var devices = await db.DeviceTokens.Where(d => d.UserId == userId).ToListAsync(ct);
@@ -173,7 +176,7 @@ public class PushNotifier(AppDbContext db, INotificationService notifications, E
         return new PushResult(devices.Count, tickets.Count(t => t.Ok), errors);
     }
 
-    private static DateTimeOffset LocalNow(string? zone, DateTimeOffset now) =>
+    internal static DateTimeOffset LocalNow(string? zone, DateTimeOffset now) =>
         TimeZoneInfo.ConvertTime(now, zone is not null && TimeZoneInfo.TryFindSystemTimeZoneById(zone, out var tz) ? tz : DefaultZone);
 
     private static int ToMinutes(string time)
@@ -191,7 +194,7 @@ public class PushNotifier(AppDbContext db, INotificationService notifications, E
         return InQuietHours(at, config) ? ToMinutes(config.QuietEnd) : at;
     }
 
-    private static bool InQuietHours(int minutes, NotificationConfig config)
+    internal static bool InQuietHours(int minutes, NotificationConfig config)
     {
         var start = ToMinutes(config.QuietStart);
         var end = ToMinutes(config.QuietEnd);

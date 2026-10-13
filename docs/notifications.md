@@ -94,15 +94,19 @@ Máy chủ chỉ gửi những gì lịch trên máy không làm được; nhắ
 
 - `rescue`/`freeze` từ máy chủ (khi đó app ngừng hẹn local các loại này), đọc biên nhận (receipts) sau 15 phút.
 
-## Giai đoạn 3 — trong web admin
+## Giai đoạn 3 — gửi thông báo hàng loạt (đã làm)
 
-Trang **Thông báo** (bổ sung vào [kế hoạch web admin](admin-web.md)):
+Trang **Gửi thông báo** trong web admin (13/10):
 
-- Soạn tin `news`: tiêu đề, nội dung, màn sẽ mở khi chạm.
-- Chọn người nhận: tất cả / người học trong 7 ngày qua / người lâu không học.
-- Gửi ngay hoặc hẹn giờ; xem trước trên khung iPhone / Android.
-- Lịch sử: số người nhận, số gửi thành công, số lần chạm mở.
-- Thống kê từng loại tự động (`daily`, `rescue`…): đã gửi bao nhiêu, tỉ lệ người học lại trong 2 giờ sau khi nhận.
+- Soạn tiêu đề (≤ 90) / nội dung (≤ 180), chọn màn mở khi chạm: mở app, *Học*, *Ôn tập*, *Nghe*, *Mời bạn bè* (app cũ không biết màn đó thì chỉ mở app). Xem trước dạng màn hình khoá.
+- Người nhận: tất cả / học trong 7 ngày / lâu không học (14 ngày, như bộ lọc trang người dùng) / Premium / học viên một trung tâm. Luôn chỉ người **bật *Tin mới từ 4UME***, có máy đã đăng ký thông báo và tài khoản không bị khoá. Hiện số người sẽ nhận, số người tắt tin mới, số người chưa bật thông báo.
+- **Gửi thử cho tôi** (tới máy của chính tài khoản admin) là bắt buộc trước khi gửi thật; sửa nội dung phải gửi thử lại. Gửi thật có hộp xác nhận.
+- Gửi ngay hoặc hẹn giờ (trong 30 ngày). Danh sách người nhận chốt lúc bắt đầu gửi. Người đang trong **giờ yên tĩnh** (theo giờ của họ) được gửi khi hết giờ yên tĩnh; sau **24 giờ** chưa gửi được thì bỏ qua. Không tính vào *Số thông báo tối đa / ngày*.
+- Lịch sử 50 đợt gần nhất: trạng thái, đã gửi / tổng, đang chờ, lỗi, bỏ qua, lỗi gần nhất; huỷ được đợt đang hẹn hoặc đang chờ. Mỗi lần gửi / huỷ ghi vào *Lịch sử* admin.
+- **Backend:** bảng `Broadcasts` + `BroadcastRecipients` (một dòng mỗi người, trạng thái `pending → sending → sent / failed / expired / cancelled`). `BroadcastService.RunAsync` chạy cùng `PushScheduler` (5 phút) và ngay khi bấm *Gửi ngay*; mỗi lượt "giành" các dòng bằng `ClaimId` trước khi gửi nên hai lượt chạy song song không gửi trùng, dòng bị bỏ dở quá 10 phút thì thử lại. Gửi qua Expo theo lô 100 máy; máy báo `DeviceNotRegistered` bị xoá mã.
+- **App:** công tắc **Tin mới từ 4UME** (`NotifyNews`, mặc định bật) trong Cài đặt. Android: kênh `default` tên "Tin từ 4UME" (Expo dùng kênh này cho thông báo từ máy chủ).
+
+Để làm sau: số lần chạm mở; thống kê từng loại tự động (`daily`, `rescue`…): đã gửi bao nhiêu, tỉ lệ người học lại trong 2 giờ sau khi nhận.
 
 ## Thông số hệ thống (chỉnh trong web admin)
 

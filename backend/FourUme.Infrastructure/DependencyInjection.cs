@@ -67,6 +67,8 @@ public static class DependencyInjection
         services.AddSingleton<ExpoPushClient>();
         services.AddScoped<PushNotifier>();
         services.AddScoped<IPushNotifier>(sp => sp.GetRequiredService<PushNotifier>());
+        services.AddScoped<BroadcastService>();
+        services.AddScoped<IBroadcastService>(sp => sp.GetRequiredService<BroadcastService>());
         services.AddHostedService<PushScheduler>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminContentService, AdminContentService>();

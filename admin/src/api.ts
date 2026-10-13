@@ -268,6 +268,28 @@ export type NotificationTexts = {
   promptBody: string;
 };
 export type PushResult = { devices: number; sent: number; errors: string[] };
+export type BroadcastAudience = "all" | "active" | "inactive" | "premium" | "partner";
+export type BroadcastScreen = "" | "study" | "practice" | "listen" | "invite";
+export type BroadcastContent = { title: string; body: string; screen: BroadcastScreen };
+export type BroadcastEstimate = { matching: number; reachable: number; optedOut: number; noDevice: number };
+export type CreateBroadcast = BroadcastContent & { audience: BroadcastAudience; partnerId: string | null; scheduledAt: string | null };
+export type Broadcast = BroadcastContent & {
+  id: string;
+  audience: BroadcastAudience;
+  partnerId: string | null;
+  partnerName: string | null;
+  scheduledAt: string;
+  createdAt: string;
+  createdBy: string;
+  status: "scheduled" | "sending" | "done" | "cancelled";
+  finishedAt: string | null;
+  recipients: number;
+  sent: number;
+  pending: number;
+  failed: number;
+  skipped: number;
+  lastError: string | null;
+};
 export type AdminNotificationTexts = { value: NotificationTexts; defaults: NotificationTexts; updatedAt: string | null };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -687,6 +709,12 @@ export const api = {
   saveFeedbackSettings: (s: FeedbackSettings) => request<AdminFeedbackSettings>("/api/admin/feedback-settings", json("PUT", s)),
   resetFeedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings/reset", { method: "POST" }),
   testPush: (userId: string) => request<PushResult>(`/api/admin/users/${userId}/test-push`, { method: "POST" }),
+  broadcasts: () => request<Broadcast[]>("/api/admin/broadcasts"),
+  createBroadcast: (b: CreateBroadcast) => request<Broadcast>("/api/admin/broadcasts", json("POST", b)),
+  estimateBroadcast: (audience: BroadcastAudience, partnerId: string | null) =>
+    request<BroadcastEstimate>("/api/admin/broadcasts/estimate", json("POST", { audience, partnerId })),
+  testBroadcast: (c: BroadcastContent) => request<PushResult>("/api/admin/broadcasts/test", json("POST", c)),
+  cancelBroadcast: (id: string) => request<Broadcast>(`/api/admin/broadcasts/${id}/cancel`, { method: "POST" }),
   notificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts"),
   saveNotificationTexts: (t: NotificationTexts) => request<AdminNotificationTexts>("/api/admin/notification-texts", json("PUT", t)),
   resetNotificationTexts: () => request<AdminNotificationTexts>("/api/admin/notification-texts/reset", { method: "POST" }),
