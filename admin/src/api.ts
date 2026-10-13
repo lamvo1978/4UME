@@ -481,6 +481,7 @@ export type GrammarDraftRequest = {
   types: string[];
   difficulty: GrammarDraftDifficulty;
   notes?: string;
+  skipCheck?: boolean;
 };
 export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
 export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean };
@@ -678,7 +679,7 @@ export type PlacementGrammarInput = {
   published: boolean;
 };
 export type PlacementGrammarQuestion = PlacementGrammarInput & { id: string; explanationVi: string; updatedAt: string };
-export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string };
+export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean };
 export type PlacementGrammarDraft = {
   items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
   checked: boolean;

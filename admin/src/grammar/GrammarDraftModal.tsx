@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api, type GrammarBank, type GrammarDraft, type GrammarDraftDifficulty, type GrammarExercise, type GrammarLesson } from "../api";
 import { BANKS, cleanLesson, displayAnswer, exerciseMeta, typesFor } from "./meta";
+import { SkipCheckSwitch, useSkipCheck } from "./SkipCheckSwitch";
 
 const COUNTS = ["1", "5", "10", "15", "20"];
 const DIFFICULTIES: { value: GrammarDraftDifficulty; label: string }[] = [
@@ -32,6 +33,8 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
   const [error, setError] = useState("");
   const [draft, setDraft] = useState<GrammarDraft | null>(null);
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [skipCheck, setSkipCheck] = useSkipCheck();
+  const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
     if (!opened) return;
@@ -57,7 +60,9 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
         types,
         difficulty,
         notes: notes.trim() || undefined,
+        skipCheck,
       });
+      setSkipped(skipCheck);
       setDraft(result);
       setPicked(new Set(result.items.filter((i) => i.problems.length === 0 && !i.warning).map((i) => i.exercise.id)));
     } catch (e) {
@@ -83,7 +88,9 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
         <Stack>
           {!draft.checked ? (
             <Alert color="yellow" icon={<IconAlertTriangle size={18} />}>
-              Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi thêm.
+              {skipped
+                ? "Đã bỏ bước AI tự kiểm tra. Hãy đọc kỹ đáp án từng câu trước khi thêm."
+                : "Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi thêm."}
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
@@ -206,6 +213,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
             value={notes}
             onChange={(e) => setNotes(e.currentTarget.value)}
           />
+          <SkipCheckSwitch value={skipCheck} onChange={setSkipCheck} />
           {error ? <Alert color="red">{error}</Alert> : null}
           <Group justify="flex-end">
             <Button variant="default" onClick={onClose} disabled={busy}>
@@ -217,7 +225,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
           </Group>
           {busy ? (
             <Text size="xs" c="dimmed" ta="right">
-              Soạn và tự kiểm tra thường mất 20–60 giây…
+              {skipCheck ? "Soạn thường mất 10–40 giây…" : "Soạn và tự kiểm tra thường mất 20–60 giây…"}
             </Text>
           ) : null}
         </Stack>

@@ -183,7 +183,7 @@ public sealed partial class AdminPlacementService(
             .ToList();
         if (questions.Count == 0) throw new InvalidOperationException("Gemini không soạn được câu nào, hãy thử lại.");
 
-        var (warnings, isChecked) = await CheckAsync(level, questions, ct);
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, ct);
         var items = questions.Select((q, i) =>
         {
             var problems = GrammarPlacementRules.Validate(q);

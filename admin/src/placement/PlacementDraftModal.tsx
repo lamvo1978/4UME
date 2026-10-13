@@ -3,6 +3,7 @@ import { IconAlertTriangle, IconArrowLeft, IconSparkles } from "@tabler/icons-re
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api, type AdminGrammarSummary, type PlacementGrammarDraft, type PlacementGrammarInput, type PlacementLevel } from "../api";
+import { SkipCheckSwitch, useSkipCheck } from "../grammar/SkipCheckSwitch";
 import { PLACEMENT_LEVELS } from "./meta";
 
 const COUNTS = ["1", "5", "10", "15", "20"];
@@ -27,6 +28,8 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
   const [error, setError] = useState("");
   const [draft, setDraft] = useState<PlacementGrammarDraft | null>(null);
   const [picked, setPicked] = useState<Set<number>>(new Set());
+  const [skipCheck, setSkipCheck] = useSkipCheck();
+  const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
     if (!opened) return;
@@ -43,7 +46,8 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     setBusy(true);
     setError("");
     try {
-      const result = await api.draftPlacementGrammar({ level, count: Number(count), lessonSlug: lessonSlug ?? undefined, notes: notes.trim() || undefined });
+      const result = await api.draftPlacementGrammar({ level, count: Number(count), lessonSlug: lessonSlug ?? undefined, notes: notes.trim() || undefined, skipCheck });
+      setSkipped(skipCheck);
       setDraft(result);
       setPicked(new Set(result.items.flatMap((item, i) => (item.problems.length === 0 && !item.warning ? [i] : []))));
     } catch (e) {
@@ -76,7 +80,9 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
         <Stack>
           {!draft.checked ? (
             <Alert color="yellow" icon={<IconAlertTriangle size={18} />}>
-              Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi lưu.
+              {skipped
+                ? "Đã bỏ bước AI tự kiểm tra. Hãy đọc kỹ đáp án từng câu trước khi lưu."
+                : "Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi lưu."}
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
@@ -200,6 +206,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
             value={notes}
             onChange={(e) => setNotes(e.currentTarget.value)}
           />
+          <SkipCheckSwitch value={skipCheck} onChange={setSkipCheck} />
           {error ? <Alert color="red">{error}</Alert> : null}
           <Group justify="flex-end">
             <Button variant="default" onClick={onClose} disabled={busy}>
@@ -211,7 +218,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
           </Group>
           {busy ? (
             <Text size="xs" c="dimmed" ta="right">
-              Soạn và tự kiểm tra thường mất 20–60 giây…
+              {skipCheck ? "Soạn thường mất 10–40 giây…" : "Soạn và tự kiểm tra thường mất 20–60 giây…"}
             </Text>
           ) : null}
         </Stack>

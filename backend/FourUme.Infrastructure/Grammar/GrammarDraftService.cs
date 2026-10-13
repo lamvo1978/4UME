@@ -128,7 +128,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
 
         AssignIds(drafted, existing, lesson.Slug);
 
-        var (warnings, isChecked) = await CheckAsync(lesson, drafted, ct);
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, ct);
         var ids = existing.Select(e => e.Id).ToHashSet();
         var items = drafted.Select((e, i) =>
         {
