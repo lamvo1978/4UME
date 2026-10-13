@@ -23,6 +23,12 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
 {
     public const string HttpClientName = "gemini";
 
+    /// <summary>Waits before retrying an overloaded / briefly failing Gemini; drafting has two calls inside the 120 s client timeout.</summary>
+    private static readonly TimeSpan[] RetryDelays = [TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5)];
+
+    private static bool Transient(HttpStatusCode s) =>
+        s is HttpStatusCode.ServiceUnavailable or HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway or HttpStatusCode.GatewayTimeout;
+
     public bool Configured => options.Value.Configured;
     public string ModelName => options.Value.ModelName;
 
@@ -47,25 +53,37 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
             },
         };
 
-        using var request = new HttpRequestMessage(HttpMethod.Post,
-            $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(o.ModelName)}:generateContent")
+        var payload = body.ToJsonString();
+        var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(o.ModelName)}:generateContent";
+        var client = httpFactory.CreateClient(HttpClientName);
+        HttpStatusCode status;
+        string text;
+        for (var attempt = 1; ; attempt++)
         {
-            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
-        };
-        request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
-
-        using var response = await httpFactory.CreateClient(HttpClientName).SendAsync(request, ct);
-        var text = await response.Content.ReadAsStringAsync(ct);
-        if (!response.IsSuccessStatusCode)
-        {
-            logger.LogWarning("Gemini failed {Status}: {Body}", (int)response.StatusCode, text.Length > 400 ? text[..400] : text);
-            throw new InvalidOperationException(response.StatusCode switch
+            using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
+                Content = new StringContent(payload, Encoding.UTF8, "application/json"),
+            };
+            request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
+            using var response = await client.SendAsync(request, ct);
+            status = response.StatusCode;
+            text = await response.Content.ReadAsStringAsync(ct);
+            if (response.IsSuccessStatusCode || !Transient(status) || attempt > RetryDelays.Length) break;
+            logger.LogInformation("Gemini {Status}, retrying (attempt {Attempt})", (int)status, attempt);
+            await Task.Delay(RetryDelays[attempt - 1], ct);
+        }
+
+        if ((int)status >= 400)
+        {
+            logger.LogWarning("Gemini failed {Status}: {Body}", (int)status, text.Length > 400 ? text[..400] : text);
+            throw new InvalidOperationException(status switch
+            {
+                HttpStatusCode.ServiceUnavailable => "Gemini đang quá tải (lỗi phía Google), đã thử lại vài lần vẫn chưa được. Hãy bấm lại sau ít phút.",
                 HttpStatusCode.TooManyRequests => "Gemini đang giới hạn lượt gọi của gói miễn phí, hãy thử lại sau khoảng 1 phút.",
                 HttpStatusCode.BadRequest when text.Contains("API_KEY", StringComparison.OrdinalIgnoreCase) => "Gemini từ chối khoá (GEMINI_API_KEY không đúng).",
                 HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "Gemini từ chối khoá (GEMINI_API_KEY không đúng hoặc chưa bật).",
                 HttpStatusCode.NotFound => $"Gemini không có model \"{o.ModelName}\" (đổi GEMINI_MODEL).",
-                _ => $"Gemini lỗi {(int)response.StatusCode}, hãy thử lại.",
+                _ => $"Gemini lỗi {(int)status}, hãy thử lại.",
             });
         }
 
