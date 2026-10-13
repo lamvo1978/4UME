@@ -43,6 +43,7 @@ services:
       Speech__Region: ${AZURE_SPEECH_REGION:-}
       Gemini__ApiKey: ${GEMINI_API_KEY:-}
       Gemini__Model: ${GEMINI_MODEL:-}
+      Gemini__FallbackModels: ${GEMINI_FALLBACK_MODELS:-}
     volumes:
       - fourume_media:/app/media
     ports:

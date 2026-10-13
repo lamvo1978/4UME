@@ -13,9 +13,19 @@ public class GeminiOptions
     /// <summary>Google AI Studio key (aistudio.google.com → Get API key); the free tier is enough for drafting.</summary>
     public string? ApiKey { get; set; }
     public string? Model { get; set; }
+    /// <summary>Comma-separated models tried in order when <see cref="Model"/> stays overloaded; unknown names are skipped.</summary>
+    public string? FallbackModels { get; set; }
+    public const string DefaultFallbackModels = "gemini-flash-lite-latest,gemini-2.5-flash";
 
     public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
     public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
+
+    public IReadOnlyList<string> Models =>
+        new[] { ModelName }
+            .Concat((string.IsNullOrWhiteSpace(FallbackModels) ? DefaultFallbackModels : FallbackModels)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 }
 
 /// <summary>Calls Gemini with a response schema, so the reply is JSON in the requested shape.</summary>
@@ -54,23 +64,34 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
         };
 
         var payload = body.ToJsonString();
-        var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(o.ModelName)}:generateContent";
         var client = httpFactory.CreateClient(HttpClientName);
-        HttpStatusCode status;
-        string text;
-        for (var attempt = 1; ; attempt++)
+        var models = o.Models;
+        var mainOverloaded = false;
+        HttpStatusCode status = default;
+        string text = "";
+        for (var m = 0; m < models.Count; m++)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(models[m])}:generateContent";
+            // The main model gets retries; a fallback is tried once, since it is only there for when the main one is overloaded.
+            var retries = m == 0 ? RetryDelays.Length : 0;
+            for (var attempt = 1; ; attempt++)
             {
-                Content = new StringContent(payload, Encoding.UTF8, "application/json"),
-            };
-            request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
-            using var response = await client.SendAsync(request, ct);
-            status = response.StatusCode;
-            text = await response.Content.ReadAsStringAsync(ct);
-            if (response.IsSuccessStatusCode || !Transient(status) || attempt > RetryDelays.Length) break;
-            logger.LogInformation("Gemini {Status}, retrying (attempt {Attempt})", (int)status, attempt);
-            await Task.Delay(RetryDelays[attempt - 1], ct);
+                using var request = new HttpRequestMessage(HttpMethod.Post, url)
+                {
+                    Content = new StringContent(payload, Encoding.UTF8, "application/json"),
+                };
+                request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
+                using var response = await client.SendAsync(request, ct);
+                status = response.StatusCode;
+                text = await response.Content.ReadAsStringAsync(ct);
+                if (response.IsSuccessStatusCode || !Transient(status) || attempt > retries) break;
+                logger.LogInformation("Gemini {Model} {Status}, retrying (attempt {Attempt})", models[m], (int)status, attempt);
+                await Task.Delay(RetryDelays[attempt - 1], ct);
+            }
+            if (m == 0 && Transient(status)) mainOverloaded = true;
+            var fallbackSkippable = m > 0 && status == HttpStatusCode.NotFound;
+            if ((int)status < 400 || !(Transient(status) || fallbackSkippable) || m == models.Count - 1) break;
+            logger.LogWarning("Gemini {Model} failed {Status}, trying {Next}", models[m], (int)status, models[m + 1]);
         }
 
         if ((int)status >= 400)
@@ -78,7 +99,9 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
             logger.LogWarning("Gemini failed {Status}: {Body}", (int)status, text.Length > 400 ? text[..400] : text);
             throw new InvalidOperationException(status switch
             {
-                HttpStatusCode.ServiceUnavailable => "Gemini đang quá tải (lỗi phía Google), đã thử lại vài lần vẫn chưa được. Hãy bấm lại sau ít phút.",
+                _ when mainOverloaded && (Transient(status) || status == HttpStatusCode.NotFound) =>
+                    "Gemini đang quá tải (lỗi phía Google), đã thử lại và thử model dự phòng vẫn chưa được. Hãy bấm lại sau ít phút.",
+                HttpStatusCode.ServiceUnavailable => "Gemini đang quá tải (lỗi phía Google). Hãy bấm lại sau ít phút.",
                 HttpStatusCode.TooManyRequests => "Gemini đang giới hạn lượt gọi của gói miễn phí, hãy thử lại sau khoảng 1 phút.",
                 HttpStatusCode.BadRequest when text.Contains("API_KEY", StringComparison.OrdinalIgnoreCase) => "Gemini từ chối khoá (GEMINI_API_KEY không đúng).",
                 HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "Gemini từ chối khoá (GEMINI_API_KEY không đúng hoặc chưa bật).",
