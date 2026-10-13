@@ -28,6 +28,7 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 - [ ] Biểu tượng 1024×1024 không trong suốt.
 - [ ] **Tài khoản demo** cho người duyệt (có sẵn ít tiến độ học, không phải tài khoản quản trị).
 - [ ] Bảng câu hỏi nội dung, *App Privacy* / *Data safety*.
+- [ ] Trước bản build nộp App Store: bỏ chữ *Sắp có* / *Sắp mở đăng ký* / "bản cập nhật tới" ở màn Premium (Apple hay từ chối nội dung "sắp ra mắt"), chỉ nói nhận Premium qua mời bạn bè hoặc mã trung tâm. Các bước nộp: [store-listing.md](store-listing.md#các-bước-nộp-trên-app-store-connect).
 
 ## 4. Bản build riêng (EAS) — cần tài khoản Apple Developer
 
