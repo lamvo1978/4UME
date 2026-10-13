@@ -1,4 +1,4 @@
-import type { GrammarExercise, GrammarLesson, GrammarSection } from "../api";
+import type { GrammarBank, GrammarExercise, GrammarLesson, GrammarSection } from "../api";
 
 export const LEVELS = ["A1", "A2", "B1", "B2"];
 
@@ -23,14 +23,24 @@ export const FORMULA_KINDS = [
 ];
 export const kindLabel = (kind: string) => FORMULA_KINDS.find((k) => k.value === kind)?.label ?? kind;
 
-export const EXERCISE_TYPES: { type: string; label: string; hint: string; color: string }[] = [
-  { type: "mcq", label: "Trắc nghiệm", hint: "Chọn 1 đáp án đúng", color: "teal" },
+/** `practiceOnly` types are unknown to app builds before the practice bank, so the lesson quiz can't use them. */
+export const EXERCISE_TYPES: { type: string; label: string; hint: string; color: string; practiceOnly?: boolean }[] = [
+  { type: "mcq", label: "Trắc nghiệm", hint: "Chọn 1 đáp án đúng (cũng dùng cho \"chọn câu đúng\")", color: "teal" },
   { type: "fill", label: "Điền từ", hint: "Gõ từ vào chỗ ___", color: "blue" },
   { type: "order", label: "Sắp xếp câu", hint: "Ghép mảnh thành câu theo nghĩa tiếng Việt", color: "grape" },
   { type: "transform", label: "Biến đổi câu", hint: "Đổi câu (phủ định, nghi vấn…) bằng mảnh ghép", color: "orange" },
   { type: "error", label: "Tìm lỗi sai", hint: "Chạm vào từ sai trong câu", color: "red" },
+  { type: "cloze", label: "Điền đoạn văn", hint: "Đoạn văn ngắn có nhiều chỗ ___", color: "indigo", practiceOnly: true },
 ];
 export const exerciseMeta = (type: string) => EXERCISE_TYPES.find((e) => e.type === type) ?? EXERCISE_TYPES[0];
+export const typesFor = (bank: GrammarBank) => EXERCISE_TYPES.filter((t) => bank === "practice" || !t.practiceOnly);
+
+export const BANKS: { value: GrammarBank; label: string; hint: string }[] = [
+  { value: "exercises", label: "Bài tập trong bài", hint: "Làm ngay sau khi học lý thuyết; mỗi lượt lấy ngẫu nhiên \"số câu mỗi lượt\"." },
+  { value: "practice", label: "Luyện thêm", hint: "Chỉ dùng khi luyện tập và ôn, nên người học không gặp lại câu đã làm lúc học. Nên có 30–50 câu." },
+];
+
+export const countBlanks = (prompt?: string) => (prompt?.match(/_{3,}/g) ?? []).length;
 
 export function newSection(type: string): GrammarSection {
   switch (type) {
@@ -51,9 +61,9 @@ export function newSection(type: string): GrammarSection {
   }
 }
 
-/** Next id following the lesson's own prefix ("pc-14" → "pc-15"). */
+/** Next id following the lesson's own prefix ("pc-14" → "pc-15"); ids are unique across both banks. */
 export function nextExerciseId(lesson: GrammarLesson): string {
-  const ids = lesson.exercises.map((e) => e.id);
+  const ids = [...lesson.exercises, ...(lesson.practice ?? [])].map((e) => e.id);
   const prefix =
     ids.map((id) => id.match(/^(.*?)(\d+)$/)?.[1]).find(Boolean) ??
     `${lesson.slug.split("-").map((p) => p[0]).join("").slice(0, 3) || "ex"}-`;
@@ -72,6 +82,8 @@ export function newExercise(type: string, id: string): GrammarExercise {
       return { ...base, promptVi: "", answer: "", distractors: [] };
     case "transform":
       return { ...base, instructionVi: "", source: "", answer: "", distractors: [] };
+    case "cloze":
+      return { ...base, prompt: "", blanks: [] };
     default:
       return { ...base, sentence: "", correction: "" };
   }
@@ -94,6 +106,7 @@ export const EMPTY_LESSON: GrammarLesson = {
   published: false,
   sections: [],
   exercises: [],
+  practice: [],
 };
 
 /** Server problems are prefixed "Bài tập {id}:" / "Lý thuyết khối {n}"; group them per item. */
@@ -128,13 +141,17 @@ export function cleanLesson(l: GrammarLesson): GrammarLesson {
       rows: s.rows?.map((r) => ({ ...r, pattern: r.pattern.trim(), example: ex(r.example) })),
       words: s.words ? list(s.words) : undefined,
     })),
-    exercises: l.exercises.map((e) => ({
-      ...e,
-      distractors: e.distractors ? list(e.distractors) : undefined,
-      answers: e.answers ? list(e.answers) : undefined,
-    })),
+    exercises: l.exercises.map(cleanExercise),
+    practice: (l.practice ?? []).map(cleanExercise),
   };
 }
+
+const cleanExercise = (e: GrammarExercise): GrammarExercise => ({
+  ...e,
+  distractors: e.distractors ? list(e.distractors) : undefined,
+  answers: e.answers ? list(e.answers) : undefined,
+  blanks: e.blanks ? e.blanks.map(list) : undefined,
+});
 
 export function move<T>(list: T[], index: number, delta: number): T[] {
   const target = index + delta;
@@ -166,7 +183,15 @@ export function displayAnswer(ex: GrammarExercise): string {
       return (ex.prompt ?? "").replace(/_{3,}/, ex.answers?.[0] ?? "").replace(/\s*\([^)]*\)/, "");
     case "error":
       return (ex.sentence ?? "").replace(/\[(.+?)\]/, ex.correction ?? "");
+    case "cloze":
+      return fillCloze(ex.prompt ?? "", (i) => ex.blanks?.[i]?.[0] ?? "___");
     default:
       return ex.answer ?? "";
   }
+}
+
+/** Mirrors mobile/src/grammar/quiz.ts: each ___ (and the hint in brackets right after it) becomes the given text. */
+export function fillCloze(prompt: string, text: (index: number) => string) {
+  let i = 0;
+  return prompt.replace(/_{3,}(\s*\([^)]*\))?/g, () => text(i++));
 }

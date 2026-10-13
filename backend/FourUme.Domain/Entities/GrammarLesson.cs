@@ -17,6 +17,8 @@ public class GrammarLesson
     public bool Published { get; set; } = true;
     public string SectionsJson { get; set; } = "[]";
     public string ExercisesJson { get; set; } = "[]";
+    /// <summary>Practice bank, used by practice and review sessions instead of the lesson quiz.</summary>
+    public string PracticeJson { get; set; } = "[]";
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>Set when edited in the admin; the seeder then leaves the lesson alone.</summary>

@@ -270,6 +270,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Level).HasMaxLength(8).IsRequired();
             e.Property(x => x.SectionsJson).HasColumnType("jsonb").IsRequired();
             e.Property(x => x.ExercisesJson).HasColumnType("jsonb").IsRequired();
+            e.Property(x => x.PracticeJson).HasColumnType("jsonb").IsRequired().HasDefaultValueSql("'[]'::jsonb");
             e.HasIndex(x => x.SortOrder);
         });
 

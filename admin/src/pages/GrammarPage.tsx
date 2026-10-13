@@ -133,7 +133,7 @@ export function GrammarPage() {
                   </Group>
                   <Text fz="sm" c="dimmed" truncate>
                     {l.titleEn ? `${l.titleEn} · ` : ""}
-                    {l.sectionCount} khối lý thuyết · {l.exerciseCount} câu bài tập
+                    {l.sectionCount} khối lý thuyết · {l.exerciseCount} câu bài tập · {l.practiceCount ?? 0} câu luyện thêm
                     {l.learners ? ` · ${l.learners} người đã học` : ""}
                   </Text>
                 </div>

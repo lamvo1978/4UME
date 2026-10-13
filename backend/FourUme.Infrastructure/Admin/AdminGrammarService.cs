@@ -15,7 +15,7 @@ public class AdminGrammarService(IAppDbContext db, Auditor auditor) : IAdminGram
         var learners = await LearnersAsync(null, ct);
         return lessons.Select(l => new AdminGrammarSummaryDto(
             l.Slug, l.TitleVi, l.TitleEn, l.Level, l.SortOrder, l.Published, l.QuizSize,
-            Count(l.SectionsJson), Count(l.ExercisesJson), l.Version, l.UpdatedAt, l.EditedAt,
+            Count(l.SectionsJson), Count(l.ExercisesJson), Count(l.PracticeJson), l.Version, l.UpdatedAt, l.EditedAt,
             learners.GetValueOrDefault(l.Slug))).ToList();
     }
 
@@ -165,6 +165,7 @@ public class AdminGrammarService(IAppDbContext db, Auditor auditor) : IAdminGram
         Published = doc.Published ?? true,
         doc.Sections,
         doc.Exercises,
+        Practice = doc.Practice ?? [],
     }, GrammarJson.Options);
 
     public async Task ReorderLessonsAsync(ReorderRequest request, CancellationToken ct = default)
@@ -209,6 +210,7 @@ public class AdminGrammarService(IAppDbContext db, Auditor auditor) : IAdminGram
         lesson.Published = doc.Published ?? true;
         lesson.SectionsJson = JsonSerializer.Serialize(doc.Sections, GrammarJson.Options);
         lesson.ExercisesJson = JsonSerializer.Serialize(doc.Exercises, GrammarJson.Options);
+        lesson.PracticeJson = JsonSerializer.Serialize(doc.Practice ?? [], GrammarJson.Options);
         lesson.UpdatedAt = DateTimeOffset.UtcNow;
         lesson.EditedAt = lesson.UpdatedAt;
     }
@@ -226,6 +228,7 @@ public class AdminGrammarService(IAppDbContext db, Auditor auditor) : IAdminGram
         Published = l.Published,
         Sections = JsonSerializer.Deserialize<List<GrammarSection>>(l.SectionsJson, GrammarJson.Options) ?? [],
         Exercises = JsonSerializer.Deserialize<List<GrammarExercise>>(l.ExercisesJson, GrammarJson.Options) ?? [],
+        Practice = JsonSerializer.Deserialize<List<GrammarExercise>>(l.PracticeJson, GrammarJson.Options) ?? [],
     };
 
     private async Task<Dictionary<string, int>> LearnersAsync(string? slug, CancellationToken ct)
