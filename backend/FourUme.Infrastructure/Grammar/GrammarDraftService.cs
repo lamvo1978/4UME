@@ -35,13 +35,17 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             "source" (the original sentence), "answer" (the rewritten sentence), "distractors" (1–2 wrong words). Only one correct rewrite may exist.
             """,
         ["error"] = """
-            error: "sentence" with exactly one wrong word or short phrase in square brackets, e.g. "She [go] to school every day.",
-            "correction" (what replaces the bracketed part, e.g. "goes"). The rest of the sentence must be correct.
+            error: "sentence" MUST contain a real grammar mistake: write a correct sentence, then replace one word or short phrase with a typical
+            learner mistake and put ONLY that wrong part in square brackets. "correction" is the right form, which must differ from the bracketed text.
+            Example: {"sentence": "She [go] to school every day.", "correction": "goes"}. Never output a sentence without a mistake or without brackets.
             """,
         ["cloze"] = """
-            cloze: "prompt" is a short connected text (a message, diary entry, short story or dialogue on one line, 40–90 words) with 3–6 gaps ___,
-            each followed by the base word in brackets when needed, e.g. "Yesterday I ___ (visit) my grandma."; "blanks" = one list per gap, in order,
-            with every accepted answer for that gap. Every gap must test the lesson's grammar point.
+            cloze: "prompt" is ONE connected text of 40–90 words (a message, diary entry, short story, or a dialogue written on one line as
+            "Anna: ... Tom: ..."), with 3–6 gaps ___, each followed by the base word in brackets when needed. "blanks" = one list per gap, in order,
+            with every accepted answer (include contractions). Every gap must test the lesson's grammar point.
+            Example: {"prompt": "Hi Mai! I ___ (be) in Da Lat with my family. The weather ___ (be) cool and the people ___ (be) very friendly. My room
+            is small but it ___ (be) clean. Where ___ (be) you now? Write soon!", "blanks": [["am"], ["is"], ["are"], ["is"], ["are"]]}
+            Short sentences or 1–2 line texts are NOT acceptable.
             """,
     };
 
@@ -57,6 +61,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
 
         Rules:
         - Test ONLY the grammar point of the given lesson (you may contrast it with easier structures the learner already knows).
+          Use only the forms taught in the lesson's theory: e.g. a lesson on am/is/are must not ask for was/were, passives or other tenses.
         - Vocabulary and sentence length must match the lesson's CEFR level; never go above it.
         - English must be natural, correct and unambiguous: exactly one correct answer (or every correct variant listed).
         - Use everyday situations Vietnamese learners relate to; friendly content suitable for all ages; no brands, politics or celebrities.
@@ -73,6 +78,8 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         - no other option / answer would also be correct (for mcq and error) unless it is listed as accepted (for fill and cloze);
         - for error: the bracketed part is really wrong and the correction fixes it, and nothing else in the sentence is wrong;
         - for order/transform: the answer is the only natural sentence that can be built;
+        - for cloze: the text is natural and connected, and every gap has exactly the answers listed;
+        - the exercise tests the lesson's grammar point with forms the lesson teaches (not other tenses or structures);
         - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
         """;
@@ -135,7 +142,9 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             var problems = new List<string>();
             GrammarValidator.ValidateItem(e, ids, problems);
             var prefix = $"Bài tập {e.Id}: ";
-            return new GrammarDraftItemDto(e, problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList(), warnings.GetValueOrDefault(i));
+            problems = problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList();
+            problems.AddRange(DraftProblems(e));
+            return new GrammarDraftItemDto(e, problems, warnings.GetValueOrDefault(i));
         }).ToList();
         return new GrammarDraftDto(items, isChecked, reply.Model);
     }
@@ -145,6 +154,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
+        if (!string.IsNullOrWhiteSpace(lesson.SummaryVi)) prompt.AppendLine($"What the lesson teaches (Vietnamese): {lesson.SummaryVi}");
         prompt.AppendLine("Exercises (JSON, check each one by its index):");
         prompt.AppendLine(JsonSerializer.Serialize(drafted.Select((e, i) => new { index = i, exercise = WithoutId(e) }), GrammarJson.Options));
         try
@@ -167,6 +177,25 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             e.Type, e.Prompt, e.PromptVi, e.InstructionVi, e.Source, e.Sentence, e.Options, e.Answer, e.Answers, e.Blanks, e.Distractors, e.Correction, e.ExplanationVi,
         };
     }
+
+    /// <summary>Stricter than the shared validator: catches the ways models misread the formats, without limiting what editors write by hand.</summary>
+    private static IEnumerable<string> DraftProblems(GrammarExercise e)
+    {
+        if (e.Type == "cloze" && e.Prompt is not null)
+        {
+            var words = e.Prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+            if (words < MinClozeWords) yield return $"Đoạn văn quá ngắn ({words} từ), nên có khoảng 40–90 từ.";
+        }
+        if (e.Type == "error" && e.Sentence is not null && e.Correction is not null)
+        {
+            var open = e.Sentence.IndexOf('[');
+            var close = e.Sentence.IndexOf(']');
+            if (open >= 0 && close > open && string.Equals(e.Sentence[(open + 1)..close].Trim(), e.Correction.Trim(), StringComparison.OrdinalIgnoreCase))
+                yield return "Phần trong ngoặc giống hệt từ sửa, câu không có lỗi.";
+        }
+    }
+
+    private const int MinClozeWords = 30;
 
     private static string Summary(GrammarExercise e) => e.Type switch
     {
