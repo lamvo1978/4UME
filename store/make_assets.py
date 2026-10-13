@@ -46,7 +46,7 @@ def feature_graphic() -> None:
 
 
 def screenshots() -> None:
-    """store/raw/*.png|jpg (phone screenshots, in the order to show) -> Play (2:1 max) and App Store 6.9" sizes."""
+    """store/raw/*.png|jpg (iPhone screenshots, in the order to show) -> Play (2:1 max) and App Store 6.9"."""
     raw = sorted(p for p in (ROOT / "store" / "raw").glob("*") if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
     play_dir, ios_dir = OUT / "screenshots", ROOT / "store" / "ios" / "screenshots-6.9"
     for d in (play_dir, ios_dir):
@@ -58,8 +58,9 @@ def screenshots() -> None:
         scaled = shot.resize((round(shot.width * 2160 / shot.height), 2160), Image.LANCZOS)
         canvas.paste(scaled, ((1080 - scaled.width) // 2, 0))
         canvas.save(play_dir / f"{i:02d}.png", optimize=True)
-        # App Store 6.9" display: exactly 1320x2868.
-        shot.resize((1320, 2868), Image.LANCZOS).save(ios_dir / f"{i:02d}.png", optimize=True)
+        # The App Store 6.9" slot takes 1290x2796 (6.7" iPhones) as-is; anything else is scaled to 1320x2868.
+        ios = shot if shot.size in {(1290, 2796), (1320, 2868)} else shot.resize((1320, 2868), Image.LANCZOS)
+        ios.save(ios_dir / f"{i:02d}.png", optimize=True)
 
 
 if __name__ == "__main__":
