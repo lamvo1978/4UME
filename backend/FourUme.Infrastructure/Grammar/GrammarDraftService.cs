@@ -61,7 +61,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
 
         Rules:
         - Test ONLY the grammar point of the given lesson (you may contrast it with easier structures the learner already knows).
-          Use only the forms taught in the lesson's theory: e.g. a lesson on am/is/are must not ask for was/were, passives or other tenses.
+          Use only the forms taught in the lesson's theory: e.g. a lesson on am/is/are must not ask for was/were, -ing forms (am/is/are + V-ing), passives or other tenses.
         - Vocabulary and sentence length must match the lesson's CEFR level; never go above it.
         - English must be natural, correct and unambiguous: exactly one correct answer (or every correct variant listed).
         - Use everyday situations Vietnamese learners relate to; friendly content suitable for all ages; no brands, politics or celebrities.
@@ -195,7 +195,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         }
     }
 
-    private const int MinClozeWords = 30;
+    private const int MinClozeWords = 25;
 
     private static string Summary(GrammarExercise e) => e.Type switch
     {
