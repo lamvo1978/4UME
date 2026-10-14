@@ -92,6 +92,7 @@ export function ProfileScreen() {
             <Text style={styles.email} numberOfLines={1}>
               {me?.email ?? user?.email}
             </Text>
+            {stats ? <Text style={styles.since}>Thành viên từ {formatMonthYear(stats.memberSince)}</Text> : null}
             {me ? (
               <AccountBadge
                 partner={partner ?? null}
@@ -100,7 +101,6 @@ export function ProfileScreen() {
                 onPress={() => navigation.navigate("Premium")}
               />
             ) : null}
-            {stats ? <Text style={styles.since}>Thành viên từ {formatMonthYear(stats.memberSince)}</Text> : null}
           </View>
           <Pressable style={styles.iconButton} onPress={() => setEditingName(true)} hitSlop={8} accessibilityLabel="Đổi tên">
             <Ionicons name="create-outline" size={20} color={colors.accent} />

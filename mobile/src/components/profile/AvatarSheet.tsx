@@ -1,14 +1,14 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useAuth } from "../../auth/AuthContext";
 import { colors, spacing } from "../../theme";
-import { Avatar, AVATARS } from "../Avatar";
+import { Avatar, AVATAR_GROUPS, AVATARS } from "../Avatar";
 import { FormSheet } from "./FormSheet";
 
 const COLUMNS = 4;
 
-/** Picks a built-in picture; the first cell goes back to the name's initial. */
+/** Picks a built-in picture, or goes back to the name's initial. */
 export function AvatarSheet({
   visible,
   name,
@@ -21,17 +21,17 @@ export function AvatarSheet({
   onClose: () => void;
 }) {
   const { updateSettings } = useAuth();
+  const { height } = useWindowDimensions();
   const [picked, setPicked] = useState(current ?? "");
   useEffect(() => {
     if (visible) setPicked(current ?? "");
   }, [visible, current]);
 
-  const cells = [{ key: "", label: "Chữ cái đầu" }, ...AVATARS];
+  const initialPicked = picked === "";
   return (
     <FormSheet
       visible={visible}
       title="Ảnh đại diện"
-      description="Chọn một hình bạn thích."
       submitLabel="Lưu"
       canSubmit={picked !== (current ?? "")}
       onSubmit={async () => {
@@ -40,50 +40,67 @@ export function AvatarSheet({
       }}
       onClose={onClose}
     >
-      <View style={styles.grid}>
-        {cells.map((cell) => {
-          const selected = cell.key === picked;
-          return (
-            <Pressable
-              key={cell.key || "initial"}
-              style={({ pressed }) => [styles.cell, pressed && styles.pressed]}
-              onPress={() => setPicked(cell.key)}
-              accessibilityLabel={cell.label}
-              accessibilityState={{ selected }}
-            >
-              <View style={[styles.frame, selected && styles.frameSelected]}>
-                <Avatar name={name} avatar={cell.key} size={60} />
-              </View>
-              {selected ? (
-                <View style={styles.check}>
-                  <Ionicons name="checkmark" size={14} color={colors.white} />
-                </View>
-              ) : null}
-            </Pressable>
-          );
-        })}
-      </View>
+      <ScrollView style={{ maxHeight: height * 0.55 }} showsVerticalScrollIndicator={false}>
+        <Pressable
+          style={({ pressed }) => [styles.initialRow, initialPicked && styles.initialRowPicked, pressed && styles.pressed]}
+          onPress={() => setPicked("")}
+          accessibilityState={{ selected: initialPicked }}
+        >
+          <Avatar name={name} size={36} />
+          <Text style={styles.initialText}>Dùng chữ cái đầu của tên</Text>
+          {initialPicked ? <Ionicons name="checkmark-circle" size={20} color={colors.accent} /> : null}
+        </Pressable>
+
+        {AVATAR_GROUPS.map(({ group, title }) => (
+          <View key={group}>
+            <Text style={styles.groupTitle}>{title}</Text>
+            <View style={styles.grid}>
+              {AVATARS.filter((a) => a.group === group).map((a) => {
+                const selected = a.key === picked;
+                return (
+                  <Pressable
+                    key={a.key}
+                    style={({ pressed }) => [styles.cell, pressed && styles.pressed]}
+                    onPress={() => setPicked(a.key)}
+                    accessibilityLabel={a.label}
+                    accessibilityState={{ selected }}
+                  >
+                    <View style={[styles.frame, selected && styles.frameSelected]}>
+                      <Avatar avatar={a.key} size={56} />
+                    </View>
+                    <Text style={[styles.label, selected && styles.labelSelected]} numberOfLines={1}>
+                      {a.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        ))}
+      </ScrollView>
     </FormSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  grid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.sm },
+  initialRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    padding: spacing.xs,
+    paddingRight: spacing.sm,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: colors.border,
+  },
+  initialRowPicked: { borderColor: colors.accent },
+  initialText: { flex: 1, fontSize: 14, fontWeight: "600", color: colors.ink },
+  groupTitle: { marginTop: spacing.md, marginBottom: spacing.xs, fontSize: 14, fontWeight: "700", color: colors.muted },
+  grid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.xs },
   cell: { width: `${100 / COLUMNS}%`, alignItems: "center" },
   frame: { padding: 3, borderRadius: 40, borderWidth: 2.5, borderColor: "transparent" },
   frameSelected: { borderColor: colors.accent },
-  check: {
-    position: "absolute",
-    top: 0,
-    right: 8,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: colors.surface,
-  },
+  label: { marginTop: 2, fontSize: 12, color: colors.muted },
+  labelSelected: { color: colors.accent, fontWeight: "700" },
   pressed: { opacity: 0.7 },
 });
