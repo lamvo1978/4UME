@@ -123,6 +123,16 @@ export type ListeningSummary = {
   durationMs: number | null;
   progress: ListeningProgress;
 };
+export type WordVoice = "female" | "male";
+
+/** `audioUrl` is null until the sentence has a recording; the app reads it with the device voice meanwhile. */
+export type PracticeSentence = { id: string; level: VocabLevel; topic: string; en: string; vi: string; audioUrl: string | null };
+/** "gift" = open until midnight for keeping the streak; "trial" = the one free round is left. */
+export type PracticeAccessState = "premium" | "gift" | "trial" | "locked";
+/** `daysToGift`: study days still needed for the next gift day (0 = earned, it is tomorrow); null when the gift is off. */
+export type PracticeAccess = { state: PracticeAccessState; giftEveryDays: number; daysToGift: number | null };
+export type PracticeOverview = { levels: { level: VocabLevel; count: number }[]; access: PracticeAccess };
+
 export type ListeningLine = { speaker: string; en: string; vi: string; startMs: number | null; endMs: number | null };
 export type ListeningDetail = {
   slug: string;
@@ -291,7 +301,9 @@ export type GrammarSection =
   | { type: "mistakes"; title?: string; items: { wrong: string; right: string; noteVi?: string }[] }
   | { type: "tip"; title?: string; textVi: string };
 
-type ExerciseBase = { id: string; explanationVi: string };
+/** A verb phrase of the answered question and its tense, e.g. "were preparing" · "quá khứ tiếp diễn". */
+export type VerbNote = { phrase: string; tenseVi: string };
+type ExerciseBase = { id: string; explanationVi: string; verbs?: VerbNote[] };
 
 export type GrammarExercise =
   | (ExerciseBase & { type: "mcq"; prompt: string; options: string[]; answer: string })
@@ -739,6 +751,13 @@ export const api = {
   saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>
     request<ListeningProgress>(`/api/listening/${slug}/progress`, { method: "PUT", body: JSON.stringify(changes) }),
   recordDictation: (slug: string) => request<void>(`/api/listening/${slug}/dictation`, { method: "POST" }),
+  /** `url` is null when there is no Azure recording (quota spent or unknown word): read it with the phone's voice. */
+  wordAudio: (text: string, voice: WordVoice) =>
+    request<{ url: string | null }>(`/api/speech/word?text=${encodeURIComponent(text)}&voice=${voice}`),
+  practiceOverview: () => request<PracticeOverview>("/api/practice"),
+  practiceSentences: (level: VocabLevel, count = 10) =>
+    request<PracticeSentence[]>(`/api/practice/sentences?level=${level}&count=${count}`),
+  recordPractice: () => request<void>("/api/practice/record", { method: "POST" }),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

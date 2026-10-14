@@ -1,5 +1,8 @@
 import type { NavigatorScreenParams } from "@react-navigation/native";
-import type { FeedbackCategory, GrammarMixedScope } from "../api/client";
+import type { FeedbackCategory, GrammarMixedScope, VocabLevel } from "../api/client";
+
+/** "mix" alternates typed and spoken sentences. */
+export type PracticeMode = "type" | "speak" | "mix";
 
 /** No params (or mode "due") = today's scheduled review; "practice" never raises levels; `weak` = "Ôn từ hay sai". */
 export type ReviewParams =
@@ -17,6 +20,8 @@ export type RootStackParamList = {
   Listening: { slug: string; titleVi: string };
   /** `all` = every line in order instead of a random handful. */
   Dictation: { slug: string; all?: boolean };
+  Speaking: { slug: string; all?: boolean };
+  SentencePractice: { level: VocabLevel; mode: PracticeMode };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;
@@ -47,6 +52,7 @@ export type MainTabParamList = {
   Home: undefined;
   Study: { tab?: HubTab } | undefined;
   Practice: { tab?: HubTab } | undefined;
+  Sentences: undefined;
   Listen: undefined;
   Profile: undefined;
 };

@@ -213,6 +213,44 @@ export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
   return { play, playing: status.playing || speaking, loading: !!url && !status.isLoaded };
 }
 
+/** Plays one practice sentence: its own recording when it has one, otherwise the device voice. */
+export function useSentencePlayer(url: string | null, text: string) {
+  const player = useAudioPlayer(url ? { uri: mediaUrl(url)! } : null, { updateInterval: 100 });
+  const status = useAudioPlayerStatus(player);
+  const token = useRef(0);
+  const [speaking, setSpeaking] = useState(false);
+
+  useEffect(
+    () => () => {
+      token.current++;
+      Speech.stop();
+    },
+    []
+  );
+
+  const play = useCallback(
+    (slow: boolean) => {
+      const t = ++token.current;
+      Speech.stop();
+      setSpeaking(false);
+      const rate = slow ? SLOW_RATE : 1;
+      if (url) {
+        player.setPlaybackRate(rate);
+        void player.seekTo(0).then(() => player.play());
+        return;
+      }
+      setSpeaking(true);
+      const done = () => {
+        if (t === token.current) setSpeaking(false);
+      };
+      Speech.speak(text, { language: "en-US", rate: speechRate() * rate, onDone: done, onStopped: done, onError: done });
+    },
+    [url, text, player]
+  );
+
+  return { play, playing: status.playing || speaking, loading: !!url && !status.isLoaded };
+}
+
 /** Reads the script line by line with the device voice while the lesson has no recording yet. */
 export function useSpeechEngine(opts: Options): Engine {
   const { lines, speakers, rate, repeat } = opts;

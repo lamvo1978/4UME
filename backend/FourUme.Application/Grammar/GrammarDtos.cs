@@ -47,6 +47,9 @@ public record GrammarMixedCompleteRequest(Dictionary<string, int> Mistakes);
 /// <param name="Pulled">Lessons in review that went badly and were scheduled for tomorrow.</param>
 public record GrammarMixedCompleteResponse(int Pulled);
 
+/// <param name="Missing">Questions (across all lessons) whose verbs have no tense yet.</param>
+public record GrammarVerbStatusDto(bool Configured, bool Running, int Done, int Total, string? Error, int Missing);
+
 public record GrammarReviewAnswerRequest(string Slug, int Mistakes);
 
 public record GrammarReviewAnswerResponse(

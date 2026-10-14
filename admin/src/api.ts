@@ -459,7 +459,10 @@ export type GrammarExercise = {
   /** cloze: accepted answers for each ___ in `prompt`, in order. */
   blanks?: string[][];
   explanationVi: string;
+  /** Tense of each verb phrase, tagged by AI; missing until tagged, dropped when the question text changes. */
+  verbs?: { phrase: string; tenseVi: string }[];
 };
+export type GrammarVerbStatus = { configured: boolean; running: boolean; done: number; total: number; error: string | null; missing: number };
 export type GrammarLesson = {
   slug: string;
   version: number;
@@ -712,6 +715,34 @@ export type PlacementGrammarDraft = {
   model: string;
 };
 
+export type SentenceInput = { level: PlacementLevel; topic: string | null; en: string; vi: string; published: boolean };
+export type SentenceAudioState = "none" | "ready" | "stale";
+export type PracticeSentence = SentenceInput & { id: string; topic: string; audioUrl: string | null; audioState: SentenceAudioState; updatedAt: string };
+export type SentenceDraftRequest = { level: PlacementLevel; count: number; topic?: string; notes?: string; provider?: string };
+export type SentenceDraft = { items: { sentence: SentenceInput; problems: string[]; duplicate: boolean }[]; model: string };
+export type SentenceAudioStatus = {
+  configured: boolean;
+  running: boolean;
+  done: number;
+  total: number;
+  error: string | null;
+  missing: number;
+  monthChars: number;
+  monthCharLimit: number;
+};
+/** `giftEveryDays` 0 turns the streak gift off. */
+export type PracticeConfig = { giftEveryDays: number; freeTrial: boolean };
+export type SentenceFileItem = { id?: string | null; level: string; topic?: string | null; en: string; vi: string; published?: boolean };
+export type ImportSentenceRow = { line: number; id: string | null; level: string; en: string; status: ImportStatus; problems: string[] };
+export type ImportSentencesResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportSentenceRow[];
+};
+
 const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });
 
 function query(params: Record<string, string | number | undefined>) {
@@ -819,6 +850,8 @@ export const api = {
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  grammarVerbs: () => request<GrammarVerbStatus>("/api/admin/grammar/verbs"),
+  startGrammarVerbs: () => request<GrammarVerbStatus>("/api/admin/grammar/verbs", { method: "POST" }),
   exportPlacementGrammar: () => request<PlacementGrammarFileItem[]>("/api/admin/placement/grammar/export"),
   importPlacementGrammar: (questions: unknown[], commit: boolean) =>
     request<ImportPlacementGrammarResult>("/api/admin/placement/grammar/import", json("POST", { questions, commit })),
@@ -832,6 +865,20 @@ export const api = {
   deletePlacementGrammar: (id: string) => request<void>(`/api/admin/placement/grammar/${id}`, { method: "DELETE" }),
   draftPlacementGrammar: (r: PlacementGrammarDraftRequest) =>
     request<PlacementGrammarDraft>("/api/admin/placement/grammar/draft", json("POST", r)),
+  sentences: () => request<PracticeSentence[]>("/api/admin/sentences"),
+  createSentence: (s: SentenceInput) => request<PracticeSentence>("/api/admin/sentences", json("POST", s)),
+  createSentenceBatch: (sentences: SentenceInput[]) =>
+    request<{ created: number }>("/api/admin/sentences/batch", json("POST", { sentences })),
+  updateSentence: (id: string, s: SentenceInput) => request<PracticeSentence>(`/api/admin/sentences/${id}`, json("PUT", s)),
+  deleteSentence: (id: string) => request<void>(`/api/admin/sentences/${id}`, { method: "DELETE" }),
+  draftSentences: (r: SentenceDraftRequest) => request<SentenceDraft>("/api/admin/sentences/draft", json("POST", r)),
+  practiceConfig: () => request<PracticeConfig>("/api/admin/sentences/config"),
+  savePracticeConfig: (c: PracticeConfig) => request<PracticeConfig>("/api/admin/sentences/config", json("PUT", c)),
+  sentenceAudio: () => request<SentenceAudioStatus>("/api/admin/sentences/audio"),
+  startSentenceAudio: () => request<SentenceAudioStatus>("/api/admin/sentences/audio", { method: "POST" }),
+  exportSentences: () => request<SentenceFileItem[]>("/api/admin/sentences/export"),
+  importSentences: (sentences: unknown[], commit: boolean) =>
+    request<ImportSentencesResult>("/api/admin/sentences/import", json("POST", { sentences, commit })),
   listeningLessons: () => request<AdminListeningSummary[]>("/api/admin/listening"),
   listeningLesson: (slug: string) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`),
   createListening: (l: ListeningLesson) => request<AdminListeningDetail>("/api/admin/listening", json("POST", l)),

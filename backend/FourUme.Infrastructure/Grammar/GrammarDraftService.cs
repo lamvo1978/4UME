@@ -14,7 +14,7 @@ namespace FourUme.Infrastructure.Grammar;
 /// Drafts grammar questions for one lesson with the AI, then asks it again to check every answer.
 /// Nothing is saved; the admin picks which questions to add to the lesson.
 /// </summary>
-public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraftService> logger) : IGrammarDraftService
+public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger verbs, ILogger<GrammarDraftService> logger) : IGrammarDraftService
 {
     private static readonly Dictionary<string, string> TypeGuide = new()
     {
@@ -40,11 +40,12 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             Example: {"sentence": "She [go] to school every day.", "correction": "goes"}. Never output a sentence without a mistake or without brackets.
             """,
         ["cloze"] = """
-            cloze: "prompt" is ONE connected text of 40–90 words (a message, diary entry, short story, or a dialogue written on one line as
-            "Anna: ... Tom: ..."), with 3–6 gaps ___, each followed by the base word in brackets when needed. "blanks" = one list per gap, in order,
+            cloze: "prompt" is ONE connected text of 40–90 words (a message, diary entry, short story, or a dialogue "Anna: ... Tom: ..."),
+            laid out with line breaks (\n) like a real text: each speaker turn on its own line, a message's greeting and sign-off on their own lines,
+            and a story or diary of more than about 50 words in 2 paragraphs. It has 3–6 gaps ___, each followed by the base word in brackets when needed. "blanks" = one list per gap, in order,
             with every accepted answer (include contractions). Every gap must test the lesson's grammar point.
-            Example: {"prompt": "Hi Mai! I ___ (be) in Da Lat with my family. The weather ___ (be) cool and the people ___ (be) very friendly. My room
-            is small but it ___ (be) clean. Where ___ (be) you now? Write soon!", "blanks": [["am"], ["is"], ["are"], ["is"], ["are"]]}
+            Example: {"prompt": "Hi Mai!\nI ___ (be) in Da Lat with my family. The weather ___ (be) cool and the people ___ (be) very friendly. My room
+            is small but it ___ (be) clean. Where ___ (be) you now?\nWrite soon!", "blanks": [["am"], ["is"], ["are"], ["is"], ["are"]]}
             Short sentences or 1–2 line texts are NOT acceptable. The words around a gap must not already contain its answer
             (wrong: "Are you ___ (be) ready?" — "Are" is already written; right: "___ (be) you ready?").
             """,
@@ -141,6 +142,15 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         AssignIds(drafted, existing, lesson.Slug);
 
         var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, request.Provider, ct);
+        try
+        {
+            await verbs.TagAsync(drafted, ct, request.Provider);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or HttpRequestException or TaskCanceledException && !ct.IsCancellationRequested)
+        {
+            // Untagged questions are picked up later by "Gắn thì động từ".
+            logger.LogWarning(ex, "Grammar draft verb tagging failed");
+        }
         var ids = existing.Select(e => e.Id).ToHashSet();
         var items = drafted.Select((e, i) =>
         {
@@ -188,7 +198,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
     {
         if (e.Type == "cloze" && e.Prompt is not null)
         {
-            var words = e.Prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+            var words = e.Prompt.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;
             if (words < MinClozeWords) yield return $"Đoạn văn quá ngắn ({words} từ), nên có khoảng 40–90 từ.";
         }
         if (e.Type is "cloze" or "fill" && e.Prompt is not null)
@@ -234,6 +244,10 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
 
     private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : WhiteSpace().Replace(s.Trim(), " ");
 
+    /// <summary>Like <see cref="Clean"/> but keeps line breaks, which lay out a cloze text.</summary>
+    private static string? CleanLines(string? s) =>
+        string.IsNullOrWhiteSpace(s) ? null : string.Join("\n", s.Replace("\r", "").Split('\n').Select(Clean).OfType<string>());
+
     private static List<string>? CleanList(List<string>? list)
     {
         var cleaned = list?.Select(Clean).OfType<string>().Distinct().ToList();
@@ -271,7 +285,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
                 n.Correction = Clean(e.Correction);
                 break;
             case "cloze":
-                n.Prompt = Clean(e.Prompt);
+                n.Prompt = CleanLines(e.Prompt);
                 n.Blanks = e.Blanks?.Select(b => CleanList(b) ?? []).ToList();
                 break;
         }

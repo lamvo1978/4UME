@@ -74,6 +74,18 @@ public sealed class GrammarExercise
     /// <summary>cloze: accepted answers for each ___ in <see cref="Prompt"/>, in order.</summary>
     public List<List<string>>? Blanks { get; set; }
     public string ExplanationVi { get; set; } = "";
+    /// <summary>
+    /// Tense of each verb phrase in the answered text, shown when the learner taps a word. Filled by AI;
+    /// null means not tagged yet, cleared by the editor when the text changes.
+    /// </summary>
+    public List<GrammarVerbNote>? Verbs { get; set; }
+}
+
+public sealed class GrammarVerbNote
+{
+    /// <summary>Exactly as written in the answered text, auxiliaries included ("were preparing", "doesn't like").</summary>
+    public string Phrase { get; set; } = "";
+    public string TenseVi { get; set; } = "";
 }
 
 public static class GrammarJson

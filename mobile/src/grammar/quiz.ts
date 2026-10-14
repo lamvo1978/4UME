@@ -1,4 +1,4 @@
-import { GrammarExercise } from "../api/client";
+import { GrammarExercise, VerbNote } from "../api/client";
 import { shuffle } from "../utils/shuffle";
 
 export type QuizItem = {
@@ -54,9 +54,40 @@ export function sampleForSession(item: { exercises: GrammarExercise[]; practice?
 /** A gap in a cloze paragraph: `___` with an optional "(hint)" right after it. */
 const CLOZE_GAP = /_{3,}(\s*\([^)]*\))?/g;
 
-/** Dialogues are stored on one line ("A: … B: …"); each speaker turn starts a new line on screen. */
+const GREETING = /^((?:Hi|Hello|Hey|Dear)\b[^.!?,\n]{0,30}[,!])\s+/;
+const CLOSING =
+  /\s+((?:Love|Best wishes|Best regards|Kind regards|Regards|See you soon|See you|Write soon|Take care|Cheers|Bye for now)\b[^.!?\n]{0,25}[.!,]?(?:\s+[A-Z][a-z]+\.?)?)\s*$/;
+/** Shorter bodies read fine as one paragraph. */
+const SPLIT_FROM_WORDS = 50;
+
+/**
+ * Line breaks for a cloze text. Breaks written by the editor win; otherwise each speaker turn of a dialogue
+ * ("A: … B: …") gets its own line, a letter's greeting and sign-off stand alone, and a long body is split in two
+ * at the sentence end nearest the middle.
+ */
 export function clozeLines(text: string) {
-  return text.replace(/\s+(?=[A-Z][a-z]{0,10}: )/g, "\n");
+  text = text.replace(/[ \t]*\n[ \t]*/g, "\n").trim();
+  if (text.includes("\n")) return text;
+  const dialogue = text.replace(/\s+(?=[A-Z][a-z]{0,10}: )/g, "\n");
+  if (dialogue !== text) return dialogue;
+
+  let body = text;
+  const greeting = body.match(GREETING);
+  if (greeting) body = body.slice(greeting[0].length);
+  const closing = body.match(CLOSING);
+  if (closing?.index) body = body.slice(0, closing.index);
+  return [greeting?.[1], splitBody(body), closing?.index ? closing[1] : null].filter(Boolean).join("\n");
+}
+
+function splitBody(body: string) {
+  if (body.split(/\s+/).length < SPLIT_FROM_WORDS) return body;
+  const ends = [...body.matchAll(/[.!?]["”]?\s+(?=["“]?[A-Z])/g)]
+    .filter((m) => !/\b(Mr|Mrs|Ms|Dr|St)\.$/.test(body.slice(0, (m.index ?? 0) + 1)))
+    .map((m) => (m.index ?? 0) + m[0].length);
+  if (ends.length === 0) return body;
+  const middle = body.length / 2;
+  const at = ends.reduce((a, b) => (Math.abs(b - middle) < Math.abs(a - middle) ? b : a));
+  return `${body.slice(0, at).trimEnd()}\n${body.slice(at)}`;
 }
 
 /** Splits a cloze paragraph into text runs around the gaps; `hints[i]` belongs to gap i. */
@@ -72,6 +103,18 @@ export function splitCloze(prompt: string) {
   }
   parts.push(prompt.slice(last));
   return { parts, hints };
+}
+
+const wordsOf = (s: string): string[] => s.toLowerCase().replace(/’/g, "'").match(/[a-z]+(?:'[a-z]+)*/g) ?? [];
+
+/**
+ * The tagged verb phrase a tapped word belongs to. Before the answer is checked only phrases written out in full
+ * on screen count, so a gap's answer ("were" in "___ preparing") is never given away.
+ */
+export function verbFor(verbs: VerbNote[] | undefined, word: string, shown: string, answered: boolean): VerbNote | null {
+  const candidates = (verbs ?? []).filter((v) => wordsOf(v.phrase).includes(word.replace(/’/g, "'")));
+  const text = ` ${wordsOf(shown).join(" ")} `;
+  return candidates.find((v) => text.includes(` ${wordsOf(v.phrase).join(" ")} `)) ?? (answered ? (candidates[0] ?? null) : null);
 }
 
 export function clozeGapCorrect(accepted: string[], given: string) {

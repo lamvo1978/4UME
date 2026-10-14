@@ -40,6 +40,8 @@ public class User
 
     public int StreakFreezes { get; set; }
     public int BestStreak { get; set; }
+    /// <summary>When the one free try of sentence practice was used; null while it is still available.</summary>
+    public DateTimeOffset? PracticeTrialAt { get; set; }
 
     public ICollection<WordProgress> WordProgresses { get; set; } = new List<WordProgress>();
     public ICollection<GrammarAttempt> GrammarAttempts { get; set; } = new List<GrammarAttempt>();

@@ -3,12 +3,32 @@ using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
 using FourUme.Domain.Entities;
+using FourUme.Infrastructure.Ai;
+using FourUme.Infrastructure.Grammar;
 using Microsoft.EntityFrameworkCore;
 
 namespace FourUme.Infrastructure.Admin;
 
-public class AdminGrammarService(IAppDbContext db, Auditor auditor) : IAdminGrammarService
+public class AdminGrammarService(IAppDbContext db, Auditor auditor, AiClient ai, GrammarVerbJobs verbJobs) : IAdminGrammarService
 {
+    public async Task<GrammarVerbStatusDto> GetVerbStatusAsync(CancellationToken ct = default)
+    {
+        var job = verbJobs.Current;
+        return new GrammarVerbStatusDto(ai.Configured, job?.Running ?? false, job?.Done ?? 0, job?.Total ?? 0, job?.Error,
+            await GrammarVerbJobs.CountMissingAsync(db, ct));
+    }
+
+    public async Task<GrammarVerbStatusDto> StartVerbTaggingAsync(CancellationToken ct = default)
+    {
+        if (!ai.Configured) throw new InvalidOperationException(AiClient.NotConfiguredMessage);
+        var lessons = await db.GrammarLessons.AsNoTracking().OrderBy(l => l.SortOrder)
+            .Select(l => new { l.Slug, l.ExercisesJson, l.PracticeJson }).ToListAsync(ct);
+        var slugs = lessons.Where(l => GrammarVerbJobs.Untagged(l.ExercisesJson, l.PracticeJson) > 0).Select(l => l.Slug).ToList();
+        if (slugs.Count == 0) throw new InvalidOperationException("Mọi câu hỏi đều đã có thì động từ.");
+        verbJobs.Start(slugs);
+        return await GetVerbStatusAsync(ct);
+    }
+
     public async Task<IReadOnlyList<AdminGrammarSummaryDto>> GetLessonsAsync(CancellationToken ct = default)
     {
         var lessons = await db.GrammarLessons.AsNoTracking().OrderBy(l => l.SortOrder).ThenBy(l => l.Slug).ToListAsync(ct);

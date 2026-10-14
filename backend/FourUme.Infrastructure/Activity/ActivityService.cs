@@ -200,7 +200,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
                 var row = rows.GetValueOrDefault(date);
                 return new WeekDayDto(date, row?.NewWords ?? 0, row?.Reviews ?? 0, row?.GrammarItems ?? 0,
                     listening.GetValueOrDefault((date, ListeningLogKind.Listen)),
-                    listening.GetValueOrDefault((date, ListeningLogKind.Dictation)),
+                    listening.GetValueOrDefault((date, ListeningLogKind.Dictation)) + listening.GetValueOrDefault((date, ListeningLogKind.Sentence)),
                     row is { Frozen: false }, row?.Frozen ?? false);
             }).ToList();
             var goodWords = good.Where(g => g.LocalDate >= start && g.LocalDate <= end).Select(g => g.WordId).Distinct().Count();
@@ -212,7 +212,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
         return new WeeklyDto(today, countsTowardStreak, result);
     }
 
-    private static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)
+    internal static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)
     {
         var count = 0;
         while (dates.Contains(day))

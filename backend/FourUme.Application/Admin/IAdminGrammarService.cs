@@ -16,4 +16,7 @@ public interface IAdminGrammarService
     Task<IReadOnlyList<GrammarLessonDocument>> ExportLessonsAsync(CancellationToken ct = default);
     /// <summary>Creates new slugs and updates existing ones; lessons with problems are skipped.</summary>
     Task<ImportGrammarResult> ImportLessonsAsync(ImportGrammarRequest request, CancellationToken ct = default);
+    Task<GrammarVerbStatusDto> GetVerbStatusAsync(CancellationToken ct = default);
+    /// <summary>Tags, in the background, the verb tenses of every question that has none yet.</summary>
+    Task<GrammarVerbStatusDto> StartVerbTaggingAsync(CancellationToken ct = default);
 }

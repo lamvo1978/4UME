@@ -13,7 +13,7 @@ import {
   VocabLevel,
 } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { SpeakButton, stopSpeaking } from "../components/SpeakButton";
+import { stopSpeaking, WordVoices } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, fonts, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -212,7 +212,7 @@ export function PlacementScreen({ navigation }: Props) {
           <Text style={styles.word}>{q.word}</Text>
           <View style={styles.ipaRow}>
             {q.ipa ? <Text style={styles.ipa}>{q.ipa}</Text> : null}
-            <SpeakButton text={q.word} size="sm" />
+            <WordVoices text={q.word} size="sm" />
           </View>
           <Text style={styles.pos}>{posLabel(q.pos)}</Text>
         </View>

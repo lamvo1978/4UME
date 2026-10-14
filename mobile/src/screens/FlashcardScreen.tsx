@@ -6,7 +6,7 @@ import { api, mediaUrl, Word } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
 import { Screen } from "../components/Screen";
-import { SpeakButton, speakAuto, stopSpeaking } from "../components/SpeakButton";
+import { SpeakButton, speakAuto, stopSpeaking, WordVoices } from "../components/SpeakButton";
 import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
@@ -239,7 +239,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
           </Text>
           <View style={styles.ipaRow}>
             {current.ipa ? <Text style={styles.ipa}>{current.ipa}</Text> : null}
-            <SpeakButton text={current.word} />
+            <WordVoices text={current.word} />
           </View>
           {current.forms ? <Text style={styles.forms}>{current.forms}</Text> : null}
           <View style={styles.tags}>
@@ -258,7 +258,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
         >
           <View style={styles.backWordRow}>
             <Text style={styles.backWord}>{current.word}</Text>
-            <SpeakButton text={current.word} size="sm" />
+            <WordVoices text={current.word} size="sm" />
           </View>
           <Text style={styles.meaning}>{current.meaningVi}</Text>
           {current.example ? (

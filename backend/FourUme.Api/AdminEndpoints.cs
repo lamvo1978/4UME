@@ -10,6 +10,7 @@ using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
+using FourUme.Application.Practice;
 using FourUme.Application.Pronunciation;
 
 namespace FourUme.Api;
@@ -208,6 +209,8 @@ public static class AdminEndpoints
             Results.Ok(await s.CreateLessonAsync(doc, ct)));
         admin.MapPost("/grammar/validate", (GrammarLessonDocument doc) =>
             Results.Ok(new GrammarValidationDto(GrammarValidator.Validate(doc))));
+        admin.MapGet("/grammar/verbs", async (IAdminGrammarService s, CancellationToken ct) => Results.Ok(await s.GetVerbStatusAsync(ct)));
+        admin.MapPost("/grammar/verbs", async (IAdminGrammarService s, CancellationToken ct) => Results.Ok(await s.StartVerbTaggingAsync(ct)));
         admin.MapPost("/grammar/draft", async (GrammarDraftRequest r, IGrammarDraftService s, CancellationToken ct) =>
             Results.Ok(await s.DraftAsync(r, ct)));
         admin.MapPut("/grammar/order", async (ReorderRequest r, IAdminGrammarService s, CancellationToken ct) =>
@@ -238,6 +241,29 @@ public static class AdminEndpoints
         admin.MapDelete("/placement/grammar/{id:guid}", async (Guid id, IAdminPlacementService s, CancellationToken ct) =>
         {
             await s.DeleteGrammarAsync(id, ct);
+            return Results.NoContent();
+        });
+
+        admin.MapGet("/sentences", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.GetAllAsync(ct)));
+        admin.MapGet("/sentences/export", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.ExportAsync(ct)));
+        admin.MapPost("/sentences/import", async (ImportPracticeSentencesRequest r, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.ImportAsync(r, ct)));
+        admin.MapPost("/sentences", async (SavePracticeSentenceRequest r, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateAsync(r, ct)));
+        admin.MapPost("/sentences/batch", async (SavePracticeSentenceBatchRequest r, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(new { created = await s.CreateBatchAsync(r, ct) }));
+        admin.MapPost("/sentences/draft", async (PracticeDraftRequest r, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.DraftAsync(r, ct)));
+        admin.MapGet("/sentences/config", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.GetConfigAsync(ct)));
+        admin.MapPut("/sentences/config", async (PracticeConfig c, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveConfigAsync(c, ct)));
+        admin.MapGet("/sentences/audio", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.GetAudioStatusAsync(ct)));
+        admin.MapPost("/sentences/audio", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.StartAudioAsync(ct)));
+        admin.MapPut("/sentences/{id:guid}", async (Guid id, SavePracticeSentenceRequest r, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateAsync(id, r, ct)));
+        admin.MapDelete("/sentences/{id:guid}", async (Guid id, IAdminPracticeService s, CancellationToken ct) =>
+        {
+            await s.DeleteAsync(id, ct);
             return Results.NoContent();
         });
 

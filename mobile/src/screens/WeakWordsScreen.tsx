@@ -6,7 +6,7 @@ import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Tex
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ErrorRetry } from "../components/ErrorRetry";
 import { api, WEAK_SPEAK_SCORE, WeakWord } from "../api/client";
-import { speak } from "../components/SpeakButton";
+import { speakWord } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 
@@ -80,7 +80,7 @@ export function WeakWordsScreen() {
         </View>
       }
       renderItem={({ item }) => (
-        <Pressable style={({ pressed }) => [styles.card, pressed && styles.pressed]} onPress={() => speak(item.word)}>
+        <Pressable style={({ pressed }) => [styles.card, pressed && styles.pressed]} onPress={() => speakWord(item.word)}>
           <View style={styles.text}>
             <Text style={styles.word}>
               {item.word} {item.ipa ? <Text style={styles.ipa}>{item.ipa}</Text> : null}

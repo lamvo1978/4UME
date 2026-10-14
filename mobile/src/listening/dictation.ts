@@ -164,9 +164,17 @@ function align(expected: Key[], typed: Key[]): Op[] {
   return ops.reverse();
 }
 
+/** Keyboards may insert zero-width characters; a token with no letter or digit ("?", ",") is not a word. */
+function typedTokens(answer: string) {
+  return answer
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, " ")
+    .split(/\s+/)
+    .filter((t) => keysOf(t).length > 0);
+}
+
 export function checkDictation(sentence: string, answer: string): DictationResult {
   const words = sentence.split(/\s+/).filter(Boolean);
-  const typedWords = answer.split(/\s+/).filter(Boolean);
+  const typedWords = typedTokens(answer);
   const expected = flatten(words);
   const typed = flatten(typedWords);
   const ops = align(expected, typed);

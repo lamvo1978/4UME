@@ -14,6 +14,8 @@ using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
+using FourUme.Application.Practice;
+using FourUme.Application.Speech;
 using FourUme.Application.Pronunciation;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
@@ -633,6 +635,33 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
     return await listening.RecordDictationAsync(userId.Value, slug, ct)
         ? Results.NoContent()
         : Results.NotFound(new { error = "Không tìm thấy bài." });
+}).RequireAuthorization();
+
+app.MapGet("/api/speech/word", async (string text, string voice, IWordAudioService words, CancellationToken ct) =>
+    Results.Ok(await words.GetAsync(text, voice, ct))).RequireAuthorization();
+
+app.MapGet("/api/practice", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await practice.GetOverviewAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+app.MapGet("/api/practice/sentences", async (string level, int? count, ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return await practice.GetRoundAsync(userId.Value, level, count ?? PracticeRules.RoundSize, ct) is { } round
+        ? Results.Ok(round)
+        : Results.Json(new { error = "Luyện câu dành cho Premium hoặc ngày được tặng khi giữ chuỗi." }, statusCode: StatusCodes.Status403Forbidden);
+}).RequireAuthorization();
+
+app.MapPost("/api/practice/record", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    await practice.RecordAsync(userId.Value, ct);
+    return Results.NoContent();
 }).RequireAuthorization();
 
 app.MapGet("/api/grammar/lessons", async (ClaimsPrincipal principal, IGrammarService grammar) =>
