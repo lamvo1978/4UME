@@ -45,7 +45,8 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             with every accepted answer (include contractions). Every gap must test the lesson's grammar point.
             Example: {"prompt": "Hi Mai! I ___ (be) in Da Lat with my family. The weather ___ (be) cool and the people ___ (be) very friendly. My room
             is small but it ___ (be) clean. Where ___ (be) you now? Write soon!", "blanks": [["am"], ["is"], ["are"], ["is"], ["are"]]}
-            Short sentences or 1–2 line texts are NOT acceptable.
+            Short sentences or 1–2 line texts are NOT acceptable. The words around a gap must not already contain its answer
+            (wrong: "Are you ___ (be) ready?" — "Are" is already written; right: "___ (be) you ready?").
             """,
     };
 
@@ -53,7 +54,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
     {
         ["easy"] = "Difficulty: easy — short, clear sentences; test the basic form only.",
         ["mixed"] = "Difficulty: mixed — about one third easy, one third medium, one third harder (negatives, questions, exceptions, signal words, contrast with similar structures).",
-        ["hard"] = "Difficulty: harder — longer sentences, exceptions, tricky contrasts with similar structures, but still within the lesson's level.",
+        ["hard"] = "Difficulty: harder — trickier choices with the SAME forms the lesson teaches: tricky subjects (e.g. \"My sister and I\", \"Everyone\", plural nouns, names), negatives and questions, several forms mixed in one text, longer sentences. Harder NEVER means adding grammar the lesson does not teach (no -ing forms, past, future, passive or other tenses unless the lesson teaches them).",
     };
 
     private const string Instructions = """
@@ -79,7 +80,9 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         - for error: the bracketed part is really wrong and the correction fixes it, and nothing else in the sentence is wrong;
         - for order/transform: the answer is the only natural sentence that can be built;
         - for cloze: the text is natural and connected, and every gap has exactly the answers listed;
-        - the exercise tests the lesson's grammar point with forms the lesson teaches (not other tenses or structures);
+        - the exercise tests the lesson's grammar point with forms the lesson teaches (not other tenses or structures):
+          check EVERY sentence of a cloze text, not only the gaps — e.g. a lesson on am/is/are must not contain "is staying" or "are coming";
+        - filling every gap with its answer gives a correct sentence (no doubled words like "Are you are ready");
         - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
         """;
@@ -186,6 +189,11 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             var words = e.Prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
             if (words < MinClozeWords) yield return $"Đoạn văn quá ngắn ({words} từ), nên có khoảng 40–90 từ.";
         }
+        if (e.Type is "cloze" or "fill" && e.Prompt is not null)
+        {
+            var answers = e.Type == "cloze" ? e.Blanks ?? [] : [e.Answers ?? []];
+            foreach (var problem in DoubledAnswers(e.Prompt, answers)) yield return problem;
+        }
         if (e.Type == "error" && e.Sentence is not null && e.Correction is not null)
         {
             var open = e.Sentence.IndexOf('[');
@@ -196,6 +204,23 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
     }
 
     private const int MinClozeWords = 25;
+
+    /// <summary>Flags a gap whose answer is already written right next to it, e.g. "Are you ___ (be) ready?" with "are".</summary>
+    private static IEnumerable<string> DoubledAnswers(string prompt, List<List<string>> answers)
+    {
+        var parts = prompt.Split("___");
+        for (var i = 0; i < parts.Length - 1 && i < answers.Count; i++)
+        {
+            var before = WordPattern().Matches(parts[i]).Select(m => m.Value).TakeLast(2);
+            var after = WordPattern().Matches(HintPattern().Replace(parts[i + 1], "", 1)).Select(m => m.Value).Take(1);
+            var near = before.Concat(after).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var doubled = answers[i].FirstOrDefault(a => !a.Contains(' ') && near.Contains(a.Trim()));
+            if (doubled is not null)
+                yield return answers.Count > 1
+                    ? $"Chỗ trống {i + 1}: từ \"{doubled}\" đã có sẵn ngay cạnh, điền vào sẽ bị lặp."
+                    : $"Từ \"{doubled}\" đã có sẵn ngay cạnh chỗ trống, điền vào sẽ bị lặp.";
+        }
+    }
 
     private static string Summary(GrammarExercise e) => e.Type switch
     {
@@ -351,4 +376,11 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
 
     [GeneratedRegex(@"^(.*?)(\d+)$")]
     private static partial Regex IdPattern();
+
+    [GeneratedRegex(@"[A-Za-z']+")]
+    private static partial Regex WordPattern();
+
+    /// <summary>The "(be)" hint right after a gap.</summary>
+    [GeneratedRegex(@"^\s*\([^)]*\)")]
+    private static partial Regex HintPattern();
 }
