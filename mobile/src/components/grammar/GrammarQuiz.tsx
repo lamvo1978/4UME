@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
 import { GrammarExercise } from "../../api/client";
 import {
   clozeGapCorrect,
@@ -11,7 +11,9 @@ import {
   QuizResult,
   splitCloze,
 } from "../../grammar/quiz";
+import { tokenize } from "../../listening/meta";
 import { colors, shadow, spacing } from "../../theme";
+import { WordSheet } from "../listening/WordSheet";
 import { SentenceBuilder, sentenceTokens } from "../SentenceBuilder";
 import { SpeakButton } from "../SpeakButton";
 import { MicButton } from "../../speech/MicButton";
@@ -36,6 +38,8 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
   const [done, setDone] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [typed, setTyped] = useState("");
+  const [gaps, setGaps] = useState<string[]>([]);
+  const [lookup, setLookup] = useState<string | null>(null);
   const missedKeys = useRef(new Set<string>());
   const missed = useRef<QuizItem[]>([]);
   const mistakes = useRef<Record<string, number>>({});
@@ -71,6 +75,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
     const rest = queue.slice(1);
     setFeedback(null);
     setTyped("");
+    setGaps([]);
     if (feedback.correct) {
       setDone((d) => d + 1);
       if (rest.length === 0) {
@@ -103,9 +108,15 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
       <View style={styles.card}>
         {item.label ? <Text style={styles.label}>{item.label}</Text> : null}
         <Text style={styles.instruction}>{ex.type === "transform" ? ex.instructionVi : INSTRUCTIONS[ex.type]}</Text>
-        <Prompt ex={ex} />
+        <Prompt ex={ex} gaps={gaps} checked={!!feedback} onWord={setLookup} />
         {ex.type === "error" ? (
           <ErrorTokens key={item.key} ex={ex} feedback={feedback} onPick={(ok) => complete({ correct: ok, given: ok ? "correct" : "wrong", reason: ok ? "ok" : "wrong" })} />
+        ) : null}
+        {ex.type !== "order" && ex.type !== "error" ? (
+          <View style={styles.lookupHint}>
+            <Ionicons name="book-outline" size={13} color={colors.muted} />
+            <Text style={styles.lookupHintText}>Chạm vào một từ để xem nghĩa</Text>
+          </View>
         ) : null}
       </View>
 
@@ -171,7 +182,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
       ) : null}
 
       {ex.type === "cloze" ? (
-        <ClozeInputs key={item.key} ex={ex} feedback={feedback} onCheck={check} onReveal={reveal} />
+        <ClozeInputs key={item.key} ex={ex} values={gaps} onChange={setGaps} feedback={feedback} onCheck={check} onReveal={reveal} />
       ) : null}
 
       {ex.type === "order" || ex.type === "transform" ? (
@@ -204,7 +215,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
                   : "Chưa đúng"}
           </Text>
           <View style={styles.answerRow}>
-            <Text style={styles.answerText}>{displayAnswer(ex)}</Text>
+            <LookupText text={displayAnswer(ex)} style={styles.answerText} onWord={setLookup} />
             <SpeakButton text={displayAnswer(ex)} size="sm" />
           </View>
           <Text style={styles.explanation}>{ex.explanationVi}</Text>
@@ -214,36 +225,74 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
           </Pressable>
         </View>
       ) : null}
+      <WordSheet word={lookup} onClose={() => setLookup(null)} />
     </View>
   );
 }
 
-function Prompt({ ex }: { ex: GrammarExercise }) {
+/** English text whose words open the word sheet when tapped. */
+function LookupText({ text, style, onWord }: { text: string; style?: TextStyle; onWord: (word: string) => void }) {
+  return (
+    <Text style={style}>
+      {tokenize(text).map((t, k) =>
+        t.word ? (
+          <Text key={k} onPress={() => onWord(t.word!)}>
+            {t.text}
+          </Text>
+        ) : (
+          t.text
+        )
+      )}
+    </Text>
+  );
+}
+
+const NBSP = "\u00A0";
+
+function Prompt({
+  ex,
+  gaps,
+  checked,
+  onWord,
+}: {
+  ex: GrammarExercise;
+  gaps: string[];
+  checked: boolean;
+  onWord: (word: string) => void;
+}) {
   switch (ex.type) {
     case "mcq":
     case "fill":
-      return <Text style={styles.prompt}>{ex.prompt.replace(/_{3,}/g, "_____")}</Text>;
+      return <LookupText text={ex.prompt.replace(/_{3,}/g, "_____")} style={styles.prompt} onWord={onWord} />;
     case "order":
       return <Text style={styles.promptVi}>{ex.promptVi}</Text>;
     case "transform":
-      return <Text style={styles.prompt}>{ex.source}</Text>;
+      return <LookupText text={ex.source} style={styles.prompt} onWord={onWord} />;
     case "error":
       return null;
     case "cloze": {
       const { parts, hints } = splitCloze(ex.prompt);
       return (
         <Text style={styles.paragraph}>
-          {parts.map((text, i) => (
-            <Text key={i}>
-              {text}
-              {i < hints.length ? (
-                <Text style={styles.gap}>
-                  {`(${i + 1}) _____`}
-                  {hints[i] ? <Text style={styles.gapHint}>{` (${hints[i]})`}</Text> : null}
-                </Text>
-              ) : null}
-            </Text>
-          ))}
+          {parts.map((text, i) => {
+            const value = gaps[i]?.trim();
+            const ok = checked ? clozeGapCorrect(ex.blanks[i] ?? [], gaps[i] ?? "") : null;
+            return (
+              <Text key={i}>
+                <LookupText text={text} onWord={onWord} />
+                {i < hints.length ? (
+                  // Non-breaking spaces keep the number, the blank and its hint on one line.
+                  <Text>
+                    <Text style={[styles.gap, value ? styles.gapFilled : null, ok === true && styles.gapOk, ok === false && styles.gapBad]}>
+                      <Text style={styles.gapNum}>{`${NBSP}${i + 1}${NBSP}`}</Text>
+                      {`${value ? value.replace(/ /g, NBSP) : "______"}${NBSP}`}
+                    </Text>
+                    {hints[i] && !value ? <Text style={styles.gapHint}>{`${NBSP}(${hints[i]})`}</Text> : null}
+                  </Text>
+                ) : null}
+              </Text>
+            );
+          })}
         </Text>
       );
     }
@@ -252,24 +301,30 @@ function Prompt({ ex }: { ex: GrammarExercise }) {
 
 function ClozeInputs({
   ex,
+  values,
+  onChange,
   feedback,
   onCheck,
   onReveal,
 }: {
   ex: Extract<GrammarExercise, { type: "cloze" }>;
+  values: string[];
+  onChange: (values: string[]) => void;
   feedback: Feedback | null;
   onCheck: (given: string) => void;
   onReveal: () => void;
 }) {
-  const [values, setValues] = useState(() => ex.blanks.map(() => ""));
   const inputs = useRef<(TextInput | null)[]>([]);
-  const filled = values.every((v) => v.trim());
-  const submit = () => filled && onCheck(JSON.stringify(values));
+  const { hints } = splitCloze(ex.prompt);
+  const all = ex.blanks.map((_, i) => values[i] ?? "");
+  const setValue = (i: number, t: string) => onChange(all.map((v, j) => (j === i ? t : v)));
+  const filled = all.every((v) => v.trim());
+  const submit = () => filled && onCheck(JSON.stringify(all));
 
   return (
     <View style={styles.fillBox}>
       {ex.blanks.map((accepted, i) => {
-        const ok = clozeGapCorrect(accepted, values[i]);
+        const ok = clozeGapCorrect(accepted, all[i]);
         return (
           <View key={i} style={styles.gapRow}>
             <Text style={styles.gapNumber}>{i + 1}</Text>
@@ -280,9 +335,9 @@ function ClozeInputs({
                     inputs.current[i] = r;
                   }}
                   style={[styles.input, styles.gapInput, styles.flex, feedback && (ok ? styles.inputCorrect : styles.inputWrong)]}
-                  value={values[i]}
-                  onChangeText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))}
-                  placeholder={`Chỗ trống ${i + 1}`}
+                  value={all[i]}
+                  onChangeText={(t) => setValue(i, t)}
+                  placeholder={hints[i] ? `(${hints[i]})` : `Chỗ trống ${i + 1}`}
                   placeholderTextColor={colors.muted}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -291,7 +346,7 @@ function ClozeInputs({
                   blurOnSubmit={i === ex.blanks.length - 1}
                   onSubmitEditing={() => (i < ex.blanks.length - 1 ? inputs.current[i + 1]?.focus() : submit())}
                 />
-                {!feedback ? <MicButton onText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))} size={38} /> : null}
+                {!feedback ? <MicButton onText={(t) => setValue(i, t)} size={38} /> : null}
               </View>
               {feedback && !ok ? <Text style={styles.gapAnswer}>{accepted[0]}</Text> : null}
             </View>
@@ -376,11 +431,17 @@ const styles = StyleSheet.create({
   prompt: { fontSize: 22, lineHeight: 31, fontWeight: "700", color: colors.ink },
   promptVi: { fontSize: 20, lineHeight: 28, fontWeight: "700", color: colors.accent },
   paragraph: { fontSize: 17, lineHeight: 27, color: colors.ink },
-  gap: { fontWeight: "600", color: colors.flameDeep },
+  gap: { fontWeight: "700", color: colors.flameDeep, backgroundColor: colors.bg },
+  gapNum: { color: colors.flameDeep },
+  gapFilled: { color: colors.ink, backgroundColor: colors.accentSoft },
+  gapOk: { color: colors.accent, backgroundColor: colors.accentSoft },
+  gapBad: { color: colors.danger, backgroundColor: colors.dangerSoft },
   gapHint: { fontWeight: "600", color: colors.muted },
+  lookupHint: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 },
+  lookupHintText: { fontSize: 12, color: colors.muted },
   gapRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
-  gapNumber: { width: 24, paddingTop: 14, fontSize: 16, fontWeight: "700", color: colors.flameDeep, textAlign: "center" },
-  gapInput: { paddingVertical: 12, fontSize: 18, textAlign: "left" },
+  gapNumber: { width: 24, paddingTop: 10, fontSize: 16, fontWeight: "700", color: colors.flameDeep, textAlign: "center" },
+  gapInput: { paddingVertical: 9, fontSize: 17, borderRadius: 14, textAlign: "left" },
   gapAnswer: { marginTop: 4, marginLeft: 4, fontSize: 15, fontWeight: "700", color: colors.accent },
   options: { gap: 10 },
   option: {
