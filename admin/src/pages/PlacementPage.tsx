@@ -1,10 +1,11 @@
-import { ActionIcon, Alert, Badge, Button, Group, Paper, SegmentedControl, Skeleton, Stack, Switch, Text, Title, Tooltip } from "@mantine/core";
-import { IconPencil, IconPlus, IconSparkles, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, Skeleton, Stack, Switch, Text, Title, Tooltip } from "@mantine/core";
+import { IconDownload, IconFileCode, IconPencil, IconPlus, IconSparkles, IconTrash, IconUpload } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api, type PlacementGrammarInput, type PlacementGrammarQuestion, type PlacementLevel } from "../api";
 import { notifyError, notifySaved } from "../lib";
 import { PlacementDraftModal } from "../placement/PlacementDraftModal";
+import { PlacementImportModal } from "../placement/PlacementImportModal";
 import { PlacementQuestionModal } from "../placement/PlacementQuestionModal";
 import { emptyQuestion, GOOD_PER_LEVEL, MIN_PER_LEVEL, PLACEMENT_LEVELS } from "../placement/meta";
 
@@ -17,6 +18,21 @@ export function PlacementPage() {
   const [level, setLevel] = useState<PlacementLevel>("A1");
   const [editing, setEditing] = useState<PlacementGrammarQuestion | "new" | null>(null);
   const [drafting, setDrafting] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  async function exportAll() {
+    setExporting(true);
+    try {
+      const [data, { datedName, downloadJson }] = await Promise.all([api.exportPlacementGrammar(), import("../sheets")]);
+      downloadJson(data, `${datedName("4ume-kiem-tra-dau-vao")}.json`);
+      notifySaved(`Đã xuất ${data.length} câu`);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   const all = questions.data ?? [];
   const lessonList = lessons.data ?? [];
@@ -70,6 +86,21 @@ export function PlacementPage() {
           </Text>
         </div>
         <Group gap="sm" wrap="nowrap">
+          <Menu position="bottom-end" width={220}>
+            <Menu.Target>
+              <ActionIcon variant="default" size={36} radius="md" loading={exporting} aria-label="Nhập / Xuất JSON">
+                <IconFileCode size={20} />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<IconUpload size={16} />} onClick={() => setImporting(true)}>
+                Nhập từ file JSON
+              </Menu.Item>
+              <Menu.Item leftSection={<IconDownload size={16} />} onClick={exportAll}>
+                Xuất tất cả câu (JSON)
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
           <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
             AI soạn
           </Button>
@@ -78,6 +109,8 @@ export function PlacementPage() {
           </Button>
         </Group>
       </Group>
+
+      <PlacementImportModal opened={importing} onClose={() => setImporting(false)} />
 
       <Paper p="sm" radius="lg" shadow="xs">
         <SegmentedControl

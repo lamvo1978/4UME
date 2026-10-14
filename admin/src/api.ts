@@ -527,6 +527,26 @@ export type ImportWordRow = {
   published: string | null;
 };
 export type ImportStatus = "create" | "update" | "unchanged" | "duplicate" | "error";
+/** One question in the placement export file; without an id the import creates it. */
+export type PlacementGrammarFileItem = {
+  id?: string | null;
+  level: string;
+  prompt: string;
+  options: string[];
+  answer: string;
+  explanationVi?: string | null;
+  lessonSlug?: string | null;
+  published?: boolean;
+};
+export type ImportPlacementGrammarRow = { line: number; id: string | null; level: string; prompt: string; status: ImportStatus; problems: string[] };
+export type ImportPlacementGrammarResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportPlacementGrammarRow[];
+};
 export type ImportWordRowResult = {
   line: number;
   word: string;
@@ -796,6 +816,9 @@ export const api = {
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  exportPlacementGrammar: () => request<PlacementGrammarFileItem[]>("/api/admin/placement/grammar/export"),
+  importPlacementGrammar: (questions: unknown[], commit: boolean) =>
+    request<ImportPlacementGrammarResult>("/api/admin/placement/grammar/import", json("POST", { questions, commit })),
   placementGrammar: () => request<PlacementGrammarQuestion[]>("/api/admin/placement/grammar"),
   createPlacementGrammar: (q: PlacementGrammarInput) =>
     request<PlacementGrammarQuestion>("/api/admin/placement/grammar", json("POST", q)),
