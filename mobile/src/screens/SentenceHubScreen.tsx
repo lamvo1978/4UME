@@ -52,7 +52,7 @@ export function SentenceHubScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>Luyện</Text>
         <Text style={styles.intro}>
-          Mỗi lượt 10 câu ngắn đời thường. Nghe giọng người bản xứ rồi chép lại hoặc nói lại cả câu — luyện cả tai lẫn miệng.
+          Luyện nghe và nói theo giọng người bản xứ.
         </Text>
 
         <Text style={styles.label}>Cấp độ</Text>
