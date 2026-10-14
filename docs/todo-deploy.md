@@ -66,6 +66,7 @@ cd /opt/4ume && git pull && cd deploy/vps && docker compose pull && docker compo
   1. Admin → *Luyện câu* → **AI soạn** mỗi cấp A1–B2 (nên ≥ 50 câu/cấp; cấp chưa có câu thì app báo "đang được soạn").
   2. Bấm **Tạo giọng đọc**: Azure đọc mỗi câu một lần, lưu mp3 (`/media/sentences`), tính chung hạn mức ký tự với bài nghe (~100 ký tự/câu → 200 câu ≈ 20.000 ký tự). Câu chưa có giọng thì app đọc bằng giọng của điện thoại. Sửa câu tiếng Anh thì phải tạo lại giọng.
   3. *Nghe – nói* / *Trộn* cần bản app build mới (có `expo-speech-recognition`); Expo Go chỉ dùng được *Nghe – chép*.
+- [ ] **Luyện câu — ý tưởng sau**: luyện theo **chủ đề** người dùng chọn (đi siêu thị, văn phòng, phỏng vấn, sân bay, nhà hàng…) — câu đã có trường `Topic`, cần danh sách chủ đề cố định (tên Việt + biểu tượng) trong admin và hàng chọn chủ đề trên tab *Luyện*; **ôn lại câu sai**; trong *Nghe – nói* cho Premium bấm **chấm phát âm câu này** (Azure).
 - [ ] **Trước khi gửi duyệt store**: tắt **Bảng giá** (admin → *Quyền lợi Premium*) và ẩn các quyền lợi "Sắp có" cho tới khi có mua trong ứng dụng.
 - [ ] **Hộp thư Zoho** `hotro@4ume.io.vn` (nhận thư, email hỗ trợ cho cửa hàng ứng dụng, đặt lại mật khẩu cho `admin@4ume.io.vn`) — [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm).
 
