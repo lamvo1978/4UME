@@ -192,6 +192,20 @@ function PlayerView({ lesson, settings, onSettings, engine }: SessionProps & { e
             </View>
             <Ionicons name="chevron-forward" size={18} color={colors.accent} />
           </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.dictation, pressed && styles.pressed]}
+            onPress={() => {
+              engine.pause();
+              navigation.navigate("Speaking", { slug: lesson.slug });
+            }}
+          >
+            <Ionicons name="mic-outline" size={20} color={colors.accent} />
+            <View style={styles.dictationText}>
+              <Text style={styles.dictationTitle}>Luyện nói</Text>
+              <Text style={styles.dictationSub}>Nghe từng câu rồi nói lại</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.accent} />
+          </Pressable>
         </View>
 
         {settings.mode === "hidden" ? (

@@ -37,7 +37,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "4UME dùng micro để chấm phát âm khi bạn đọc to từ vựng.",
+          "microphonePermission": "4UME dùng micro để chấm phát âm và để bạn luyện nói.",
           "recordAudioAndroid": true,
           "enableBackgroundPlayback": true
         }
@@ -61,7 +61,14 @@
           "backgroundColor": "#E7F2EC"
         }
       ],
-      "@sentry/react-native"
+      "@sentry/react-native",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "4UME dùng micro để chấm phát âm và để bạn luyện nói.",
+          "speechRecognitionPermission": "4UME chuyển câu bạn nói thành chữ để so với câu mẫu khi luyện nói."
+        }
+      ]
     ],
     "extra": {
       "eas": {

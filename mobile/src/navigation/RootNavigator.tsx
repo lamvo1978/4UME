@@ -23,7 +23,7 @@ import { FeedbackThreadScreen } from "../screens/FeedbackThreadScreen";
 import { FlashcardScreen } from "../screens/FlashcardScreen";
 import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 import { GrammarLessonScreen } from "../screens/GrammarLessonScreen";
-import { DictationScreen } from "../screens/DictationScreen";
+import { DictationScreen, SpeakingScreen } from "../screens/DictationScreen";
 import { ListeningListScreen } from "../screens/ListeningListScreen";
 import { ListeningPlayerScreen } from "../screens/ListeningPlayerScreen";
 import { GrammarReviewScreen } from "../screens/GrammarReviewScreen";
@@ -248,6 +248,7 @@ export function RootNavigator() {
               options={({ route }) => ({ title: route.params.titleVi })}
             />
             <Stack.Screen name="Dictation" component={DictationScreen} options={{ title: "Chép chính tả" }} />
+            <Stack.Screen name="Speaking" component={SpeakingScreen} options={{ title: "Luyện nói" }} />
           </>
         )}
       </Stack.Navigator>

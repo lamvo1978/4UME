@@ -14,6 +14,7 @@ import {
 import { colors, shadow, spacing } from "../../theme";
 import { SentenceBuilder, sentenceTokens } from "../SentenceBuilder";
 import { SpeakButton } from "../SpeakButton";
+import { MicButton } from "../../speech/MicButton";
 
 type Feedback = { correct: boolean; given: string | null; reason: "ok" | "wrong" | "hints" | "revealed" };
 
@@ -136,18 +137,21 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
 
       {ex.type === "fill" ? (
         <View style={styles.fillBox}>
-          <TextInput
-            style={[styles.input, feedback && (feedback.correct ? styles.inputCorrect : styles.inputWrong)]}
-            value={typed}
-            onChangeText={setTyped}
-            placeholder="Gõ đáp án"
-            placeholderTextColor={colors.muted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={!feedback}
-            returnKeyType="done"
-            onSubmitEditing={() => typed.trim() && check(typed)}
-          />
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[styles.input, styles.flex, feedback && (feedback.correct ? styles.inputCorrect : styles.inputWrong)]}
+              value={typed}
+              onChangeText={setTyped}
+              placeholder="Gõ đáp án"
+              placeholderTextColor={colors.muted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!feedback}
+              returnKeyType="done"
+              onSubmitEditing={() => typed.trim() && check(typed)}
+            />
+            {!feedback ? <MicButton onText={setTyped} size={44} /> : null}
+          </View>
           {!feedback ? (
             <View style={styles.fillActions}>
               <Pressable onPress={reveal} style={({ pressed }) => [styles.revealBtn, pressed && styles.pressed]} hitSlop={6}>
@@ -270,22 +274,25 @@ function ClozeInputs({
           <View key={i} style={styles.gapRow}>
             <Text style={styles.gapNumber}>{i + 1}</Text>
             <View style={styles.flex}>
-              <TextInput
-                ref={(r) => {
-                  inputs.current[i] = r;
-                }}
-                style={[styles.input, styles.gapInput, feedback && (ok ? styles.inputCorrect : styles.inputWrong)]}
-                value={values[i]}
-                onChangeText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))}
-                placeholder={`Chỗ trống ${i + 1}`}
-                placeholderTextColor={colors.muted}
-                autoCapitalize="none"
-                autoCorrect={false}
-                editable={!feedback}
-                returnKeyType={i < ex.blanks.length - 1 ? "next" : "done"}
-                blurOnSubmit={i === ex.blanks.length - 1}
-                onSubmitEditing={() => (i < ex.blanks.length - 1 ? inputs.current[i + 1]?.focus() : submit())}
-              />
+              <View style={styles.inputRow}>
+                <TextInput
+                  ref={(r) => {
+                    inputs.current[i] = r;
+                  }}
+                  style={[styles.input, styles.gapInput, styles.flex, feedback && (ok ? styles.inputCorrect : styles.inputWrong)]}
+                  value={values[i]}
+                  onChangeText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))}
+                  placeholder={`Chỗ trống ${i + 1}`}
+                  placeholderTextColor={colors.muted}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!feedback}
+                  returnKeyType={i < ex.blanks.length - 1 ? "next" : "done"}
+                  blurOnSubmit={i === ex.blanks.length - 1}
+                  onSubmitEditing={() => (i < ex.blanks.length - 1 ? inputs.current[i + 1]?.focus() : submit())}
+                />
+                {!feedback ? <MicButton onText={(t) => setValues((vs) => vs.map((v, j) => (j === i ? t : v)))} size={38} /> : null}
+              </View>
               {feedback && !ok ? <Text style={styles.gapAnswer}>{accepted[0]}</Text> : null}
             </View>
           </View>
@@ -391,6 +398,7 @@ const styles = StyleSheet.create({
   optionWrong: { borderColor: colors.danger, backgroundColor: colors.dangerSoft },
   optionText: { flex: 1, fontSize: 17, fontWeight: "600", color: colors.ink },
   fillBox: { gap: 10 },
+  inputRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
   input: {
     backgroundColor: colors.surface,
     borderWidth: 1.5,

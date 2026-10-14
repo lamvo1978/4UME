@@ -17,6 +17,7 @@ export type RootStackParamList = {
   Listening: { slug: string; titleVi: string };
   /** `all` = every line in order instead of a random handful. */
   Dictation: { slug: string; all?: boolean };
+  Speaking: { slug: string; all?: boolean };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;
