@@ -57,6 +57,12 @@ cd /opt/4ume && git pull && cd deploy/vps && docker compose pull && docker compo
 - [ ] **Chứng chỉ PetHubPro hết hạn 19/11/2026** và đang là `manual` (không tự gia hạn). Gia hạn tay trước hạn, hoặc chuyển DNS `pethubpro.io.vn` sang Cloudflare và làm giống 4UME để tự gia hạn.
 - [x] Reboot VPS lên kernel `5.15.0-198` (09/10/2026) — mọi container PetHubPro + 4UME tự chạy lại. Lần sau khi `apt` hỏi *Which services should be restarted?* thì chọn **none** (tránh restart Docker giữa giờ), reboot vào giờ ít người dùng.
 
+- [ ] **Azure Speech S0 cho chấm phát âm khi hết F0** (code đã có từ `5463860`, chưa có key thì hết 300 phút F0 là tạm dừng chấm):
+  1. Azure Portal → *Create a resource* → *Speech* → Pricing tier **Standard S0**, vùng `southeastasia`.
+  2. *Keys and Endpoint* → thêm vào `/opt/4ume/deploy/vps/.env`: `AZURE_SPEECH_PAID_KEY=...` và `AZURE_SPEECH_PAID_REGION=southeastasia`, rồi `docker compose up -d`.
+  3. *Cost Management* → *Budgets*: cảnh báo khoảng 5 USD/tháng.
+  4. Admin → *Cài đặt* → *Kiểm tra giọng đọc*: chỉnh **Trả phí (S0) tối đa mỗi tháng** (mặc định 600 phút ≈ 10 USD). Chi tiết: [pronunciation.md](pronunciation.md#key-trả-phí-s0).
+- [ ] **Trước khi gửi duyệt store**: tắt **Bảng giá** (admin → *Quyền lợi Premium*) và ẩn các quyền lợi "Sắp có" cho tới khi có mua trong ứng dụng.
 - [ ] **Hộp thư Zoho** `hotro@4ume.io.vn` (nhận thư, email hỗ trợ cho cửa hàng ứng dụng, đặt lại mật khẩu cho `admin@4ume.io.vn`) — [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm).
 
 ## Ảnh Pexels / Pixabay (trang Gắn ảnh) — đã có Pixabay
