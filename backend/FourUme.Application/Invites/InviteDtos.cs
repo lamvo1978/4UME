@@ -102,7 +102,8 @@ public record AccessDto(
 /// <param name="DisplayName">The invited friend's display name.</param>
 /// <param name="StudyDays">Days studied so far that count (capped at the requirement).</param>
 /// <param name="Paused">Counting is on hold while the friend studies with a partner centre.</param>
-public record InviteeDto(string DisplayName, DateTimeOffset JoinedAt, int StudyDays, DateTimeOffset? RewardedAt, bool Paused = false);
+/// <param name="Avatar">The friend's built-in avatar key, or null for their initial.</param>
+public record InviteeDto(string DisplayName, DateTimeOffset JoinedAt, int StudyDays, DateTimeOffset? RewardedAt, bool Paused = false, string? Avatar = null);
 
 /// <param name="CanEnterInviteCode">The account is new enough and hasn't used an invite code yet.</param>
 /// <param name="InvitedBy">Display name of whoever invited this learner.</param>

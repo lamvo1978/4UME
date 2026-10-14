@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
@@ -24,7 +24,8 @@ type Nav = CompositeNavigationProp<
 const UNREAD_POLL_MS = 30_000;
 
 export function HomeScreen() {
-  const { me, user, refreshMe } = useAuth();
+  const { me, user, refreshMe, askAvatar, dismissAskAvatar } = useAuth();
+  const focused = useIsFocused();
   const navigation = useNavigation<Nav>();
   const name = me?.displayName ?? user?.displayName;
   const grammarDone = me?.grammarLessonsCompleted ?? 0;
@@ -173,6 +174,13 @@ export function HomeScreen() {
         name={name}
         current={me?.settings.avatar}
         onClose={() => setPickingAvatar(false)}
+      />
+      <AvatarSheet
+        visible={askAvatar && focused && !!me && !me.settings.avatar && !pickingAvatar}
+        welcome
+        name={name}
+        current={me?.settings.avatar}
+        onClose={dismissAskAvatar}
       />
     </Screen>
   );

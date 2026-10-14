@@ -178,6 +178,7 @@ export type Invitee = {
   rewardedAt: string | null;
   /** Counting is on hold while the friend studies with a partner centre. */
   paused?: boolean;
+  avatar?: string | null;
 };
 export type MyReferral = {
   enabled: boolean;

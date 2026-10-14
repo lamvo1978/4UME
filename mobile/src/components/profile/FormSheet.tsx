@@ -19,6 +19,7 @@ export function FormSheet({
   title,
   description,
   submitLabel,
+  cancelLabel = "Huỷ",
   danger,
   canSubmit = true,
   onSubmit,
@@ -29,6 +30,7 @@ export function FormSheet({
   title: string;
   description?: string;
   submitLabel: string;
+  cancelLabel?: string;
   danger?: boolean;
   canSubmit?: boolean;
   onSubmit: () => Promise<void>;
@@ -67,7 +69,7 @@ export function FormSheet({
           {error ? <Text style={styles.error}>{error}</Text> : null}
           <View style={styles.actions}>
             <Pressable style={({ pressed }) => [styles.button, styles.cancel, pressed && styles.pressed]} onPress={close}>
-              <Text style={styles.cancelText}>Huỷ</Text>
+              <Text style={styles.cancelText}>{cancelLabel}</Text>
             </Pressable>
             <Pressable
               style={({ pressed }) => [

@@ -14,11 +14,14 @@ export function AvatarSheet({
   name,
   current,
   onClose,
+  welcome,
 }: {
   visible: boolean;
   name?: string;
   current?: string | null;
   onClose: () => void;
+  /** First pick right after sign-up: friendlier title, and closing reads "Để sau". */
+  welcome?: boolean;
 }) {
   const { updateSettings } = useAuth();
   const { height } = useWindowDimensions();
@@ -31,8 +34,10 @@ export function AvatarSheet({
   return (
     <FormSheet
       visible={visible}
-      title="Ảnh đại diện"
+      title={welcome ? "Chọn ảnh đại diện nhé!" : "Ảnh đại diện"}
+      description={welcome ? "Chọn một bạn đồng hành dễ thương. Đổi lại lúc nào cũng được ở Hồ sơ." : undefined}
       submitLabel="Lưu"
+      cancelLabel={welcome ? "Để sau" : undefined}
       canSubmit={picked !== (current ?? "")}
       onSubmit={async () => {
         await updateSettings({ avatar: picked });
