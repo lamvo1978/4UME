@@ -1,4 +1,4 @@
-import { GrammarExercise } from "../api/client";
+import { GrammarExercise, VerbNote } from "../api/client";
 import { shuffle } from "../utils/shuffle";
 
 export type QuizItem = {
@@ -72,6 +72,18 @@ export function splitCloze(prompt: string) {
   }
   parts.push(prompt.slice(last));
   return { parts, hints };
+}
+
+const wordsOf = (s: string): string[] => s.toLowerCase().replace(/’/g, "'").match(/[a-z]+(?:'[a-z]+)*/g) ?? [];
+
+/**
+ * The tagged verb phrase a tapped word belongs to. Before the answer is checked only phrases written out in full
+ * on screen count, so a gap's answer ("were" in "___ preparing") is never given away.
+ */
+export function verbFor(verbs: VerbNote[] | undefined, word: string, shown: string, answered: boolean): VerbNote | null {
+  const candidates = (verbs ?? []).filter((v) => wordsOf(v.phrase).includes(word.replace(/’/g, "'")));
+  const text = ` ${wordsOf(shown).join(" ")} `;
+  return candidates.find((v) => text.includes(` ${wordsOf(v.phrase).join(" ")} `)) ?? (answered ? (candidates[0] ?? null) : null);
 }
 
 export function clozeGapCorrect(accepted: string[], given: string) {

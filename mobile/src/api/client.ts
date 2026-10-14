@@ -301,7 +301,9 @@ export type GrammarSection =
   | { type: "mistakes"; title?: string; items: { wrong: string; right: string; noteVi?: string }[] }
   | { type: "tip"; title?: string; textVi: string };
 
-type ExerciseBase = { id: string; explanationVi: string };
+/** A verb phrase of the answered question and its tense, e.g. "were preparing" · "quá khứ tiếp diễn". */
+export type VerbNote = { phrase: string; tenseVi: string };
+type ExerciseBase = { id: string; explanationVi: string; verbs?: VerbNote[] };
 
 export type GrammarExercise =
   | (ExerciseBase & { type: "mcq"; prompt: string; options: string[]; answer: string })

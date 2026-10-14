@@ -209,6 +209,8 @@ public static class AdminEndpoints
             Results.Ok(await s.CreateLessonAsync(doc, ct)));
         admin.MapPost("/grammar/validate", (GrammarLessonDocument doc) =>
             Results.Ok(new GrammarValidationDto(GrammarValidator.Validate(doc))));
+        admin.MapGet("/grammar/verbs", async (IAdminGrammarService s, CancellationToken ct) => Results.Ok(await s.GetVerbStatusAsync(ct)));
+        admin.MapPost("/grammar/verbs", async (IAdminGrammarService s, CancellationToken ct) => Results.Ok(await s.StartVerbTaggingAsync(ct)));
         admin.MapPost("/grammar/draft", async (GrammarDraftRequest r, IGrammarDraftService s, CancellationToken ct) =>
             Results.Ok(await s.DraftAsync(r, ct)));
         admin.MapPut("/grammar/order", async (ReorderRequest r, IAdminGrammarService s, CancellationToken ct) =>

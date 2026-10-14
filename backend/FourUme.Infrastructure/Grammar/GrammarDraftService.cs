@@ -14,7 +14,7 @@ namespace FourUme.Infrastructure.Grammar;
 /// Drafts grammar questions for one lesson with the AI, then asks it again to check every answer.
 /// Nothing is saved; the admin picks which questions to add to the lesson.
 /// </summary>
-public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraftService> logger) : IGrammarDraftService
+public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger verbs, ILogger<GrammarDraftService> logger) : IGrammarDraftService
 {
     private static readonly Dictionary<string, string> TypeGuide = new()
     {
@@ -141,6 +141,15 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         AssignIds(drafted, existing, lesson.Slug);
 
         var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, request.Provider, ct);
+        try
+        {
+            await verbs.TagAsync(drafted, ct, request.Provider);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or JsonException or HttpRequestException or TaskCanceledException && !ct.IsCancellationRequested)
+        {
+            // Untagged questions are picked up later by "Gắn thì động từ".
+            logger.LogWarning(ex, "Grammar draft verb tagging failed");
+        }
         var ids = existing.Select(e => e.Id).ToHashSet();
         var items = drafted.Select((e, i) =>
         {

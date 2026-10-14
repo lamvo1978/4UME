@@ -29,7 +29,14 @@ export function ExerciseEditor({ exercise: ex, onChange, bank = "exercises" }: P
         />
         <TextInput label="Mã câu" value={ex.id} onChange={(e) => set({ id: e.currentTarget.value.trim() })} />
       </Group>
-      <TypeFields exercise={ex} onChange={onChange} />
+      <TypeFields exercise={ex} onChange={(e) => onChange({ ...e, verbs: undefined })} />
+      <Text fz="xs" c="dimmed">
+        {ex.verbs
+          ? ex.verbs.length
+            ? `Thì động từ (AI): ${ex.verbs.map((v) => `${v.phrase} — ${v.tenseVi}`).join(" · ")}`
+            : "Thì động từ (AI): không có động từ chia thì."
+          : "Chưa gắn thì động từ. Sau khi lưu, bấm “Gắn thì động từ (AI)” ở trang Ngữ pháp."}
+      </Text>
       <Textarea
         label="Giải thích (hiện sau khi trả lời)"
         required

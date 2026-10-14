@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { api, WordSearchResult } from "../../api/client";
+import { api, VerbNote, WordSearchResult } from "../../api/client";
 import { colors, spacing } from "../../theme";
 import { WordVoices } from "../SpeakButton";
 
-/** Meaning of a long-pressed word from the script, looked up in the app's own word bank. */
-export function WordSheet({ word, onClose }: { word: string | null; onClose: () => void }) {
+/** Meaning of a tapped word, looked up in the app's own word bank; `verb` adds the tense it is used in. */
+export function WordSheet({ word, verb, onClose }: { word: string | null; verb?: VerbNote | null; onClose: () => void }) {
   const insets = useSafeAreaInsets();
   const [result, setResult] = useState<WordSearchResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,15 @@ export function WordSheet({ word, onClose }: { word: string | null; onClose: () 
             </View>
             {word ? <WordVoices text={w?.word ?? word} /> : null}
           </View>
+          {verb ? (
+            <View style={styles.tense}>
+              <Text style={styles.tenseLabel}>Trong câu này</Text>
+              <Text style={styles.tenseText}>
+                <Text style={styles.tensePhrase}>{verb.phrase}</Text>
+                {`  ·  ${verb.tenseVi}`}
+              </Text>
+            </View>
+          ) : null}
           {loading ? (
             <ActivityIndicator color={colors.accent} style={styles.loader} />
           ) : w ? (
@@ -85,6 +94,10 @@ const styles = StyleSheet.create({
   word: { fontSize: 24, fontWeight: "800", color: colors.ink },
   ipa: { fontSize: 14, color: colors.muted },
   loader: { marginVertical: spacing.md },
+  tense: { backgroundColor: colors.flameSoft, borderRadius: 14, paddingVertical: 10, paddingHorizontal: 12, gap: 2 },
+  tenseLabel: { fontSize: 12, fontWeight: "600", color: colors.muted },
+  tenseText: { fontSize: 15, fontWeight: "700", color: colors.flameDeep },
+  tensePhrase: { color: colors.ink },
   body: { gap: spacing.sm },
   meaning: { fontSize: 18, fontWeight: "700", color: colors.accent },
   forms: { fontSize: 13, color: colors.muted },

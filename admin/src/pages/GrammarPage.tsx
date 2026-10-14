@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api, type AdminGrammarSummary } from "../api";
 import { GrammarImportModal } from "../grammar/GrammarImportModal";
 import { LEVELS } from "../grammar/meta";
+import { VerbTaggingCard } from "../grammar/VerbTaggingCard";
 import { notifyError, notifySaved } from "../lib";
 const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").toLowerCase();
 
@@ -85,6 +86,7 @@ export function GrammarPage() {
         </Group>
       </Group>
       <GrammarImportModal opened={importing} onClose={() => setImporting(false)} />
+      <VerbTaggingCard />
 
       <Paper p="sm" radius="lg" shadow="xs">
         <Group gap="sm" wrap="wrap">

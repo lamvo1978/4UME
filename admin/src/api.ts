@@ -459,7 +459,10 @@ export type GrammarExercise = {
   /** cloze: accepted answers for each ___ in `prompt`, in order. */
   blanks?: string[][];
   explanationVi: string;
+  /** Tense of each verb phrase, tagged by AI; missing until tagged, dropped when the question text changes. */
+  verbs?: { phrase: string; tenseVi: string }[];
 };
+export type GrammarVerbStatus = { configured: boolean; running: boolean; done: number; total: number; error: string | null; missing: number };
 export type GrammarLesson = {
   slug: string;
   version: number;
@@ -847,6 +850,8 @@ export const api = {
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  grammarVerbs: () => request<GrammarVerbStatus>("/api/admin/grammar/verbs"),
+  startGrammarVerbs: () => request<GrammarVerbStatus>("/api/admin/grammar/verbs", { method: "POST" }),
   exportPlacementGrammar: () => request<PlacementGrammarFileItem[]>("/api/admin/placement/grammar/export"),
   importPlacementGrammar: (questions: unknown[], commit: boolean) =>
     request<ImportPlacementGrammarResult>("/api/admin/placement/grammar/import", json("POST", { questions, commit })),

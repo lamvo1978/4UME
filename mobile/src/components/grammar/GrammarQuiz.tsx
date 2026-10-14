@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
-import { GrammarExercise } from "../../api/client";
+import { GrammarExercise, VerbNote } from "../../api/client";
 import {
   clozeGapCorrect,
   displayAnswer,
@@ -10,6 +10,7 @@ import {
   QuizItem,
   QuizResult,
   splitCloze,
+  verbFor,
 } from "../../grammar/quiz";
 import { tokenize } from "../../listening/meta";
 import { colors, shadow, spacing } from "../../theme";
@@ -39,7 +40,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [typed, setTyped] = useState("");
   const [gaps, setGaps] = useState<string[]>([]);
-  const [lookup, setLookup] = useState<string | null>(null);
+  const [lookup, setLookup] = useState<{ word: string; verb: VerbNote | null } | null>(null);
   const missedKeys = useRef(new Set<string>());
   const missed = useRef<QuizItem[]>([]);
   const mistakes = useRef<Record<string, number>>({});
@@ -49,6 +50,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
   if (!item) return null;
   const ex = item.exercise;
   const baseKey = item.key.split("#")[0];
+  const lookUp = (word: string, shown: string) => setLookup({ word, verb: verbFor(ex.verbs, word, shown, !!feedback) });
 
   function complete(result: Feedback) {
     if (feedback) return;
@@ -108,7 +110,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
       <View style={styles.card}>
         {item.label ? <Text style={styles.label}>{item.label}</Text> : null}
         <Text style={styles.instruction}>{ex.type === "transform" ? ex.instructionVi : INSTRUCTIONS[ex.type]}</Text>
-        <Prompt ex={ex} gaps={gaps} checked={!!feedback} onWord={setLookup} />
+        <Prompt ex={ex} gaps={gaps} checked={!!feedback} onWord={lookUp} />
         {ex.type === "error" ? (
           <ErrorTokens key={item.key} ex={ex} feedback={feedback} onPick={(ok) => complete({ correct: ok, given: ok ? "correct" : "wrong", reason: ok ? "ok" : "wrong" })} />
         ) : null}
@@ -215,7 +217,7 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
                   : "Chưa đúng"}
           </Text>
           <View style={styles.answerRow}>
-            <LookupText text={displayAnswer(ex)} style={styles.answerText} onWord={setLookup} />
+            <LookupText text={displayAnswer(ex)} style={styles.answerText} onWord={lookUp} />
             <SpeakButton text={displayAnswer(ex)} size="sm" />
           </View>
           <Text style={styles.explanation}>{ex.explanationVi}</Text>
@@ -225,18 +227,18 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
           </Pressable>
         </View>
       ) : null}
-      <WordSheet word={lookup} onClose={() => setLookup(null)} />
+      <WordSheet word={lookup?.word ?? null} verb={lookup?.verb} onClose={() => setLookup(null)} />
     </View>
   );
 }
 
 /** English text whose words open the word sheet when tapped. */
-function LookupText({ text, style, onWord }: { text: string; style?: TextStyle; onWord: (word: string) => void }) {
+function LookupText({ text, style, onWord }: { text: string; style?: TextStyle; onWord: (word: string, shown: string) => void }) {
   return (
     <Text style={style}>
       {tokenize(text).map((t, k) =>
         t.word ? (
-          <Text key={k} onPress={() => onWord(t.word!)}>
+          <Text key={k} onPress={() => onWord(t.word!, text)}>
             {t.text}
           </Text>
         ) : (
@@ -258,7 +260,7 @@ function Prompt({
   ex: GrammarExercise;
   gaps: string[];
   checked: boolean;
-  onWord: (word: string) => void;
+  onWord: (word: string, shown: string) => void;
 }) {
   switch (ex.type) {
     case "mcq":

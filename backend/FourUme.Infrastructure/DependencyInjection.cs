@@ -108,6 +108,8 @@ public static class DependencyInjection
         services.AddScoped<AiClient>();
         services.AddScoped<IListeningDraftService, GeminiDraftService>();
         services.AddScoped<IGrammarDraftService, GrammarDraftService>();
+        services.AddScoped<GrammarVerbTagger>();
+        services.AddSingleton<GrammarVerbJobs>();
         services.AddScoped<IAdminAuditService, AdminAuditService>();
         services.AddScoped<IAdminUserService, AdminUserService>();
         services.AddScoped<IAdminSettingsService, AdminSettingsService>();
