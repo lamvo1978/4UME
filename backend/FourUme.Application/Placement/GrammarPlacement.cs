@@ -53,11 +53,12 @@ public record SavePlacementGrammarRequest(
 public record SavePlacementGrammarBatchRequest(List<SavePlacementGrammarRequest> Questions);
 
 /// <param name="LessonSlug">Only write about this lesson; otherwise spread over the level's lessons.</param>
-/// <param name="SkipCheck">Skip the AI check pass: one Gemini call instead of two, the admin reads answers carefully.</param>
+/// <param name="SkipCheck">Skip the AI check pass: one AI call instead of two, the admin reads answers carefully.</param>
 public record PlacementGrammarDraftRequest(string Level, int Count, string? LessonSlug, string? Notes, bool SkipCheck = false);
 public record PlacementGrammarDraftItemDto(SavePlacementGrammarRequest Question, IReadOnlyList<string> Problems, string? Warning);
 /// <param name="Checked">False when the AI check pass failed, so missing warnings mean nothing.</param>
-public record PlacementGrammarDraftDto(IReadOnlyList<PlacementGrammarDraftItemDto> Items, bool Checked);
+/// <param name="Model">The AI model that wrote the draft.</param>
+public record PlacementGrammarDraftDto(IReadOnlyList<PlacementGrammarDraftItemDto> Items, bool Checked, string Model);
 
 public interface IAdminPlacementService
 {

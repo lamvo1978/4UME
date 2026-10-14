@@ -4,8 +4,9 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, Me, ReviewSummary } from "../api/client";
-import { HomeBanner } from "../components/ads/HomeBanner";import { useAuth } from "../auth/AuthContext";
+import { api, Me, NetworkError, ReviewSummary } from "../api/client";
+import { HomeBanner } from "../components/ads/HomeBanner";
+import { useAuth } from "../auth/AuthContext";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -28,9 +29,20 @@ export function HomeScreen() {
   const grammarTotal = me?.grammarLessonsTotal ?? 0;
   const [review, setReview] = useState<ReviewSummary | null>(null);
   const [unread, setUnread] = useState(0);
+  const [offline, setOffline] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   useFocusEffect(
     useCallback(() => {
-      api.reviewSummary().then(setReview).catch(() => setReview(null));
+      api
+        .reviewSummary()
+        .then((r) => {
+          setReview(r);
+          setOffline(false);
+        })
+        .catch((e) => {
+          setReview(null);
+          setOffline(e instanceof NetworkError);
+        });
       const checkUnread = () => api.feedbackUnread().then(setUnread).catch(() => undefined);
       checkUnread();
       const timer = setInterval(checkUnread, UNREAD_POLL_MS);
@@ -40,7 +52,7 @@ export function HomeScreen() {
         clearInterval(timer);
         sub.remove();
       };
-    }, [refreshMe])
+    }, [refreshMe, attempt])
   );
 
   return (
@@ -85,6 +97,18 @@ export function HomeScreen() {
         <Text style={styles.progress}>
           Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
         </Text>
+
+        {offline ? (
+          <Pressable
+            style={({ pressed }) => [styles.offline, pressed && styles.pressed]}
+            onPress={() => setAttempt((n) => n + 1)}
+            accessibilityRole="button"
+          >
+            <Ionicons name="cloud-offline-outline" size={20} color={colors.muted} />
+            <Text style={styles.offlineText}>Chưa có kết nối mạng, một số mục chưa tải được.</Text>
+            <Text style={styles.offlineRetry}>Thử lại</Text>
+          </Pressable>
+        ) : null}
 
         {me && !me.settings.vocabLevel ? (
           <Pressable
@@ -214,6 +238,18 @@ function Entry({
 }
 
 const styles = StyleSheet.create({
+  offline: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 14,
+    backgroundColor: colors.bgAlt,
+  },
+  offlineText: { flex: 1, fontSize: 13, color: colors.muted, lineHeight: 18 },
+  offlineRetry: { fontSize: 14, fontWeight: "700", color: colors.accent },
   content: { padding: spacing.lg, paddingTop: spacing.md },
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   brandRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },

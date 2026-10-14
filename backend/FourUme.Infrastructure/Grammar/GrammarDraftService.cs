@@ -11,10 +11,10 @@ using static FourUme.Infrastructure.Ai.GeminiClient;
 namespace FourUme.Infrastructure.Grammar;
 
 /// <summary>
-/// Drafts grammar questions for one lesson with Gemini, then asks Gemini again to check every answer.
+/// Drafts grammar questions for one lesson with the AI, then asks it again to check every answer.
 /// Nothing is saved; the admin picks which questions to add to the lesson.
 /// </summary>
-public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<GrammarDraftService> logger) : IGrammarDraftService
+public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraftService> logger) : IGrammarDraftService
 {
     private static readonly Dictionary<string, string> TypeGuide = new()
     {
@@ -35,13 +35,17 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             "source" (the original sentence), "answer" (the rewritten sentence), "distractors" (1–2 wrong words). Only one correct rewrite may exist.
             """,
         ["error"] = """
-            error: "sentence" with exactly one wrong word or short phrase in square brackets, e.g. "She [go] to school every day.",
-            "correction" (what replaces the bracketed part, e.g. "goes"). The rest of the sentence must be correct.
+            error: "sentence" MUST contain a real grammar mistake: write a correct sentence, then replace one word or short phrase with a typical
+            learner mistake and put ONLY that wrong part in square brackets. "correction" is the right form, which must differ from the bracketed text.
+            Example: {"sentence": "She [go] to school every day.", "correction": "goes"}. Never output a sentence without a mistake or without brackets.
             """,
         ["cloze"] = """
-            cloze: "prompt" is a short connected text (a message, diary entry, short story or dialogue on one line, 40–90 words) with 3–6 gaps ___,
-            each followed by the base word in brackets when needed, e.g. "Yesterday I ___ (visit) my grandma."; "blanks" = one list per gap, in order,
-            with every accepted answer for that gap. Every gap must test the lesson's grammar point.
+            cloze: "prompt" is ONE connected text of 40–90 words (a message, diary entry, short story, or a dialogue written on one line as
+            "Anna: ... Tom: ..."), with 3–6 gaps ___, each followed by the base word in brackets when needed. "blanks" = one list per gap, in order,
+            with every accepted answer (include contractions). Every gap must test the lesson's grammar point.
+            Example: {"prompt": "Hi Mai! I ___ (be) in Da Lat with my family. The weather ___ (be) cool and the people ___ (be) very friendly. My room
+            is small but it ___ (be) clean. Where ___ (be) you now? Write soon!", "blanks": [["am"], ["is"], ["are"], ["is"], ["are"]]}
+            Short sentences or 1–2 line texts are NOT acceptable.
             """,
     };
 
@@ -57,6 +61,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
 
         Rules:
         - Test ONLY the grammar point of the given lesson (you may contrast it with easier structures the learner already knows).
+          Use only the forms taught in the lesson's theory: e.g. a lesson on am/is/are must not ask for was/were, -ing forms (am/is/are + V-ing), passives or other tenses.
         - Vocabulary and sentence length must match the lesson's CEFR level; never go above it.
         - English must be natural, correct and unambiguous: exactly one correct answer (or every correct variant listed).
         - Use everyday situations Vietnamese learners relate to; friendly content suitable for all ages; no brands, politics or celebrities.
@@ -73,13 +78,15 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
         - no other option / answer would also be correct (for mcq and error) unless it is listed as accepted (for fill and cloze);
         - for error: the bracketed part is really wrong and the correction fixes it, and nothing else in the sentence is wrong;
         - for order/transform: the answer is the only natural sentence that can be built;
+        - for cloze: the text is natural and connected, and every gap has exactly the answers listed;
+        - the exercise tests the lesson's grammar point with forms the lesson teaches (not other tenses or structures);
         - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
         """;
 
     public async Task<GrammarDraftDto> DraftAsync(GrammarDraftRequest request, CancellationToken ct = default)
     {
-        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        if (!ai.Configured) throw new InvalidOperationException(AiClient.NotConfiguredMessage);
         var lesson = request.Lesson ?? throw new InvalidOperationException("Thiếu nội dung bài.");
         if (string.IsNullOrWhiteSpace(lesson.TitleVi) && string.IsNullOrWhiteSpace(lesson.TitleEn))
             throw new InvalidOperationException("Bài chưa có tên, AI không biết soạn về chủ điểm nào.");
@@ -112,19 +119,19 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             foreach (var e in existing) prompt.AppendLine("- " + Summary(e));
         }
 
-        var reply = await gemini.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
         List<GrammarExercise> drafted;
         try
         {
-            drafted = JsonSerializer.Deserialize<DraftReply>(reply, GrammarJson.Options)?.Exercises ?? [];
+            drafted = JsonSerializer.Deserialize<DraftReply>(reply.Text, GrammarJson.Options)?.Exercises ?? [];
         }
         catch (JsonException ex)
         {
-            logger.LogWarning(ex, "Gemini returned invalid grammar JSON");
-            throw new InvalidOperationException("Gemini trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
+            logger.LogWarning(ex, "AI returned invalid grammar JSON");
+            throw new InvalidOperationException("AI trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
         }
         drafted = drafted.Where(e => types.Contains(e.Type)).Select(Normalize).Take(count).ToList();
-        if (drafted.Count == 0) throw new InvalidOperationException("Gemini không soạn được câu nào, hãy thử lại.");
+        if (drafted.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
         AssignIds(drafted, existing, lesson.Slug);
 
@@ -135,9 +142,11 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             var problems = new List<string>();
             GrammarValidator.ValidateItem(e, ids, problems);
             var prefix = $"Bài tập {e.Id}: ";
-            return new GrammarDraftItemDto(e, problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList(), warnings.GetValueOrDefault(i));
+            problems = problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList();
+            problems.AddRange(DraftProblems(e));
+            return new GrammarDraftItemDto(e, problems, warnings.GetValueOrDefault(i));
         }).ToList();
-        return new GrammarDraftDto(items, isChecked);
+        return new GrammarDraftDto(items, isChecked, reply.Model);
     }
 
     /// <summary>Second pass; a failure here only means the admin gets no warnings, the draft is still returned.</summary>
@@ -145,12 +154,13 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
+        if (!string.IsNullOrWhiteSpace(lesson.SummaryVi)) prompt.AppendLine($"What the lesson teaches (Vietnamese): {lesson.SummaryVi}");
         prompt.AppendLine("Exercises (JSON, check each one by its index):");
         prompt.AppendLine(JsonSerializer.Serialize(drafted.Select((e, i) => new { index = i, exercise = WithoutId(e) }), GrammarJson.Options));
         try
         {
-            var reply = await gemini.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
-            var results = JsonSerializer.Deserialize<CheckReply>(reply, GrammarJson.Options)?.Results ?? [];
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count)
                 .GroupBy(r => r.Index)
@@ -167,6 +177,25 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
             e.Type, e.Prompt, e.PromptVi, e.InstructionVi, e.Source, e.Sentence, e.Options, e.Answer, e.Answers, e.Blanks, e.Distractors, e.Correction, e.ExplanationVi,
         };
     }
+
+    /// <summary>Stricter than the shared validator: catches the ways models misread the formats, without limiting what editors write by hand.</summary>
+    private static IEnumerable<string> DraftProblems(GrammarExercise e)
+    {
+        if (e.Type == "cloze" && e.Prompt is not null)
+        {
+            var words = e.Prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+            if (words < MinClozeWords) yield return $"Đoạn văn quá ngắn ({words} từ), nên có khoảng 40–90 từ.";
+        }
+        if (e.Type == "error" && e.Sentence is not null && e.Correction is not null)
+        {
+            var open = e.Sentence.IndexOf('[');
+            var close = e.Sentence.IndexOf(']');
+            if (open >= 0 && close > open && string.Equals(e.Sentence[(open + 1)..close].Trim(), e.Correction.Trim(), StringComparison.OrdinalIgnoreCase))
+                yield return "Phần trong ngoặc giống hệt từ sửa, câu không có lỗi.";
+        }
+    }
+
+    private const int MinClozeWords = 25;
 
     private static string Summary(GrammarExercise e) => e.Type switch
     {
@@ -265,7 +294,7 @@ public sealed partial class GrammarDraftService(GeminiClient gemini, ILogger<Gra
                             ["correction"] = Str(),
                             ["explanationVi"] = Str(),
                         },
-                        // Every field is required: with optional fields Gemini sometimes drops the ones that matter (e.g. mcq options).
+                        // Every field is required: with optional fields the AI sometimes drops the ones that matter (e.g. mcq options).
                         // Fields the type doesn't use come back empty and Normalize drops them.
                         ["required"] = Names("type", "prompt", "promptVi", "instructionVi", "source", "sentence", "options", "answer",
                             "answers", "blanks", "distractors", "correction", "explanationVi"),

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, mediaUrl, PronunciationStatus, ReviewItem, ReviewSummary, WEAK_SPEAK_SCORE } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
@@ -197,6 +198,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   const [stats, setStats] = useState(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
   const [pronunciation, setPronunciation] = useState<PronunciationStatus | null>(null);
   const mistakes = useRef<Record<string, number>>({});
   const retries = useRef(0);
@@ -204,6 +206,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
+    setLoadError("");
     try {
       const [items, s, speech] = await Promise.all([
         practice ? api.practiceItems({ deckId, wordIds, weak }) : api.reviewDue(),
@@ -221,7 +224,7 @@ export function ReviewScreen({ navigation, route }: Props) {
       setStats({ ...EMPTY_STATS, words: items.length });
       mistakes.current = {};
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không tải được bài ôn tập");
+      setLoadError(e instanceof Error ? e.message : "Không tải được bài ôn tập");
     } finally {
       setLoading(false);
     }
@@ -326,6 +329,14 @@ export function ReviewScreen({ navigation, route }: Props) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.accent} />
+      </View>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <View style={[styles.center, styles.pad]}>
+        <ErrorRetry message={loadError} onRetry={load} />
       </View>
     );
   }

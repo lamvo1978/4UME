@@ -321,7 +321,7 @@ export function ListeningEditPage() {
 
       {draft ? (
         <Alert color="violet" icon={<IconSparkles size={18} />} radius="lg">
-          Bài do Gemini viết, <b>chưa lưu</b> và đang ẩn khỏi app. Đọc lại câu tiếng Anh, bản dịch và giọng đọc, sửa nếu cần rồi bấm <b>Tạo bài</b>; sau đó tạo âm thanh và bật hiện trong app.
+          Bài do AI viết, <b>chưa lưu</b> và đang ẩn khỏi app. Đọc lại câu tiếng Anh, bản dịch và giọng đọc, sửa nếu cần rồi bấm <b>Tạo bài</b>; sau đó tạo âm thanh và bật hiện trong app.
         </Alert>
       ) : null}
       {error ? (

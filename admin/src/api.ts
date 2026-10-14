@@ -484,7 +484,7 @@ export type GrammarDraftRequest = {
   skipCheck?: boolean;
 };
 export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
-export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean };
+export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean; model: string };
 export type AdminGrammarSummary = {
   slug: string;
   titleVi: string;
@@ -683,6 +683,7 @@ export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: numbe
 export type PlacementGrammarDraft = {
   items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
   checked: boolean;
+  model: string;
 };
 
 const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });

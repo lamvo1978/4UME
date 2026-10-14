@@ -158,7 +158,7 @@ export function PremiumScreen() {
           current={premium}
           highlight
           footer={premium ? usage : null}
-          note={premium ? null : "Sắp mở đăng ký"}
+          note={premium ? null : "Qua mời bạn / mã trung tâm"}
         />
       </View>
       <Text style={styles.planNote}>
@@ -178,7 +178,9 @@ export function PremiumScreen() {
         ))}
       </View>
 
-      {!premium ? <Text style={styles.soon}>Đăng ký Premium ngay trong app sẽ có ở bản cập nhật tới.</Text> : null}
+      {!premium ? (
+        <Text style={styles.soon}>Nhận ngày Premium khi mời bạn bè cùng học, hoặc nhập mã của trung tâm đối tác ở Hồ sơ → Mời bạn bè.</Text>
+      ) : null}
     </ScrollView>
   );
 }

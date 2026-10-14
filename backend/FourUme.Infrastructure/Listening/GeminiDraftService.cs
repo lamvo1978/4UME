@@ -15,12 +15,12 @@ using static FourUme.Infrastructure.Ai.GeminiClient;
 namespace FourUme.Infrastructure.Listening;
 
 /// <summary>
-/// Writes a first draft of a listening piece with Google Gemini. The reply is forced into the lesson's JSON shape;
+/// Writes a first draft of a listening piece with the drafting AI (Groq, else Gemini). The reply is asked for in the lesson's JSON shape;
 /// nothing is saved here, the admin reviews the draft in the editor.
 /// </summary>
 public sealed partial class GeminiDraftService(
     AppDbContext db,
-    GeminiClient gemini,
+    AiClient ai,
     ILogger<GeminiDraftService> logger) : IListeningDraftService
 {
     private static readonly Dictionary<string, (string Lines, string Words)> Lengths = new()
@@ -66,11 +66,11 @@ public sealed partial class GeminiDraftService(
         - Do not reuse the titles or situations of the existing lessons listed in the request.
         """;
 
-    public ListeningDraftStatusDto GetStatus() => new(gemini.Configured, gemini.ModelName);
+    public ListeningDraftStatusDto GetStatus() => new(ai.Configured, ai.ModelName);
 
     public async Task<ListeningDraftDto> DraftAsync(ListeningDraftRequest request, CancellationToken ct = default)
     {
-        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        if (!ai.Configured) throw new InvalidOperationException(AiClient.NotConfiguredMessage);
         var level = request.Level.Trim().ToUpperInvariant();
         var kind = request.Kind.Trim();
         if (!LevelGuide.ContainsKey(level)) throw new InvalidOperationException($"Cấp độ không hợp lệ: {request.Level}.");
@@ -108,17 +108,17 @@ public sealed partial class GeminiDraftService(
             prompt.AppendLine(JsonSerializer.Serialize(new { doc.TitleEn, doc.TitleVi, doc.Topic, doc.SummaryVi, doc.Speakers, Lines = doc.Lines.Take(6) }, GrammarJson.Options));
         }
 
-        var reply = await gemini.GenerateJsonAsync(Instructions, prompt.ToString(), Schema(), 0.9, ct);
+        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), Schema(), 0.9, ct);
         ListeningLessonDocument draft;
         try
         {
-            draft = JsonSerializer.Deserialize<ListeningLessonDocument>(reply, GrammarJson.Options)
+            draft = JsonSerializer.Deserialize<ListeningLessonDocument>(reply.Text, GrammarJson.Options)
                 ?? throw new JsonException("empty");
         }
         catch (JsonException ex)
         {
-            logger.LogWarning(ex, "Gemini returned invalid JSON");
-            throw new InvalidOperationException("Gemini trả về dữ liệu không đúng khuôn, hãy bấm viết lại.");
+            logger.LogWarning(ex, "AI returned invalid listening JSON");
+            throw new InvalidOperationException("AI trả về dữ liệu không đúng khuôn, hãy bấm viết lại.");
         }
 
         draft.Kind = kind;

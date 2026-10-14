@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { api, WEAK_SPEAK_SCORE, WeakWord } from "../api/client";
 import { speak } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
@@ -42,7 +43,7 @@ export function WeakWordsScreen() {
   if (!items) {
     return (
       <View style={styles.center}>
-        {error ? <Text style={styles.error}>{error}</Text> : <ActivityIndicator color={colors.accent} />}
+        {error ? <ErrorRetry message={error} onRetry={load} /> : <ActivityIndicator color={colors.accent} />}
       </View>
     );
   }

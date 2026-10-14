@@ -501,7 +501,7 @@ export type PronunciationResult = {
   status: PronunciationStatus;
 };
 
-/** Thrown by `assessPronunciation`; 429 means today's detailed checks are used up. */
+/** The server answered with an error status; for `assessPronunciation`, 429 means today's detailed checks are used up. */
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -509,6 +509,48 @@ export class ApiError extends Error {
   ) {
     super(message);
   }
+}
+
+export const OFFLINE_MESSAGE = "Không có kết nối mạng. Hãy kiểm tra Wi-Fi hoặc dữ liệu di động rồi thử lại.";
+const TIMEOUT_MESSAGE = "Mạng chậm hoặc máy chủ chưa phản hồi. Hãy thử lại sau ít phút.";
+const UNREADABLE_MESSAGE = "Không kết nối được tới 4UME. Nếu đang dùng Wi-Fi công cộng, hãy đăng nhập Wi-Fi rồi thử lại.";
+const SERVER_DOWN_MESSAGE = "Máy chủ 4UME đang bận hoặc bảo trì. Hãy thử lại sau ít phút.";
+
+/** No usable answer from the server: offline, timed out, or a Wi-Fi login page answered instead. */
+export class NetworkError extends Error {}
+
+const REQUEST_TIMEOUT_MS = 30_000;
+/** Uploads (recordings, screenshots) on a slow mobile connection. */
+const UPLOAD_TIMEOUT_MS = 90_000;
+
+async function send(path: string, init: RequestInit, timeoutMs: number): Promise<{ res: Response; data: any }> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res: Response;
+  let text: string;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { ...init, signal: controller.signal });
+    text = await res.text();
+  } catch {
+    throw new NetworkError(controller.signal.aborted ? TIMEOUT_MESSAGE : OFFLINE_MESSAGE);
+  } finally {
+    clearTimeout(timer);
+  }
+  let data: any = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      if (res.status >= 500) throw new ApiError(SERVER_DOWN_MESSAGE, res.status);
+      throw new NetworkError(UNREADABLE_MESSAGE);
+    }
+  }
+  return { res, data };
+}
+
+function errorMessage(status: number, data: any) {
+  if (typeof data?.error === "string" && data.error) return data.error as string;
+  return status >= 500 ? SERVER_DOWN_MESSAGE : `Lỗi ${status}`;
 }
 
 async function authHeaders(): Promise<Record<string, string>> {
@@ -531,16 +573,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...auth,
     ...(init.headers as Record<string, string> | undefined),
   };
-  const res = await fetch(`${API_BASE}${path}`, { ...init, headers });
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  const { res, data } = await send(path, { ...init, headers }, REQUEST_TIMEOUT_MS);
   if (res.status === 401 && auth.Authorization) {
     onUnauthorized();
-    throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+    throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
   }
-  if (!res.ok) {
-    throw new Error(data?.error ?? `Lỗi ${res.status}`);
-  }
+  if (!res.ok) throw new ApiError(errorMessage(res.status, data), res.status);
   return data as T;
 }
 
@@ -555,18 +593,16 @@ async function appendFile(form: FormData, field: string, uri: string, webName: s
 
 async function postForm<T>(path: string, form: FormData): Promise<T> {
   const auth = await authHeaders();
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "X-Utc-Offset": String(-new Date().getTimezoneOffset()), ...auth },
-    body: form,
-  });
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  const { res, data } = await send(
+    path,
+    { method: "POST", headers: { "X-Utc-Offset": String(-new Date().getTimezoneOffset()), ...auth }, body: form },
+    UPLOAD_TIMEOUT_MS,
+  );
   if (res.status === 401 && auth.Authorization) {
     onUnauthorized();
     throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
   }
-  if (!res.ok) throw new ApiError(data?.error ?? `Lỗi ${res.status}`, res.status);
+  if (!res.ok) throw new ApiError(errorMessage(res.status, data), res.status);
   return data as T;
 }
 

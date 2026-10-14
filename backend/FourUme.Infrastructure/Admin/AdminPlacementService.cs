@@ -16,7 +16,7 @@ namespace FourUme.Infrastructure.Admin;
 public sealed partial class AdminPlacementService(
     IAppDbContext db,
     Auditor auditor,
-    GeminiClient gemini,
+    AiClient ai,
     ILogger<AdminPlacementService> logger) : IAdminPlacementService
 {
     public async Task<IReadOnlyList<AdminPlacementGrammarDto>> GetGrammarAsync(CancellationToken ct = default)
@@ -130,7 +130,7 @@ public sealed partial class AdminPlacementService(
 
     public async Task<PlacementGrammarDraftDto> DraftGrammarAsync(PlacementGrammarDraftRequest request, CancellationToken ct = default)
     {
-        if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
+        if (!ai.Configured) throw new InvalidOperationException(AiClient.NotConfiguredMessage);
         var level = (request.Level ?? "").Trim().ToUpperInvariant();
         if (PlacementRules.Rank(level) < 0) throw new InvalidOperationException("Cấp độ không hợp lệ.");
         var count = Math.Clamp(request.Count, 1, GrammarPlacementRules.MaxDraftCount);
@@ -164,16 +164,16 @@ public sealed partial class AdminPlacementService(
             foreach (var e in existing) prompt.AppendLine("- " + e);
         }
 
-        var reply = await gemini.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct);
         List<DraftQuestion> drafted;
         try
         {
-            drafted = JsonSerializer.Deserialize<DraftReply>(reply, GrammarJson.Options)?.Questions ?? [];
+            drafted = JsonSerializer.Deserialize<DraftReply>(reply.Text, GrammarJson.Options)?.Questions ?? [];
         }
         catch (JsonException ex)
         {
-            logger.LogWarning(ex, "Gemini returned invalid placement JSON");
-            throw new InvalidOperationException("Gemini trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
+            logger.LogWarning(ex, "AI returned invalid placement JSON");
+            throw new InvalidOperationException("AI trả về dữ liệu không đúng khuôn, hãy bấm soạn lại.");
         }
         var questions = drafted
             .Select(d => Normalize(new SavePlacementGrammarRequest(
@@ -181,7 +181,7 @@ public sealed partial class AdminPlacementService(
                 d.LessonSlug is { } s && slugs.Contains(s) ? s : null)))
             .Take(count)
             .ToList();
-        if (questions.Count == 0) throw new InvalidOperationException("Gemini không soạn được câu nào, hãy thử lại.");
+        if (questions.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
         var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, ct);
         var items = questions.Select((q, i) =>
@@ -190,7 +190,7 @@ public sealed partial class AdminPlacementService(
             if (q.LessonSlug is null) problems.Add("Chưa gắn với bài ngữ pháp nào.");
             return new PlacementGrammarDraftItemDto(q, problems, warnings.GetValueOrDefault(i));
         }).ToList();
-        return new PlacementGrammarDraftDto(items, isChecked);
+        return new PlacementGrammarDraftDto(items, isChecked, reply.Model);
     }
 
     private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, CancellationToken ct)
@@ -201,8 +201,8 @@ public sealed partial class AdminPlacementService(
             questions.Select((q, i) => new { index = i, q.Prompt, q.Options, q.Answer, lesson = q.LessonSlug }), GrammarJson.Options));
         try
         {
-            var reply = await gemini.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
-            var results = JsonSerializer.Deserialize<CheckReply>(reply, GrammarJson.Options)?.Results ?? [];
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < questions.Count)
                 .GroupBy(r => r.Index)

@@ -45,7 +45,7 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
     public bool Configured => options.Value.Configured;
     public string ModelName => options.Value.ModelName;
 
-    public async Task<string> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
+    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
     {
         var o = options.Value;
         if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
@@ -73,8 +73,10 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
         var quotaHit = false;
         HttpStatusCode status = default;
         string text = "";
+        var used = models[0];
         for (var m = 0; m < models.Count; m++)
         {
+            used = models[m];
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(models[m])}:generateContent";
             // The main model gets retries; a fallback is tried once, since it is only there for when the main one is overloaded.
             var retries = m == 0 ? RetryDelays.Length : 0;
@@ -129,7 +131,7 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
             logger.LogWarning("Gemini returned no text ({Reason})", reason);
             throw new InvalidOperationException("Gemini không trả về nội dung, hãy đổi yêu cầu hoặc thử lại.");
         }
-        return reply;
+        return new AiReply(reply, used);
     }
 
     public static JsonObject Str(string? description = null) =>

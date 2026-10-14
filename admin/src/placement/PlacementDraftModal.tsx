@@ -16,7 +16,7 @@ type Props = {
   onAdd: (questions: PlacementGrammarInput[]) => Promise<void>;
 };
 
-/** Gemini drafts placement questions from the level's grammar lessons; the admin ticks the ones to save. */
+/** The AI drafts placement questions from the level's grammar lessons; the admin ticks the ones to save. */
 export function PlacementDraftModal({ opened, onClose, level: initialLevel, lessons, onAdd }: Props) {
   const status = useQuery({ queryKey: ["listening-draft-status"], queryFn: api.listeningDraftStatus, enabled: opened, staleTime: 60_000 });
   const [level, setLevel] = useState<PlacementLevel>(initialLevel);
@@ -78,11 +78,14 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     <Modal opened={opened} onClose={busy || saving ? () => {} : onClose} title={`AI soạn câu kiểm tra ngữ pháp ${level}`} size="xl" radius="lg">
       {draft ? (
         <Stack>
+          <Text fz="xs" c="dimmed">
+            Soạn bởi {draft.model}
+          </Text>
           {!draft.checked ? (
             <Alert color="yellow" icon={<IconAlertTriangle size={18} />}>
               {skipped
                 ? "Đã bỏ bước AI tự kiểm tra. Hãy đọc kỹ đáp án từng câu trước khi lưu."
-                : "Chưa tự kiểm tra lại được đáp án (Gemini đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi lưu."}
+                : "Chưa tự kiểm tra lại được đáp án (AI đang giới hạn lượt gọi). Hãy đọc kỹ từng câu trước khi lưu."}
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
@@ -162,8 +165,8 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
       ) : (
         <Stack>
           {notConfigured ? (
-            <Alert color="yellow" title="Chưa bật Gemini">
-              Máy chủ chưa có <b>GEMINI_API_KEY</b> — xem docs/listening.md.
+            <Alert color="yellow" title="Chưa bật AI">
+              Máy chủ chưa có <b>GROQ_API_KEY</b> hoặc <b>GEMINI_API_KEY</b> — xem docs/listening.md.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">

@@ -95,7 +95,7 @@ public interface IAdminListeningService
     Task<byte[]> PreviewVoiceAsync(VoicePreviewRequest request, CancellationToken ct = default);
 }
 
-/// <param name="Configured">False until Gemini:ApiKey is set on the server.</param>
+/// <param name="Configured">False until Groq:ApiKey or Gemini:ApiKey is set on the server.</param>
 public record ListeningDraftStatusDto(bool Configured, string Model);
 
 /// <param name="Length">short / medium / long.</param>
