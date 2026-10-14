@@ -109,11 +109,23 @@ export function speakWord(text: string, voice: WordVoice = "female") {
     const p = createAudioPlayer({ uri: mediaUrl(url)! });
     player = p;
     let started = false;
+    let failed = false;
+    const useOwnVoice = () => {
+      if (failed || t !== token) return;
+      failed = true;
+      clearTimeout(fallback);
+      speak(text);
+    };
     const fallback = setTimeout(() => {
-      if (!started && t === token) speak(text);
+      if (!started) useOwnVoice();
     }, RECORDING_WAIT_MS);
     p.addListener("playbackStatusUpdate", (s) => {
-      if (started || !s.isLoaded || t !== token) return;
+      // Not in AudioStatus's type, but both platforms report a load/playback failure this way.
+      if ((s as { error?: string | null }).error) {
+        useOwnVoice();
+        return;
+      }
+      if (started || failed || !s.isLoaded || t !== token) return;
       started = true;
       clearTimeout(fallback);
       p.setPlaybackRate(Math.min(1.5, Math.max(0.5, speechSettings.rate / NORMAL_RATE)));
