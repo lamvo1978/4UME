@@ -29,6 +29,8 @@ using FourUme.Infrastructure.Grammar;
 using FourUme.Infrastructure.Listening;
 using FourUme.Infrastructure.Ai;
 using FourUme.Application.Listening;
+using FourUme.Application.Practice;
+using FourUme.Infrastructure.Practice;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Review;
 using FourUme.Infrastructure.Vocabulary;
@@ -81,6 +83,9 @@ public static class DependencyInjection
         services.AddHttpClient(AzureSpeechClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(30));
         services.AddSingleton<AzureSpeechClient>();
         services.AddSingleton<ListeningAudioJobs>();
+        services.AddSingleton<SentenceAudioJobs>();
+        services.AddScoped<IPracticeService, PracticeService>();
+        services.AddScoped<IAdminPracticeService, AdminPracticeService>();
         services.AddSingleton<AzurePronunciationClient>();
         services.AddScoped<IPronunciationService, PronunciationService>();
         services.AddHttpClient(AdMobRewardVerifier.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(10));

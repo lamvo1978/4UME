@@ -123,6 +123,10 @@ export type ListeningSummary = {
   durationMs: number | null;
   progress: ListeningProgress;
 };
+/** `audioUrl` is null until the sentence has a recording; the app reads it with the device voice meanwhile. */
+export type PracticeSentence = { id: string; level: VocabLevel; topic: string; en: string; vi: string; audioUrl: string | null };
+export type PracticeOverview = { levels: { level: VocabLevel; count: number }[] };
+
 export type ListeningLine = { speaker: string; en: string; vi: string; startMs: number | null; endMs: number | null };
 export type ListeningDetail = {
   slug: string;
@@ -739,6 +743,10 @@ export const api = {
   saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>
     request<ListeningProgress>(`/api/listening/${slug}/progress`, { method: "PUT", body: JSON.stringify(changes) }),
   recordDictation: (slug: string) => request<void>(`/api/listening/${slug}/dictation`, { method: "POST" }),
+  practiceOverview: () => request<PracticeOverview>("/api/practice"),
+  practiceSentences: (level: VocabLevel, count = 10) =>
+    request<PracticeSentence[]>(`/api/practice/sentences?level=${level}&count=${count}`),
+  recordPractice: () => request<void>("/api/practice/record", { method: "POST" }),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

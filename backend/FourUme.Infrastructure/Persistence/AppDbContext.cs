@@ -33,6 +33,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Broadcast> Broadcasts => Set<Broadcast>();
     public DbSet<BroadcastRecipient> BroadcastRecipients => Set<BroadcastRecipient>();
     public DbSet<PlacementGrammarQuestion> PlacementGrammarQuestions => Set<PlacementGrammarQuestion>();
+    public DbSet<PracticeSentence> PracticeSentences => Set<PracticeSentence>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -274,6 +275,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.ExercisesJson).HasColumnType("jsonb").IsRequired();
             e.Property(x => x.PracticeJson).HasColumnType("jsonb").IsRequired().HasDefaultValueSql("'[]'::jsonb");
             e.HasIndex(x => x.SortOrder);
+        });
+
+        modelBuilder.Entity<PracticeSentence>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.Topic).HasMaxLength(60).IsRequired();
+            e.Property(x => x.En).HasMaxLength(300).IsRequired();
+            e.Property(x => x.Vi).HasMaxLength(400).IsRequired();
+            e.Property(x => x.Voice).HasMaxLength(64);
+            e.Property(x => x.AudioUrl).HasMaxLength(200);
+            e.Property(x => x.AudioText).HasMaxLength(300);
+            e.HasIndex(x => new { x.Level, x.Published });
         });
 
         modelBuilder.Entity<PlacementGrammarQuestion>(e =>

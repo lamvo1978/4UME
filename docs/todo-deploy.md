@@ -62,7 +62,10 @@ cd /opt/4ume && git pull && cd deploy/vps && docker compose pull && docker compo
   2. *Keys and Endpoint* → thêm vào `/opt/4ume/deploy/vps/.env`: `AZURE_SPEECH_PAID_KEY=...` và `AZURE_SPEECH_PAID_REGION=southeastasia`, rồi `docker compose up -d`.
   3. *Cost Management* → *Budgets*: cảnh báo khoảng 5 USD/tháng.
   4. Admin → *Cài đặt* → *Kiểm tra giọng đọc*: chỉnh **Trả phí (S0) tối đa mỗi tháng** (mặc định 600 phút ≈ 10 USD). Chi tiết: [pronunciation.md](pronunciation.md#key-trả-phí-s0).
-- [ ] **Luyện câu (dự kiến bản 1.1, sau khi ra mắt)**: tab riêng *Luyện* trong app, mỗi lượt khoảng 10 câu theo trình độ; chế độ **Nghe – chép**, **Nghe – nói** (nghe câu tiếng Anh rồi nói lại, nhận giọng bằng máy, không tốn Azure) hoặc **Trộn**. Câu lấy từ **ngân hàng câu riêng** soạn trong admin (cấp độ, chủ đề, câu Anh, nghĩa Việt; AI soạn Groq/Gemini; tạo giọng đọc Azure một lần lưu mp3; nhập/xuất JSON). **Miễn phí hoàn toàn**. Tính vào chuỗi ngày học. Dùng lại `checkDictation` và `useSpeechToText`.
+- [ ] **Luyện câu — đã làm, cần soạn câu sau khi deploy**: tab *Luyện* trong app (giữa *Ôn tập* và *Nghe*), mỗi lượt 10 câu ngẫu nhiên theo cấp độ; chế độ **Nghe – chép**, **Nghe – nói** (nhận giọng bằng máy, không tốn Azure) hoặc **Trộn** (xen kẽ). Miễn phí, mỗi câu kiểm tra tính vào chuỗi ngày học và cột *câu chép* của tổng kết tuần. DB thêm bảng `PracticeSentences`, API tự migrate. Sau khi deploy:
+  1. Admin → *Luyện câu* → **AI soạn** mỗi cấp A1–B2 (nên ≥ 50 câu/cấp; cấp chưa có câu thì app báo "đang được soạn").
+  2. Bấm **Tạo giọng đọc**: Azure đọc mỗi câu một lần, lưu mp3 (`/media/sentences`), tính chung hạn mức ký tự với bài nghe (~100 ký tự/câu → 200 câu ≈ 20.000 ký tự). Câu chưa có giọng thì app đọc bằng giọng của điện thoại. Sửa câu tiếng Anh thì phải tạo lại giọng.
+  3. *Nghe – nói* / *Trộn* cần bản app build mới (có `expo-speech-recognition`); Expo Go chỉ dùng được *Nghe – chép*.
 - [ ] **Trước khi gửi duyệt store**: tắt **Bảng giá** (admin → *Quyền lợi Premium*) và ẩn các quyền lợi "Sắp có" cho tới khi có mua trong ứng dụng.
 - [ ] **Hộp thư Zoho** `hotro@4ume.io.vn` (nhận thư, email hỗ trợ cho cửa hàng ứng dụng, đặt lại mật khẩu cho `admin@4ume.io.vn`) — [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm).
 

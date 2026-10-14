@@ -39,6 +39,8 @@ import { WeakWordsScreen } from "../screens/WeakWordsScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
 import { ReviewScreen } from "../screens/ReviewScreen";
+import { SentenceHubScreen } from "../screens/SentenceHubScreen";
+import { SentencePracticeScreen } from "../screens/SentencePracticeScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { StudyHubScreen } from "../screens/StudyHubScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
@@ -117,6 +119,11 @@ function MainTabs() {
           name="Practice"
           component={PracticeHubScreen}
           options={{ title: "Ôn tập", tabBarIcon: tabIcon("repeat", "repeat-outline") }}
+        />
+        <Tab.Screen
+          name="Sentences"
+          component={SentenceHubScreen}
+          options={{ title: "Luyện", tabBarIcon: tabIcon("chatbubbles", "chatbubbles-outline") }}
         />
         <Tab.Screen
           name="Listen"
@@ -249,6 +256,13 @@ export function RootNavigator() {
             />
             <Stack.Screen name="Dictation" component={DictationScreen} options={{ title: "Chép chính tả" }} />
             <Stack.Screen name="Speaking" component={SpeakingScreen} options={{ title: "Luyện nói" }} />
+            <Stack.Screen
+              name="SentencePractice"
+              component={SentencePracticeScreen}
+              options={({ route }) => ({
+                title: `${route.params.mode === "type" ? "Nghe – chép" : route.params.mode === "speak" ? "Nghe – nói" : "Luyện trộn"} · ${route.params.level}`,
+              })}
+            />
           </>
         )}
       </Stack.Navigator>
@@ -263,13 +277,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
     ...shadow.card,
     shadowOffset: { width: 0, height: -4 },
   },
   tabItem: { paddingTop: 2, paddingHorizontal: 0 },
-  tabLabel: { fontSize: 11, fontWeight: "600", marginTop: 2 },
-  tabIcon: { width: 52, height: 32 },
-  iconPill: { width: 52, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  tabLabel: { fontSize: 10.5, fontWeight: "600", marginTop: 2, letterSpacing: -0.1 },
+  tabIcon: { width: 48, height: 32 },
+  iconPill: { width: 48, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   iconPillActive: { backgroundColor: colors.accentSoft },
 });

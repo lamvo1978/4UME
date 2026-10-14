@@ -6,6 +6,8 @@ public enum ListeningLogKind
     Listen,
     /// <summary>Checked one dictation line.</summary>
     Dictation,
+    /// <summary>Checked one sentence in the Luyện tab (written or spoken); LessonSlug is "practice".</summary>
+    Sentence,
 }
 
 /// <summary>

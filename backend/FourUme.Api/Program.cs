@@ -14,6 +14,7 @@ using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
+using FourUme.Application.Practice;
 using FourUme.Application.Pronunciation;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
@@ -633,6 +634,20 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
     return await listening.RecordDictationAsync(userId.Value, slug, ct)
         ? Results.NoContent()
         : Results.NotFound(new { error = "Không tìm thấy bài." });
+}).RequireAuthorization();
+
+app.MapGet("/api/practice", async (IPracticeService practice, CancellationToken ct) =>
+    Results.Ok(await practice.GetOverviewAsync(ct))).RequireAuthorization();
+
+app.MapGet("/api/practice/sentences", async (string level, int? count, IPracticeService practice, CancellationToken ct) =>
+    Results.Ok(await practice.GetRoundAsync(level, count ?? PracticeRules.RoundSize, ct))).RequireAuthorization();
+
+app.MapPost("/api/practice/record", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    await practice.RecordAsync(userId.Value, ct);
+    return Results.NoContent();
 }).RequireAuthorization();
 
 app.MapGet("/api/grammar/lessons", async (ClaimsPrincipal principal, IGrammarService grammar) =>

@@ -28,7 +28,7 @@ type Mode = "type" | "speak";
 type Score = { correct: number; total: number; perfect: boolean };
 
 /** Dictation must be typed: keyboard voice input and paste arrive as several words at once (or with invisible marks). */
-function looksDictated(before: string, after: string) {
+export function looksDictated(before: string, after: string) {
   if (/[\uFFFC\u200B]/.test(after)) return true;
   if (after.length <= before.length) return false;
   let start = 0;
@@ -274,7 +274,7 @@ function Session({
   );
 }
 
-function Tool({ icon, label, on, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; on: boolean; onPress: () => void }) {
+export function Tool({ icon, label, on, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; on: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.tool, on && styles.toolOn, pressed && styles.pressed]}>
       <Ionicons name={icon} size={16} color={on ? colors.white : colors.accent} />
@@ -286,7 +286,7 @@ function Tool({ icon, label, on, onPress }: { icon: keyof typeof Ionicons.glyphM
 const SPEECH_TIPS = "Máy chỉ nghe ra từ, không chấm từng âm. Nói rõ từng từ, không cần nhanh.";
 
 /** Big mic: tap, say the sentence, tap again (or pause) and the transcript is checked like a typed answer. */
-function SpeakBox({ names, onSaid }: { names: string[]; onSaid: (text: string) => void }) {
+export function SpeakBox({ names, onSaid }: { names: string[]; onSaid: (text: string) => void }) {
   const speech = useSpeechToText(onSaid, names);
   if (!speech.available) {
     return (
@@ -381,7 +381,7 @@ function MarkedLine<S extends string>({
   );
 }
 
-function ResultCard({
+export function ResultCard({
   result,
   vi,
   speak,
@@ -485,7 +485,7 @@ function Summary({
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg, padding: spacing.lg },
   error: { color: colors.danger, textAlign: "center" },
   flex: { flex: 1 },
