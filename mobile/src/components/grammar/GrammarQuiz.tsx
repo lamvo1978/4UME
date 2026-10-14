@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
 import { GrammarExercise, VerbNote } from "../../api/client";
 import {
@@ -274,28 +274,36 @@ function Prompt({
       return null;
     case "cloze": {
       const { parts, hints } = splitCloze(ex.prompt);
-      return (
-        <Text style={styles.paragraph}>
-          {parts.map((text, i) => {
-            const value = gaps[i]?.trim();
-            const ok = checked ? clozeGapCorrect(ex.blanks[i] ?? [], gaps[i] ?? "") : null;
-            return (
-              <Text key={i}>
-                <LookupText text={text} onWord={onWord} />
-                {i < hints.length ? (
-                  // Non-breaking spaces keep the number, the blank and its hint on one line.
-                  <Text>
-                    <Text style={[styles.gap, value ? styles.gapFilled : null, ok === true && styles.gapOk, ok === false && styles.gapBad]}>
-                      <Text style={styles.gapNum}>{`${NBSP}${i + 1}${NBSP}`}</Text>
-                      {`${value ? value.replace(/ /g, NBSP) : "______"}${NBSP}`}
-                    </Text>
-                    {hints[i] && !value ? <Text style={styles.gapHint}>{`${NBSP}(${hints[i]})`}</Text> : null}
-                  </Text>
-                ) : null}
+      // One block per paragraph, so paragraphs get space between them and are justified on their own.
+      const paragraphs: ReactNode[][] = [[]];
+      parts.forEach((text, i) => {
+        text.split("\n").forEach((piece, k) => {
+          if (k > 0) paragraphs.push([]);
+          if (piece) paragraphs[paragraphs.length - 1].push(<LookupText key={`t${i}-${k}`} text={piece} onWord={onWord} />);
+        });
+        if (i < hints.length) {
+          const value = gaps[i]?.trim();
+          const ok = checked ? clozeGapCorrect(ex.blanks[i] ?? [], gaps[i] ?? "") : null;
+          paragraphs[paragraphs.length - 1].push(
+            // Non-breaking spaces keep the number, the blank and its hint on one line.
+            <Text key={`g${i}`}>
+              <Text style={[styles.gap, value ? styles.gapFilled : null, ok === true && styles.gapOk, ok === false && styles.gapBad]}>
+                <Text style={styles.gapNum}>{`${NBSP}${i + 1}${NBSP}`}</Text>
+                {`${value ? value.replace(/ /g, NBSP) : "____"}${NBSP}`}
               </Text>
-            );
-          })}
-        </Text>
+              {hints[i] && !value ? <Text style={styles.gapHint}>{`${NBSP}(${hints[i]})`}</Text> : null}
+            </Text>,
+          );
+        }
+      });
+      return (
+        <View style={styles.paragraphs}>
+          {paragraphs.map((p, k) => (
+            <Text key={k} style={styles.paragraph}>
+              {p}
+            </Text>
+          ))}
+        </View>
       );
     }
   }
@@ -432,6 +440,7 @@ const styles = StyleSheet.create({
   instruction: { color: colors.muted, fontWeight: "600" },
   prompt: { fontSize: 22, lineHeight: 31, fontWeight: "700", color: colors.ink },
   promptVi: { fontSize: 20, lineHeight: 28, fontWeight: "700", color: colors.accent },
+  paragraphs: { gap: 10 },
   paragraph: { fontSize: 17, lineHeight: 27, color: colors.ink },
   gap: { fontWeight: "700", color: colors.flameDeep, backgroundColor: colors.bg },
   gapNum: { color: colors.flameDeep },
