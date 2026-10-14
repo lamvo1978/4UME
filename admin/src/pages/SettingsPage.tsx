@@ -368,7 +368,13 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
 
   const dirty = JSON.stringify(form) !== JSON.stringify(p.value);
   const atDefaults = JSON.stringify(p.value) === JSON.stringify(p.defaults);
-  const usedPct = p.value.monthlyMinutesCap > 0 ? Math.min(100, (p.usage.minutes / p.value.monthlyMinutesCap) * 100) : 100;
+  const usedPct = p.usage.freeSpent
+    ? 100
+    : p.value.monthlyMinutesCap > 0
+      ? Math.min(100, (p.usage.minutes / p.value.monthlyMinutesCap) * 100)
+      : 100;
+  const paidPct =
+    p.value.paidMonthlyMinutesCap > 0 ? Math.min(100, (p.usage.paidMinutes / p.value.paidMonthlyMinutesCap) * 100) : 100;
   const number = (key: keyof PronunciationConfig) => (v: string | number) =>
     setForm({ ...form, [key]: typeof v === "number" ? Math.max(0, Math.round(v)) : 0 });
 
@@ -407,7 +413,7 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
           label="Cho xem quảng cáo đổi lượt chấm"
           description="Hết lượt, người dùng miễn phí có thể tự chọn xem một quảng cáo để chấm thêm 1 lần. Premium không thấy quảng cáo. Chỉ bật khi bản app có quảng cáo đã lên cửa hàng."
         />
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 5 }} spacing="md">
           <NumberInput
             label="Miễn phí mỗi ngày"
             description="Mỗi lần chấm, kể cả đọc lại, là một lượt"
@@ -440,8 +446,8 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
           <NumberInput
-            label="Giới hạn mỗi tháng"
-            description="Phút âm thanh gửi Azure (gói F0: 300)"
+            label="Miễn phí (F0) mỗi tháng"
+            description="Phút âm thanh gửi Azure F0 (gói F0: 300)"
             min={0}
             max={100000}
             suffix=" phút"
@@ -449,22 +455,50 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
             onChange={number("monthlyMinutesCap")}
             inputWrapperOrder={["label", "description", "input", "error"]}
           />
+          <NumberInput
+            label="Trả phí (S0) tối đa mỗi tháng"
+            description="Khoảng 1 USD mỗi 60 phút"
+            min={0}
+            max={100000}
+            suffix=" phút"
+            disabled={!p.paidConfigured}
+            value={form.paidMonthlyMinutesCap}
+            onChange={number("paidMonthlyMinutesCap")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
         </SimpleGrid>
         <div>
           <Group justify="space-between" mb={4}>
             <Text fz="sm" fw={500}>
-              Tháng này
+              Tháng này · miễn phí (F0)
             </Text>
             <Text fz="sm" c="dimmed">
               {p.usage.attempts.toLocaleString("vi-VN")} lần chấm · {p.usage.users} người · {p.usage.adRewards.toLocaleString("vi-VN")} quảng cáo ·{" "}
               {p.usage.minutes.toLocaleString("vi-VN")}/{p.value.monthlyMinutesCap.toLocaleString("vi-VN")} phút
+              {p.usage.freeSpent ? " · Azure báo đã hết" : ""}
             </Text>
           </Group>
           <Progress value={usedPct} color={usedPct >= 90 ? "red" : usedPct >= 70 ? "orange" : "brand"} radius="xl" />
-          <Text fz="xs" c="dimmed" mt={4}>
-            Chạm giới hạn thì mọi người chuyển sang tự so sánh đến đầu tháng sau (tính theo giờ UTC).
-          </Text>
         </div>
+        {p.paidConfigured ? (
+          <div>
+            <Group justify="space-between" mb={4}>
+              <Text fz="sm" fw={500}>
+                Tháng này · trả phí (S0)
+              </Text>
+              <Text fz="sm" c="dimmed">
+                {p.usage.paidMinutes.toLocaleString("vi-VN")}/{p.value.paidMonthlyMinutesCap.toLocaleString("vi-VN")} phút · khoảng{" "}
+                {(p.usage.paidMinutes / 60).toLocaleString("vi-VN", { maximumFractionDigits: 2 })} USD
+              </Text>
+            </Group>
+            <Progress value={paidPct} color={paidPct >= 90 ? "red" : paidPct >= 70 ? "orange" : "grape"} radius="xl" />
+          </div>
+        ) : null}
+        <Text fz="xs" c="dimmed">
+          {p.paidConfigured
+            ? "Dùng hết phần miễn phí (F0) trước, rồi tự chuyển sang key trả phí (S0). Lượt miễn phí hằng ngày chỉ được dùng 80% phút trả phí, phần còn lại dành cho Premium và lượt từ quảng cáo. Chạm giới hạn thì chuyển sang tự so sánh đến đầu tháng sau (giờ UTC)."
+            : "Chạm giới hạn thì mọi người chuyển sang tự so sánh đến đầu tháng sau (giờ UTC). Thêm AZURE_SPEECH_PAID_KEY / AZURE_SPEECH_PAID_REGION (resource S0) để tiếp tục chấm có tính phí khi hết phần miễn phí."}
+        </Text>
         <Group justify="flex-end" gap="sm">
           <Button
             variant="default"

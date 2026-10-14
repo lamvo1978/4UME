@@ -394,6 +394,8 @@ export type AboutContent = {
 
 /** Benefits on the Premium screen, edited in the admin web; hidden ones are already filtered out. */
 export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean };
+/** Price in VND; empty list while the admin hides prices. */
+export type PremiumPlan = { months: number; price: number; badge: string };
 
 export type PronunciationStatus = {
   enabled: boolean;
@@ -716,7 +718,8 @@ export const api = {
     }),
   pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
   about: () => request<AboutContent>("/api/about"),
-  premiumPerks: () => request<{ perks: PremiumPerk[] }>("/api/premium-perks").then((r) => r.perks),
+  premiumPerks: () =>
+    request<{ perks: PremiumPerk[]; plans?: PremiumPlan[] }>("/api/premium-perks").then((r) => ({ perks: r.perks, plans: r.plans ?? [] })),
   assessPronunciation,
   /** Development servers only: grants the check a watched ad would. */
   devAdReward: () => request<PronunciationStatus>("/api/ads/dev-reward", { method: "POST" }),

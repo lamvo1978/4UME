@@ -12,6 +12,8 @@ public class PronunciationAttempt
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     /// <summary>Length of the audio sent to Azure (what the service bills).</summary>
     public int AudioMs { get; set; }
+    /// <summary>Scored on the paid (S0) resource after the free tier ran out.</summary>
+    public bool Paid { get; set; }
     public int Score { get; set; }
     /// <summary>Per-sound scores as JSON (<c>[{"phoneme":"θ","score":38}]</c>), kept for weak-sound stats.</summary>
     public string? Phonemes { get; set; }

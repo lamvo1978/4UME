@@ -158,6 +158,7 @@ export type PronunciationConfig = {
   monthlyMinutesCap: number;
   adRewardsEnabled: boolean;
   adRewardsPerDay: number;
+  paidMonthlyMinutesCap: number;
 };
 export type AdminSettings = {
   notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
@@ -167,8 +168,9 @@ export type AdminSettings = {
     defaults: PronunciationConfig;
     updatedAt: string | null;
     /** Azure checks this calendar month (UTC). */
-    usage: { attempts: number; users: number; minutes: number; adRewards: number };
+    usage: { attempts: number; users: number; minutes: number; adRewards: number; paidMinutes: number; freeSpent: boolean };
     azureConfigured: boolean;
+    paidConfigured: boolean;
   };
   referral: { value: ReferralConfig; defaults: ReferralConfig; updatedAt: string | null };
 };
@@ -237,7 +239,8 @@ export type AboutSection = { title: string; items: AboutItem[]; visible: boolean
 export type AboutContent = { tagline: string; sections: AboutSection[] };
 export type AdminAbout = { value: AboutContent; defaults: AboutContent; updatedAt: string | null };
 export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean; visible: boolean };
-export type PremiumPerks = { perks: PremiumPerk[] };
+export type PremiumPlan = { months: number; price: number; badge: string; visible: boolean };
+export type PremiumPerks = { perks: PremiumPerk[]; plans: PremiumPlan[]; showPrices: boolean };
 export type AdminPremiumPerks = { value: PremiumPerks; defaults: PremiumPerks; updatedAt: string | null };
 
 export type FeedbackReplyTemplate = { title: string; body: string };

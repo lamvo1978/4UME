@@ -5,14 +5,27 @@ namespace FourUme.Application.Premium;
 /// <param name="Soon">Shown with a "Sắp có" tag: promised but not built yet.</param>
 public record PremiumPerk(string Icon, string Title, string Body, bool Soon = false, bool Visible = true);
 
+/// <param name="Months">Length of the plan; the app shows the monthly equivalent and the saving against the 1-month plan.</param>
+/// <param name="Price">Price in VND, as set in the stores.</param>
+/// <param name="Badge">Short highlight such as "Tiết kiệm nhất"; empty for none.</param>
+public record PremiumPlan(int Months, int Price, string Badge = "", bool Visible = true);
+
 /// <summary>
-/// Benefits listed on the app's Premium screen, edited in the admin. Before selling the subscription through the
-/// stores, hide every perk still marked <see cref="PremiumPerk.Soon"/>: store review rejects paywalls that promise
+/// Benefits and price list on the app's Premium screen, edited in the admin. Before selling the subscription through
+/// the stores, hide every perk still marked <see cref="PremiumPerk.Soon"/>: store review rejects paywalls that promise
 /// features that don't exist yet.
 /// </summary>
-public record PremiumPerks(List<PremiumPerk> Perks)
+/// <param name="ShowPrices">Show <see cref="Plans"/> in the app (labelled "Sắp mở bán" until in-app purchase ships).</param>
+public record PremiumPerks(List<PremiumPerk> Perks, List<PremiumPlan>? Plans = null, bool ShowPrices = true)
 {
     public const string SettingKey = "premium";
+
+    public static List<PremiumPlan> DefaultPlans() =>
+    [
+        new(1, 19_000),
+        new(6, 99_000),
+        new(12, 159_000, "Tiết kiệm nhất"),
+    ];
 
     public static PremiumPerks Default() => new(
     [
@@ -25,7 +38,7 @@ public record PremiumPerks(List<PremiumPerk> Perks)
         new("chatbubbles-outline", "Luyện nói cả câu", "Chấm phát âm cả câu ví dụ và câu trong bài nghe.", Soon: true, Visible: false),
         new("school-outline", "Bộ từ chuyên đề", "Bộ từ cho IELTS, công việc, du lịch.", Soon: true, Visible: false),
         new("ribbon-outline", "Huy hiệu Premium", "Khung ảnh đại diện và huy hiệu riêng.", Soon: true, Visible: false),
-    ]);
+    ], DefaultPlans());
 }
 
 /// <param name="UpdatedAt">null while the defaults are in use.</param>
@@ -45,14 +58,32 @@ public static class PremiumPerkRules
     public const int MaxTitle = 80;
     public const int MaxBody = 200;
 
+    public const int MaxPlans = 4;
+    public const int MaxPlanMonths = 36;
+    public const int MinPrice = 1_000;
+    public const int MaxPrice = 10_000_000;
+    public const int MaxBadge = 30;
+
     public static PremiumPerks Normalize(PremiumPerks p) => new(
         (p.Perks ?? []).Select(x => new PremiumPerk(
-            x.Icon?.Trim() ?? "", (x.Title ?? "").Trim(), (x.Body ?? "").Trim(), x.Soon, x.Visible)).ToList());
+            x.Icon?.Trim() ?? "", (x.Title ?? "").Trim(), (x.Body ?? "").Trim(), x.Soon, x.Visible)).ToList(),
+        (p.Plans ?? PremiumPerks.DefaultPlans()).Select(x => x with { Badge = (x.Badge ?? "").Trim() }).OrderBy(x => x.Months).ToList(),
+        p.ShowPrices);
 
     public static List<string> Validate(PremiumPerks p)
     {
         var problems = new List<string>();
         if (p.Perks.Count > MaxPerks) problems.Add($"Tối đa {MaxPerks} quyền lợi.");
+        var plans = p.Plans ?? [];
+        if (plans.Count > MaxPlans) problems.Add($"Tối đa {MaxPlans} gói giá.");
+        if (plans.GroupBy(x => x.Months).Any(g => g.Count() > 1)) problems.Add("Hai gói giá trùng số tháng.");
+        foreach (var plan in plans)
+        {
+            var where = $"Gói {plan.Months} tháng";
+            if (plan.Months is < 1 or > MaxPlanMonths) problems.Add($"Số tháng của gói phải từ 1 đến {MaxPlanMonths}.");
+            if (plan.Price is < MinPrice or > MaxPrice) problems.Add($"{where}: giá phải từ {MinPrice:N0}đ đến {MaxPrice:N0}đ.");
+            if (plan.Badge.Length > MaxBadge) problems.Add($"{where}: nhãn tối đa {MaxBadge} ký tự.");
+        }
         for (var i = 0; i < p.Perks.Count; i++)
         {
             var perk = p.Perks[i];
@@ -65,8 +96,11 @@ public static class PremiumPerkRules
         return problems;
     }
 
-    /// <summary>What the app shows: hidden perks removed.</summary>
-    public static PremiumPerks Visible(PremiumPerks p) => new(p.Perks.Where(x => x.Visible).ToList());
+    /// <summary>What the app shows: hidden perks and plans removed, no plans while prices are switched off.</summary>
+    public static PremiumPerks Visible(PremiumPerks p) => new(
+        p.Perks.Where(x => x.Visible).ToList(),
+        p.ShowPrices ? (p.Plans ?? PremiumPerks.DefaultPlans()).Where(x => x.Visible).OrderBy(x => x.Months).ToList() : [],
+        p.ShowPrices);
 }
 
 public interface IPremiumPerksService

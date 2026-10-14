@@ -22,12 +22,12 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
     }
 
     public async Task<PronunciationStatusDto> GetStatusAsync(Guid userId, CancellationToken ct = default) =>
-        await BuildStatusAsync(userId, await GetConfigAsync(ct), ct);
+        (await BuildStatusAsync(userId, await GetConfigAsync(ct), ct)).Status;
 
     public async Task<PronunciationResultDto> AssessAsync(Guid userId, string wordId, Stream audio, CancellationToken ct = default)
     {
         var config = await GetConfigAsync(ct);
-        var status = await BuildStatusAsync(userId, config, ct);
+        var (status, useFree, usePaid) = await BuildStatusAsync(userId, config, ct);
         if (!status.Enabled) throw new PronunciationException(503, "Tính năng chấm phát âm đang tạm tắt.");
         if (!status.ServiceAvailable) throw new PronunciationException(503, "Chấm phát âm chi tiết đang tạm dừng, bạn quay lại sau nhé.");
 
@@ -42,8 +42,18 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var (wav, durationMs) = await AudioConverter.ToWav16kAsync(bytes, ct);
         if (durationMs < 300) throw new PronunciationException(400, "Bản ghi quá ngắn, hãy giữ nút lâu hơn một chút.");
 
-        var result = await azure.AssessAsync(wav, word, ct)
-            ?? throw new PronunciationException(400, "Mình chưa nghe rõ, bạn đọc to và gần micro hơn nhé.");
+        var paid = !useFree;
+        AzureAssessment? result;
+        try
+        {
+            result = await azure.AssessAsync(wav, word, paid, MonthStart(), ct);
+        }
+        catch (AzureFreeTierRefusedException) when (usePaid)
+        {
+            paid = true;
+            result = await azure.AssessAsync(wav, word, paid, MonthStart(), ct);
+        }
+        if (result is null) throw new PronunciationException(400, "Mình chưa nghe rõ, bạn đọc to và gần micro hơn nhé.");
 
         db.PronunciationAttempts.Add(new PronunciationAttempt
         {
@@ -51,6 +61,7 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
             WordId = wordId,
             LocalDate = clock.Today,
             AudioMs = durationMs,
+            Paid = paid,
             Score = result.Accuracy,
             Phonemes = JsonSerializer.Serialize(result.Words.SelectMany(w => w.Phonemes), Json),
         });
@@ -92,12 +103,18 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var attempts = db.PronunciationAttempts.AsNoTracking().Where(a => a.CreatedAt >= month);
         var count = await attempts.CountAsync(ct);
         var users = await attempts.Select(a => a.UserId).Distinct().CountAsync(ct);
-        var ms = await attempts.SumAsync(a => (long)a.AudioMs, ct);
+        var freeMs = await attempts.Where(a => !a.Paid).SumAsync(a => (long)a.AudioMs, ct);
+        var paidMs = await attempts.Where(a => a.Paid).SumAsync(a => (long)a.AudioMs, ct);
         var ads = await db.AdRewards.AsNoTracking().CountAsync(r => r.CreatedAt >= month, ct);
-        return new PronunciationUsageDto(count, users, Math.Round(ms / 60000.0, 1), ads);
+        return new PronunciationUsageDto(count, users, Math.Round(freeMs / 60000.0, 1), ads, Math.Round(paidMs / 60000.0, 1),
+            azure.FreeSpent(month));
     }
 
-    private async Task<PronunciationStatusDto> BuildStatusAsync(Guid userId, PronunciationConfig config, CancellationToken ct)
+    /// <param name="UseFree">The next check goes to the free resource first.</param>
+    /// <param name="UsePaid">The paid resource may take the next check (directly, or when the free one refuses).</param>
+    private record Budget(PronunciationStatusDto Status, bool UseFree, bool UsePaid);
+
+    private async Task<Budget> BuildStatusAsync(Guid userId, PronunciationConfig config, CancellationToken ct)
     {
         var access = await Entitlements.GetAsync(db, userId, ct);
         var premium = access.Premium;
@@ -108,15 +125,23 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var limit = (premium ? config.PremiumDailyLimit : config.FreeDailyLimit) + ads;
 
         var month = MonthStart();
-        var monthMs = await db.PronunciationAttempts.Where(a => a.CreatedAt >= month).SumAsync(a => (long)a.AudioMs, ct);
-        var available = azure.Configured && monthMs < config.MonthlyMinutesCap * 60_000L;
+        var thisMonth = db.PronunciationAttempts.Where(a => a.CreatedAt >= month);
+        var freeMs = await thisMonth.Where(a => !a.Paid).SumAsync(a => (long)a.AudioMs, ct);
+        var paidMs = await thisMonth.Where(a => a.Paid).SumAsync(a => (long)a.AudioMs, ct);
+        var useFree = azure.Configured && !azure.FreeSpent(month) && freeMs < config.MonthlyMinutesCap * 60_000L;
+        // Premium checks and checks bought with an ad are promised, so the plain free allowance gives way first.
+        var promised = premium || used >= config.FreeDailyLimit;
+        var paidCapMs = config.PaidMonthlyMinutesCap * 60_000L * (promised ? 1 : PronunciationRules.FreePlanPaidShare);
+        var usePaid = azure.PaidConfigured && paidMs < paidCapMs;
+        var available = useFree || usePaid;
 
         var on = config.Enabled && available;
         var remaining = on ? Math.Max(0, limit - used) : 0;
         var adsLimit = on && config.AdRewardsEnabled && !premium ? config.AdRewardsPerDay : 0;
-        return new PronunciationStatusDto(config.Enabled, premium, access.PremiumUntil, limit, used, remaining, available,
+        var status = new PronunciationStatusDto(config.Enabled, premium, access.PremiumUntil, limit, used, remaining, available,
             config.PremiumDailyLimit, config.FreeDailyLimit, ads, adsLimit, Math.Max(0, adsLimit - ads), access.PartnerName,
             access.PartnerUntil, access.PausedPremiumDays);
+        return new Budget(status, useFree, usePaid);
     }
 
     private static DateTimeOffset MonthStart()

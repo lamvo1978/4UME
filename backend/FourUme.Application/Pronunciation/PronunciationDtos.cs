@@ -13,8 +13,13 @@ public record PronunciationConfig
     public bool AdRewardsEnabled { get; init; }
     /// <summary>Rewarded ads that count per learner per day.</summary>
     public int AdRewardsPerDay { get; init; } = 10;
-    /// <summary>Audio minutes sent to Azure per calendar month (UTC) across all users; the free tier (F0) covers 300.</summary>
+    /// <summary>Audio minutes sent to the free Azure resource per calendar month (UTC) across all users; F0 covers 300.</summary>
     public int MonthlyMinutesCap { get; init; } = 300;
+    /// <summary>
+    /// Audio minutes per month on the paid resource (S0), the spending ceiling. Checks from the free daily allowance
+    /// stop at <see cref="PronunciationRules.FreePlanPaidShare"/> of it so Premium and ad-earned checks keep the rest.
+    /// </summary>
+    public int PaidMonthlyMinutesCap { get; init; } = 600;
 }
 
 public static class PronunciationRules
@@ -24,6 +29,7 @@ public static class PronunciationRules
     public const int MaxAudioBytes = 2 * 1024 * 1024;
     /// <summary>Longer recordings are cut; one word needs far less.</summary>
     public const int MaxAudioSeconds = 6;
+    public const double FreePlanPaidShare = 0.8;
 
     public static IReadOnlyList<string> Validate(PronunciationConfig c)
     {
@@ -32,6 +38,7 @@ public static class PronunciationRules
         if (c.PremiumDailyLimit is < 0 or > MaxLimit) problems.Add($"Lượt Premium mỗi ngày phải từ 0 đến {MaxLimit}.");
         if (c.AdRewardsPerDay is < 0 or > MaxAdRewardsPerDay) problems.Add($"Số quảng cáo mỗi ngày phải từ 0 đến {MaxAdRewardsPerDay}.");
         if (c.MonthlyMinutesCap is < 0 or > 100_000) problems.Add("Giới hạn phút mỗi tháng không hợp lệ.");
+        if (c.PaidMonthlyMinutesCap is < 0 or > 100_000) problems.Add("Giới hạn phút trả phí mỗi tháng không hợp lệ.");
         return problems;
     }
 }
@@ -80,8 +87,11 @@ public record PronunciationResultDto(
     IReadOnlyList<WordScoreDto> Words,
     PronunciationStatusDto Status);
 
+/// <param name="Minutes">Audio minutes on the free resource.</param>
 /// <param name="AdRewards">Rewarded ads counted this month (each gave one extra check).</param>
-public record PronunciationUsageDto(int Attempts, int Users, double Minutes, int AdRewards);
+/// <param name="PaidMinutes">Audio minutes billed on the paid resource.</param>
+/// <param name="FreeSpent">The free resource reported its monthly quota gone before the minute cap was reached.</param>
+public record PronunciationUsageDto(int Attempts, int Users, double Minutes, int AdRewards, double PaidMinutes = 0, bool FreeSpent = false);
 
 /// <summary>Outcome of one rewarded-ad callback.</summary>
 public enum AdRewardOutcome

@@ -21,7 +21,8 @@ public record AdminPronunciationSettingsDto(
     PronunciationConfig Defaults,
     DateTimeOffset? UpdatedAt,
     PronunciationUsageDto Usage,
-    bool AzureConfigured);
+    bool AzureConfigured,
+    bool PaidConfigured = false);
 
 /// <param name="UpdatedAt">null while the defaults are in use.</param>
 public record AdminReferralSettingsDto(ReferralConfig Value, ReferralConfig Defaults, DateTimeOffset? UpdatedAt);

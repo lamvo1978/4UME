@@ -1,9 +1,9 @@
-import { ActionIcon, Alert, Button, Group, Modal, Paper, Skeleton, Stack, Switch, Text, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Alert, Button, Group, Modal, NumberInput, Paper, Skeleton, Stack, Switch, Text, TextInput, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconCheck, IconDeviceFloppy, IconHistory, IconPlus, IconRestore } from "@tabler/icons-react";
+import { IconCheck, IconDeviceFloppy, IconHistory, IconPlus, IconRestore, IconTrash } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { api, type AdminPremiumPerks, type PremiumPerk, type PremiumPerks } from "../api";
+import { api, type AdminPremiumPerks, type PremiumPerk, type PremiumPerks, type PremiumPlan } from "../api";
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { mobileActionBarStyle } from "../layout/mobileActionBar";
@@ -68,7 +68,7 @@ export function PremiumPerksPage() {
     );
   }
 
-  const setPerk = (i: number, perk: PremiumPerk) => setForm({ perks: form.perks.map((x, j) => (j === i ? perk : x)) });
+  const setPerk = (i: number, perk: PremiumPerk) => setForm({ ...form, perks: form.perks.map((x, j) => (j === i ? perk : x)) });
   const soonShown = form.perks.filter((p) => p.visible && p.soon).length;
 
   async function run(action: () => Promise<AdminPremiumPerks>, message: string) {
@@ -144,6 +144,17 @@ export function PremiumPerksPage() {
         Trong tiêu đề, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt).
       </Alert>
 
+      <PlansCard
+        plans={form.plans}
+        showPrices={form.showPrices}
+        onChange={(plans) => setForm({ ...form, plans })}
+        onShow={(showPrices) => setForm({ ...form, showPrices })}
+      />
+
+      <Title order={4} mt="sm">
+        Quyền lợi
+      </Title>
+
       {form.perks.map((perk, i) => (
         <Paper key={i} p="md" radius="lg" shadow="xs" style={{ opacity: perk.visible ? 1 : 0.65 }}>
           <Stack gap="xs">
@@ -167,8 +178,8 @@ export function PremiumPerksPage() {
               <Order
                 index={i}
                 count={form.perks.length}
-                onMove={(to) => setForm({ perks: move(form.perks, i, to) })}
-                onDelete={() => setForm({ perks: form.perks.filter((_, j) => j !== i) })}
+                onMove={(to) => setForm({ ...form, perks: move(form.perks, i, to) })}
+                onDelete={() => setForm({ ...form, perks: form.perks.filter((_, j) => j !== i) })}
                 label="dòng"
               />
             </Group>
@@ -198,7 +209,7 @@ export function PremiumPerksPage() {
       <Button
         variant="default"
         leftSection={<IconPlus size={18} />}
-        onClick={() => setForm({ perks: [...form.perks, newPerk()] })}
+        onClick={() => setForm({ ...form, perks: [...form.perks, newPerk()] })}
         disabled={form.perks.length >= 12}
         style={{ alignSelf: "flex-start" }}
       >
@@ -235,5 +246,104 @@ export function PremiumPerksPage() {
         onRestored={() => setHistoryOpen(false)}
       />
     </Stack>
+  );
+}
+
+/** Monthly equivalent and saving against the 1-month plan, the way the app shows them. */
+function planSummary(plan: PremiumPlan, monthly: PremiumPlan | undefined): string {
+  const perMonth = Math.round(plan.price / plan.months / 100) * 100;
+  if (plan.months === 1 || !monthly) return `${perMonth.toLocaleString("vi-VN")}đ/tháng`;
+  const saving = Math.round((1 - plan.price / (monthly.price * plan.months)) * 100);
+  return `≈ ${perMonth.toLocaleString("vi-VN")}đ/tháng${saving > 0 ? ` · tiết kiệm ${saving}%` : ""}`;
+}
+
+function PlansCard({
+  plans,
+  showPrices,
+  onChange,
+  onShow,
+}: {
+  plans: PremiumPlan[];
+  showPrices: boolean;
+  onChange: (plans: PremiumPlan[]) => void;
+  onShow: (show: boolean) => void;
+}) {
+  const monthly = plans.find((p) => p.months === 1);
+  const setPlan = (i: number, plan: PremiumPlan) => onChange(plans.map((x, j) => (j === i ? plan : x)));
+  const nextMonths = [1, 3, 6, 12, 24].find((m) => !plans.some((p) => p.months === m)) ?? 0;
+
+  return (
+    <Paper p="md" radius="lg" shadow="xs">
+      <Stack gap="sm">
+        <Group justify="space-between" align="flex-start">
+          <div>
+            <Title order={4}>Bảng giá</Title>
+            <Text fz="sm" c="dimmed">
+              Hiện trên màn Premium với nhãn “Sắp mở bán” cho tới khi app có mua trong ứng dụng. Giá nên khớp với giá đặt trên App Store / Google Play.
+            </Text>
+          </div>
+          <Switch checked={showPrices} onChange={(e) => onShow(e.currentTarget.checked)} label={showPrices ? "Đang hiện" : "Đang ẩn"} />
+        </Group>
+        {plans.map((plan, i) => (
+          <Group key={i} gap="xs" wrap="wrap" align="flex-end" style={{ opacity: plan.visible ? 1 : 0.65 }}>
+            <NumberInput
+              w={110}
+              label="Số tháng"
+              min={1}
+              max={36}
+              value={plan.months}
+              onChange={(v) => setPlan(i, { ...plan, months: typeof v === "number" ? Math.max(1, Math.round(v)) : 1 })}
+            />
+            <NumberInput
+              w={150}
+              label="Giá"
+              min={1000}
+              max={10000000}
+              step={1000}
+              thousandSeparator="."
+              decimalSeparator=","
+              suffix="đ"
+              value={plan.price}
+              onChange={(v) => setPlan(i, { ...plan, price: typeof v === "number" ? Math.round(v) : 0 })}
+            />
+            <TextInput
+              w={170}
+              label="Nhãn nổi bật"
+              placeholder="VD: Tiết kiệm nhất"
+              maxLength={30}
+              value={plan.badge}
+              onChange={(e) => setPlan(i, { ...plan, badge: e.currentTarget.value })}
+            />
+            <Text fz="sm" c="dimmed" pb={8} miw={190}>
+              {planSummary(plan, monthly)}
+            </Text>
+            <Switch
+              pb={8}
+              checked={plan.visible}
+              onChange={(e) => setPlan(i, { ...plan, visible: e.currentTarget.checked })}
+              label={plan.visible ? "Hiện" : "Ẩn"}
+            />
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              mb={4}
+              onClick={() => onChange(plans.filter((_, j) => j !== i))}
+              aria-label="Xoá gói"
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+          </Group>
+        ))}
+        <Button
+          variant="default"
+          leftSection={<IconPlus size={18} />}
+          onClick={() => onChange([...plans, { months: nextMonths, price: (monthly?.price ?? 19000) * nextMonths, badge: "", visible: true }])}
+          disabled={plans.length >= 4 || nextMonths === 0}
+          style={{ alignSelf: "flex-start" }}
+        >
+          Thêm gói
+        </Button>
+      </Stack>
+    </Paper>
   );
 }

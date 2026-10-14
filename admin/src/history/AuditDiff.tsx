@@ -1,5 +1,5 @@
 import { Image, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { mediaSrc, type AboutSection, type AuditDetail, type FeedbackReplyTemplate, type PremiumPerk } from "../api";
+import { mediaSrc, type AboutSection, type AuditDetail, type FeedbackReplyTemplate, type PremiumPerk, type PremiumPlan } from "../api";
 import { sectionLabel } from "../grammar/meta";
 import { kindLabel } from "../listening/meta";
 import { posLabel } from "../lib";
@@ -19,6 +19,7 @@ function format(key: string, value: unknown): string {
   if (key === "weeklyDay" && typeof value === "number") return WEEKDAY_NAMES[value] ?? String(value);
   if (key === "sections" && Array.isArray(value)) return aboutSections(value as AboutSection[]);
   if (key === "perks" && Array.isArray(value)) return premiumPerks(value as PremiumPerk[]);
+  if (key === "plans" && Array.isArray(value)) return premiumPlans(value as PremiumPlan[]);
   if (key === "recipients" && Array.isArray(value)) return value.length ? value.join("\n") : "—";
   if (key === "replies" && Array.isArray(value)) return value.length ? (value as FeedbackReplyTemplate[]).map((r) => r.title).join("\n") : "—";
   if (Array.isArray(value)) return value.length ? `ngày ${value.join(", ")}` : "tắt";
@@ -40,6 +41,13 @@ function aboutSections(sections: AboutSection[]): string {
 function premiumPerks(perks: PremiumPerk[]): string {
   if (!perks.length) return "—";
   return perks.map((p) => `${p.title}${p.soon ? " (sắp có)" : ""}${p.visible ? "" : " (ẩn)"}`).join("\n");
+}
+
+function premiumPlans(plans: PremiumPlan[]): string {
+  if (!plans.length) return "—";
+  return plans
+    .map((p) => `${p.months} tháng: ${p.price.toLocaleString("vi-VN")}đ${p.badge ? ` (${p.badge})` : ""}${p.visible ? "" : " (ẩn)"}`)
+    .join("\n");
 }
 
 /** Field-by-field view of an audit entry: changed fields for edits, all fields for creations and deletions. */

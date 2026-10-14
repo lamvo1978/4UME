@@ -987,6 +987,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateOnly>("LocalDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("Paid")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Phonemes")
                         .HasColumnType("text");
 

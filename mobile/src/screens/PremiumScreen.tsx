@@ -3,7 +3,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { adsOffered } from "../ads/rewarded";
-import { api, partnerLine, PremiumPerk, PronunciationStatus } from "../api/client";
+import { api, partnerLine, PremiumPerk, PremiumPlan, PronunciationStatus } from "../api/client";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -36,6 +36,7 @@ export function PremiumScreen() {
   const insets = useSafeAreaInsets();
   const [status, setStatus] = useState<PronunciationStatus | null>(null);
   const [perks, setPerks] = useState<PremiumPerk[]>([]);
+  const [plans, setPlans] = useState<PremiumPlan[]>([]);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -45,7 +46,10 @@ export function PremiumScreen() {
       .catch(() => setFailed(true));
     api
       .premiumPerks()
-      .then(setPerks)
+      .then((r) => {
+        setPerks(r.perks);
+        setPlans(r.plans);
+      })
       .catch(() => setPerks([]));
   }, []);
 
@@ -113,6 +117,8 @@ export function PremiumScreen() {
           </View>
         </>
       ) : null}
+
+      {plans.length > 0 ? <PriceList plans={plans} /> : null}
 
       <View style={styles.sectionHead}>
         <Text style={styles.sectionTitle}>Kết quả chấm trông thế này</Text>
@@ -182,6 +188,43 @@ export function PremiumScreen() {
         <Text style={styles.soon}>Nhận ngày Premium khi mời bạn bè cùng học, hoặc nhập mã của trung tâm đối tác ở Hồ sơ → Mời bạn bè.</Text>
       ) : null}
     </ScrollView>
+  );
+}
+
+const vnd = (n: number) => `${n.toLocaleString("vi-VN")}đ`;
+
+function PriceList({ plans }: { plans: PremiumPlan[] }) {
+  const monthly = plans.find((p) => p.months === 1);
+  return (
+    <>
+      <View style={styles.sectionHead}>
+        <Text style={styles.sectionTitle}>Bảng giá Premium</Text>
+        <Text style={styles.soonTag}>Sắp mở bán</Text>
+      </View>
+      <View style={styles.prices}>
+        {plans.map((plan) => {
+          const perMonth = Math.round(plan.price / plan.months / 100) * 100;
+          const saving = monthly && plan.months > 1 ? Math.round((1 - plan.price / (monthly.price * plan.months)) * 100) : 0;
+          const featured = !!plan.badge;
+          return (
+            <View key={plan.months} style={[styles.price, featured && styles.priceFeatured]}>
+              <View style={styles.flex}>
+                <View style={styles.perkHead}>
+                  <Text style={styles.priceName}>{plan.months === 12 ? "1 năm" : `${plan.months} tháng`}</Text>
+                  {featured ? <Text style={styles.priceBadge}>{plan.badge}</Text> : null}
+                </View>
+                <Text style={styles.priceSub}>
+                  {plan.months === 1 ? "Trả theo tháng" : `Chỉ ${vnd(perMonth)}/tháng`}
+                  {saving > 0 ? <Text style={styles.priceSaving}>{` · tiết kiệm ${saving}%`}</Text> : null}
+                </Text>
+              </View>
+              <Text style={[styles.priceValue, featured && styles.priceValueFeatured]}>{vnd(plan.price)}</Text>
+            </View>
+          );
+        })}
+      </View>
+      <Text style={styles.planNote}>Sắp mở bán ngay trong app. Trong lúc chờ, bạn vẫn nhận được ngày Premium khi mời bạn bè.</Text>
+    </>
   );
 }
 
@@ -360,6 +403,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 1,
   },
+  prices: { gap: spacing.sm },
+  price: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderRadius: 18,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    ...shadow.card,
+  },
+  priceFeatured: { borderColor: colors.gold, borderWidth: 2 },
+  priceName: { fontSize: 16, fontWeight: "800", color: colors.ink },
+  priceBadge: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: colors.ink,
+    backgroundColor: colors.gold,
+    borderRadius: 99,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    overflow: "hidden",
+  },
+  priceSub: { marginTop: 2, fontSize: 13, color: colors.muted },
+  priceSaving: { color: colors.accent, fontWeight: "700" },
+  priceValue: { fontSize: 18, fontWeight: "800", color: colors.ink },
+  priceValueFeatured: { color: colors.accent },
   soon: { marginTop: spacing.lg, fontSize: 12, color: colors.muted, textAlign: "center" },
   planNote: { marginTop: spacing.sm, fontSize: 12, lineHeight: 17, color: colors.muted },
 });
