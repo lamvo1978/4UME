@@ -1090,6 +1090,10 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<bool>("AutoSpeak")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
                     b.Property<int>("BestStreak")
                         .HasColumnType("integer");
 

@@ -29,6 +29,8 @@ public class User
     public bool NotifyNews { get; set; } = true;
     /// <summary>IANA zone reported by the app, e.g. "Asia/Ho_Chi_Minh"; used to time server-side notifications.</summary>
     public string? TimeZone { get; set; }
+    /// <summary>Key of a built-in avatar picture bundled with the app, e.g. "fox"; null shows the name's initial.</summary>
+    public string? Avatar { get; set; }
 
     /// <summary>CEFR level new vocabulary starts at (A1–B2); null until the learner takes the placement test or picks one.</summary>
     public string? VocabLevel { get; set; }

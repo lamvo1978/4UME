@@ -41,6 +41,8 @@ export type UserSettings = {
   vocabLevel: VocabLevel | null;
   easyWordMode: EasyWordMode;
   placementTakenAt: string | null;
+  /** Key of a built-in picture in `AVATARS`; null or "" shows the name's initial. Missing on older servers. */
+  avatar?: string | null;
 };
 
 export const VOCAB_LEVELS = ["A1", "A2", "B1", "B2"] as const;

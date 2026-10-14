@@ -7,6 +7,7 @@ import { api, PronunciationStatus, Stats } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
 import { NameSheet } from "../components/profile/AccountSheets";
+import { AvatarSheet } from "../components/profile/AvatarSheet";
 import { ActivityCalendar } from "../components/profile/ActivityCalendar";
 import { MemoryCard } from "../components/profile/MemoryCard";
 import { PlanRow } from "../components/profile/PlanRow";
@@ -18,7 +19,7 @@ import { StreakCard } from "../components/profile/StreakCard";
 import { Screen } from "../components/Screen";
 import { RootStackParamList } from "../navigation/types";
 import { colors, fonts, spacing } from "../theme";
-import { formatMonthYear } from "../utils/dates";
+import { formatDayMonthYear, formatMonthYear } from "../utils/dates";
 
 export function ProfileScreen() {
   const { me, user, refreshMe } = useAuth();
@@ -27,7 +28,10 @@ export function ProfileScreen() {
   const [plan, setPlan] = useState<PronunciationStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [editingName, setEditingName] = useState(false);
+  const [pickingAvatar, setPickingAvatar] = useState(false);
   const name = me?.displayName ?? user?.displayName;
+  const partner = plan ? (plan.premium ? plan.partnerName : null) : me?.partnerName;
+  const premium = plan ? plan.premium : !!me?.premium;
 
   const load = useCallback(async () => {
     try {
@@ -70,7 +74,17 @@ export function ProfileScreen() {
         </View>
 
         <View style={styles.user}>
-          <Avatar name={name} size={64} />
+          <Pressable
+            onPress={() => setPickingAvatar(true)}
+            hitSlop={4}
+            accessibilityLabel="Đổi ảnh đại diện"
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <Avatar name={name} avatar={me?.settings.avatar} size={64} ring={premium ? colors.gold : undefined} />
+            <View style={styles.avatarEdit}>
+              <Ionicons name="camera" size={12} color={colors.white} />
+            </View>
+          </Pressable>
           <View style={styles.userText}>
             <Text style={styles.name} numberOfLines={1}>
               {name}
@@ -78,6 +92,14 @@ export function ProfileScreen() {
             <Text style={styles.email} numberOfLines={1}>
               {me?.email ?? user?.email}
             </Text>
+            {me ? (
+              <AccountBadge
+                partner={partner ?? null}
+                premium={premium}
+                premiumUntil={plan?.premiumUntil ?? null}
+                onPress={() => navigation.navigate("Premium")}
+              />
+            ) : null}
             {stats ? <Text style={styles.since}>Thành viên từ {formatMonthYear(stats.memberSince)}</Text> : null}
           </View>
           <Pressable style={styles.iconButton} onPress={() => setEditingName(true)} hitSlop={8} accessibilityLabel="Đổi tên">
@@ -116,7 +138,41 @@ export function ProfileScreen() {
       </ScrollView>
 
       <NameSheet visible={editingName} current={name ?? ""} onClose={() => setEditingName(false)} />
+      <AvatarSheet
+        visible={pickingAvatar}
+        name={name}
+        current={me?.settings.avatar}
+        onClose={() => setPickingAvatar(false)}
+      />
     </Screen>
+  );
+}
+
+/** Always-visible account type under the name: free, Premium (with its end date) or a partner centre's student. */
+function AccountBadge({
+  partner,
+  premium,
+  premiumUntil,
+  onPress,
+}: {
+  partner: string | null;
+  premium: boolean;
+  premiumUntil: string | null;
+  onPress: () => void;
+}) {
+  const [icon, label, tone] = partner
+    ? (["school", `Học viên · ${partner}`, styles.badgePartner] as const)
+    : premium
+      ? (["sparkles", premiumUntil ? `Premium · đến ${formatDayMonthYear(premiumUntil)}` : "Premium", styles.badgePremium] as const)
+      : (["leaf-outline", "Tài khoản miễn phí", styles.badgeFree] as const);
+  const light = !!partner;
+  return (
+    <Pressable style={({ pressed }) => [styles.badge, tone, pressed && styles.pressed]} onPress={onPress} hitSlop={6}>
+      <Ionicons name={icon} size={12} color={light ? colors.white : colors.ink} />
+      <Text style={[styles.badgeText, light && styles.badgeTextLight]} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -137,7 +193,36 @@ const styles = StyleSheet.create({
   userText: { flex: 1 },
   name: { fontSize: 22, fontWeight: "700", color: colors.ink },
   email: { marginTop: 2, color: colors.muted },
-  since: { marginTop: 2, fontSize: 12, color: colors.muted },
+  since: { marginTop: 4, fontSize: 12, color: colors.muted },
+  avatarEdit: {
+    position: "absolute",
+    right: -2,
+    bottom: -2,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.accent,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: colors.bg,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 4,
+    marginTop: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    maxWidth: "100%",
+  },
+  badgeFree: { backgroundColor: colors.bgAlt },
+  badgePremium: { backgroundColor: colors.gold },
+  badgePartner: { backgroundColor: colors.accent },
+  badgeText: { fontSize: 12, fontWeight: "700", color: colors.ink, flexShrink: 1 },
+  badgeTextLight: { color: colors.white },
   iconButton: {
     width: 40,
     height: 40,

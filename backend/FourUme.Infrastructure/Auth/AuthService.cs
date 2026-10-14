@@ -119,7 +119,7 @@ public class AuthService(
             new UserSettingsDto(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
-                user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt),
+                user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt, user.Avatar),
             access.Premium, access.Features, access.PartnerName, access.PartnerUntil);
     }
 
@@ -159,6 +159,13 @@ public class AuthService(
             if (zone.Length is 0 or > UserSettingsRules.MaxTimeZoneLength || !TimeZoneInfo.TryFindSystemTimeZoneById(zone, out _))
                 throw new InvalidOperationException("Múi giờ không hợp lệ.");
             user.TimeZone = zone;
+        }
+        if (request.Avatar is not null)
+        {
+            var avatar = request.Avatar.Trim();
+            if (avatar.Length > UserSettingsRules.MaxAvatarLength || avatar.Any(c => !(char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-')))
+                throw new InvalidOperationException("Ảnh đại diện không hợp lệ.");
+            user.Avatar = avatar.Length == 0 ? null : avatar;
         }
 
         await db.SaveChangesAsync(ct);
