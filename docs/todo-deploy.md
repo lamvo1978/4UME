@@ -62,6 +62,7 @@ cd /opt/4ume && git pull && cd deploy/vps && docker compose pull && docker compo
   2. *Keys and Endpoint* → thêm vào `/opt/4ume/deploy/vps/.env`: `AZURE_SPEECH_PAID_KEY=...` và `AZURE_SPEECH_PAID_REGION=southeastasia`, rồi `docker compose up -d`.
   3. *Cost Management* → *Budgets*: cảnh báo khoảng 5 USD/tháng.
   4. Admin → *Cài đặt* → *Kiểm tra giọng đọc*: chỉnh **Trả phí (S0) tối đa mỗi tháng** (mặc định 600 phút ≈ 10 USD). Chi tiết: [pronunciation.md](pronunciation.md#key-trả-phí-s0).
+- [ ] **Luyện câu (dự kiến bản 1.1, sau khi ra mắt)**: tab riêng *Luyện* trong app, mỗi lượt khoảng 10 câu theo trình độ; chế độ **Nghe – chép**, **Nghe – nói** (nghe câu tiếng Anh rồi nói lại, nhận giọng bằng máy, không tốn Azure) hoặc **Trộn**. Câu lấy từ **ngân hàng câu riêng** soạn trong admin (cấp độ, chủ đề, câu Anh, nghĩa Việt; AI soạn Groq/Gemini; tạo giọng đọc Azure một lần lưu mp3; nhập/xuất JSON). **Miễn phí hoàn toàn**. Tính vào chuỗi ngày học. Dùng lại `checkDictation` và `useSpeechToText`.
 - [ ] **Trước khi gửi duyệt store**: tắt **Bảng giá** (admin → *Quyền lợi Premium*) và ẩn các quyền lợi "Sắp có" cho tới khi có mua trong ứng dụng.
 - [ ] **Hộp thư Zoho** `hotro@4ume.io.vn` (nhận thư, email hỗ trợ cho cửa hàng ứng dụng, đặt lại mật khẩu cho `admin@4ume.io.vn`) — [email.md](email.md#hộp-thư-thật-zoho-mail-chưa-làm).
 
