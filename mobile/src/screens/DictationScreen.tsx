@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { api, ListeningDetail } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { KeyboardScreen } from "../components/KeyboardScreen";
@@ -29,16 +30,18 @@ export function DictationScreen({ route, navigation }: Props) {
   const { slug } = route.params;
   const [lesson, setLesson] = useState<ListeningDetail | null>(null);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    setError("");
     api
       .listeningLesson(slug)
       .then(setLesson)
       .catch((e) => setError(e instanceof Error ? e.message : "Không tải được bài nghe"));
-  }, [slug]);
+  }, [slug, attempt]);
 
   if (!lesson) {
-    return <View style={styles.center}>{error ? <Text style={styles.error}>{error}</Text> : <ActivityIndicator color={colors.accent} />}</View>;
+    return <View style={styles.center}>{error ? <ErrorRetry message={error} onRetry={() => setAttempt((n) => n + 1)} /> : <ActivityIndicator color={colors.accent} />}</View>;
   }
   return (
     <Session

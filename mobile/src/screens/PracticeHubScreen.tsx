@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { api, ReviewSummary } from "../api/client";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { Screen } from "../components/Screen";
 import { Segmented } from "../components/Segmented";
 import { MainTabParamList, RootStackParamList } from "../navigation/types";
@@ -52,6 +53,7 @@ export function PracticeHubScreen() {
 function usePanelData(load: () => Promise<PanelData>) {
   const [data, setData] = useState<PanelData | null>(null);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -63,10 +65,10 @@ function usePanelData(load: () => Promise<PanelData>) {
       return () => {
         active = false;
       };
-    }, [load])
+    }, [load, attempt])
   );
 
-  return { data, error };
+  return { data, error, retry: () => setAttempt((n) => n + 1) };
 }
 
 function VocabPractice() {
@@ -86,12 +88,13 @@ function VocabPractice() {
         })),
     };
   }, [navigation]);
-  const { data, error } = usePanelData(load);
+  const { data, error, retry } = usePanelData(load);
 
   return (
     <ReviewPanel
       data={data}
       error={error}
+      onRetry={retry}
       unit="từ"
       empty={{
         title: "Chưa có từ để ôn",
@@ -136,12 +139,13 @@ function GrammarPractice() {
         })),
     };
   }, [navigation]);
-  const { data, error } = usePanelData(load);
+  const { data, error, retry } = usePanelData(load);
 
   return (
     <ReviewPanel
       data={data}
       error={error}
+      onRetry={retry}
       unit="bài"
       empty={{
         title: "Chưa có bài để ôn",
@@ -163,6 +167,7 @@ function GrammarPractice() {
 function ReviewPanel({
   data,
   error,
+  onRetry,
   unit,
   empty,
   onDue,
@@ -172,6 +177,7 @@ function ReviewPanel({
 }: {
   data: PanelData | null;
   error: string;
+  onRetry: () => void;
   unit: string;
   empty: { title: string; sub: string; action: string; onPress: () => void };
   onDue: () => void;
@@ -181,7 +187,7 @@ function ReviewPanel({
 }) {
   if (!data) {
     return error ? (
-      <Text style={[styles.error, styles.content]}>{error}</Text>
+      <ErrorRetry message={error} onRetry={onRetry} />
     ) : (
       <ActivityIndicator color={colors.accent} style={styles.loader} />
     );

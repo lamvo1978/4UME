@@ -4,6 +4,7 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-naviga
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { api, ListeningDetail } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { WordSheet } from "../components/listening/WordSheet";
@@ -36,9 +37,11 @@ export function ListeningPlayerScreen({ route, navigation }: Props) {
   const [lesson, setLesson] = useState<ListeningDetail | null>(null);
   const [liked, setLiked] = useState(false);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
   const [settings, setSettings] = useState<Settings>({ rate: 1, repeat: false, mode: "both" });
 
   useEffect(() => {
+    setError("");
     api
       .listeningLesson(slug)
       .then((l) => {
@@ -46,7 +49,7 @@ export function ListeningPlayerScreen({ route, navigation }: Props) {
         setLiked(l.progress.liked);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Không tải được bài nghe"));
-  }, [slug]);
+  }, [slug, attempt]);
 
   const toggleLike = useCallback(() => {
     const next = !liked;
@@ -75,7 +78,7 @@ export function ListeningPlayerScreen({ route, navigation }: Props) {
   const onSettings = useCallback((s: Partial<Settings>) => setSettings((cur) => ({ ...cur, ...s })), []);
 
   if (!lesson) {
-    return <View style={styles.center}>{error ? <Text style={styles.error}>{error}</Text> : <ActivityIndicator color={colors.accent} />}</View>;
+    return <View style={styles.center}>{error ? <ErrorRetry message={error} onRetry={() => setAttempt((n) => n + 1)} /> : <ActivityIndicator color={colors.accent} />}</View>;
   }
 
   const props = { lesson, settings, onSettings, onComplete };

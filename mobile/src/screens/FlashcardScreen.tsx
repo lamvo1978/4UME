@@ -4,6 +4,7 @@ import { ComponentProps, useCallback, useEffect, useRef, useState } from "react"
 import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { api, mediaUrl, Word } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { Screen } from "../components/Screen";
 import { SpeakButton, speakAuto, stopSpeaking } from "../components/SpeakButton";
 import { ReportWordButton } from "../feedback/ReportWordButton";
@@ -47,6 +48,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const flip = useRef(new Animated.Value(0)).current;
   const window = useWindowDimensions();
@@ -56,6 +58,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
   const loadSession = useCallback(async () => {
     setLoading(true);
     setError("");
+    setLoadError("");
     try {
       const all = await api.deckWords(deckId);
       const words = level ? all.filter((w) => w.level === level) : all;
@@ -69,7 +72,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
       flip.setValue(0);
       setFlipped(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không tải được từ");
+      setLoadError(e instanceof Error ? e.message : "Không tải được từ");
     } finally {
       setLoading(false);
     }
@@ -115,6 +118,14 @@ export function FlashcardScreen({ route, navigation }: Props) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.accent} />
+      </View>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <View style={styles.center}>
+        <ErrorRetry message={loadError} onRetry={loadSession} />
       </View>
     );
   }

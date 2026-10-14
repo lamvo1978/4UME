@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
+  ApiError,
   AuthUser,
   EasyWordMode,
   Me,
@@ -15,6 +17,9 @@ import * as Sentry from "@sentry/react-native";
 import { forgetPushToken, registerPushToken, unregisterPushToken } from "../notifications/push";
 import { syncReminders } from "../notifications/reminders";
 
+/** Last profile seen, so the app still opens signed in when it starts without internet. */
+const ME_CACHE_KEY = "fourume.me";
+
 type SettingsChange = Partial<UserSettings> & { displayName?: string };
 
 function deviceTimeZone(): string | null {
@@ -27,6 +32,9 @@ function deviceTimeZone(): string | null {
 
 type AuthState = {
   ready: boolean;
+  /** Set when the app started offline with no saved profile to fall back on; the user is still signed in. */
+  startupError: string | null;
+  retryStartup: () => void;
   user: AuthUser | null;
   me: Me | null;
   /** Streak count to celebrate after the first activity of the day; shown once the user is back on the tabs. */
@@ -49,6 +57,8 @@ const Ctx = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
+  const [startupError, setStartupError] = useState<string | null>(null);
+  const [bootAttempt, setBootAttempt] = useState(0);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [me, setMeState] = useState<Me | null>(null);
   const [celebration, setCelebration] = useState<number | null>(null);
@@ -62,6 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     meRef.current = next;
     setMeState(next);
+    (next ? AsyncStorage.setItem(ME_CACHE_KEY, JSON.stringify(next)) : AsyncStorage.removeItem(ME_CACHE_KEY)).catch(() => undefined);
   }, []);
 
   const refreshMe = useCallback(async () => {
@@ -148,25 +159,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     (async () => {
+      const token = await api.getToken().catch(() => null);
+      if (!token) return;
+      const signInAs = (profile: Me) => {
+        setUser({ accessToken: token, userId: profile.userId, email: profile.email, displayName: profile.displayName });
+        setMe(profile);
+      };
       try {
-        const token = await api.getToken();
-        if (token) {
-          const profile = await api.me();
-          setUser({
-            accessToken: token,
-            userId: profile.userId,
-            email: profile.email,
-            displayName: profile.displayName,
-          });
-          setMe(profile);
+        signInAs(await api.me());
+        setStartupError(null);
+      } catch (e) {
+        // 401 has already signed the user out; anything else (offline, server down) keeps the session.
+        if (e instanceof ApiError && e.status === 401) return;
+        const cached = await AsyncStorage.getItem(ME_CACHE_KEY).catch(() => null);
+        if (cached) {
+          signInAs(JSON.parse(cached) as Me);
+          setStartupError(null);
+        } else {
+          setStartupError(e instanceof Error ? e.message : "Không tải được hồ sơ.");
         }
-      } catch {
-        await api.clearToken();
-      } finally {
-        setReady(true);
       }
-    })();
-  }, [setMe]);
+    })().finally(() => setReady(true));
+  }, [setMe, bootAttempt]);
 
   const signIn = useCallback(
     async (auth: AuthUser) => {
@@ -180,6 +194,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AuthState>(
     () => ({
       ready,
+      startupError,
+      retryStartup: () => {
+        setStartupError(null);
+        setReady(false);
+        setBootAttempt((n) => n + 1);
+      },
       user,
       me,
       celebration,
@@ -214,7 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return result;
       },
     }),
-    [ready, user, me, celebration, onboarding, setMe, signIn, refreshMe, updateSettings]
+    [ready, startupError, user, me, celebration, onboarding, setMe, signIn, refreshMe, updateSettings]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

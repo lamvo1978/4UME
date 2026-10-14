@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api, GrammarCompleteResult, GrammarDetail } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { TheoryView } from "../components/grammar/TheoryView";
 import { KeyboardScreen } from "../components/KeyboardScreen";
@@ -32,9 +33,12 @@ export function GrammarLessonScreen({ route, navigation }: Props) {
   const [saved, setSaved] = useState<GrammarCompleteResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setError("");
       try {
         setLesson(await api.grammarLesson(slug));
       } catch (e) {
@@ -43,7 +47,7 @@ export function GrammarLessonScreen({ route, navigation }: Props) {
         setLoading(false);
       }
     })();
-  }, [slug]);
+  }, [slug, attempt]);
 
   function startQuiz() {
     if (!lesson) return;
@@ -79,7 +83,7 @@ export function GrammarLessonScreen({ route, navigation }: Props) {
   if (!lesson) {
     return (
       <View style={styles.center}>
-        <Text style={styles.error}>{error || "Không có bài"}</Text>
+        {error ? <ErrorRetry message={error} onRetry={() => setAttempt((n) => n + 1)} /> : <Text style={styles.error}>Không có bài</Text>}
       </View>
     );
   }

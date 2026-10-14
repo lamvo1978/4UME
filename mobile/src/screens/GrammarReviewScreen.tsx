@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { api, GrammarReviewItem, ReviewSummary } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { CountUp, DoneCelebration } from "../components/DoneCelebration";
 import { GrammarQuiz } from "../components/grammar/GrammarQuiz";
 import { KeyboardScreen } from "../components/KeyboardScreen";
@@ -40,10 +41,12 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
+    setLoadError("");
     setOutcome(null);
     try {
       const [items, s] = await Promise.all([
@@ -75,7 +78,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
       setSummary(s);
       setQuiz((q) => ({ run: q.run + 1, items: quizItems }));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không tải được bài ôn");
+      setLoadError(e instanceof Error ? e.message : "Không tải được bài ôn");
     } finally {
       setLoading(false);
     }
@@ -124,6 +127,14 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
     return (
       <View style={styles.center}>
         <ActivityIndicator color={colors.accent} />
+      </View>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <View style={styles.center}>
+        <ErrorRetry message={loadError} onRetry={load} />
       </View>
     );
   }

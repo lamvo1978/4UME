@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "../auth/AuthContext";
+import { ErrorRetry } from "../components/ErrorRetry";
 import { ReminderPrompt } from "../components/streak/ReminderPrompt";
 import { StreakCelebration } from "../components/streak/StreakCelebration";
 import { NotificationTarget, onNotificationTap, ReminderScreen, shouldOfferReminder } from "../notifications/reminders";
@@ -137,7 +138,7 @@ const navigationRef = createNavigationContainerRef<RootStackParamList>();
 const TAB_FOR: Record<ReminderScreen | "listen", keyof MainTabParamList> = { practice: "Practice", study: "Study", listen: "Listen" };
 
 export function RootNavigator() {
-  const { ready, user, onboarding } = useAuth();
+  const { ready, user, onboarding, startupError, retryStartup } = useAuth();
   const pendingTap = useRef<NotificationTarget | null>(null);
 
   const openPendingTap = useCallback(() => {
@@ -158,10 +159,10 @@ export function RootNavigator() {
     });
   }, [user, openPendingTap]);
 
-  if (!ready) {
+  if (!ready || startupError) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg }}>
-        <ActivityIndicator color={colors.accent} />
+        {startupError ? <ErrorRetry message={startupError} onRetry={retryStartup} /> : <ActivityIndicator color={colors.accent} />}
       </View>
     );
   }
