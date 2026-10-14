@@ -189,6 +189,26 @@ public sealed partial class AdminPracticeService(
             rows);
     }
 
+    public Task<PracticeConfig> GetConfigAsync(CancellationToken ct = default) => PracticeService.LoadConfigAsync(db, ct);
+
+    public async Task<PracticeConfig> SaveConfigAsync(PracticeConfig config, CancellationToken ct = default)
+    {
+        var errors = config.Validate();
+        if (errors.Count > 0) throw new InvalidOperationException(string.Join(" ", errors));
+        var before = await PracticeService.LoadConfigAsync(db, ct);
+        var row = await db.AppSettings.FirstOrDefaultAsync(s => s.Key == PracticeConfig.SettingKey, ct);
+        if (row is null)
+        {
+            row = new AppSetting { Key = PracticeConfig.SettingKey };
+            db.AppSettings.Add(row);
+        }
+        row.Value = PracticeService.Serialize(config);
+        row.UpdatedAt = DateTimeOffset.UtcNow;
+        auditor.Record(AuditEntities.Sentence, PracticeConfig.SettingKey, AuditActions.Update, "Quyền dùng Luyện câu", before, config);
+        await db.SaveChangesAsync(ct);
+        return config;
+    }
+
     private static void Apply(PracticeSentence s, SavePracticeSentenceRequest r)
     {
         var clean = Normalize(r);

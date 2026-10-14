@@ -252,6 +252,9 @@ public static class AdminEndpoints
             Results.Ok(new { created = await s.CreateBatchAsync(r, ct) }));
         admin.MapPost("/sentences/draft", async (PracticeDraftRequest r, IAdminPracticeService s, CancellationToken ct) =>
             Results.Ok(await s.DraftAsync(r, ct)));
+        admin.MapGet("/sentences/config", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.GetConfigAsync(ct)));
+        admin.MapPut("/sentences/config", async (PracticeConfig c, IAdminPracticeService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveConfigAsync(c, ct)));
         admin.MapGet("/sentences/audio", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.GetAudioStatusAsync(ct)));
         admin.MapPost("/sentences/audio", async (IAdminPracticeService s, CancellationToken ct) => Results.Ok(await s.StartAudioAsync(ct)));
         admin.MapPut("/sentences/{id:guid}", async (Guid id, SavePracticeSentenceRequest r, IAdminPracticeService s, CancellationToken ct) =>

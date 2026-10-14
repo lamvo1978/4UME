@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api, mediaSrc, type PlacementLevel, type PracticeSentence, type SentenceInput } from "../api";
 import { notifyError, notifySaved } from "../lib";
 import { PLACEMENT_LEVELS } from "../placement/meta";
+import { PracticeAccessCard } from "../sentences/PracticeAccessCard";
 import { SentenceDraftModal } from "../sentences/SentenceDraftModal";
 import { SentenceImportModal } from "../sentences/SentenceImportModal";
 import { SentenceModal } from "../sentences/SentenceModal";
@@ -136,7 +137,7 @@ export function SentencesPage() {
         <div>
           <Title order={2}>Luyện câu</Title>
           <Text c="dimmed" fz="sm">
-            Tab “Luyện” trong app: nghe rồi chép lại hoặc nói lại cả câu. Mỗi lượt {ROUND_SIZE} câu ngẫu nhiên theo cấp độ, miễn phí cho mọi người.
+            Tab “Luyện” trong app: nghe rồi chép lại hoặc nói lại cả câu. Mỗi lượt {ROUND_SIZE} câu ngẫu nhiên theo cấp độ.
           </Text>
         </div>
         <Group gap="sm" wrap="nowrap">
@@ -165,6 +166,8 @@ export function SentencesPage() {
       </Group>
 
       <SentenceImportModal opened={importing} onClose={() => setImporting(false)} />
+
+      <PracticeAccessCard />
 
       {a ? (
         <Paper p="sm" radius="lg" shadow="xs">

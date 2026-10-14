@@ -212,7 +212,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
         return new WeeklyDto(today, countsTowardStreak, result);
     }
 
-    private static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)
+    internal static int RunEndingOn(HashSet<DateOnly> dates, DateOnly day)
     {
         var count = 0;
         while (dates.Contains(day))

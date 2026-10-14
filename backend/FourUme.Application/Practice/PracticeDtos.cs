@@ -37,17 +37,47 @@ public static class PracticeRules
         new string(en.ToLowerInvariant().Where(c => char.IsLetterOrDigit(c) || c == ' ').ToArray()).Trim();
 }
 
+/// <summary>Who may practise: Premium always; free learners on the day after every <see cref="GiftEveryDays"/>-day streak, plus one try.</summary>
+public class PracticeConfig
+{
+    public const string SettingKey = "practice";
+    public const int MaxGiftEveryDays = 60;
+    /// <summary>0 turns the streak gift off.</summary>
+    public int GiftEveryDays { get; set; } = 7;
+    public bool FreeTrial { get; set; } = true;
+
+    public List<string> Validate()
+    {
+        var errors = new List<string>();
+        if (GiftEveryDays is < 0 or > MaxGiftEveryDays) errors.Add($"Số ngày giữ chuỗi phải từ 0 đến {MaxGiftEveryDays}.");
+        return errors;
+    }
+}
+
+public static class PracticeAccessStates
+{
+    public const string Premium = "premium";
+    /// <summary>Open until midnight as the streak gift.</summary>
+    public const string Gift = "gift";
+    /// <summary>The one free round is still available.</summary>
+    public const string Trial = "trial";
+    public const string Locked = "locked";
+}
+
+/// <param name="DaysToGift">Study days still needed for the next gift day; 0 = earned, it is tomorrow; null when the gift is off.</param>
+public record PracticeAccessDto(string State, int GiftEveryDays, int? DaysToGift);
+
 /// <param name="AudioUrl">Null while there is no recording; the app reads the sentence with the phone's voice.</param>
 public record PracticeSentenceDto(Guid Id, string Level, string Topic, string En, string Vi, string? AudioUrl);
 /// <param name="Count">Published sentences per level, so the app can grey out empty levels.</param>
 public record PracticeLevelDto(string Level, int Count);
-public record PracticeOverviewDto(IReadOnlyList<PracticeLevelDto> Levels);
+public record PracticeOverviewDto(IReadOnlyList<PracticeLevelDto> Levels, PracticeAccessDto Access);
 
 public interface IPracticeService
 {
-    Task<PracticeOverviewDto> GetOverviewAsync(CancellationToken ct = default);
-    /// <summary>A random round of published sentences at the level (fewer when the bank is small).</summary>
-    Task<IReadOnlyList<PracticeSentenceDto>> GetRoundAsync(string level, int count, CancellationToken ct = default);
+    Task<PracticeOverviewDto> GetOverviewAsync(Guid userId, CancellationToken ct = default);
+    /// <summary>A random round of published sentences at the level (fewer when the bank is small); null when the learner has no access.</summary>
+    Task<IReadOnlyList<PracticeSentenceDto>?> GetRoundAsync(Guid userId, string level, int count, CancellationToken ct = default);
     /// <summary>One sentence checked; counts as study for the day like a dictation line.</summary>
     Task RecordAsync(Guid userId, CancellationToken ct = default);
 }
@@ -104,4 +134,6 @@ public interface IAdminPracticeService
     Task<SentenceAudioStatusDto> StartAudioAsync(CancellationToken ct = default);
     Task<IReadOnlyList<PracticeSentenceFileItem>> ExportAsync(CancellationToken ct = default);
     Task<ImportPracticeSentencesResult> ImportAsync(ImportPracticeSentencesRequest request, CancellationToken ct = default);
+    Task<PracticeConfig> GetConfigAsync(CancellationToken ct = default);
+    Task<PracticeConfig> SaveConfigAsync(PracticeConfig config, CancellationToken ct = default);
 }

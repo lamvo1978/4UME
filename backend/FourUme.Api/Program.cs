@@ -636,11 +636,21 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
         : Results.NotFound(new { error = "Không tìm thấy bài." });
 }).RequireAuthorization();
 
-app.MapGet("/api/practice", async (IPracticeService practice, CancellationToken ct) =>
-    Results.Ok(await practice.GetOverviewAsync(ct))).RequireAuthorization();
+app.MapGet("/api/practice", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await practice.GetOverviewAsync(userId.Value, ct));
+}).RequireAuthorization();
 
-app.MapGet("/api/practice/sentences", async (string level, int? count, IPracticeService practice, CancellationToken ct) =>
-    Results.Ok(await practice.GetRoundAsync(level, count ?? PracticeRules.RoundSize, ct))).RequireAuthorization();
+app.MapGet("/api/practice/sentences", async (string level, int? count, ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return await practice.GetRoundAsync(userId.Value, level, count ?? PracticeRules.RoundSize, ct) is { } round
+        ? Results.Ok(round)
+        : Results.Json(new { error = "Luyện câu dành cho Premium hoặc ngày được tặng khi giữ chuỗi." }, statusCode: StatusCodes.Status403Forbidden);
+}).RequireAuthorization();
 
 app.MapPost("/api/practice/record", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
 {

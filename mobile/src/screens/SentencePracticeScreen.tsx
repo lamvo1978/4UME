@@ -4,7 +4,7 @@ import { setAudioModeAsync } from "expo-audio";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { api, PracticeSentence } from "../api/client";
+import { api, ApiError, PracticeSentence } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
 import { KeyboardScreen } from "../components/KeyboardScreen";
@@ -21,6 +21,7 @@ export function SentencePracticeScreen({ route, navigation }: NativeStackScreenP
   const { level, mode } = route.params;
   const [round, setRound] = useState<PracticeSentence[] | null>(null);
   const [error, setError] = useState("");
+  const [locked, setLocked] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -28,13 +29,33 @@ export function SentencePracticeScreen({ route, navigation }: NativeStackScreenP
     api
       .practiceSentences(level)
       .then(setRound)
-      .catch((e) => setError(e instanceof Error ? e.message : "Không tải được câu luyện"));
+      .catch((e) => {
+        if (e instanceof ApiError && e.status === 403) setLocked(true);
+        else setError(e instanceof Error ? e.message : "Không tải được câu luyện");
+      });
   }, [level, attempt]);
 
   useEffect(() => {
     void setAudioModeAsync({ playsInSilentMode: true, interruptionMode: "duckOthers" }).catch(() => {});
   }, []);
 
+  if (locked) {
+    return (
+      <View style={styles.summary}>
+        <Ionicons name="lock-closed" size={48} color={colors.accent} />
+        <Text style={styles.summaryTitle}>Hết lượt luyện hôm nay</Text>
+        <Text style={styles.summaryText}>Luyện dành cho Premium, hoặc giữ chuỗi ngày học để được tặng ngày luyện miễn phí.</Text>
+        <View style={styles.summaryActions}>
+          <Pressable style={({ pressed }) => [styles.primary, pressed && styles.pressed]} onPress={() => navigation.replace("Premium")}>
+            <Text style={styles.primaryText}>Xem Premium</Text>
+          </Pressable>
+          <Pressable onPress={() => navigation.goBack()} hitSlop={8}>
+            <Text style={styles.link}>Quay lại</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
   if (!round) {
     return <View style={styles.center}>{error ? <ErrorRetry message={error} onRetry={() => setAttempt((n) => n + 1)} /> : <ActivityIndicator color={colors.accent} />}</View>;
   }

@@ -1,9 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, PracticeOverview, VOCAB_LEVELS, VocabLevel } from "../api/client";
+import { api, PracticeAccess, PracticeOverview, VOCAB_LEVELS, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Screen } from "../components/Screen";
 import { ErrorRetry } from "../components/ErrorRetry";
@@ -24,6 +24,11 @@ export function SentenceHubScreen() {
   const [overview, setOverview] = useState<PracticeOverview | null>(null);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const vocabLevel = me?.settings.vocabLevel;
+
+  useEffect(() => {
+    if (vocabLevel) setLevel(vocabLevel);
+  }, [vocabLevel]);
 
   useFocusEffect(
     useCallback(() => {
@@ -47,7 +52,7 @@ export function SentenceHubScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>Luyện</Text>
         <Text style={styles.intro}>
-          Mỗi lượt 10 câu ngắn đời thường. Nghe giọng người bản xứ rồi chép lại hoặc nói lại cả câu — luyện cả tai lẫn miệng. Miễn phí, không giới hạn.
+          Mỗi lượt 10 câu ngắn đời thường. Nghe giọng người bản xứ rồi chép lại hoặc nói lại cả câu — luyện cả tai lẫn miệng.
         </Text>
 
         <Text style={styles.label}>Cấp độ</Text>
@@ -71,8 +76,9 @@ export function SentenceHubScreen() {
           <Text style={styles.empty}>Cấp {level} đang được soạn câu, bạn thử cấp khác nhé.</Text>
         ) : (
           <View style={styles.modes}>
+            <AccessNote access={overview.access} onPremium={() => navigation.navigate("Premium")} />
             {MODES.map((m) => {
-              const blocked = m.speaks && !speechToTextAvailable;
+              const blocked = (m.speaks && !speechToTextAvailable) || overview.access.state === "locked";
               return (
                 <Pressable
                   key={m.key}
@@ -85,7 +91,9 @@ export function SentenceHubScreen() {
                   </View>
                   <View style={styles.modeBody}>
                     <Text style={styles.modeTitle}>{m.title}</Text>
-                    <Text style={styles.modeText}>{blocked ? "Cần bản app mới nhất trên cửa hàng ứng dụng." : m.text}</Text>
+                    <Text style={styles.modeText}>
+                      {m.speaks && !speechToTextAvailable ? "Cần bản app mới nhất trên cửa hàng ứng dụng." : m.text}
+                    </Text>
                   </View>
                   <Ionicons name="chevron-forward" size={20} color={colors.muted} />
                 </Pressable>
@@ -98,7 +106,53 @@ export function SentenceHubScreen() {
   );
 }
 
+function giftText(access: PracticeAccess) {
+  if (access.daysToGift === null) return null;
+  if (access.daysToGift === 0) return "Bạn đã giữ đủ chuỗi — ngày mai được mở Luyện cả ngày.";
+  return `Học thêm ${access.daysToGift} ngày liên tiếp để được mở Luyện 1 ngày (cứ giữ chuỗi ${access.giftEveryDays} ngày là có quà).`;
+}
+
+/** Why the learner can (or can't) practise today; nothing for Premium. */
+function AccessNote({ access, onPremium }: { access: PracticeAccess; onPremium: () => void }) {
+  if (access.state === "premium") return null;
+  if (access.state === "gift") {
+    return (
+      <View style={[styles.note, styles.noteGift]}>
+        <Ionicons name="gift" size={20} color={colors.flameDeep} />
+        <Text style={styles.noteText}>Quà giữ chuỗi {access.giftEveryDays} ngày: hôm nay bạn luyện thoải mái tới 23:59.</Text>
+      </View>
+    );
+  }
+  const gift = giftText(access);
+  if (access.state === "trial") {
+    return (
+      <View style={styles.note}>
+        <Ionicons name="sparkles" size={20} color={colors.accent} />
+        <Text style={styles.noteText}>Bạn được thử 1 lượt 10 câu. Sau đó Luyện dành cho Premium{gift ? " và những ngày được tặng khi giữ chuỗi" : ""}.</Text>
+      </View>
+    );
+  }
+  return (
+    <View style={styles.lock}>
+      <Ionicons name="lock-closed" size={26} color={colors.accent} />
+      <Text style={styles.lockTitle}>Luyện dành cho Premium</Text>
+      {gift ? <Text style={styles.lockText}>{gift}</Text> : null}
+      <Pressable style={({ pressed }) => [styles.lockButton, pressed && styles.pressed]} onPress={onPremium}>
+        <Text style={styles.lockButtonText}>Xem Premium</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  note: { flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: 16, backgroundColor: colors.accentSoft },
+  noteGift: { backgroundColor: colors.flameSoft },
+  noteText: { flex: 1, fontSize: 13, lineHeight: 18, color: colors.ink },
+  lock: { alignItems: "center", gap: 6, padding: spacing.lg, borderRadius: 20, backgroundColor: colors.surface, ...shadow.card, shadowOpacity: 0.05 },
+  lockTitle: { fontSize: 17, fontWeight: "800", color: colors.ink },
+  lockText: { fontSize: 13, lineHeight: 19, color: colors.muted, textAlign: "center" },
+  lockButton: { alignSelf: "stretch", alignItems: "center", marginTop: 6, paddingVertical: 13, borderRadius: 14, backgroundColor: colors.accent },
+  lockButtonText: { color: colors.white, fontSize: 15, fontWeight: "800" },
   content: { padding: spacing.lg, paddingTop: spacing.md, gap: spacing.sm },
   heading: { fontFamily: fonts.display, fontSize: 32, fontWeight: "700", color: colors.accent },
   intro: { fontSize: 13, color: colors.muted, lineHeight: 19 },

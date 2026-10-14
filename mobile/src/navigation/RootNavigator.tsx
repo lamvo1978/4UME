@@ -5,13 +5,15 @@ import {
   NavigationContainer,
   Theme,
   useIsFocused,
+  useNavigation,
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
+import { PracticeGiftPrompt, practiceGiftToAnnounce } from "../components/streak/PracticeGiftPrompt";
 import { ReminderPrompt } from "../components/streak/ReminderPrompt";
 import { StreakCelebration } from "../components/streak/StreakCelebration";
 import { NotificationTarget, onNotificationTap, ReminderScreen, shouldOfferReminder } from "../notifications/reminders";
@@ -77,6 +79,14 @@ function CelebrationHost() {
   const { me, celebration, dismissCelebration } = useAuth();
   const focused = useIsFocused();
   const [offerReminder, setOfferReminder] = useState(false);
+  const [giftDays, setGiftDays] = useState<number | null>(null);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    practiceGiftToAnnounce()
+      .then(setGiftDays)
+      .catch(() => undefined);
+  }, []);
 
   const closeCelebration = useCallback(() => {
     dismissCelebration();
@@ -87,6 +97,18 @@ function CelebrationHost() {
 
   if (!focused) return null;
   if (celebration !== null) return <StreakCelebration streak={celebration} onClose={closeCelebration} />;
+  if (giftDays !== null) {
+    return (
+      <PracticeGiftPrompt
+        days={giftDays}
+        onOpen={() => {
+          setGiftDays(null);
+          navigation.navigate("Main", { screen: "Sentences" });
+        }}
+        onClose={() => setGiftDays(null)}
+      />
+    );
+  }
   return offerReminder ? <ReminderPrompt onClose={() => setOfferReminder(false)} /> : null;
 }
 

@@ -1196,6 +1196,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("PlacementTakenAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTimeOffset?>("PracticeTrialAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset?>("PremiumUntil")
                         .HasColumnType("timestamp with time zone");
 

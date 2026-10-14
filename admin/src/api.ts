@@ -727,6 +727,8 @@ export type SentenceAudioStatus = {
   monthChars: number;
   monthCharLimit: number;
 };
+/** `giftEveryDays` 0 turns the streak gift off. */
+export type PracticeConfig = { giftEveryDays: number; freeTrial: boolean };
 export type SentenceFileItem = { id?: string | null; level: string; topic?: string | null; en: string; vi: string; published?: boolean };
 export type ImportSentenceRow = { line: number; id: string | null; level: string; en: string; status: ImportStatus; problems: string[] };
 export type ImportSentencesResult = {
@@ -865,6 +867,8 @@ export const api = {
   updateSentence: (id: string, s: SentenceInput) => request<PracticeSentence>(`/api/admin/sentences/${id}`, json("PUT", s)),
   deleteSentence: (id: string) => request<void>(`/api/admin/sentences/${id}`, { method: "DELETE" }),
   draftSentences: (r: SentenceDraftRequest) => request<SentenceDraft>("/api/admin/sentences/draft", json("POST", r)),
+  practiceConfig: () => request<PracticeConfig>("/api/admin/sentences/config"),
+  savePracticeConfig: (c: PracticeConfig) => request<PracticeConfig>("/api/admin/sentences/config", json("PUT", c)),
   sentenceAudio: () => request<SentenceAudioStatus>("/api/admin/sentences/audio"),
   startSentenceAudio: () => request<SentenceAudioStatus>("/api/admin/sentences/audio", { method: "POST" }),
   exportSentences: () => request<SentenceFileItem[]>("/api/admin/sentences/export"),

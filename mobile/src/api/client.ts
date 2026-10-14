@@ -125,7 +125,11 @@ export type ListeningSummary = {
 };
 /** `audioUrl` is null until the sentence has a recording; the app reads it with the device voice meanwhile. */
 export type PracticeSentence = { id: string; level: VocabLevel; topic: string; en: string; vi: string; audioUrl: string | null };
-export type PracticeOverview = { levels: { level: VocabLevel; count: number }[] };
+/** "gift" = open until midnight for keeping the streak; "trial" = the one free round is left. */
+export type PracticeAccessState = "premium" | "gift" | "trial" | "locked";
+/** `daysToGift`: study days still needed for the next gift day (0 = earned, it is tomorrow); null when the gift is off. */
+export type PracticeAccess = { state: PracticeAccessState; giftEveryDays: number; daysToGift: number | null };
+export type PracticeOverview = { levels: { level: VocabLevel; count: number }[]; access: PracticeAccess };
 
 export type ListeningLine = { speaker: string; en: string; vi: string; startMs: number | null; endMs: number | null };
 export type ListeningDetail = {
