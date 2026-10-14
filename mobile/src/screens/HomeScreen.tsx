@@ -7,6 +7,8 @@ import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "
 import { api, Me, NetworkError, ReviewSummary } from "../api/client";
 import { HomeBanner } from "../components/ads/HomeBanner";
 import { useAuth } from "../auth/AuthContext";
+import { Avatar } from "../components/Avatar";
+import { AvatarSheet } from "../components/profile/AvatarSheet";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -31,6 +33,7 @@ export function HomeScreen() {
   const [unread, setUnread] = useState(0);
   const [offline, setOffline] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [pickingAvatar, setPickingAvatar] = useState(false);
   useFocusEffect(
     useCallback(() => {
       api
@@ -93,10 +96,24 @@ export function HomeScreen() {
           </View>
         </View>
 
-        <Text style={styles.hello}>Xin chào, {name}</Text>
-        <Text style={styles.progress}>
-          Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
-        </Text>
+        <View style={styles.greeting}>
+          <Pressable
+            onPress={() => setPickingAvatar(true)}
+            hitSlop={4}
+            style={({ pressed }) => pressed && styles.pressed}
+            accessibilityLabel="Đổi ảnh đại diện"
+          >
+            <Avatar name={name} avatar={me?.settings.avatar} size={56} ring={me?.premium ? colors.gold : undefined} />
+          </Pressable>
+          <View style={styles.greetingText}>
+            <Text style={styles.hello} numberOfLines={1}>
+              Xin chào, {name}
+            </Text>
+            <Text style={styles.progress}>
+              Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
+            </Text>
+          </View>
+        </View>
 
         {offline ? (
           <Pressable
@@ -157,6 +174,12 @@ export function HomeScreen() {
         </View>
       </ScrollView>
       <HomeBanner premium={me?.premium} />
+      <AvatarSheet
+        visible={pickingAvatar}
+        name={name}
+        current={me?.settings.avatar}
+        onClose={() => setPickingAvatar(false)}
+      />
     </Screen>
   );
 }
@@ -255,8 +278,10 @@ const styles = StyleSheet.create({
   brandRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   logo: { width: 30, height: 48 },
   brand: { fontFamily: fonts.display, fontSize: 26, fontWeight: "700", color: colors.accent },
-  hello: { marginTop: spacing.xl, fontSize: 28, fontWeight: "700", color: colors.ink },
-  progress: { marginTop: spacing.xs, color: colors.muted, fontSize: 15 },
+  greeting: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.xl },
+  greetingText: { flex: 1 },
+  hello: { fontSize: 26, fontWeight: "700", color: colors.ink },
+  progress: { marginTop: 2, color: colors.muted, fontSize: 14 },
   headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   searchBtn: {
     width: 38,
