@@ -70,7 +70,7 @@ export function PlacementPage() {
           </Text>
         </div>
         <Group gap="sm" wrap="nowrap">
-          <Button variant="light" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
+          <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
             AI soạn
           </Button>
           <Button leftSection={<IconPlus size={18} />} onClick={() => setEditing("new")}>

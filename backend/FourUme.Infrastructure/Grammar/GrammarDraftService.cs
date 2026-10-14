@@ -81,7 +81,9 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         - for order/transform: the answer is the only natural sentence that can be built;
         - for cloze: the text is natural and connected, and every gap has exactly the answers listed;
         - the exercise tests the lesson's grammar point with forms the lesson teaches (not other tenses or structures):
-          check EVERY sentence of a cloze text, not only the gaps — e.g. a lesson on am/is/are must not contain "is staying" or "are coming";
+          check EVERY sentence of a cloze text, not only the gaps — e.g. a lesson on am/is/are must not contain "is staying" or "are coming".
+          The lesson's own forms used in other ordinary ways are fine (e.g. "he is still strong", "it is not hot" in an am/is/are lesson);
+          only flag a form the lesson does not teach, and do not flag simple A1 words just for being outside the gaps;
         - filling every gap with its answer gives a correct sentence (no doubled words like "Are you are ready");
         - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
