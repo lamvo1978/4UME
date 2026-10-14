@@ -5,6 +5,33 @@ import { api, VerbNote, WordSearchResult } from "../../api/client";
 import { colors, spacing } from "../../theme";
 import { WordVoices } from "../SpeakButton";
 
+/** The server's fixed tense labels (GrammarVerbTagger.Tenses) with the English name learners meet in textbooks. */
+const TENSE_LABELS: Record<string, string> = {
+  "hiện tại đơn": "hiện tại đơn (Present Simple)",
+  "hiện tại tiếp diễn": "hiện tại tiếp diễn (Present Continuous)",
+  "hiện tại hoàn thành": "hiện tại hoàn thành (Present Perfect)",
+  "hiện tại hoàn thành tiếp diễn": "hiện tại hoàn thành tiếp diễn (Present Perfect Continuous)",
+  "quá khứ đơn": "quá khứ đơn (Past Simple)",
+  "quá khứ tiếp diễn": "quá khứ tiếp diễn (Past Continuous)",
+  "quá khứ hoàn thành": "quá khứ hoàn thành (Past Perfect)",
+  "quá khứ hoàn thành tiếp diễn": "quá khứ hoàn thành tiếp diễn (Past Perfect Continuous)",
+  "tương lai đơn": "tương lai đơn (Future Simple)",
+  "tương lai gần (be going to)": "tương lai gần (be going to)",
+  "tương lai tiếp diễn": "tương lai tiếp diễn (Future Continuous)",
+  "tương lai hoàn thành": "tương lai hoàn thành (Future Perfect)",
+  "bị động – hiện tại đơn": "bị động – hiện tại đơn (Passive, Present Simple)",
+  "bị động – quá khứ đơn": "bị động – quá khứ đơn (Passive, Past Simple)",
+  "bị động – hiện tại hoàn thành": "bị động – hiện tại hoàn thành (Passive, Present Perfect)",
+  "bị động – tương lai đơn": "bị động – tương lai đơn (Passive, Future Simple)",
+  "bị động – khác": "câu bị động (Passive Voice)",
+  "động từ khuyết thiếu (can, must, should…)": "động từ khuyết thiếu (Modal Verb)",
+  "would (điều kiện / lịch sự)": "would – điều kiện / lịch sự (Conditional)",
+  "used to (thói quen trong quá khứ)": "used to – thói quen trong quá khứ (Used to)",
+  "câu mệnh lệnh": "câu mệnh lệnh (Imperative)",
+};
+
+const tenseLabel = (vi: string) => TENSE_LABELS[vi] ?? vi;
+
 /** Meaning of a tapped word, looked up in the app's own word bank; `verb` adds the tense it is used in. */
 export function WordSheet({ word, verb, onClose }: { word: string | null; verb?: VerbNote | null; onClose: () => void }) {
   const insets = useSafeAreaInsets();
@@ -53,7 +80,7 @@ export function WordSheet({ word, verb, onClose }: { word: string | null; verb?:
               <Text style={styles.tenseLabel}>Trong câu này</Text>
               <Text style={styles.tenseText}>
                 <Text style={styles.tensePhrase}>{verb.phrase}</Text>
-                {`  ·  ${verb.tenseVi}`}
+                {`  ·  ${tenseLabel(verb.tenseVi)}`}
               </Text>
             </View>
           ) : null}
