@@ -93,27 +93,21 @@ export function HomeScreen() {
                 </View>
               ) : null}
             </Pressable>
+            <Pressable
+              onPress={() => setPickingAvatar(true)}
+              hitSlop={6}
+              style={({ pressed }) => pressed && styles.pressed}
+              accessibilityLabel="Đổi ảnh đại diện"
+            >
+              <Avatar name={name} avatar={me?.settings.avatar} size={38} ring={me?.premium ? colors.gold : undefined} />
+            </Pressable>
           </View>
         </View>
 
-        <View style={styles.greeting}>
-          <Pressable
-            onPress={() => setPickingAvatar(true)}
-            hitSlop={4}
-            style={({ pressed }) => pressed && styles.pressed}
-            accessibilityLabel="Đổi ảnh đại diện"
-          >
-            <Avatar name={name} avatar={me?.settings.avatar} size={56} ring={me?.premium ? colors.gold : undefined} />
-          </Pressable>
-          <View style={styles.greetingText}>
-            <Text style={styles.hello} numberOfLines={1}>
-              Xin chào, {name}
-            </Text>
-            <Text style={styles.progress}>
-              Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
-            </Text>
-          </View>
-        </View>
+        <Text style={styles.hello}>Xin chào, {name}</Text>
+        <Text style={styles.progress}>
+          Đã nhớ {me?.knownWords ?? 0} từ · Ngữ pháp {grammarDone}/{grammarTotal} bài
+        </Text>
 
         {offline ? (
           <Pressable
@@ -278,11 +272,9 @@ const styles = StyleSheet.create({
   brandRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   logo: { width: 30, height: 48 },
   brand: { fontFamily: fonts.display, fontSize: 26, fontWeight: "700", color: colors.accent },
-  greeting: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.xl },
-  greetingText: { flex: 1 },
-  hello: { fontSize: 26, fontWeight: "700", color: colors.ink },
-  progress: { marginTop: 2, color: colors.muted, fontSize: 14 },
-  headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  hello: { marginTop: spacing.xl, fontSize: 28, fontWeight: "700", color: colors.ink },
+  progress: { marginTop: spacing.xs, color: colors.muted, fontSize: 15 },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
   searchBtn: {
     width: 38,
     height: 38,
