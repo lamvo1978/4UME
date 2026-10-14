@@ -10,7 +10,7 @@ import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
 import { SentenceBuilder, sentenceTokens } from "../components/SentenceBuilder";
-import { SpeakButton, speak, speakAuto, stopSpeaking } from "../components/SpeakButton";
+import { SpeakButton, speakAfterTransition, speakAuto, stopSpeaking } from "../components/SpeakButton";
 import { SpeakExercise } from "../components/SpeakExercise";
 import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
@@ -240,7 +240,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   const ex = queue[0];
 
   useEffect(() => {
-    if (ex?.type === "letters_listen") speak(ex.items[0].word.word);
+    if (ex?.type === "letters_listen") speakAfterTransition(ex.items[0].word.word);
   }, [ex?.key]);
 
   function addMistake(wordId: string) {

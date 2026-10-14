@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { setAudioModeAsync } from "expo-audio";
 import * as Speech from "expo-speech";
-import { Pressable, StyleSheet } from "react-native";
+import { InteractionManager, Pressable, StyleSheet } from "react-native";
 import { colors } from "../theme";
 
 const speechSettings = { rate: 0.9, auto: true };
@@ -15,27 +15,58 @@ function ensureAudioMode() {
   return audioMode;
 }
 
-/** Kept in sync with the user's settings by AuthProvider. */
+/**
+ * The first utterance after launch comes out clipped or crackly while the audio session switches and the
+ * speech engine loads, so both are prepared up front and the first word waits for them to settle.
+ */
+let warm: Promise<void> | null = null;
+function warmUp() {
+  warm ??= Promise.all([ensureAudioMode(), Speech.getAvailableVoicesAsync().catch(() => [])])
+    .then(() => new Promise<void>((resolve) => setTimeout(resolve, 150)))
+    .catch(() => {
+      warm = null;
+    });
+  return warm;
+}
+
+/** Kept in sync with the user's settings by AuthProvider; also warms up the speech engine. */
 export function configureSpeech(rate: number, auto: boolean) {
   speechSettings.rate = rate;
   speechSettings.auto = auto;
+  void warmUp();
 }
 
 export function speechRate() {
   return speechSettings.rate;
 }
 
+/** Bumped by every speak/stop so a word still waiting for warm-up never plays over a newer one. */
+let token = 0;
+
 export function speak(text: string, rate = speechSettings.rate) {
   Speech.stop();
-  void ensureAudioMode().then(() => Speech.speak(text, { language: "en-US", rate }));
+  const t = ++token;
+  void warmUp().then(() => {
+    if (t === token) Speech.speak(text, { language: "en-US", rate });
+  });
+}
+
+/** For words that play by themselves when a screen or card opens: waits for the transition so the animation doesn't cut them. */
+export function speakAfterTransition(text: string) {
+  Speech.stop();
+  const t = ++token;
+  InteractionManager.runAfterInteractions(() => {
+    if (t === token) speak(text);
+  });
 }
 
 /** Speaks only when "Tự động phát âm" is on; use for audio the learner didn't ask for. */
 export function speakAuto(text: string) {
-  if (speechSettings.auto) speak(text);
+  if (speechSettings.auto) speakAfterTransition(text);
 }
 
 export function stopSpeaking() {
+  token++;
   Speech.stop();
 }
 
