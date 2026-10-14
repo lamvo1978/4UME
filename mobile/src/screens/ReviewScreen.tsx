@@ -10,7 +10,7 @@ import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
 import { SentenceBuilder, sentenceTokens } from "../components/SentenceBuilder";
-import { SpeakButton, speakAfterTransition, speakAuto, stopSpeaking } from "../components/SpeakButton";
+import { speakAfterTransition, speakAuto, stopSpeaking, WordVoices } from "../components/SpeakButton";
 import { SpeakExercise } from "../components/SpeakExercise";
 import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
@@ -517,7 +517,7 @@ export function ReviewScreen({ navigation, route }: Props) {
               <View style={styles.feedbackWordRow}>
                 <Text style={styles.feedbackWord}>{item.word.word}</Text>
                 {item.word.ipa ? <Text style={styles.feedbackIpa}>{item.word.ipa}</Text> : null}
-                <SpeakButton text={item.word.word} size="sm" />
+                <WordVoices text={item.word.word} size="sm" />
               </View>
               <Text style={styles.feedbackMeaning}>{item.word.meaningVi}</Text>
               {item.word.forms ? <Text style={styles.feedbackForms}>{item.word.forms}</Text> : null}
@@ -546,14 +546,14 @@ function Prompt({ ex }: { ex: Exercise }) {
           <Text style={styles.promptWord}>{word.word}</Text>
           <View style={styles.ipaRow}>
             {word.ipa ? <Text style={styles.ipa}>{word.ipa}</Text> : null}
-            <SpeakButton text={word.word} />
+            <WordVoices text={word.word} />
           </View>
         </View>
       );
     case "letters_listen":
       return (
         <View style={styles.prompt}>
-          <SpeakButton text={word.word} size="lg" />
+          <WordVoices text={word.word} size="lg" />
           <Text style={styles.promptHint}>{posLabel(word.pos)}</Text>
         </View>
       );
@@ -577,7 +577,7 @@ function Prompt({ ex }: { ex: Exercise }) {
           <Text style={styles.promptWord}>{word.word}</Text>
           <View style={styles.ipaRow}>
             {word.ipa ? <Text style={styles.ipa}>{word.ipa}</Text> : null}
-            <SpeakButton text={word.word} />
+            <WordVoices text={word.word} />
           </View>
           <Text style={styles.promptHint}>{word.meaningVi}</Text>
         </View>

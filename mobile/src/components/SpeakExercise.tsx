@@ -17,7 +17,7 @@ import { adsOffered, watchRewardedAd } from "../ads/rewarded";
 import { api, ApiError, PhonemeScore, PronunciationResult, PronunciationStatus, Word } from "../api/client";
 import { RootStackParamList } from "../navigation/types";
 import { colors, spacing } from "../theme";
-import { speak, stopSpeaking } from "./SpeakButton";
+import { speakWord, stopSpeaking } from "./SpeakButton";
 
 const MAX_SECONDS = 4;
 
@@ -184,7 +184,7 @@ export function SpeakExercise({
 
   function playSample() {
     player.pause();
-    speak(word.word);
+    speakWord(word.word);
   }
 
   function retry() {

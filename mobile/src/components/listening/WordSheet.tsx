@@ -3,7 +3,7 @@ import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from "rea
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api, WordSearchResult } from "../../api/client";
 import { colors, spacing } from "../../theme";
-import { SpeakButton } from "../SpeakButton";
+import { WordVoices } from "../SpeakButton";
 
 /** Meaning of a long-pressed word from the script, looked up in the app's own word bank. */
 export function WordSheet({ word, onClose }: { word: string | null; onClose: () => void }) {
@@ -46,7 +46,7 @@ export function WordSheet({ word, onClose }: { word: string | null; onClose: () 
                 </Text>
               ) : null}
             </View>
-            {word ? <SpeakButton text={w?.word ?? word} /> : null}
+            {word ? <WordVoices text={w?.word ?? word} /> : null}
           </View>
           {loading ? (
             <ActivityIndicator color={colors.accent} style={styles.loader} />

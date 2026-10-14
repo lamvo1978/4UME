@@ -123,6 +123,8 @@ export type ListeningSummary = {
   durationMs: number | null;
   progress: ListeningProgress;
 };
+export type WordVoice = "female" | "male";
+
 /** `audioUrl` is null until the sentence has a recording; the app reads it with the device voice meanwhile. */
 export type PracticeSentence = { id: string; level: VocabLevel; topic: string; en: string; vi: string; audioUrl: string | null };
 /** "gift" = open until midnight for keeping the streak; "trial" = the one free round is left. */
@@ -747,6 +749,9 @@ export const api = {
   saveListeningProgress: (slug: string, changes: { positionMs?: number; completed?: boolean; liked?: boolean }) =>
     request<ListeningProgress>(`/api/listening/${slug}/progress`, { method: "PUT", body: JSON.stringify(changes) }),
   recordDictation: (slug: string) => request<void>(`/api/listening/${slug}/dictation`, { method: "POST" }),
+  /** `url` is null when there is no Azure recording (quota spent or unknown word): read it with the phone's voice. */
+  wordAudio: (text: string, voice: WordVoice) =>
+    request<{ url: string | null }>(`/api/speech/word?text=${encodeURIComponent(text)}&voice=${voice}`),
   practiceOverview: () => request<PracticeOverview>("/api/practice"),
   practiceSentences: (level: VocabLevel, count = 10) =>
     request<PracticeSentence[]>(`/api/practice/sentences?level=${level}&count=${count}`),

@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { api, WordSearchResult } from "../api/client";
-import { SpeakButton } from "../components/SpeakButton";
+import { WordVoices } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -197,7 +197,7 @@ function ResultCard({
       {open ? (
         <View style={styles.detail}>
           <View style={styles.ipaRow}>
-            <SpeakButton text={w.word} size="sm" />
+            <WordVoices text={w.word} size="sm" />
             <Text style={styles.ipa}>{w.ipa}</Text>
             {w.forms ? <Text style={styles.forms}>{w.forms}</Text> : null}
           </View>

@@ -15,6 +15,7 @@ using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
 using FourUme.Application.Practice;
+using FourUme.Application.Speech;
 using FourUme.Application.Pronunciation;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
@@ -635,6 +636,9 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
         ? Results.NoContent()
         : Results.NotFound(new { error = "Không tìm thấy bài." });
 }).RequireAuthorization();
+
+app.MapGet("/api/speech/word", async (string text, string voice, IWordAudioService words, CancellationToken ct) =>
+    Results.Ok(await words.GetAsync(text, voice, ct))).RequireAuthorization();
 
 app.MapGet("/api/practice", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
 {
