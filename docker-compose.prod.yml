@@ -44,6 +44,8 @@ services:
       Email__ResendKey: ${RESEND_API_KEY:-}
       Speech__Key: ${AZURE_SPEECH_KEY:-}
       Speech__Region: ${AZURE_SPEECH_REGION:-}
+      Speech__PaidKey: ${AZURE_SPEECH_PAID_KEY:-}
+      Speech__PaidRegion: ${AZURE_SPEECH_PAID_REGION:-}
       Email__ReplyTo: ${EMAIL_REPLY_TO:-}
     volumes:
       - media:/app/media

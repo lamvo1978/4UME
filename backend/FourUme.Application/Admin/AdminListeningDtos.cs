@@ -96,10 +96,21 @@ public interface IAdminListeningService
 }
 
 /// <param name="Configured">False until Groq:ApiKey or Gemini:ApiKey is set on the server.</param>
-public record ListeningDraftStatusDto(bool Configured, string Model);
+/// <param name="Providers">Every drafting AI, so the admin can pick one instead of the automatic Groq → Gemini order.</param>
+public record ListeningDraftStatusDto(bool Configured, string Model, IReadOnlyList<AiProviderDto>? Providers = null);
+
+/// <param name="Key">Sent back as <c>Provider</c> on a draft request; see <see cref="AiProviders"/>.</param>
+public record AiProviderDto(string Key, string Name, bool Configured, string Model);
+
+public static class AiProviders
+{
+    public const string Groq = "groq";
+    public const string Gemini = "gemini";
+}
 
 /// <param name="Length">short / medium / long.</param>
-public record ListeningDraftRequest(string Level, string Kind, string? Topic, string? Notes, string? Length);
+/// <param name="Provider">Null drafts with Groq then Gemini; otherwise one of <see cref="AiProviders"/>.</param>
+public record ListeningDraftRequest(string Level, string Kind, string? Topic, string? Notes, string? Length, string? Provider = null);
 
 /// <summary>An unsaved lesson written by the AI, with the problems the editor would show.</summary>
 public record ListeningDraftDto(ListeningLessonDocument Lesson, IReadOnlyList<string> Problems);

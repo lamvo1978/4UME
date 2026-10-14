@@ -18,7 +18,12 @@ public class SpeechOptions
     /// <summary>F0 allows 20 transactions per 60 seconds.</summary>
     public int RequestsPerMinute { get; set; } = 20;
 
+    /// <summary>Second Speech resource on the paid tier (S0), used only for pronunciation checks once the free one is spent.</summary>
+    public string? PaidKey { get; set; }
+    public string? PaidRegion { get; set; }
+
     public bool Configured => !string.IsNullOrWhiteSpace(Key) && !string.IsNullOrWhiteSpace(Region);
+    public bool PaidConfigured => !string.IsNullOrWhiteSpace(PaidKey) && !string.IsNullOrWhiteSpace(PaidRegion);
 }
 
 /// <summary>

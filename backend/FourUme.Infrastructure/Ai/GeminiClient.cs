@@ -39,6 +39,12 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
     /// </summary>
     private static readonly TimeSpan[] RetryDelays = [TimeSpan.FromSeconds(3)];
 
+    /// <summary>
+    /// Caps the hidden "thinking" of Flash models: unlimited thinking on a 20-question draft ran past the 2-minute timeout
+    /// (and the proxy in front of the API cuts requests sooner). Dropped for a model that rejects it.
+    /// </summary>
+    private const int ThinkingBudget = 2048;
+
     private static bool Transient(HttpStatusCode s) =>
         s is HttpStatusCode.ServiceUnavailable or HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway or HttpStatusCode.GatewayTimeout;
 
@@ -63,10 +69,14 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
                 ["temperature"] = temperature,
                 ["responseMimeType"] = "application/json",
                 ["responseSchema"] = schema,
+                ["thinkingConfig"] = new JsonObject { ["thinkingBudget"] = ThinkingBudget },
             },
         };
 
         var payload = body.ToJsonString();
+        var plainPayload = (body.DeepClone() as JsonObject)!;
+        (plainPayload["generationConfig"] as JsonObject)!.Remove("thinkingConfig");
+        var plain = plainPayload.ToJsonString();
         var client = httpFactory.CreateClient(HttpClientName);
         var models = o.Models;
         var overloaded = false;
@@ -80,16 +90,24 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(models[m])}:generateContent";
             // The main model gets retries; a fallback is tried once, since it is only there for when the main one is overloaded.
             var retries = m == 0 ? RetryDelays.Length : 0;
+            var thinking = true;
             for (var attempt = 1; ; attempt++)
             {
                 using var request = new HttpRequestMessage(HttpMethod.Post, url)
                 {
-                    Content = new StringContent(payload, Encoding.UTF8, "application/json"),
+                    Content = new StringContent(thinking ? payload : plain, Encoding.UTF8, "application/json"),
                 };
                 request.Headers.Add("x-goog-api-key", o.ApiKey!.Trim());
                 using var response = await client.SendAsync(request, ct);
                 status = response.StatusCode;
                 text = await response.Content.ReadAsStringAsync(ct);
+                if (thinking && status == HttpStatusCode.BadRequest && text.Contains("thinking", StringComparison.OrdinalIgnoreCase))
+                {
+                    logger.LogInformation("Gemini {Model} rejects thinkingConfig, sending without it", models[m]);
+                    thinking = false;
+                    attempt--;
+                    continue;
+                }
                 if (response.IsSuccessStatusCode || !Transient(status) || attempt > retries) break;
                 logger.LogInformation("Gemini {Model} {Status}, retrying (attempt {Attempt})", models[m], (int)status, attempt);
                 await Task.Delay(RetryDelays[attempt - 1], ct);

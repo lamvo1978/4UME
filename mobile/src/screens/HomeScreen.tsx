@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
@@ -7,6 +7,8 @@ import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "
 import { api, Me, NetworkError, ReviewSummary } from "../api/client";
 import { HomeBanner } from "../components/ads/HomeBanner";
 import { useAuth } from "../auth/AuthContext";
+import { Avatar } from "../components/Avatar";
+import { AvatarSheet } from "../components/profile/AvatarSheet";
 import { StreakChip } from "../components/streak/StreakChip";
 import { streakStatus } from "../components/streak/streakCopy";
 import { Screen } from "../components/Screen";
@@ -22,7 +24,8 @@ type Nav = CompositeNavigationProp<
 const UNREAD_POLL_MS = 30_000;
 
 export function HomeScreen() {
-  const { me, user, refreshMe } = useAuth();
+  const { me, user, refreshMe, askAvatar, dismissAskAvatar } = useAuth();
+  const focused = useIsFocused();
   const navigation = useNavigation<Nav>();
   const name = me?.displayName ?? user?.displayName;
   const grammarDone = me?.grammarLessonsCompleted ?? 0;
@@ -31,6 +34,7 @@ export function HomeScreen() {
   const [unread, setUnread] = useState(0);
   const [offline, setOffline] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [pickingAvatar, setPickingAvatar] = useState(false);
   useFocusEffect(
     useCallback(() => {
       api
@@ -89,6 +93,14 @@ export function HomeScreen() {
                   <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
                 </View>
               ) : null}
+            </Pressable>
+            <Pressable
+              onPress={() => setPickingAvatar(true)}
+              hitSlop={6}
+              style={({ pressed }) => pressed && styles.pressed}
+              accessibilityLabel="Đổi ảnh đại diện"
+            >
+              <Avatar name={name} avatar={me?.settings.avatar} size={38} ring={me?.premium ? colors.gold : undefined} />
             </Pressable>
           </View>
         </View>
@@ -157,6 +169,19 @@ export function HomeScreen() {
         </View>
       </ScrollView>
       <HomeBanner premium={me?.premium} />
+      <AvatarSheet
+        visible={pickingAvatar}
+        name={name}
+        current={me?.settings.avatar}
+        onClose={() => setPickingAvatar(false)}
+      />
+      <AvatarSheet
+        visible={askAvatar && focused && !!me && !me.settings.avatar && !pickingAvatar}
+        welcome
+        name={name}
+        current={me?.settings.avatar}
+        onClose={dismissAskAvatar}
+      />
     </Screen>
   );
 }
@@ -257,7 +282,7 @@ const styles = StyleSheet.create({
   brand: { fontFamily: fonts.display, fontSize: 26, fontWeight: "700", color: colors.accent },
   hello: { marginTop: spacing.xl, fontSize: 28, fontWeight: "700", color: colors.ink },
   progress: { marginTop: spacing.xs, color: colors.muted, fontSize: 15 },
-  headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
   searchBtn: {
     width: 38,
     height: 38,

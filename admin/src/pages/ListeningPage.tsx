@@ -87,7 +87,7 @@ export function ListeningPage() {
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button variant="light" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
+          <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDrafting(true)}>
             AI viết nháp
           </Button>
           <Button component={Link} to="/listening/new" leftSection={<IconPlus size={18} />}>

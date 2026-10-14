@@ -8,12 +8,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EasyWordMode, UserSettings, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { DeleteSheet, NameSheet, PasswordSheet } from "../components/profile/AccountSheets";
+import { AvatarSheet } from "../components/profile/AvatarSheet";
 import { SettingsSection } from "../components/profile/SettingsSection";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { easierLabel, levelRank } from "../vocabulary/placement";
 
-type Sheet = "name" | "password" | "delete" | null;
+type Sheet = "name" | "avatar" | "password" | "delete" | null;
 
 export function SettingsScreen() {
   const { me, user, logout, updateSettings, applyPlacement } = useAuth();
@@ -74,9 +75,9 @@ export function SettingsScreen() {
         <Text style={[styles.sectionTitle, !me && styles.first]}>Tài khoản</Text>
         <View style={styles.card}>
           <ActionRow icon="person-outline" label="Đổi tên hiển thị" onPress={() => setSheet("name")} />
+          <ActionRow icon="happy-outline" label="Đổi ảnh đại diện" onPress={() => setSheet("avatar")} />
           <ActionRow icon="key-outline" label="Đổi mật khẩu" onPress={() => setSheet("password")} />
-          <ActionRow icon="log-out-outline" label="Đăng xuất" onPress={confirmLogout} />
-          <ActionRow icon="trash-outline" label="Xoá tài khoản" danger last onPress={() => setSheet("delete")} />
+          <ActionRow icon="log-out-outline" label="Đăng xuất" last onPress={confirmLogout} />
         </View>
 
         <View style={[styles.card, styles.gapTop]}>
@@ -98,9 +99,18 @@ export function SettingsScreen() {
           </Pressable>
           <Text style={styles.version}>4UME · phiên bản {version}</Text>
         </View>
+
+        <Pressable
+          style={({ pressed }) => [styles.deleteLink, pressed && styles.pressed]}
+          onPress={() => setSheet("delete")}
+          hitSlop={8}
+        >
+          <Text style={styles.deleteText}>Xoá tài khoản</Text>
+        </Pressable>
       </ScrollView>
 
       <NameSheet visible={sheet === "name"} current={name ?? ""} onClose={() => setSheet(null)} />
+      <AvatarSheet visible={sheet === "avatar"} name={name} current={me?.settings.avatar} onClose={() => setSheet(null)} />
       <PasswordSheet visible={sheet === "password"} onClose={() => setSheet(null)} />
       <DeleteSheet visible={sheet === "delete"} onClose={() => setSheet(null)} />
     </View>
@@ -158,6 +168,8 @@ const styles = StyleSheet.create({
   },
   feedbackText: { fontSize: 14, fontWeight: "700", color: colors.accent },
   version: { fontSize: 12, color: colors.muted },
+  deleteLink: { alignSelf: "center", marginTop: spacing.xl * 2, paddingVertical: spacing.xs, paddingHorizontal: spacing.md },
+  deleteText: { fontSize: 13, fontWeight: "600", color: colors.danger, textDecorationLine: "underline" },
   gapTop: { marginTop: spacing.md },
   pressed: { opacity: 0.6 },
 });

@@ -80,7 +80,7 @@ Gói miễn phí giới hạn số lượt gọi mỗi phút / mỗi ngày (kho�
 
 #### Bật Groq (miễn phí, ưu tiên hơn Gemini)
 
-Khi có `GROQ_API_KEY`, mọi nút AI soạn (bài nghe, bài tập ngữ pháp, câu hỏi đầu vào) gọi Groq trước, dùng model mã nguồn mở gpt-oss của OpenAI (Groq không còn model chat Llama); Groq lỗi hoặc hết lượt thì chuyển sang Gemini. Hộp soạn trong admin ghi rõ model đã soạn.
+Khi có `GROQ_API_KEY`, mọi nút AI soạn (bài nghe, bài tập ngữ pháp, câu hỏi đầu vào) gọi Groq trước, dùng model mã nguồn mở gpt-oss của OpenAI (Groq không còn model chat Llama); Groq lỗi hoặc hết lượt thì chuyển sang Gemini. Hộp soạn trong admin ghi rõ model đã soạn. Ô **AI soạn** trong hộp soạn cho chọn hẳn Groq hoặc Gemini (cả bước tự kiểm tra cũng dùng AI đó, lỗi thì báo chứ không tự chuyển) để so sánh; admin nhớ lựa chọn cho lần sau, mặc định là *Tự động*.
 
 1. https://console.groq.com → đăng nhập → **API Keys** → **Create API Key** (không cần thẻ).
 2. Thêm vào `.env` (máy dev và VPS, **không** gửi qua chat), rồi `docker compose up -d api`:

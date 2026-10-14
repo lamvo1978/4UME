@@ -41,6 +41,8 @@ export type UserSettings = {
   vocabLevel: VocabLevel | null;
   easyWordMode: EasyWordMode;
   placementTakenAt: string | null;
+  /** Key of a built-in picture in `AVATARS`; null or "" shows the name's initial. Missing on older servers. */
+  avatar?: string | null;
 };
 
 export const VOCAB_LEVELS = ["A1", "A2", "B1", "B2"] as const;
@@ -176,6 +178,7 @@ export type Invitee = {
   rewardedAt: string | null;
   /** Counting is on hold while the friend studies with a partner centre. */
   paused?: boolean;
+  avatar?: string | null;
 };
 export type MyReferral = {
   enabled: boolean;
@@ -391,6 +394,8 @@ export type AboutContent = {
 
 /** Benefits on the Premium screen, edited in the admin web; hidden ones are already filtered out. */
 export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean };
+/** Price in VND; empty list while the admin hides prices. */
+export type PremiumPlan = { months: number; price: number; badge: string };
 
 export type PronunciationStatus = {
   enabled: boolean;
@@ -713,7 +718,8 @@ export const api = {
     }),
   pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
   about: () => request<AboutContent>("/api/about"),
-  premiumPerks: () => request<{ perks: PremiumPerk[] }>("/api/premium-perks").then((r) => r.perks),
+  premiumPerks: () =>
+    request<{ perks: PremiumPerk[]; plans?: PremiumPlan[] }>("/api/premium-perks").then((r) => ({ perks: r.perks, plans: r.plans ?? [] })),
   assessPronunciation,
   /** Development servers only: grants the check a watched ad would. */
   devAdReward: () => request<PronunciationStatus>("/api/ads/dev-reward", { method: "POST" }),

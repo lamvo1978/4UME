@@ -339,6 +339,19 @@ export function GrammarEditPage() {
   const counts = typesFor(bank).map((t) => ({ ...t, count: items.filter((e) => e.type === t.type).length }));
   const visible = items.filter((e) => typeFilter === "all" || e.type === typeFilter);
 
+  const exerciseActions = (
+    <Group gap="sm">
+      <AddMenu
+        label="Thêm câu bài tập"
+        items={typesFor(bank).map((t) => ({ value: t.type, label: t.label, hint: t.hint }))}
+        onPick={addExercise}
+      />
+      <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDraftOpen(true)}>
+        AI soạn thêm câu
+      </Button>
+    </Group>
+  );
+
   const exercisesPanel = (
     <Stack gap="sm">
       <SegmentedControl
@@ -360,6 +373,7 @@ export function GrammarEditPage() {
           Có {items.length} câu luyện thêm; nên có 30–50 câu. Bấm <b>AI soạn thêm câu</b> để soạn nhanh rồi chọn câu muốn giữ.
         </Alert>
       ) : null}
+      {exerciseActions}
       <Chip.Group value={typeFilter} onChange={(v) => setTypeFilter(v as string)}>
         <Group gap={6}>
           {[{ value: "all", label: `Tất cả (${items.length})` }, ...counts.map((c) => ({ value: c.type, label: `${c.label} (${c.count})` }))].map((o) => (
@@ -443,16 +457,7 @@ export function GrammarEditPage() {
           </Paper>
         );
       })}
-      <Group gap="sm">
-        <AddMenu
-          label="Thêm câu bài tập"
-          items={typesFor(bank).map((t) => ({ value: t.type, label: t.label, hint: t.hint }))}
-          onPick={addExercise}
-        />
-        <Button variant="light" color="grape" leftSection={<IconSparkles size={18} />} onClick={() => setDraftOpen(true)}>
-          AI soạn thêm câu
-        </Button>
-      </Group>
+      {visible.length > 6 ? exerciseActions : null}
     </Stack>
   );
 

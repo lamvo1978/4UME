@@ -49,7 +49,7 @@ public class AdminSettingsService(
                 updated.TryGetValue(ListeningConfig.SettingKey, out var l) ? l : null),
             new AdminPronunciationSettingsDto(await pronunciation.GetConfigAsync(ct), new PronunciationConfig(),
                 updated.TryGetValue(PronunciationConfig.SettingKey, out var p) ? p : null,
-                await pronunciation.GetMonthUsageAsync(ct), azure.Configured),
+                await pronunciation.GetMonthUsageAsync(ct), azure.Configured, azure.PaidConfigured),
             new AdminReferralSettingsDto(await referral.GetConfigAsync(ct), new ReferralConfig(),
                 updated.TryGetValue(ReferralConfig.SettingKey, out var r) ? r : null));
     }

@@ -36,8 +36,19 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - Bật/tắt câu đọc to trong bài ôn.
 - Số lượt chấm mỗi ngày (miễn phí / Premium).
 - **Cho xem quảng cáo đổi lượt chấm** (mặc định tắt) và **Quảng cáo tối đa mỗi ngày** (mặc định 10, từ 1 đến 50).
-- **Giới hạn phút mỗi tháng** (mặc định 300 phút, khớp hạn mức gói Azure F0 cho nhận dạng giọng nói). Chạm giới hạn thì mọi người chuyển sang tự so sánh tới đầu tháng sau (UTC), và nút quảng cáo cũng ẩn.
-- Hiện số lần chấm, số người, số quảng cáo và số phút đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
+- **Miễn phí (F0) mỗi tháng** (mặc định 300 phút, khớp hạn mức gói Azure F0 cho nhận dạng giọng nói).
+- **Trả phí (S0) tối đa mỗi tháng** (mặc định 600 phút ≈ 10 USD; chỉ bật khi máy chủ có key S0). Hết phần F0 (hoặc Azure báo F0 hết hạn mức) thì máy chủ tự chấm bằng key S0 tới khi chạm trần này. Lượt miễn phí hằng ngày chỉ dùng tới 80% trần, 20% còn lại để dành cho Premium và lượt từ quảng cáo. Chạm hết thì chuyển sang tự so sánh tới đầu tháng sau (UTC), nút quảng cáo cũng ẩn.
+- Hiện số lần chấm, số người, số quảng cáo, số phút F0 và số phút S0 (kèm ước tính USD) đã dùng trong tháng. Thay đổi có trong *Lịch sử* và khôi phục được.
+
+### Key trả phí (S0)
+
+Gói F0 không tự tính tiền khi hết 5 giờ, và gói S0 không có phần miễn phí. Vì vậy dùng **hai resource**: F0 sẵn có (cả giọng đọc Góc nghe lẫn chấm phát âm) và một resource **S0** riêng chỉ để chấm phát âm khi F0 đã hết.
+
+1. Azure Portal → *Create a resource* → *Speech* → Pricing tier **Standard S0**, cùng vùng (vd. `southeastasia`).
+2. *Keys and Endpoint* → chép Key 1 và Location vào `.env` trên máy chủ: `AZURE_SPEECH_PAID_KEY=...`, `AZURE_SPEECH_PAID_REGION=southeastasia`, rồi `docker compose up -d`.
+3. *Cost Management* → *Budgets*: đặt cảnh báo (vd. 5 USD/tháng).
+
+Không có key S0 thì mọi thứ chạy như trước: hết F0 là tạm dừng chấm.
 
 ## Kỹ thuật
 
@@ -48,7 +59,7 @@ Trong bài **Ôn từ** có thêm loại câu **Đọc to từ này**: người 
 - API: `GET /api/pronunciation/status`, `POST /api/pronunciation/assess` (multipart: `wordId`, `audio`). Hết lượt → 429, tắt hoặc hết hạn mức → 503 (app chuyển sang tự so sánh).
 - Admin: `PUT /api/admin/users/{id}/premium` `{ until }` (null = tắt), `PUT /api/admin/settings/pronunciation`, `POST /api/admin/settings/pronunciation/reset`.
 - Dữ liệu: cột `Users.PremiumUntil`, bảng `PronunciationAttempts` (mỗi lượt chấm: từ, ngày địa phương, độ dài âm thanh, điểm), migration `Pronunciation`; bảng `AdRewards` (migration `AdRewards`). Cài đặt lưu trong `AppSettings` khoá `pronunciation`.
-- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, dòng gói trên Hồ sơ `mobile/src/components/profile/PlanRow.tsx` mở màn Premium `mobile/src/screens/PremiumScreen.tsx` (ví dụ kết quả chấm, so sánh lượt chấm Miễn phí / Premium, danh sách tính năng luôn miễn phí; chưa có nút đăng ký cho tới khi làm mua trong app). Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
+- App: `mobile/src/components/SpeakExercise.tsx`, chèn câu trong `mobile/src/screens/ReviewScreen.tsx`, dòng gói trên Hồ sơ `mobile/src/components/profile/PlanRow.tsx` mở màn Premium `mobile/src/screens/PremiumScreen.tsx` (ví dụ kết quả chấm, so sánh lượt chấm Miễn phí / Premium, danh sách tính năng luôn miễn phí, bảng giá "Sắp mở bán" sửa ở trang *Quyền lợi Premium* của admin; chưa có nút đăng ký cho tới khi làm mua trong app). Quyền micro khai báo qua plugin `expo-audio` trong `mobile/app.json`.
 
 ## Giai đoạn sau
 

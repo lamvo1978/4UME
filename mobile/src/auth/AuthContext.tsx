@@ -50,6 +50,9 @@ type AuthState = {
   /** True right after sign-up, so the placement test opens before the tabs. */
   onboarding: boolean;
   finishOnboarding: () => void;
+  /** Set when onboarding ends, so Home offers the avatar picker once to a new learner. */
+  askAvatar: boolean;
+  dismissAskAvatar: () => void;
   applyPlacement: (level: VocabLevel, mode: EasyWordMode, tested: boolean) => Promise<PlacementResult>;
 };
 
@@ -63,6 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [me, setMeState] = useState<Me | null>(null);
   const [celebration, setCelebration] = useState<number | null>(null);
   const [onboarding, setOnboarding] = useState(false);
+  const [askAvatar, setAskAvatar] = useState(false);
   const meRef = useRef<Me | null>(null);
 
   const setMe = useCallback((next: Me | null) => {
@@ -223,18 +227,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setMe(null);
         setCelebration(null);
         setOnboarding(false);
+        setAskAvatar(false);
       },
       refreshMe,
       updateSettings,
       onboarding,
-      finishOnboarding: () => setOnboarding(false),
+      finishOnboarding: () => {
+        setOnboarding(false);
+        setAskAvatar(true);
+      },
+      askAvatar,
+      dismissAskAvatar: () => setAskAvatar(false),
       async applyPlacement(level, mode, tested) {
         const result = await api.applyPlacement(level, mode, tested);
         setMe(result.me);
         return result;
       },
     }),
-    [ready, startupError, user, me, celebration, onboarding, setMe, signIn, refreshMe, updateSettings]
+    [ready, startupError, user, me, celebration, onboarding, askAvatar, setMe, signIn, refreshMe, updateSettings]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

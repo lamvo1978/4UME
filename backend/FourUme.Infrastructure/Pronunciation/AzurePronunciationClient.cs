@@ -10,19 +10,35 @@ namespace FourUme.Infrastructure.Pronunciation;
 
 public record AzureAssessment(int Score, int Accuracy, int Fluency, int Completeness, string Heard, IReadOnlyList<WordScoreDto> Words);
 
-/// <summary>Pronunciation assessment over Azure's speech-to-text REST API for short audio (same key as text-to-speech).</summary>
+/// <summary>The free resource refused the request (quota spent or throttled); the paid one may take it.</summary>
+public class AzureFreeTierRefusedException(string message) : PronunciationException(503, message);
+
+/// <summary>
+/// Pronunciation assessment over Azure's speech-to-text REST API for short audio. The free resource is the one
+/// text-to-speech uses; the optional paid resource only ever scores pronunciation.
+/// </summary>
 public sealed class AzurePronunciationClient(
     IHttpClientFactory httpFactory,
     IOptions<SpeechOptions> options,
     ILogger<AzurePronunciationClient> logger)
 {
+    /// <summary>First day (UTC) of the month in which the free resource answered "quota exceeded".</summary>
+    private DateTimeOffset? _freeSpentMonth;
+
     public bool Configured => options.Value.Configured;
+    public bool PaidConfigured => options.Value.PaidConfigured;
+
+    /// <summary>The free resource said its monthly quota is gone; it resets with the calendar month.</summary>
+    public bool FreeSpent(DateTimeOffset monthStart) => _freeSpentMonth == monthStart;
 
     /// <returns>Null when no speech was recognised (silence or noise).</returns>
-    public async Task<AzureAssessment?> AssessAsync(byte[] wav, string referenceText, CancellationToken ct)
+    public async Task<AzureAssessment?> AssessAsync(byte[] wav, string referenceText, bool paid, DateTimeOffset monthStart, CancellationToken ct)
     {
         var o = options.Value;
-        if (!o.Configured) throw new PronunciationException(503, "Chưa cấu hình Azure Speech nên chưa chấm được phát âm.");
+        if (paid ? !o.PaidConfigured : !o.Configured)
+            throw new PronunciationException(503, "Chưa cấu hình Azure Speech nên chưa chấm được phát âm.");
+        var key = paid ? o.PaidKey! : o.Key!;
+        var region = paid ? o.PaidRegion! : o.Region!;
 
         var config = JsonSerializer.Serialize(new Dictionary<string, object>
         {
@@ -33,23 +49,31 @@ public sealed class AzurePronunciationClient(
             ["EnableMiscue"] = false,
             ["PhonemeAlphabet"] = "IPA",
         });
-        var url = $"https://{o.Region!.Trim()}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1"
+        var url = $"https://{region.Trim()}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1"
                   + "?language=en-US&format=detailed";
         using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = new ByteArrayContent(wav) };
         // Azure's own format; "codecs=audio/pcm" isn't a valid token for the strict MediaTypeHeaderValue parser.
         request.Content.Headers.TryAddWithoutValidation("Content-Type", $"audio/wav; codecs=audio/pcm; samplerate={AudioConverter.SampleRate}");
-        request.Headers.Add("Ocp-Apim-Subscription-Key", o.Key!.Trim());
+        request.Headers.Add("Ocp-Apim-Subscription-Key", key.Trim());
         request.Headers.Add("Pronunciation-Assessment", Convert.ToBase64String(Encoding.UTF8.GetBytes(config)));
 
         using var response = await httpFactory.CreateClient(AzureSpeechClient.HttpClientName).SendAsync(request, ct);
         var body = await response.Content.ReadAsStringAsync(ct);
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogWarning("Azure pronunciation failed {Status}: {Body}", (int)response.StatusCode, body.Length > 300 ? body[..300] : body);
+            logger.LogWarning("Azure pronunciation ({Tier}) failed {Status}: {Body}", paid ? "paid" : "free", (int)response.StatusCode,
+                body.Length > 300 ? body[..300] : body);
+            const string busy = "Đang có nhiều người chấm cùng lúc, bạn thử lại sau vài giây nhé.";
+            if (!paid && response.StatusCode == HttpStatusCode.Forbidden && body.Contains("quota", StringComparison.OrdinalIgnoreCase))
+            {
+                _freeSpentMonth = monthStart;
+                throw new AzureFreeTierRefusedException("Chấm phát âm chi tiết đang tạm dừng, bạn quay lại sau nhé.");
+            }
+            if (!paid && response.StatusCode == HttpStatusCode.TooManyRequests) throw new AzureFreeTierRefusedException(busy);
             throw new PronunciationException(503, response.StatusCode switch
             {
                 HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "Azure Speech từ chối khoá (sai key hoặc sai vùng).",
-                HttpStatusCode.TooManyRequests => "Đang có nhiều người chấm cùng lúc, bạn thử lại sau vài giây nhé.",
+                HttpStatusCode.TooManyRequests => busy,
                 _ => $"Azure Speech lỗi {(int)response.StatusCode}.",
             });
         }

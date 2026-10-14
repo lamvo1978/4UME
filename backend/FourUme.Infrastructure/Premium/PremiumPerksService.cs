@@ -15,6 +15,9 @@ public class PremiumPerksService(IAppDbContext db) : IPremiumPerksService
             .Where(s => s.Key == PremiumPerks.SettingKey)
             .Select(s => s.Value)
             .FirstOrDefaultAsync(ct);
-        return stored is null ? PremiumPerks.Default() : JsonSerializer.Deserialize<PremiumPerks>(stored, Json) ?? PremiumPerks.Default();
+        var perks = stored is null ? null : JsonSerializer.Deserialize<PremiumPerks>(stored, Json);
+        if (perks is null) return PremiumPerks.Default();
+        // Saved before the price list existed.
+        return perks.Plans is null ? perks with { Plans = PremiumPerks.DefaultPlans() } : perks;
     }
 }

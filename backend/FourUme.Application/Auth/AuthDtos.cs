@@ -17,7 +17,8 @@ public record UserSettingsDto(
     string? TimeZone,
     string? VocabLevel,
     string EasyWordMode,
-    DateTimeOffset? PlacementTakenAt);
+    DateTimeOffset? PlacementTakenAt,
+    string? Avatar = null);
 
 public record MeResponse(
     Guid UserId,
@@ -54,7 +55,9 @@ public record UpdateSettingsRequest(
     bool? NotifyRescue = null,
     bool? NotifyWeekly = null,
     bool? NotifyNews = null,
-    string? TimeZone = null);
+    string? TimeZone = null,
+    /// <summary>A built-in avatar key; "" goes back to the name's initial.</summary>
+    string? Avatar = null);
 
 public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 public record DeleteAccountRequest(string Password);
@@ -79,4 +82,6 @@ public static class UserSettingsRules
     public const double MaxSpeechRate = 1.2;
     public const int MinPasswordLength = 6;
     public const int MaxTimeZoneLength = 64;
+    /// <summary>Avatar pictures ship with the app, so the server only checks the key's shape; an unknown key shows the initial.</summary>
+    public const int MaxAvatarLength = 32;
 }

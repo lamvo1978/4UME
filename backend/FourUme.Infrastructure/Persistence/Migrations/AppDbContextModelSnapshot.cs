@@ -987,6 +987,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateOnly>("LocalDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("Paid")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Phonemes")
                         .HasColumnType("text");
 
@@ -1089,6 +1092,10 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("AutoSpeak")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<int>("BestStreak")
                         .HasColumnType("integer");

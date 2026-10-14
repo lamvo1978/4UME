@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using FourUme.Application.Abstractions;
+using FourUme.Application.Admin;
 using FourUme.Application.Grammar;
 using FourUme.Application.Placement;
 using FourUme.Domain.Entities;
@@ -73,6 +74,81 @@ public sealed partial class AdminPlacementService(
         await db.SaveChangesAsync(ct);
     }
 
+    public async Task<IReadOnlyList<PlacementGrammarFileItem>> ExportGrammarAsync(CancellationToken ct = default)
+    {
+        var rows = await db.PlacementGrammarQuestions.AsNoTracking().OrderBy(q => q.CreatedAt).ToListAsync(ct);
+        return rows.OrderBy(q => PlacementRules.Rank(q.Level))
+            .Select(q => new PlacementGrammarFileItem(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published))
+            .ToList();
+    }
+
+    /// <summary>Creates questions without an id and updates the ones with an id; never deletes, so a partial file is safe.</summary>
+    public async Task<ImportPlacementGrammarResult> ImportGrammarAsync(ImportPlacementGrammarRequest request, CancellationToken ct = default)
+    {
+        var items = request.Questions ?? [];
+        if (items.Count == 0) throw new InvalidOperationException("File không có câu hỏi nào.");
+        var existing = await db.PlacementGrammarQuestions.ToDictionaryAsync(q => q.Id, ct);
+        var lessons = (await db.GrammarLessons.Select(l => l.Slug).ToListAsync(ct)).ToHashSet();
+        var seen = new HashSet<Guid>();
+        var rows = new List<ImportPlacementGrammarRow>();
+        var plans = new List<(PlacementGrammarQuestion? Current, SavePlacementGrammarRequest Clean)>();
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+            var clean = Normalize(new SavePlacementGrammarRequest(item.Level, item.Prompt, item.Options, item.Answer, item.ExplanationVi, item.LessonSlug, item.Published));
+            var problems = GrammarPlacementRules.Validate(clean);
+            if (clean.LessonSlug is { } slug && !lessons.Contains(slug)) problems.Add($"Không có bài ngữ pháp \"{slug}\".");
+            PlacementGrammarQuestion? current = null;
+            if (item.Id is { } id)
+            {
+                if (!seen.Add(id)) problems.Insert(0, "Id bị lặp trong file.");
+                else if (!existing.TryGetValue(id, out current)) problems.Insert(0, "Không có câu hỏi với id này (xoá id để tạo câu mới).");
+            }
+
+            string status;
+            if (problems.Count > 0) status = ImportStatus.Error;
+            else if (current is null) status = ImportStatus.Create;
+            else if (JsonSerializer.Serialize(Snapshot(current)) == JsonSerializer.Serialize(SnapshotOf(clean))) status = ImportStatus.Unchanged;
+            else status = ImportStatus.Update;
+
+            if (status is ImportStatus.Create or ImportStatus.Update) plans.Add((current, clean));
+            rows.Add(new ImportPlacementGrammarRow(i + 1, item.Id, clean.Level, clean.Prompt, status, problems));
+        }
+
+        var committed = false;
+        if (request.Commit && plans.Count > 0)
+        {
+            foreach (var (current, clean) in plans)
+            {
+                if (current is not null)
+                {
+                    var before = Snapshot(current);
+                    Assign(current, clean);
+                    current.UpdatedAt = DateTimeOffset.UtcNow;
+                    auditor.Record(AuditEntities.Placement, current.Id.ToString(), AuditActions.Import, current.Prompt, before, Snapshot(current));
+                }
+                else
+                {
+                    var q = new PlacementGrammarQuestion();
+                    Assign(q, clean);
+                    db.PlacementGrammarQuestions.Add(q);
+                    auditor.Record(AuditEntities.Placement, q.Id.ToString(), AuditActions.Import, q.Prompt, null, Snapshot(q));
+                }
+            }
+            await db.SaveChangesAsync(ct);
+            committed = true;
+        }
+
+        return new ImportPlacementGrammarResult(
+            rows.Count(r => r.Status == ImportStatus.Create),
+            rows.Count(r => r.Status == ImportStatus.Update),
+            rows.Count(r => r.Status == ImportStatus.Unchanged),
+            rows.Count(r => r.Status == ImportStatus.Error),
+            committed,
+            rows);
+    }
+
     private async Task ApplyAsync(PlacementGrammarQuestion q, SavePlacementGrammarRequest r, CancellationToken ct)
     {
         var clean = Normalize(r);
@@ -80,7 +156,11 @@ public sealed partial class AdminPlacementService(
         if (clean.LessonSlug is { } slug && !await db.GrammarLessons.AnyAsync(l => l.Slug == slug, ct))
             errors.Add($"Không có bài ngữ pháp \"{slug}\".");
         if (errors.Count > 0) throw new InvalidOperationException(string.Join(" ", errors));
+        Assign(q, clean);
+    }
 
+    private static void Assign(PlacementGrammarQuestion q, SavePlacementGrammarRequest clean)
+    {
         q.Level = clean.Level;
         q.Prompt = clean.Prompt;
         q.Options = clean.Options;
@@ -104,6 +184,9 @@ public sealed partial class AdminPlacementService(
 
     private static object Snapshot(PlacementGrammarQuestion q) =>
         new { q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published };
+
+    private static object SnapshotOf(SavePlacementGrammarRequest r) =>
+        new { r.Level, r.Prompt, r.Options, r.Answer, ExplanationVi = r.ExplanationVi ?? "", r.LessonSlug, r.Published };
 
     private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : WhiteSpace().Replace(s.Trim(), " ");
 
@@ -164,7 +247,7 @@ public sealed partial class AdminPlacementService(
             foreach (var e in existing) prompt.AppendLine("- " + e);
         }
 
-        var reply = await ai.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct, request.Provider);
         List<DraftQuestion> drafted;
         try
         {
@@ -183,7 +266,7 @@ public sealed partial class AdminPlacementService(
             .ToList();
         if (questions.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
-        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, ct);
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, request.Provider, ct);
         var items = questions.Select((q, i) =>
         {
             var problems = GrammarPlacementRules.Validate(q);
@@ -193,7 +276,7 @@ public sealed partial class AdminPlacementService(
         return new PlacementGrammarDraftDto(items, isChecked, reply.Model);
     }
 
-    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, CancellationToken ct)
+    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, string? provider, CancellationToken ct)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Level: {level}. Questions (JSON, check each one by its index):");
@@ -201,7 +284,7 @@ public sealed partial class AdminPlacementService(
             questions.Select((q, i) => new { index = i, q.Prompt, q.Options, q.Answer, lesson = q.LessonSlug }), GrammarJson.Options));
         try
         {
-            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
             var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < questions.Count)

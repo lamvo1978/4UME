@@ -224,6 +224,9 @@ public static class AdminEndpoints
         });
 
         admin.MapGet("/placement/grammar", async (IAdminPlacementService s, CancellationToken ct) => Results.Ok(await s.GetGrammarAsync(ct)));
+        admin.MapGet("/placement/grammar/export", async (IAdminPlacementService s, CancellationToken ct) => Results.Ok(await s.ExportGrammarAsync(ct)));
+        admin.MapPost("/placement/grammar/import", async (ImportPlacementGrammarRequest r, IAdminPlacementService s, CancellationToken ct) =>
+            Results.Ok(await s.ImportGrammarAsync(r, ct)));
         admin.MapPost("/placement/grammar", async (SavePlacementGrammarRequest r, IAdminPlacementService s, CancellationToken ct) =>
             Results.Ok(await s.CreateGrammarAsync(r, ct)));
         admin.MapPost("/placement/grammar/batch", async (SavePlacementGrammarBatchRequest r, IAdminPlacementService s, CancellationToken ct) =>

@@ -36,7 +36,7 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
             .Where(r => r.InviterId == userId)
             .OrderByDescending(r => r.CreatedAt)
             .Take(100)
-            .Select(r => new { r.InviteeId, r.Invitee!.DisplayName, r.CreatedAt, r.RewardedAt })
+            .Select(r => new { r.InviteeId, r.Invitee!.DisplayName, r.Invitee.Avatar, r.CreatedAt, r.RewardedAt })
             .ToListAsync(ct);
         var progress = await ProgressAsync(invitees.Where(i => i.RewardedAt == null).Select(i => i.InviteeId).ToList(), ct);
         var earned = await db.Referrals.CountAsync(r => r.InviterId == userId && r.InviterRewarded, ct);
@@ -60,7 +60,7 @@ public class ReferralService(AppDbContext db, ILogger<ReferralService> logger) :
             {
                 var p = progress.GetValueOrDefault(i.InviteeId);
                 var days = i.RewardedAt is null ? Math.Min(p.Days, config.RequiredStudyDays) : config.RequiredStudyDays;
-                return new InviteeDto(i.DisplayName, i.CreatedAt, days, i.RewardedAt, i.RewardedAt is null && p.Paused);
+                return new InviteeDto(i.DisplayName, i.CreatedAt, days, i.RewardedAt, i.RewardedAt is null && p.Paused, i.Avatar);
             }).ToList(),
             config.JoinWindowDays,
             invitePaused);

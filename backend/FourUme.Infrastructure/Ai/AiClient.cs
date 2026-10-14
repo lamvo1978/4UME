@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using FourUme.Application.Admin;
 using Microsoft.Extensions.Logging;
 
 namespace FourUme.Infrastructure.Ai;
@@ -16,8 +17,29 @@ public sealed class AiClient(GroqClient groq, GeminiClient gemini, ILogger<AiCli
     public bool Configured => groq.Configured || gemini.Configured;
     public string ModelName => groq.Configured ? groq.ModelName : gemini.ModelName;
 
-    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
+    public IReadOnlyList<AiProviderDto> Providers =>
+    [
+        new(AiProviders.Groq, "Groq", groq.Configured, groq.ModelName),
+        new(AiProviders.Gemini, "Gemini", gemini.Configured, gemini.ModelName),
+    ];
+
+    /// <param name="provider">Null or empty: Groq then Gemini as fallback. Otherwise only that provider, so the admin can compare them.</param>
+    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct, string? provider = null)
     {
+        switch (provider?.Trim().ToLowerInvariant())
+        {
+            case null or "":
+                break;
+            case AiProviders.Groq:
+                if (!groq.Configured) throw new InvalidOperationException("Chưa cấu hình Groq trên máy chủ (GROQ_API_KEY).");
+                return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+            case AiProviders.Gemini:
+                if (!gemini.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini trên máy chủ (GEMINI_API_KEY).");
+                return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+            default:
+                throw new InvalidOperationException("AI không hợp lệ.");
+        }
+
         if (!Configured) throw new InvalidOperationException(NotConfiguredMessage);
         if (!groq.Configured) return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
         if (!gemini.Configured) return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);

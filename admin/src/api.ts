@@ -158,6 +158,7 @@ export type PronunciationConfig = {
   monthlyMinutesCap: number;
   adRewardsEnabled: boolean;
   adRewardsPerDay: number;
+  paidMonthlyMinutesCap: number;
 };
 export type AdminSettings = {
   notifications: { value: NotificationConfig; defaults: NotificationConfig; updatedAt: string | null };
@@ -167,8 +168,9 @@ export type AdminSettings = {
     defaults: PronunciationConfig;
     updatedAt: string | null;
     /** Azure checks this calendar month (UTC). */
-    usage: { attempts: number; users: number; minutes: number; adRewards: number };
+    usage: { attempts: number; users: number; minutes: number; adRewards: number; paidMinutes: number; freeSpent: boolean };
     azureConfigured: boolean;
+    paidConfigured: boolean;
   };
   referral: { value: ReferralConfig; defaults: ReferralConfig; updatedAt: string | null };
 };
@@ -237,7 +239,8 @@ export type AboutSection = { title: string; items: AboutItem[]; visible: boolean
 export type AboutContent = { tagline: string; sections: AboutSection[] };
 export type AdminAbout = { value: AboutContent; defaults: AboutContent; updatedAt: string | null };
 export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean; visible: boolean };
-export type PremiumPerks = { perks: PremiumPerk[] };
+export type PremiumPlan = { months: number; price: number; badge: string; visible: boolean };
+export type PremiumPerks = { perks: PremiumPerk[]; plans: PremiumPlan[]; showPrices: boolean };
 export type AdminPremiumPerks = { value: PremiumPerks; defaults: PremiumPerks; updatedAt: string | null };
 
 export type FeedbackReplyTemplate = { title: string; body: string };
@@ -482,6 +485,8 @@ export type GrammarDraftRequest = {
   difficulty: GrammarDraftDifficulty;
   notes?: string;
   skipCheck?: boolean;
+  /** Empty or missing: Groq, then Gemini. */
+  provider?: string;
 };
 export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
 export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean; model: string };
@@ -525,6 +530,26 @@ export type ImportWordRow = {
   published: string | null;
 };
 export type ImportStatus = "create" | "update" | "unchanged" | "duplicate" | "error";
+/** One question in the placement export file; without an id the import creates it. */
+export type PlacementGrammarFileItem = {
+  id?: string | null;
+  level: string;
+  prompt: string;
+  options: string[];
+  answer: string;
+  explanationVi?: string | null;
+  lessonSlug?: string | null;
+  published?: boolean;
+};
+export type ImportPlacementGrammarRow = { line: number; id: string | null; level: string; prompt: string; status: ImportStatus; problems: string[] };
+export type ImportPlacementGrammarResult = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  errors: number;
+  committed: boolean;
+  rows: ImportPlacementGrammarRow[];
+};
 export type ImportWordRowResult = {
   line: number;
   word: string;
@@ -636,9 +661,10 @@ export type SpeechStatus = {
   charsUsed: number;
   monthlyCharLimit: number;
 };
-export type ListeningDraftStatus = { configured: boolean; model: string };
+export type AiProvider = { key: string; name: string; configured: boolean; model: string };
+export type ListeningDraftStatus = { configured: boolean; model: string; providers?: AiProvider[] };
 export type ListeningDraftLength = "short" | "medium" | "long";
-export type ListeningDraftRequest = { level: string; kind: ListeningKind; topic?: string; notes?: string; length: ListeningDraftLength };
+export type ListeningDraftRequest = { level: string; kind: ListeningKind; topic?: string; notes?: string; length: ListeningDraftLength; provider?: string };
 export type ListeningDraft = { lesson: ListeningLesson; problems: string[] };
 export type ImportListeningRow = { slug: string; titleEn: string; status: ImportStatus; currentVersion: number | null; problems: string[] };
 export type ImportListeningResult = {
@@ -679,7 +705,7 @@ export type PlacementGrammarInput = {
   published: boolean;
 };
 export type PlacementGrammarQuestion = PlacementGrammarInput & { id: string; explanationVi: string; updatedAt: string };
-export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean };
+export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean; provider?: string };
 export type PlacementGrammarDraft = {
   items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
   checked: boolean;
@@ -793,6 +819,9 @@ export const api = {
   reorderGrammar: (ids: string[]) => request<void>("/api/admin/grammar/order", json("PUT", { ids })),
   deleteGrammar: (slug: string) => request<void>(`/api/admin/grammar/${slug}`, { method: "DELETE" }),
   exportGrammar: () => request<GrammarLesson[]>("/api/admin/grammar/export"),
+  exportPlacementGrammar: () => request<PlacementGrammarFileItem[]>("/api/admin/placement/grammar/export"),
+  importPlacementGrammar: (questions: unknown[], commit: boolean) =>
+    request<ImportPlacementGrammarResult>("/api/admin/placement/grammar/import", json("POST", { questions, commit })),
   placementGrammar: () => request<PlacementGrammarQuestion[]>("/api/admin/placement/grammar"),
   createPlacementGrammar: (q: PlacementGrammarInput) =>
     request<PlacementGrammarQuestion>("/api/admin/placement/grammar", json("POST", q)),

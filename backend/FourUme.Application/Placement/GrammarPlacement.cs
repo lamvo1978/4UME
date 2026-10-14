@@ -54,14 +54,33 @@ public record SavePlacementGrammarBatchRequest(List<SavePlacementGrammarRequest>
 
 /// <param name="LessonSlug">Only write about this lesson; otherwise spread over the level's lessons.</param>
 /// <param name="SkipCheck">Skip the AI check pass: one AI call instead of two, the admin reads answers carefully.</param>
-public record PlacementGrammarDraftRequest(string Level, int Count, string? LessonSlug, string? Notes, bool SkipCheck = false);
+public record PlacementGrammarDraftRequest(string Level, int Count, string? LessonSlug, string? Notes, bool SkipCheck = false, string? Provider = null);
 public record PlacementGrammarDraftItemDto(SavePlacementGrammarRequest Question, IReadOnlyList<string> Problems, string? Warning);
 /// <param name="Checked">False when the AI check pass failed, so missing warnings mean nothing.</param>
 /// <param name="Model">The AI model that wrote the draft.</param>
 public record PlacementGrammarDraftDto(IReadOnlyList<PlacementGrammarDraftItemDto> Items, bool Checked, string Model);
 
+/// <summary>One question in an export file; without <paramref name="Id"/> the import creates it, with one it updates that question.</summary>
+public record PlacementGrammarFileItem(
+    Guid? Id,
+    string Level,
+    string Prompt,
+    List<string> Options,
+    string Answer,
+    string? ExplanationVi,
+    string? LessonSlug,
+    bool Published = true);
+
+/// <param name="Commit">False only previews what would change.</param>
+public record ImportPlacementGrammarRequest(List<PlacementGrammarFileItem> Questions, bool Commit);
+/// <param name="Line">1-based position in the file.</param>
+public record ImportPlacementGrammarRow(int Line, Guid? Id, string Level, string Prompt, string Status, IReadOnlyList<string> Problems);
+public record ImportPlacementGrammarResult(int Created, int Updated, int Unchanged, int Errors, bool Committed, IReadOnlyList<ImportPlacementGrammarRow> Rows);
+
 public interface IAdminPlacementService
 {
+    Task<IReadOnlyList<PlacementGrammarFileItem>> ExportGrammarAsync(CancellationToken ct = default);
+    Task<ImportPlacementGrammarResult> ImportGrammarAsync(ImportPlacementGrammarRequest request, CancellationToken ct = default);
     Task<IReadOnlyList<AdminPlacementGrammarDto>> GetGrammarAsync(CancellationToken ct = default);
     Task<AdminPlacementGrammarDto> CreateGrammarAsync(SavePlacementGrammarRequest request, CancellationToken ct = default);
     Task<int> CreateGrammarBatchAsync(SavePlacementGrammarBatchRequest request, CancellationToken ct = default);

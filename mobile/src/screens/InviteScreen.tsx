@@ -7,6 +7,7 @@ import { KeyboardScreen } from "../components/KeyboardScreen";
 import { formatDayMonthYear } from "../utils/dates";
 import { useAuth } from "../auth/AuthContext";
 import { colors, shadow, spacing } from "../theme";
+import { Avatar } from "../components/Avatar";
 
 /** The learner's invite code to share, friends they invited, and one box for invite or partner-centre codes. */
 export function InviteScreen() {
@@ -153,6 +154,7 @@ export function InviteScreen() {
               <Text style={styles.cardTitle}>Bạn bè đã mời</Text>
               {data.invitees.map((f, i) => (
                 <View key={`${f.displayName}-${i}`} style={[styles.friend, i > 0 && styles.friendBorder]}>
+                  <Avatar name={f.displayName} avatar={f.avatar} size={36} />
                   <Text style={styles.friendName} numberOfLines={1}>
                     {f.displayName}
                   </Text>
