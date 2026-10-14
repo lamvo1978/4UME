@@ -66,7 +66,7 @@ public sealed partial class GeminiDraftService(
         - Do not reuse the titles or situations of the existing lessons listed in the request.
         """;
 
-    public ListeningDraftStatusDto GetStatus() => new(ai.Configured, ai.ModelName);
+    public ListeningDraftStatusDto GetStatus() => new(ai.Configured, ai.ModelName, ai.Providers);
 
     public async Task<ListeningDraftDto> DraftAsync(ListeningDraftRequest request, CancellationToken ct = default)
     {
@@ -108,7 +108,7 @@ public sealed partial class GeminiDraftService(
             prompt.AppendLine(JsonSerializer.Serialize(new { doc.TitleEn, doc.TitleVi, doc.Topic, doc.SummaryVi, doc.Speakers, Lines = doc.Lines.Take(6) }, GrammarJson.Options));
         }
 
-        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), Schema(), 0.9, ct);
+        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), Schema(), 0.9, ct, request.Provider);
         ListeningLessonDocument draft;
         try
         {

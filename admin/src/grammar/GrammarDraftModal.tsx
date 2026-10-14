@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api, type GrammarBank, type GrammarDraft, type GrammarDraftDifficulty, type GrammarExercise, type GrammarLesson } from "../api";
 import { BANKS, cleanLesson, displayAnswer, exerciseMeta, typesFor } from "./meta";
 import { SkipCheckSwitch, useSkipCheck } from "./SkipCheckSwitch";
+import { AiProviderSelect, useAiProvider } from "../components/AiProviderSelect";
 
 const COUNTS = ["1", "5", "10", "15", "20"];
 const DIFFICULTIES: { value: GrammarDraftDifficulty; label: string }[] = [
@@ -34,6 +35,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
   const [draft, setDraft] = useState<GrammarDraft | null>(null);
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [skipCheck, setSkipCheck] = useSkipCheck();
+  const [provider, setProvider] = useAiProvider(status.data?.providers);
   const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
@@ -61,6 +63,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
         difficulty,
         notes: notes.trim() || undefined,
         skipCheck,
+        provider: provider || undefined,
       });
       setSkipped(skipCheck);
       setDraft(result);
@@ -216,6 +219,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
             value={notes}
             onChange={(e) => setNotes(e.currentTarget.value)}
           />
+          <AiProviderSelect providers={status.data?.providers} value={provider} onChange={setProvider} />
           <SkipCheckSwitch value={skipCheck} onChange={setSkipCheck} />
           {error ? <Alert color="red">{error}</Alert> : null}
           <Group justify="flex-end">

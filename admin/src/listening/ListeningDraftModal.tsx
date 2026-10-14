@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { api, type ListeningDraftLength, type ListeningKind } from "../api";
 import { LEVELS } from "../grammar/meta";
 import { KINDS } from "./meta";
+import { AiProviderSelect, useAiProvider } from "../components/AiProviderSelect";
 
 const LENGTHS: { value: ListeningDraftLength; label: string }[] = [
   { value: "short", label: "Ngắn (~1 phút)" },
@@ -24,12 +25,13 @@ export function ListeningDraftModal({ opened, onClose }: { opened: boolean; onCl
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [provider, setProvider] = useAiProvider(status.data?.providers);
 
   async function write() {
     setBusy(true);
     setError("");
     try {
-      const draft = await api.draftListening({ level, kind, length, topic: topic.trim() || undefined, notes: notes.trim() || undefined });
+      const draft = await api.draftListening({ level, kind, length, topic: topic.trim() || undefined, notes: notes.trim() || undefined, provider: provider || undefined });
       onClose();
       navigate("/listening/new", { state: { draft: draft.lesson } });
     } catch (e) {
@@ -78,6 +80,7 @@ export function ListeningDraftModal({ opened, onClose }: { opened: boolean; onCl
           value={notes}
           onChange={(e) => setNotes(e.currentTarget.value)}
         />
+        <AiProviderSelect providers={status.data?.providers} value={provider} onChange={setProvider} />
         {error ? <Alert color="red">{error}</Alert> : null}
         <Group justify="flex-end">
           <Button variant="default" onClick={onClose} disabled={busy}>

@@ -119,7 +119,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
             foreach (var e in existing) prompt.AppendLine("- " + Summary(e));
         }
 
-        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(Instructions, prompt.ToString(), DraftSchema(types), 0.8, ct, request.Provider);
         List<GrammarExercise> drafted;
         try
         {
@@ -135,7 +135,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
 
         AssignIds(drafted, existing, lesson.Slug);
 
-        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, ct);
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, request.Provider, ct);
         var ids = existing.Select(e => e.Id).ToHashSet();
         var items = drafted.Select((e, i) =>
         {
@@ -150,7 +150,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
     }
 
     /// <summary>Second pass; a failure here only means the admin gets no warnings, the draft is still returned.</summary>
-    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(GrammarLessonDocument lesson, List<GrammarExercise> drafted, CancellationToken ct)
+    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(GrammarLessonDocument lesson, List<GrammarExercise> drafted, string? provider, CancellationToken ct)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
@@ -159,7 +159,7 @@ public sealed partial class GrammarDraftService(AiClient ai, ILogger<GrammarDraf
         prompt.AppendLine(JsonSerializer.Serialize(drafted.Select((e, i) => new { index = i, exercise = WithoutId(e) }), GrammarJson.Options));
         try
         {
-            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
             var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count)

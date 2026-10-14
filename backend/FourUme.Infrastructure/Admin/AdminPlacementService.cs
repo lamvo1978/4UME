@@ -164,7 +164,7 @@ public sealed partial class AdminPlacementService(
             foreach (var e in existing) prompt.AppendLine("- " + e);
         }
 
-        var reply = await ai.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct);
+        var reply = await ai.GenerateJsonAsync(DraftInstructions, prompt.ToString(), DraftSchema(), 0.8, ct, request.Provider);
         List<DraftQuestion> drafted;
         try
         {
@@ -183,7 +183,7 @@ public sealed partial class AdminPlacementService(
             .ToList();
         if (questions.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
-        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, ct);
+        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, request.Provider, ct);
         var items = questions.Select((q, i) =>
         {
             var problems = GrammarPlacementRules.Validate(q);
@@ -193,7 +193,7 @@ public sealed partial class AdminPlacementService(
         return new PlacementGrammarDraftDto(items, isChecked, reply.Model);
     }
 
-    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, CancellationToken ct)
+    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, string? provider, CancellationToken ct)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Level: {level}. Questions (JSON, check each one by its index):");
@@ -201,7 +201,7 @@ public sealed partial class AdminPlacementService(
             questions.Select((q, i) => new { index = i, q.Prompt, q.Options, q.Answer, lesson = q.LessonSlug }), GrammarJson.Options));
         try
         {
-            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct);
+            var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
             var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
             return (results
                 .Where(r => !r.Ok && r.Index >= 0 && r.Index < questions.Count)

@@ -482,6 +482,8 @@ export type GrammarDraftRequest = {
   difficulty: GrammarDraftDifficulty;
   notes?: string;
   skipCheck?: boolean;
+  /** Empty or missing: Groq, then Gemini. */
+  provider?: string;
 };
 export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
 export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean; model: string };
@@ -636,9 +638,10 @@ export type SpeechStatus = {
   charsUsed: number;
   monthlyCharLimit: number;
 };
-export type ListeningDraftStatus = { configured: boolean; model: string };
+export type AiProvider = { key: string; name: string; configured: boolean; model: string };
+export type ListeningDraftStatus = { configured: boolean; model: string; providers?: AiProvider[] };
 export type ListeningDraftLength = "short" | "medium" | "long";
-export type ListeningDraftRequest = { level: string; kind: ListeningKind; topic?: string; notes?: string; length: ListeningDraftLength };
+export type ListeningDraftRequest = { level: string; kind: ListeningKind; topic?: string; notes?: string; length: ListeningDraftLength; provider?: string };
 export type ListeningDraft = { lesson: ListeningLesson; problems: string[] };
 export type ImportListeningRow = { slug: string; titleEn: string; status: ImportStatus; currentVersion: number | null; problems: string[] };
 export type ImportListeningResult = {
@@ -679,7 +682,7 @@ export type PlacementGrammarInput = {
   published: boolean;
 };
 export type PlacementGrammarQuestion = PlacementGrammarInput & { id: string; explanationVi: string; updatedAt: string };
-export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean };
+export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean; provider?: string };
 export type PlacementGrammarDraft = {
   items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
   checked: boolean;

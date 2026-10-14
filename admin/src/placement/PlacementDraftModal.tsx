@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { api, type AdminGrammarSummary, type PlacementGrammarDraft, type PlacementGrammarInput, type PlacementLevel } from "../api";
 import { SkipCheckSwitch, useSkipCheck } from "../grammar/SkipCheckSwitch";
+import { AiProviderSelect, useAiProvider } from "../components/AiProviderSelect";
 import { PLACEMENT_LEVELS } from "./meta";
 
 const COUNTS = ["1", "5", "10", "15", "20"];
@@ -29,6 +30,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
   const [draft, setDraft] = useState<PlacementGrammarDraft | null>(null);
   const [picked, setPicked] = useState<Set<number>>(new Set());
   const [skipCheck, setSkipCheck] = useSkipCheck();
+  const [provider, setProvider] = useAiProvider(status.data?.providers);
   const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     setBusy(true);
     setError("");
     try {
-      const result = await api.draftPlacementGrammar({ level, count: Number(count), lessonSlug: lessonSlug ?? undefined, notes: notes.trim() || undefined, skipCheck });
+      const result = await api.draftPlacementGrammar({ level, count: Number(count), lessonSlug: lessonSlug ?? undefined, notes: notes.trim() || undefined, skipCheck, provider: provider || undefined });
       setSkipped(skipCheck);
       setDraft(result);
       setPicked(new Set(result.items.flatMap((item, i) => (item.problems.length === 0 && !item.warning ? [i] : []))));
@@ -209,6 +211,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
             value={notes}
             onChange={(e) => setNotes(e.currentTarget.value)}
           />
+          <AiProviderSelect providers={status.data?.providers} value={provider} onChange={setProvider} />
           <SkipCheckSwitch value={skipCheck} onChange={setSkipCheck} />
           {error ? <Alert color="red">{error}</Alert> : null}
           <Group justify="flex-end">

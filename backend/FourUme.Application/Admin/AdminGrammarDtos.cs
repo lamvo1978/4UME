@@ -39,6 +39,7 @@ public static class GrammarDraftRules
 /// <param name="Lesson">The lesson as currently edited (may be unsaved), so the AI sees the theory and avoids existing questions.</param>
 /// <param name="Target"><see cref="GrammarDraftRules.TargetExercises"/> or <see cref="GrammarDraftRules.TargetPractice"/>; decides which types are allowed.</param>
 /// <param name="SkipCheck">Skip the AI check pass: one AI call instead of two, the admin reads answers carefully.</param>
+/// <param name="Provider">Null drafts with Groq then Gemini; otherwise one of <see cref="AiProviders"/>, used for both passes.</param>
 public record GrammarDraftRequest(
     GrammarLessonDocument Lesson,
     string Target,
@@ -46,7 +47,8 @@ public record GrammarDraftRequest(
     IReadOnlyList<string>? Types,
     string? Difficulty,
     string? Notes,
-    bool SkipCheck = false);
+    bool SkipCheck = false,
+    string? Provider = null);
 
 /// <param name="Warning">Set when the second AI pass doubts the answer; the admin should look closely before keeping it.</param>
 public record GrammarDraftItemDto(GrammarExercise Exercise, IReadOnlyList<string> Problems, string? Warning);
