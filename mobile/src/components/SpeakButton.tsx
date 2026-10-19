@@ -61,8 +61,10 @@ export function speechRate() {
 let token = 0;
 let player: AudioPlayer | null = null;
 
+/** `remove()` alone leaves the recording playing until it's garbage collected. */
 function stopAll() {
   Speech.stop();
+  player?.pause();
   player?.remove();
   player = null;
 }
@@ -106,7 +108,8 @@ export function speakWord(text: string, voice: WordVoice = "female") {
       speak(text);
       return;
     }
-    const p = createAudioPlayer({ uri: mediaUrl(url)! });
+    // iOS otherwise deactivates the audio session when the word ends, which stops a recording started meanwhile.
+    const p = createAudioPlayer({ uri: mediaUrl(url)! }, { keepAudioSessionActive: true });
     player = p;
     let started = false;
     let failed = false;

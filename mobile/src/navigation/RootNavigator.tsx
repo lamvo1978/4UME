@@ -11,6 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
 import { PracticeGiftPrompt, practiceGiftToAnnounce } from "../components/streak/PracticeGiftPrompt";
@@ -66,6 +67,9 @@ const navTheme: Theme = {
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
+/** tabBar paddingTop 8 + tabItem padding 2/4 + icon pill 32 + label marginTop 2 + lineHeight 14. */
+const TAB_BAR_HEIGHT = 62;
+
 function tabIcon(active: IconName, inactive: IconName) {
   return ({ focused, color }: { focused: boolean; color: string }) => (
     <View style={[styles.iconPill, focused && styles.iconPillActive]}>
@@ -113,6 +117,7 @@ function CelebrationHost() {
 }
 
 function MainTabs() {
+  const insets = useSafeAreaInsets();
   return (
     <>
       <CelebrationHost />
@@ -121,7 +126,7 @@ function MainTabs() {
           headerShown: false,
           tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.muted,
-          tabBarStyle: styles.tabBar,
+          tabBarStyle: [styles.tabBar, { height: TAB_BAR_HEIGHT + insets.bottom }],
           tabBarItemStyle: styles.tabItem,
           tabBarIconStyle: styles.tabIcon,
           tabBarLabelStyle: styles.tabLabel,
@@ -303,8 +308,8 @@ const styles = StyleSheet.create({
     ...shadow.card,
     shadowOffset: { width: 0, height: -4 },
   },
-  tabItem: { paddingTop: 2, paddingHorizontal: 0 },
-  tabLabel: { fontSize: 10.5, fontWeight: "600", marginTop: 2, letterSpacing: -0.1 },
+  tabItem: { paddingTop: 2, paddingBottom: 4, paddingHorizontal: 0 },
+  tabLabel: { fontSize: 10.5, lineHeight: 14, fontWeight: "600", marginTop: 2, letterSpacing: -0.1 },
   tabIcon: { width: 48, height: 32 },
   iconPill: { width: 48, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   iconPillActive: { backgroundColor: colors.accentSoft },

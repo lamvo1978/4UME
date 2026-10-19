@@ -77,7 +77,8 @@ export function SpeakExercise({
   onSkipAll: () => void;
 }) {
   const recorder = useAudioRecorder(RECORDING);
-  const player = useAudioPlayer(null);
+  // Pausing would otherwise deactivate the iOS audio session ~100 ms later, cutting the recording that start() begins.
+  const player = useAudioPlayer(null, { keepAudioSessionActive: true });
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<PronunciationResult | null>(null);
   const [message, setMessage] = useState("");

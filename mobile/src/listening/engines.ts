@@ -1,4 +1,4 @@
-import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { AudioPlayer, AudioStatus, setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import * as Speech from "expo-speech";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ListeningLine, mediaUrl } from "../api/client";
@@ -127,7 +127,10 @@ export function useAudioEngine(url: string, opts: Options): Engine {
       const start = lines[index]?.startMs;
       if (start == null) return;
       if (loop.current >= 0) loop.current = index;
-      void player.seekTo(start / 1000).then(() => player.play());
+      player
+        .seekTo(start / 1000)
+        .then(() => player.play())
+        .catch(() => {});
     },
     [lines, player]
   );
@@ -150,6 +153,29 @@ export function useAudioEngine(url: string, opts: Options): Engine {
   };
 }
 
+/**
+ * Whether the player has finished loading its source once. Android reports `isLoaded: false` again while it
+ * re-buffers after every seek, and the status hook still holds the previous player's status right after the source changes.
+ */
+function useLoadedOnce(player: AudioPlayer, status: AudioStatus) {
+  const loadedNow = status.id === player.id && status.isLoaded;
+  const [loadedId, setLoadedId] = useState<string | null>(null);
+  useEffect(() => {
+    if (loadedNow) setLoadedId(player.id);
+  }, [loadedNow, player.id]);
+  return loadedNow || loadedId === player.id;
+}
+
+/** Seeks then plays, unless a newer play started or the player was released (screen left, next sentence) meanwhile. */
+function playFrom(player: AudioPlayer, seconds: number, isCurrent: () => boolean) {
+  player
+    .seekTo(seconds)
+    .then(() => {
+      if (isCurrent()) player.play();
+    })
+    .catch(() => {});
+}
+
 /** Speed of "Nghe chậm" in dictation. */
 export const SLOW_RATE = 0.7;
 /** Timings end on the last word boundary; keep its tail audible without running into the next line. */
@@ -165,6 +191,7 @@ export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
   const stopAt = useRef<number | null>(null);
   const token = useRef(0);
   const [speaking, setSpeaking] = useState(false);
+  const loaded = useLoadedOnce(player, status);
 
   // The audio mode is left to the player screen underneath, which already allows silent-mode playback.
   useEffect(
@@ -172,7 +199,7 @@ export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
       token.current++;
       Speech.stop();
     },
-    []
+    [player]
   );
 
   useEffect(() => {
@@ -196,7 +223,7 @@ export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
         const end = (line.endMs ?? next ?? Number.MAX_SAFE_INTEGER) + LINE_TAIL_MS;
         stopAt.current = next != null ? Math.min(end, next) : end;
         player.setPlaybackRate(rate);
-        void player.seekTo(line.startMs / 1000).then(() => player.play());
+        playFrom(player, line.startMs / 1000, () => t === token.current);
         return;
       }
 
@@ -210,7 +237,7 @@ export function useLinePlayer(url: string | null, lines: ListeningLine[]) {
     [lines, url, player]
   );
 
-  return { play, playing: status.playing || speaking, loading: !!url && !status.isLoaded };
+  return { play, playing: status.playing || speaking, loading: !!url && !loaded };
 }
 
 /** Plays one practice sentence: its own recording when it has one, otherwise the device voice. */
@@ -219,13 +246,14 @@ export function useSentencePlayer(url: string | null, text: string) {
   const status = useAudioPlayerStatus(player);
   const token = useRef(0);
   const [speaking, setSpeaking] = useState(false);
+  const loaded = useLoadedOnce(player, status);
 
   useEffect(
     () => () => {
       token.current++;
       Speech.stop();
     },
-    []
+    [player]
   );
 
   const play = useCallback(
@@ -236,7 +264,7 @@ export function useSentencePlayer(url: string | null, text: string) {
       const rate = slow ? SLOW_RATE : 1;
       if (url) {
         player.setPlaybackRate(rate);
-        void player.seekTo(0).then(() => player.play());
+        playFrom(player, 0, () => t === token.current);
         return;
       }
       setSpeaking(true);
@@ -248,7 +276,7 @@ export function useSentencePlayer(url: string | null, text: string) {
     [url, text, player]
   );
 
-  return { play, playing: status.playing || speaking, loading: !!url && !status.isLoaded };
+  return { play, playing: status.playing || speaking, loading: !!url && !loaded };
 }
 
 /** Reads the script line by line with the device voice while the lesson has no recording yet. */
