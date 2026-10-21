@@ -111,6 +111,20 @@ function eligibleTypes(it: ReviewItem): ExerciseType[] {
   return types;
 }
 
+/** Homographs (answer the noun vs. the verb) would show as identical cards, so one matching exercise takes one word per spelling. */
+function pickMatching(items: ReviewItem[]): ReviewItem[] {
+  const seen = new Set<string>();
+  const picked = shuffle(items)
+    .filter((it) => {
+      const key = normalize(it.word.word);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, MATCH_MAX);
+  return picked.length >= MATCH_MIN ? picked : [];
+}
+
 /**
  * Each word gets a few randomly picked exercise types (enough to land near
  * SESSION_TARGET in total), and one matching exercise covers several words.
@@ -119,9 +133,7 @@ function eligibleTypes(it: ReviewItem): ExerciseType[] {
  */
 function buildPlan(items: ReviewItem[]): Exercise[] {
   if (items.length === 0) return [];
-  const matched = new Set(
-    items.length >= MATCH_MIN ? shuffle(items).slice(0, MATCH_MAX).map((it) => it.word.id) : [],
-  );
+  const matched = new Set(pickMatching(items).map((it) => it.word.id));
   const singles = SESSION_TARGET - (matched.size > 0 ? 1 : 0) + matched.size;
   const perWord = Math.min(MAX_PER_WORD, Math.max(1, Math.round(singles / items.length)));
 
