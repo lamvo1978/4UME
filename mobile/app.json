@@ -24,6 +24,7 @@
       "package": "com.fourume.app",
       "predictiveBackGestureEnabled": false,
       "permissions": [
+        "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
@@ -46,8 +47,7 @@
         "expo-image-picker",
         {
           "photosPermission": "4UME cần truy cập ảnh để bạn đính kèm ảnh chụp màn hình khi gửi góp ý.",
-          "cameraPermission": false,
-          "microphonePermission": false
+          "cameraPermission": false
         }
       ],
       "expo-font",
