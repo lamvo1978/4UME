@@ -6,6 +6,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { api, ConversationScenario, ConversationStatus, VOCAB_LEVELS, VocabLevel } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
+import { AiConsentModal, hasAiConsent, saveAiConsent } from "../conversation/aiConsent";
 import { RootStackParamList } from "../navigation/types";
 import { speechToTextAvailable } from "../speech/useSpeechToText";
 import { colors, shadow, spacing } from "../theme";
@@ -21,6 +22,8 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
   const [scenarios, setScenarios] = useState<ConversationScenario[] | null>(null);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
+  /** Set while the AI consent box is open; holds where to go after "Đồng ý". */
+  const [asking, setAsking] = useState<{ scenario: ConversationScenario | null } | null>(null);
   const vocabLevel = me?.settings.vocabLevel;
 
   useEffect(() => {
@@ -51,15 +54,26 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
   const blocked = !open || status.remaining <= 0;
   const list = scenarios.filter((s) => s.level === level);
   const countOf = (l: VocabLevel) => scenarios.filter((s) => s.level === l).length;
-  const start = (scenario: ConversationScenario | null) =>
+  const go = (scenario: ConversationScenario | null) =>
     navigation.navigate("Conversation", {
       scenarioId: scenario?.id ?? null,
       level: scenario?.level ?? level,
       title: scenario?.titleVi ?? "Trò chuyện tự do",
     });
+  const start = async (scenario: ConversationScenario | null) => {
+    if (!me || (await hasAiConsent(me.userId))) go(scenario);
+    else setAsking({ scenario });
+  };
+  const agree = async () => {
+    const pending = asking;
+    setAsking(null);
+    if (me) await saveAiConsent(me.userId).catch(() => {});
+    if (pending) go(pending.scenario);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
+      <AiConsentModal visible={asking !== null} onAgree={() => void agree()} onDecline={() => setAsking(null)} />
       <Text style={styles.intro}>
         Nói chuyện bằng tiếng Anh với AI. Bấm micro để nói (hoặc gõ chữ), AI trả lời, sửa câu của bạn và gợi ý câu tiếp theo.
       </Text>

@@ -10,6 +10,7 @@ Cuối buổi AI tổng kết: điểm 0–100, các lỗi nên chú ý (câu g�
 ## Màn đàm thoại trong app
 
 - Vào từ tab **Luyện** → thẻ *Đàm thoại với AI* → chọn cấp độ → *Trò chuyện tự do* hoặc một tình huống.
+- **Hộp xin đồng ý** (Apple Guideline 5.1.2(i)): lần đầu bắt đầu một buổi, app hiện hộp *Trò chuyện với AI*: câu bạn nói / gõ (dạng chữ) được gửi tới *dịch vụ AI bên ngoài của đối tác 4UME*, không gửi ghi âm, email hay tên; link chính sách quyền riêng tư; nút *Đồng ý và bắt đầu* / *Để sau*. Chưa đồng ý thì không gửi gì. Lựa chọn lưu trên máy theo tài khoản (`fourume.aiConsent.<userId>`), nên đăng nhập máy khác sẽ hỏi lại. Hộp **không nêu tên** nhà cung cấp để đổi AI không cần cập nhật app; tên cụ thể (Groq, Google Gemini) ghi ở trang `privacy/` — đổi AI thì nhớ sửa trang đó.
 - Tình huống nhập vai có khung **Mục tiêu** + cụm từ gợi ý ở đầu (chạm để ẩn).
 - **Sửa ngay tại chỗ**: câu người học có lỗi ngữ pháp / dùng từ thì hiện ngay dưới bong bóng của họ khung *Nói tự nhiên hơn* (câu đúng, nút nghe, giải thích tiếng Việt). AI vẫn trả lời tiếp trong vai, không giảng giải trong câu trả lời. Phần tổng kết gom lại tối đa 5 lỗi đáng nhớ nhất, khớp với những gì đã sửa trong buổi.
   - Tính là lỗi: thiếu / sai giới từ ("waiting my friend" → "waiting for my friend"), thiếu mạo từ, sai dạng động từ, sai trật tự từ.
