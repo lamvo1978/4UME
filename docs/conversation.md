@@ -16,6 +16,7 @@ Cuối buổi AI tổng kết: điểm 0–100, các lỗi nên chú ý (câu g�
   - Tính là lỗi: thiếu / sai giới từ ("waiting my friend" → "waiting for my friend"), thiếu mạo từ, sai dạng động từ, sai trật tự từ.
   - Không tính: chữ hoa, dấu câu, từ bị nhận dạng nhầm thành từ đồng âm (chữ đến từ nhận dạng giọng nói). Máy chủ cũng tự bỏ lời sửa chỉ khác chữ hoa / dấu câu.
 - **Micro nghe liên tục**: bấm micro rồi nói, ngừng để suy nghĩ giữa câu không bị ngắt. Chữ hiện dần trong ô nhập, thanh dưới báo *Đang nghe… nói xong bấm ■ để gửi*. Máy gửi khi bấm ■, hoặc tự dừng sau 5 giây im lặng / 60 giây mỗi lượt. (Các màn Luyện câu, ngữ pháp vẫn dừng ở lần ngừng đầu tiên vì chỉ nói một câu ngắn.) Android 12 trở xuống không có chế độ liên tục, máy dùng thời gian im lặng dài hơn thay thế.
+- **Âm lượng sau khi dùng micro (iOS)**: thư viện nhận dạng giọng chuyển iPhone sang `playAndRecord` + chế độ `measurement`, làm mọi âm thanh của app nhỏ hẳn cho tới khi tắt app. Mỗi lần nghe xong app trả về `playback` / `default` (`useSpeechToText`).
 - Câu trả lời của AI có nút *Nghe lại*; câu mới nhất có thêm *Gợi ý trả lời* (gợi ý tiếng Việt + 2–3 câu mẫu, chạm để đưa vào ô trả lời).
 - Thanh nhỏ ngay trên ô nhập: bên trái *Lượt x/20 · còn y lượt hôm nay*, bên phải nút **Kết thúc** (chỉ hiện sau câu đầu tiên, hỏi xác nhận trước khi kết thúc; khi đã đạt mục tiêu / đủ lượt / hết lượt thì vào thẳng tổng kết). Lúc AI đang tổng kết, cả màn phủ lớp *Đang tổng kết…*. Không đặt nút trên thanh tiêu đề (iOS 26 bọc nút trong khung kính, chữ dài bị chật, góc trên khó với tay).
 - **Giọng của máy đổi ngẫu nhiên theo từng buổi**: đầu mỗi buổi app chọn ngẫu nhiên một giọng tiếng Anh có trên máy (Mỹ, Anh, Úc, Ireland, Canada) và giữ nguyên giọng đó cho cả buổi (câu mở đầu, mọi câu trả lời, *Nghe lại*), để AI như một người duy nhất. Buổi sau (kể cả *Luyện lại*) bốc giọng khác. Muốn nhiều giọng hay hơn: iPhone → *Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Anh*, tải giọng *Nâng cao*.
@@ -67,6 +68,7 @@ flowchart LR
 | Lượt tối đa mỗi buổi | 20 | 20 |
 | Giọng đọc | Giọng của máy | Giọng của máy, hoặc Azure nếu admin bật |
 
+- Màn **Premium** trong app có dòng quyền lợi *Đàm thoại với AI {ai} lượt/ngày* (mô tả nhắc gói miễn phí {aiFree} lượt/ngày). `{ai}` / `{aiFree}` được app thay bằng số lượt đang cài ở admin, giống `{n}` của chấm phát âm. Nếu admin đã lưu danh sách quyền lợi riêng thì thêm tay dòng này ở *Quyền lợi Premium*.
 - **Một lượt = một câu người học gửi.** Câu mở đầu của AI và phần tổng kết không tính lượt.
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học và chấm phát âm.
 - Hết lượt: app hiện khung gợi ý Premium (chỉ giới thiệu, không hướng dẫn thanh toán ngoài app).

@@ -1,6 +1,7 @@
 import { requireOptionalNativeModule } from "expo";
 import { setAudioModeAsync } from "expo-audio";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Platform } from "react-native";
 
 type Lib = typeof import("expo-speech-recognition");
 
@@ -97,6 +98,12 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
         owner = 0;
         clearTimers();
         setListening(false);
+        // The recognizer leaves iOS in playAndRecord + "measurement" mode, which plays everything much quieter until the app restarts.
+        if (Platform.OS === "ios") {
+          try {
+            m.setCategoryIOS({ category: "playback", categoryOptions: ["duckOthers"], mode: "default" });
+          } catch {}
+        }
         void setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true, interruptionMode: "duckOthers" }).catch(() => {});
         if (latest.current) finalRef.current?.(latest.current);
       }),

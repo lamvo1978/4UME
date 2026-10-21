@@ -141,7 +141,8 @@ export function PremiumPerksPage() {
         {soonShown > 0
           ? `Đang hiện ${soonShown} quyền lợi "Sắp có". Trước khi mở bán Premium qua App Store / Google Play, hãy ẩn những dòng chưa làm: cửa hàng thường từ chối màn mua hứa tính năng chưa có.`
           : "Mọi quyền lợi đang hiện đều đã có thật."}{" "}
-        Trong tiêu đề, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt).
+        Trong tiêu đề và mô tả, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt); <b>{"{ai}"}</b> /{" "}
+        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI).
       </Alert>
 
       <PlansCard
