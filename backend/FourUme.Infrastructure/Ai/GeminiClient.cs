@@ -16,12 +16,16 @@ public class GeminiOptions
     /// <summary>Comma-separated models tried in order when <see cref="Model"/> stays overloaded; unknown names are skipped.</summary>
     public string? FallbackModels { get; set; }
     public const string DefaultFallbackModels = "gemini-flash-lite-latest,gemini-2.5-flash";
+    /// <summary>Model for "Đàm thoại với AI" replies, tried before the others; empty uses <see cref="Model"/>.</summary>
+    public string? ChatModel { get; set; }
 
     public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
     public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
 
-    public IReadOnlyList<string> Models =>
-        new[] { ModelName }
+    public IReadOnlyList<string> Models => ModelsFor(false);
+
+    public IReadOnlyList<string> ModelsFor(bool chat) =>
+        (chat && !string.IsNullOrWhiteSpace(ChatModel) ? new[] { ChatModel.Trim(), ModelName } : new[] { ModelName })
             .Concat((string.IsNullOrWhiteSpace(FallbackModels) ? DefaultFallbackModels : FallbackModels)
                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -51,7 +55,8 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
     public bool Configured => options.Value.Configured;
     public string ModelName => options.Value.ModelName;
 
-    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
+    /// <param name="chat">A learner is waiting: no thinking and <see cref="GeminiOptions.ChatModel"/> first.</param>
+    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct, bool chat = false)
     {
         var o = options.Value;
         if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Gemini (GEMINI_API_KEY) trên máy chủ.");
@@ -69,7 +74,7 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
                 ["temperature"] = temperature,
                 ["responseMimeType"] = "application/json",
                 ["responseSchema"] = schema,
-                ["thinkingConfig"] = new JsonObject { ["thinkingBudget"] = ThinkingBudget },
+                ["thinkingConfig"] = new JsonObject { ["thinkingBudget"] = chat ? 0 : ThinkingBudget },
             },
         };
 
@@ -78,7 +83,7 @@ public sealed class GeminiClient(IHttpClientFactory httpFactory, IOptions<Gemini
         (plainPayload["generationConfig"] as JsonObject)!.Remove("thinkingConfig");
         var plain = plainPayload.ToJsonString();
         var client = httpFactory.CreateClient(HttpClientName);
-        var models = o.Models;
+        var models = o.ModelsFor(chat);
         var overloaded = false;
         var quotaHit = false;
         HttpStatusCode status = default;

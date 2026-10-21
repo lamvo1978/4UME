@@ -39,15 +39,23 @@ public sealed class AiClient(GroqClient groq, GeminiClient gemini, ILogger<AiCli
             default:
                 throw new InvalidOperationException("AI không hợp lệ.");
         }
+        return await WithFallbackAsync(instructions, prompt, schema, temperature, false, ct);
+    }
 
+    /// <summary>A reply a learner is waiting for: the quick settings of each provider, Groq then Gemini.</summary>
+    public Task<AiReply> ChatJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct) =>
+        WithFallbackAsync(instructions, prompt, schema, temperature, true, ct);
+
+    private async Task<AiReply> WithFallbackAsync(string instructions, string prompt, JsonObject schema, double temperature, bool chat, CancellationToken ct)
+    {
         if (!Configured) throw new InvalidOperationException(NotConfiguredMessage);
-        if (!groq.Configured) return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
-        if (!gemini.Configured) return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+        if (!groq.Configured) return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct, chat), ct);
+        if (!gemini.Configured) return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct, chat), ct);
 
         string groqError;
         try
         {
-            return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+            return await Call("Groq", () => groq.GenerateJsonAsync(instructions, prompt, schema, temperature, ct, chat), ct);
         }
         catch (InvalidOperationException ex) when (!ct.IsCancellationRequested)
         {
@@ -57,7 +65,7 @@ public sealed class AiClient(GroqClient groq, GeminiClient gemini, ILogger<AiCli
 
         try
         {
-            return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct), ct);
+            return await Call("Gemini", () => gemini.GenerateJsonAsync(instructions, prompt, schema, temperature, ct, chat), ct);
         }
         catch (InvalidOperationException ex)
         {

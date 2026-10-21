@@ -4,6 +4,7 @@ using FourUme.Application.About;
 using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
+using FourUme.Application.Conversations;
 using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
 using FourUme.Application.Invites;
@@ -266,6 +267,26 @@ public static class AdminEndpoints
             await s.DeleteAsync(id, ct);
             return Results.NoContent();
         });
+
+        admin.MapGet("/conversation/scenarios", async (IAdminConversationService s, CancellationToken ct) => Results.Ok(await s.GetScenariosAsync(ct)));
+        admin.MapPost("/conversation/scenarios", async (SaveConversationScenarioRequest r, IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateAsync(r, ct)));
+        admin.MapPost("/conversation/scenarios/batch", async (SaveConversationScenarioBatchRequest r, IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(new { created = await s.CreateBatchAsync(r, ct) }));
+        admin.MapPost("/conversation/scenarios/draft", async (ConversationScenarioDraftRequest r, IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(await s.DraftAsync(r, ct)));
+        admin.MapPut("/conversation/scenarios/{id:guid}", async (Guid id, SaveConversationScenarioRequest r, IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateAsync(id, r, ct)));
+        admin.MapDelete("/conversation/scenarios/{id:guid}", async (Guid id, IAdminConversationService s, CancellationToken ct) =>
+        {
+            await s.DeleteAsync(id, ct);
+            return Results.NoContent();
+        });
+        admin.MapGet("/conversation/config", async (IAdminConversationService s, CancellationToken ct) => Results.Ok(await s.GetConfigAsync(ct)));
+        admin.MapPut("/conversation/config", async (ConversationConfig c, IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveConfigAsync(c, ct)));
+        admin.MapPost("/conversation/config/reset", async (IAdminConversationService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetConfigAsync(ct)));
 
         admin.MapGet("/listening", async (IAdminListeningService s, CancellationToken ct) => Results.Ok(await s.GetLessonsAsync(ct)));
         admin.MapGet("/listening/export", async (IAdminListeningService s, CancellationToken ct) =>

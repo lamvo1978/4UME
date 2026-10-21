@@ -1,0 +1,202 @@
+[
+  {
+    "level": "A1",
+    "titleVi": "Gọi đồ uống ở quán cà phê",
+    "icon": "cafe-outline",
+    "situation": "A small coffee shop in the morning. The learner wants to order a drink, choose a size and pay.",
+    "aiRole": "a friendly barista",
+    "goalVi": "Gọi một đồ uống, chọn cỡ ly và trả tiền.",
+    "opening": "Hi! Welcome to Sunny Cafe. What can I get for you today?",
+    "keyPhrases": ["I'd like a coffee, please.", "Can I have a small one?", "How much is it?", "Here you are."]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Làm quen với bạn mới",
+    "icon": "people-outline",
+    "situation": "The first day of an English class. The learner meets a classmate and they introduce themselves.",
+    "aiRole": "a friendly new classmate named Emma",
+    "goalVi": "Giới thiệu tên, quê quán và công việc của bạn.",
+    "opening": "Hi! I'm Emma. I'm new here. What's your name?",
+    "keyPhrases": ["My name is...", "I'm from Vietnam.", "I work as a...", "Nice to meet you."]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Mua trái cây ở chợ",
+    "icon": "cart-outline",
+    "situation": "A fruit stall at a market. The learner wants to buy some fruit and asks about prices.",
+    "aiRole": "a cheerful fruit seller",
+    "goalVi": "Hỏi giá và mua hai loại trái cây.",
+    "opening": "Good morning! Fresh fruit today. What would you like?",
+    "keyPhrases": ["How much are the apples?", "I want two kilos, please.", "That's all, thank you."]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Hỏi đường tới nhà ga",
+    "icon": "map-outline",
+    "situation": "A busy street in a city. The learner is lost and asks a local person how to get to the train station.",
+    "aiRole": "a helpful local person on the street",
+    "goalVi": "Hỏi đường và hiểu cách đi tới nhà ga.",
+    "opening": "Hi, you look a bit lost. Can I help you?",
+    "keyPhrases": ["Where is the train station?", "Is it far?", "Turn left or right?", "Thank you very much."]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Nói về gia đình",
+    "icon": "home-outline",
+    "situation": "Two friends chat at lunch. The friend asks the learner about their family.",
+    "aiRole": "a curious friend",
+    "goalVi": "Kể về các thành viên trong gia đình bạn.",
+    "opening": "Tell me about your family. Do you have any brothers or sisters?",
+    "keyPhrases": ["I have one brother.", "My mother is a teacher.", "There are four people in my family."]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Đặt món ở nhà hàng",
+    "icon": "restaurant-outline",
+    "situation": "A casual restaurant at dinner time. The learner orders a main dish and a drink and asks about the menu.",
+    "aiRole": "a polite waiter",
+    "goalVi": "Gọi món chính, đồ uống và hỏi về một món trong thực đơn.",
+    "opening": "Good evening! Here's the menu. Are you ready to order, or do you need a few minutes?",
+    "keyPhrases": ["What do you recommend?", "I'll have the chicken, please.", "Is it spicy?", "Could I get the bill?"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Nhận phòng khách sạn",
+    "icon": "bed-outline",
+    "situation": "The front desk of a hotel. The learner has a booking and wants to check in and ask about breakfast.",
+    "aiRole": "a hotel receptionist",
+    "goalVi": "Nhận phòng đã đặt và hỏi giờ ăn sáng.",
+    "opening": "Good afternoon, welcome to the Riverside Hotel. Do you have a reservation?",
+    "keyPhrases": ["I have a reservation under the name...", "What time is breakfast?", "Is Wi-Fi free?"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Mua áo ở cửa hàng quần áo",
+    "icon": "shirt-outline",
+    "situation": "A clothes shop. The learner wants to buy a shirt, asks for another size and tries it on.",
+    "aiRole": "a shop assistant",
+    "goalVi": "Tìm áo đúng cỡ, hỏi thử đồ và quyết định mua.",
+    "opening": "Hello! Are you looking for anything special today?",
+    "keyPhrases": ["Do you have this in a medium?", "Can I try it on?", "It's a bit too big.", "I'll take it."]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Hẹn bạn đi xem phim",
+    "icon": "film-outline",
+    "situation": "A phone call between friends. They plan to see a movie this weekend and agree on a day, time and place.",
+    "aiRole": "a friend on the phone",
+    "goalVi": "Chọn ngày, giờ và nơi gặp để đi xem phim.",
+    "opening": "Hey! Are you free this weekend? I want to see the new movie.",
+    "keyPhrases": ["How about Saturday?", "What time does it start?", "Let's meet at...", "Sounds good!"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Đi khám bác sĩ",
+    "icon": "medkit-outline",
+    "situation": "A small clinic. The learner feels sick and describes the problem to a doctor.",
+    "aiRole": "a kind doctor",
+    "goalVi": "Kể triệu chứng và hiểu lời dặn của bác sĩ.",
+    "opening": "Hello, please sit down. What seems to be the problem today?",
+    "keyPhrases": ["I have a headache.", "I've had a fever since yesterday.", "How often should I take it?"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Làm thủ tục ở sân bay",
+    "icon": "airplane-outline",
+    "situation": "An airport check-in desk. The learner checks in for an international flight, asks for a window seat and their bag is a little overweight.",
+    "aiRole": "an airline check-in agent",
+    "goalVi": "Làm thủ tục, xin ghế cạnh cửa sổ và xử lý hành lý quá cân.",
+    "opening": "Good morning. May I see your passport and ticket, please? Where are you flying today?",
+    "keyPhrases": ["Could I have a window seat?", "How much is the extra charge?", "Can I take this as hand luggage?"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Phàn nàn về món ăn",
+    "icon": "restaurant-outline",
+    "situation": "A restaurant. The learner's food is cold and not what they ordered, and they politely complain.",
+    "aiRole": "a restaurant manager",
+    "goalVi": "Phàn nàn lịch sự và đề nghị đổi món hoặc giảm giá.",
+    "opening": "Hello, I'm the manager. The waiter said there's a problem with your meal. What happened?",
+    "keyPhrases": ["I'm afraid this isn't what I ordered.", "It's a bit cold.", "Could you change it, please?"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Hỏi thông tin thuê nhà",
+    "icon": "key-outline",
+    "situation": "A phone call to a landlord about an apartment for rent. The learner asks about the price, location and what is included.",
+    "aiRole": "a landlord",
+    "goalVi": "Hỏi giá thuê, vị trí, tiện ích và hẹn ngày xem nhà.",
+    "opening": "Hello, this is Mark. You're calling about the apartment on Green Street?",
+    "keyPhrases": ["How much is the rent?", "Are bills included?", "Is it close to a bus stop?", "When can I see it?"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Kể về chuyến du lịch",
+    "icon": "image-outline",
+    "situation": "A coffee break at work. A colleague asks the learner about their recent holiday.",
+    "aiRole": "a friendly colleague",
+    "goalVi": "Kể nơi bạn đã đi, đã làm gì và cảm nhận về chuyến đi.",
+    "opening": "Welcome back! How was your holiday? Where did you go?",
+    "keyPhrases": ["I went to...", "The best part was...", "If I go again, I'll..."]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Đổi lịch hẹn",
+    "icon": "calendar-outline",
+    "situation": "A phone call to a dentist's office. The learner can't come to their appointment and needs a new time.",
+    "aiRole": "a receptionist at a dental clinic",
+    "goalVi": "Xin đổi lịch hẹn và chọn được giờ mới phù hợp.",
+    "opening": "Bright Smile Dental, how can I help you?",
+    "keyPhrases": ["I'd like to change my appointment.", "Something came up.", "Do you have anything on Friday afternoon?"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Phỏng vấn xin việc",
+    "icon": "briefcase-outline",
+    "situation": "A job interview for an office position at an international company. The interviewer asks about experience, strengths and goals.",
+    "aiRole": "an HR manager interviewing the learner",
+    "goalVi": "Giới thiệu kinh nghiệm, điểm mạnh và lý do bạn muốn làm công việc này.",
+    "opening": "Thanks for coming in today. To start, could you tell me a little about yourself and your experience?",
+    "keyPhrases": ["I have three years of experience in...", "One of my strengths is...", "I'm looking for a role where..."]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Thương lượng lương",
+    "icon": "cash-outline",
+    "situation": "A meeting with a manager after receiving a job offer. The learner wants a higher salary or better benefits.",
+    "aiRole": "a hiring manager",
+    "goalVi": "Thương lượng lương hoặc phúc lợi một cách chuyên nghiệp.",
+    "opening": "We're very happy to offer you the position. Do you have any questions about the offer?",
+    "keyPhrases": ["I was hoping for something closer to...", "Based on my experience...", "Would there be flexibility on...?"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Trình bày ý tưởng với sếp",
+    "icon": "bulb-outline",
+    "situation": "A short meeting at work. The learner proposes an idea to improve the team's work and answers the manager's questions.",
+    "aiRole": "a busy but open-minded team manager",
+    "goalVi": "Trình bày ý tưởng, nêu lợi ích và trả lời câu hỏi của sếp.",
+    "opening": "You wanted to talk to me about an idea? I have about ten minutes. Go ahead.",
+    "keyPhrases": ["I'd like to suggest...", "The main benefit is...", "We could start with a small trial."]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Tranh luận về làm việc từ xa",
+    "icon": "chatbubbles-outline",
+    "situation": "A friendly debate between colleagues about whether working from home is better than working in the office.",
+    "aiRole": "a colleague who prefers working in the office",
+    "goalVi": "Nêu quan điểm của bạn, đưa lý do và phản biện ý kiến của đồng nghiệp.",
+    "opening": "Honestly, I think people work better in the office. Don't you agree?",
+    "keyPhrases": ["I see your point, but...", "In my experience...", "On the other hand..."]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Xử lý khiếu nại của khách hàng",
+    "icon": "call-outline",
+    "situation": "The learner works in customer service and answers a call from an unhappy customer whose order arrived late and damaged.",
+    "aiRole": "an unhappy customer",
+    "goalVi": "Lắng nghe, xin lỗi và đưa ra giải pháp làm khách hài lòng.",
+    "opening": "Hi, I ordered a lamp two weeks ago. It arrived yesterday and it's broken. This is really disappointing.",
+    "keyPhrases": ["I'm really sorry to hear that.", "Let me check your order.", "We can send you a replacement or a full refund."]
+  }
+]

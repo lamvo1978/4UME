@@ -108,32 +108,59 @@ export function speakWord(text: string, voice: WordVoice = "female") {
       speak(text);
       return;
     }
-    // iOS otherwise deactivates the audio session when the word ends, which stops a recording started meanwhile.
-    const p = createAudioPlayer({ uri: mediaUrl(url)! }, { keepAudioSessionActive: true });
-    player = p;
-    let started = false;
-    let failed = false;
-    const useOwnVoice = () => {
-      if (failed || t !== token) return;
-      failed = true;
-      clearTimeout(fallback);
-      speak(text);
-    };
-    const fallback = setTimeout(() => {
-      if (!started) useOwnVoice();
-    }, RECORDING_WAIT_MS);
-    p.addListener("playbackStatusUpdate", (s) => {
-      // Not in AudioStatus's type, but both platforms report a load/playback failure this way.
-      if ((s as { error?: string | null }).error) {
-        useOwnVoice();
-        return;
-      }
-      if (started || failed || !s.isLoaded || t !== token) return;
-      started = true;
-      clearTimeout(fallback);
-      p.setPlaybackRate(Math.min(1.5, Math.max(0.5, speechSettings.rate / NORMAL_RATE)));
-      p.play();
-    });
+    playRecording(url, text, t);
+  });
+}
+
+/** One of the phone's English voices at random; undefined leaves the system default. */
+export async function randomVoice(): Promise<string | undefined> {
+  await warmUp();
+  return sentenceVoices.length ? sentenceVoices[Math.floor(Math.random() * sentenceVoices.length)] : undefined;
+}
+
+/**
+ * A recording made by the server (e.g. an AI reply); the phone reads `text` when there is none or it won't load,
+ * in `voice` when given (see {@link randomVoice}).
+ */
+export function speakRecording(url: string | null, text: string, voice?: string) {
+  stopAll();
+  const t = ++token;
+  void warmUp().then(() => {
+    if (t !== token) return;
+    if (url) playRecording(url, text, t, voice);
+    else Speech.speak(text, { language: "en-US", rate: speechSettings.rate, voice });
+  });
+}
+
+function playRecording(url: string, text: string, t: number, voice?: string) {
+  // iOS otherwise deactivates the audio session when the word ends, which stops a recording started meanwhile.
+  const p = createAudioPlayer({ uri: mediaUrl(url)! }, { keepAudioSessionActive: true });
+  player = p;
+  let started = false;
+  let failed = false;
+  const useOwnVoice = () => {
+    if (failed || t !== token) return;
+    failed = true;
+    clearTimeout(fallback);
+    if (voice) {
+      stopAll();
+      Speech.speak(text, { language: "en-US", rate: speechSettings.rate, voice });
+    } else speak(text);
+  };
+  const fallback = setTimeout(() => {
+    if (!started) useOwnVoice();
+  }, RECORDING_WAIT_MS);
+  p.addListener("playbackStatusUpdate", (s) => {
+    // Not in AudioStatus's type, but both platforms report a load/playback failure this way.
+    if ((s as { error?: string | null }).error) {
+      useOwnVoice();
+      return;
+    }
+    if (started || failed || !s.isLoaded || t !== token) return;
+    started = true;
+    clearTimeout(fallback);
+    p.setPlaybackRate(Math.min(1.5, Math.max(0.5, speechSettings.rate / NORMAL_RATE)));
+    p.play();
   });
 }
 

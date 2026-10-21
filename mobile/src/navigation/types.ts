@@ -22,6 +22,9 @@ export type RootStackParamList = {
   Dictation: { slug: string; all?: boolean };
   Speaking: { slug: string; all?: boolean };
   SentencePractice: { level: VocabLevel; mode: PracticeMode };
+  ConversationHub: undefined;
+  /** `scenarioId` null = free talk at `level`. */
+  Conversation: { scenarioId: string | null; level: VocabLevel; title: string };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;

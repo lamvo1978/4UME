@@ -33,5 +33,8 @@ public interface IAppDbContext
     DbSet<BroadcastRecipient> BroadcastRecipients { get; }
     DbSet<PlacementGrammarQuestion> PlacementGrammarQuestions { get; }
     DbSet<PracticeSentence> PracticeSentences { get; }
+    DbSet<ConversationScenario> ConversationScenarios { get; }
+    DbSet<Conversation> Conversations { get; }
+    DbSet<ConversationTurn> ConversationTurns { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

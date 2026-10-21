@@ -17,12 +17,16 @@ public class GroqOptions
     /// <summary>Comma-separated models tried in order when <see cref="Model"/> is out of quota or overloaded; unknown names are skipped.</summary>
     public string? FallbackModels { get; set; }
     public const string DefaultFallbackModels = "openai/gpt-oss-20b";
+    /// <summary>Model for "Đàm thoại với AI" replies, tried before the others; empty uses <see cref="Model"/>.</summary>
+    public string? ChatModel { get; set; }
 
     public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
     public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
 
-    public IReadOnlyList<string> Models =>
-        new[] { ModelName }
+    public IReadOnlyList<string> Models => ModelsFor(false);
+
+    public IReadOnlyList<string> ModelsFor(bool chat) =>
+        (chat && !string.IsNullOrWhiteSpace(ChatModel) ? new[] { ChatModel.Trim(), ModelName } : new[] { ModelName })
             .Concat((string.IsNullOrWhiteSpace(FallbackModels) ? DefaultFallbackModels : FallbackModels)
                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -43,6 +47,8 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
     /// before it runs; 6000 is enough for 20 questions with every field.
     /// </summary>
     private const int MaxOutputTokens = 6000;
+    /// <summary>A conversation reply is a few sentences; a small cap keeps the per-minute token budget for more learners.</summary>
+    private const int ChatOutputTokens = 1500;
 
     private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(3);
 
@@ -52,7 +58,8 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
     public bool Configured => options.Value.Configured;
     public string ModelName => options.Value.ModelName;
 
-    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct)
+    /// <param name="chat">A learner is waiting: little reasoning, a short reply, and <see cref="GroqOptions.ChatModel"/> first.</param>
+    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct, bool chat = false)
     {
         var o = options.Value;
         if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Groq (GROQ_API_KEY) trên máy chủ.");
@@ -60,7 +67,7 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
         var system = instructions.TrimEnd() + "\n\nReply with one JSON object only, no other text. It must match this JSON schema, " +
                      "with every property listed in \"required\" present:\n" + ToJsonSchema(schema).ToJsonString();
         var client = httpFactory.CreateClient(HttpClientName);
-        var models = o.Models;
+        var models = o.ModelsFor(chat);
         var quotaHit = false;
         var overloaded = false;
         HttpStatusCode status = default;
@@ -74,11 +81,11 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
                     new JsonObject { ["role"] = "system", ["content"] = system },
                     new JsonObject { ["role"] = "user", ["content"] = prompt }),
                 ["temperature"] = temperature,
-                ["max_completion_tokens"] = MaxOutputTokens,
+                ["max_completion_tokens"] = chat ? ChatOutputTokens : MaxOutputTokens,
                 ["response_format"] = new JsonObject { ["type"] = "json_object" },
             };
             // Reasoning tokens count against the output cap and the per-minute limit; "medium" keeps answer checks careful without using them up.
-            if (models[m].StartsWith("openai/gpt-oss", StringComparison.OrdinalIgnoreCase)) body["reasoning_effort"] = "medium";
+            if (models[m].StartsWith("openai/gpt-oss", StringComparison.OrdinalIgnoreCase)) body["reasoning_effort"] = chat ? "low" : "medium";
             var payload = body.ToJsonString();
 
             for (var attempt = 1; ; attempt++)

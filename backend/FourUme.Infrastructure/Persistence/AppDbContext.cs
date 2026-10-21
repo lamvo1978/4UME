@@ -34,6 +34,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<BroadcastRecipient> BroadcastRecipients => Set<BroadcastRecipient>();
     public DbSet<PlacementGrammarQuestion> PlacementGrammarQuestions => Set<PlacementGrammarQuestion>();
     public DbSet<PracticeSentence> PracticeSentences => Set<PracticeSentence>();
+    public DbSet<ConversationScenario> ConversationScenarios => Set<ConversationScenario>();
+    public DbSet<Conversation> Conversations => Set<Conversation>();
+    public DbSet<ConversationTurn> ConversationTurns => Set<ConversationTurn>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -288,6 +291,43 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.AudioUrl).HasMaxLength(200);
             e.Property(x => x.AudioText).HasMaxLength(300);
             e.HasIndex(x => new { x.Level, x.Published });
+        });
+
+        modelBuilder.Entity<ConversationScenario>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.TitleVi).HasMaxLength(120).IsRequired();
+            e.Property(x => x.Icon).HasMaxLength(48).IsRequired();
+            e.Property(x => x.Situation).HasMaxLength(600).IsRequired();
+            e.Property(x => x.AiRole).HasMaxLength(120).IsRequired();
+            e.Property(x => x.GoalVi).HasMaxLength(300).IsRequired();
+            e.Property(x => x.Opening).HasMaxLength(300).IsRequired();
+            e.HasIndex(x => new { x.Level, x.Published });
+        });
+
+        modelBuilder.Entity<Conversation>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.StartedAt });
+            e.HasIndex(x => x.StartedAt);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.Summary).HasColumnType("jsonb");
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Scenario).WithMany().HasForeignKey(x => x.ScenarioId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<ConversationTurn>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.ConversationId, x.Index }).IsUnique();
+            e.HasIndex(x => new { x.UserId, x.LocalDate });
+            e.HasIndex(x => x.CreatedAt);
+            e.Property(x => x.Text).HasMaxLength(1000).IsRequired();
+            e.Property(x => x.Correction).HasColumnType("jsonb");
+            e.Property(x => x.HintVi).HasMaxLength(400);
+            e.Property(x => x.Suggestions).HasColumnType("jsonb");
+            e.HasOne(x => x.Conversation).WithMany(x => x.Turns).HasForeignKey(x => x.ConversationId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<PlacementGrammarQuestion>(e =>

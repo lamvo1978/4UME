@@ -55,6 +55,20 @@ export function SentenceHubScreen() {
           Luyện nghe và nói theo giọng người bản xứ.
         </Text>
 
+        <Pressable
+          onPress={() => navigation.navigate("ConversationHub")}
+          style={({ pressed }) => [styles.mode, styles.talk, pressed && styles.pressed]}
+        >
+          <View style={[styles.modeIcon, styles.talkIcon]}>
+            <Ionicons name="chatbubbles" size={24} color={colors.white} />
+          </View>
+          <View style={styles.modeBody}>
+            <Text style={styles.modeTitle}>Đàm thoại với AI</Text>
+            <Text style={styles.modeText}>Nhập vai theo tình huống hoặc trò chuyện tự do, AI sửa câu cho bạn.</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.muted} />
+        </Pressable>
+
         <Text style={styles.label}>Cấp độ</Text>
         <View style={styles.levels}>
           {VOCAB_LEVELS.map((l) => {
@@ -178,6 +192,8 @@ const styles = StyleSheet.create({
   },
   blocked: { opacity: 0.5 },
   pressed: { opacity: 0.7 },
+  talk: { marginTop: spacing.sm },
+  talkIcon: { backgroundColor: colors.accent },
   modeIcon: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.accentSoft, alignItems: "center", justifyContent: "center" },
   modeBody: { flex: 1, gap: 2 },
   modeTitle: { fontSize: 17, fontWeight: "800", color: colors.ink },

@@ -743,6 +743,52 @@ export type ImportSentencesResult = {
   rows: ImportSentenceRow[];
 };
 
+export type ScenarioInput = {
+  level: PlacementLevel;
+  titleVi: string;
+  icon: string | null;
+  situation: string;
+  aiRole: string;
+  goalVi: string;
+  opening: string;
+  keyPhrases: string[];
+  published: boolean;
+};
+/** `uses` = conversations started with this scenario. */
+export type ConversationScenario = ScenarioInput & { id: string; icon: string; sortOrder: number; uses: number; updatedAt: string };
+export type ScenarioDraftRequest = { level: PlacementLevel; count: number; topic?: string; notes?: string; provider?: string };
+export type ScenarioDraft = { items: { scenario: ScenarioInput; problems: string[]; duplicate: boolean }[]; model: string };
+export type ConversationConfig = {
+  enabled: boolean;
+  freeDailyTurns: number;
+  premiumDailyTurns: number;
+  maxTurnsPerSession: number;
+  premiumAzureVoice: boolean;
+  azureVoice: string;
+  freeMonthlyChars: number;
+  paidMonthlyChars: number;
+};
+export type ConversationUsage = {
+  sessions: number;
+  users: number;
+  learnerTurns: number;
+  freeChars: number;
+  paidChars: number;
+  paidUsd: number;
+  speechMonthChars: number;
+  speechMonthLimit: number;
+};
+export type AdminConversationConfig = {
+  value: ConversationConfig;
+  defaults: ConversationConfig;
+  updatedAt: string | null;
+  usage: ConversationUsage;
+  providers: AiProvider[];
+  azureConfigured: boolean;
+  paidConfigured: boolean;
+  voices: ListeningVoice[];
+};
+
 const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });
 
 function query(params: Record<string, string | number | undefined>) {
@@ -879,6 +925,16 @@ export const api = {
   exportSentences: () => request<SentenceFileItem[]>("/api/admin/sentences/export"),
   importSentences: (sentences: unknown[], commit: boolean) =>
     request<ImportSentencesResult>("/api/admin/sentences/import", json("POST", { sentences, commit })),
+  conversationScenarios: () => request<ConversationScenario[]>("/api/admin/conversation/scenarios"),
+  createScenario: (s: ScenarioInput) => request<ConversationScenario>("/api/admin/conversation/scenarios", json("POST", s)),
+  createScenarioBatch: (scenarios: ScenarioInput[]) =>
+    request<{ created: number }>("/api/admin/conversation/scenarios/batch", json("POST", { scenarios })),
+  updateScenario: (id: string, s: ScenarioInput) => request<ConversationScenario>(`/api/admin/conversation/scenarios/${id}`, json("PUT", s)),
+  deleteScenario: (id: string) => request<void>(`/api/admin/conversation/scenarios/${id}`, { method: "DELETE" }),
+  draftScenarios: (r: ScenarioDraftRequest) => request<ScenarioDraft>("/api/admin/conversation/scenarios/draft", json("POST", r)),
+  conversationConfig: () => request<AdminConversationConfig>("/api/admin/conversation/config"),
+  saveConversationConfig: (c: ConversationConfig) => request<AdminConversationConfig>("/api/admin/conversation/config", json("PUT", c)),
+  resetConversationConfig: () => request<AdminConversationConfig>("/api/admin/conversation/config/reset", { method: "POST" }),
   listeningLessons: () => request<AdminListeningSummary[]>("/api/admin/listening"),
   listeningLesson: (slug: string) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`),
   createListening: (l: ListeningLesson) => request<AdminListeningDetail>("/api/admin/listening", json("POST", l)),

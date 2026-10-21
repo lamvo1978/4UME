@@ -34,6 +34,7 @@ Chi tiết: [architecture.md](architecture.md) · UI: [docs/ui/DESIGN.md](docs/u
 | [docs/email.md](docs/email.md) | Mã xác nhận đăng ký / quên mật khẩu, Resend, Zoho |
 | [docs/notifications.md](docs/notifications.md) | Nhắc học, thông báo |
 | [docs/grammar-lesson-schema.md](docs/grammar-lesson-schema.md) | Khung bài ngữ pháp |
+| [docs/conversation.md](docs/conversation.md) | Đàm thoại với AI: nhập vai, trò chuyện tự do, lượt, giọng đọc |
 | [docs/vocabulary-cefrj.md](docs/vocabulary-cefrj.md) | Nguồn từ vựng |
 | [docs/deploy-vps.md](docs/deploy-vps.md) | Triển khai trên VPS hiện tại |
 | [docs/deploy.md](docs/deploy.md) | Triển khai trên VPS trống (Caddy) |

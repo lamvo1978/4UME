@@ -8,6 +8,7 @@ using FourUme.Application.Premium;
 using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
+using FourUme.Application.Conversations;
 using FourUme.Application.Feedback;
 using FourUme.Application.Grammar;
 using FourUme.Application.Invites;
@@ -22,6 +23,7 @@ using FourUme.Application.Vocabulary;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure;
 using FourUme.Infrastructure.Auth;
+using FourUme.Infrastructure.Conversations;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Media;
 using FourUme.Infrastructure.Pronunciation;
@@ -106,6 +108,10 @@ builder.Services.AddRateLimiter(options =>
     options.AddPolicy(RedeemLimit, http => RateLimitPartition.GetFixedWindowLimiter(
         GetUserId(http.User)?.ToString() ?? ClientIp(http),
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(15) }));
+    // Every conversation turn is an AI call; a person speaking can't send more than a few a minute.
+    options.AddPolicy(ConversationLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+        GetUserId(http.User)?.ToString() ?? ClientIp(http),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 15, Window = TimeSpan.FromMinutes(1) }));
 });
 
 var app = builder.Build();
@@ -183,6 +189,13 @@ using (var scope = app.Services.CreateScope())
         listeningPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "listening"));
     }
     await ListeningSeeder.SeedAsync(db, listeningPath, logger);
+
+    var conversationPath = builder.Configuration["Conversation:Path"];
+    if (string.IsNullOrWhiteSpace(conversationPath))
+    {
+        conversationPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "conversation", "scenarios.json"));
+    }
+    await ConversationSeeder.SeedAsync(db, conversationPath, logger);
     await app.BootstrapAdminsAsync(logger);
 }
 
@@ -640,6 +653,59 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
 app.MapGet("/api/speech/word", async (string text, string voice, IWordAudioService words, CancellationToken ct) =>
     Results.Ok(await words.GetAsync(text, voice, ct))).RequireAuthorization();
 
+app.MapGet("/api/conversation/status", async (ClaimsPrincipal principal, IConversationService conversation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await conversation.GetStatusAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+app.MapGet("/api/conversation/scenarios", async (IConversationService conversation, CancellationToken ct) =>
+    Results.Ok(await conversation.GetScenariosAsync(ct))).RequireAuthorization();
+
+app.MapPost("/api/conversation", async (StartConversationRequest request, ClaimsPrincipal principal, IConversationService conversation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await conversation.StartAsync(userId.Value, request, ct));
+    }
+    catch (ConversationException ex)
+    {
+        return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization().RequireRateLimiting(ConversationLimit);
+
+app.MapPost("/api/conversation/{id:guid}/turns", async (Guid id, SendConversationTurnRequest request, ClaimsPrincipal principal,
+    IConversationService conversation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await conversation.SendAsync(userId.Value, id, request.Text, ct));
+    }
+    catch (ConversationException ex)
+    {
+        return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization().RequireRateLimiting(ConversationLimit);
+
+app.MapPost("/api/conversation/{id:guid}/end", async (Guid id, ClaimsPrincipal principal, IConversationService conversation, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await conversation.EndAsync(userId.Value, id, ct));
+    }
+    catch (ConversationException ex)
+    {
+        return Results.Json(new { error = ex.Message }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization().RequireRateLimiting(ConversationLimit);
+
 app.MapGet("/api/practice", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
 {
     var userId = GetUserId(principal);
@@ -793,6 +859,7 @@ public partial class Program
     private const string EmailCodeLimit = "email-code";
     private const string LoginLimit = "login";
     private const string RedeemLimit = "redeem";
+    private const string ConversationLimit = "conversation";
 
     /// <summary>
     /// The visitor's address. The edge nginx overwrites X-Real-IP with the connecting address, so it can't be
