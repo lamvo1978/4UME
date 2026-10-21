@@ -28,6 +28,8 @@ using FourUme.Infrastructure.Email;
 using FourUme.Infrastructure.Grammar;
 using FourUme.Infrastructure.Listening;
 using FourUme.Infrastructure.Ai;
+using FourUme.Application.Conversations;
+using FourUme.Infrastructure.Conversations;
 using FourUme.Application.Listening;
 using FourUme.Application.Practice;
 using FourUme.Infrastructure.Practice;
@@ -106,6 +108,9 @@ public static class DependencyInjection
         services.AddHttpClient(GroqClient.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(120));
         services.AddScoped<GroqClient>();
         services.AddScoped<AiClient>();
+        services.AddScoped<ConversationVoice>();
+        services.AddScoped<IConversationService, ConversationService>();
+        services.AddScoped<IAdminConversationService, AdminConversationService>();
         services.AddScoped<IListeningDraftService, GeminiDraftService>();
         services.AddScoped<IGrammarDraftService, GrammarDraftService>();
         services.AddScoped<GrammarVerbTagger>();

@@ -432,6 +432,69 @@ export type PronunciationStatus = {
   pausedPremiumDays?: number;
 };
 
+/** Turns left today for "Đàm thoại với AI"; `voice` says whether replies come with an Azure recording. */
+export type ConversationStatus = {
+  enabled: boolean;
+  /** False while the AI isn't configured on the server. */
+  available: boolean;
+  premium: boolean;
+  dailyLimit: number;
+  usedToday: number;
+  remaining: number;
+  freeDailyLimit: number;
+  premiumDailyLimit: number;
+  maxTurnsPerSession: number;
+  voice: "device" | "azure";
+};
+
+export type ConversationScenario = {
+  id: string;
+  level: VocabLevel;
+  titleVi: string;
+  icon: string;
+  goalVi: string;
+  aiRole: string;
+  keyPhrases: string[];
+};
+
+export type ConversationCorrection = { original: string; corrected: string; explainVi: string };
+
+export type ConversationTurn = {
+  id: string;
+  fromLearner: boolean;
+  text: string;
+  correction: ConversationCorrection | null;
+  hintVi: string | null;
+  suggestions: string[];
+  /** Azure recording of an AI turn; null = read it with the phone's voice. */
+  audioUrl: string | null;
+};
+
+export type ConversationStart = {
+  id: string;
+  level: VocabLevel;
+  scenario: ConversationScenario | null;
+  opening: ConversationTurn;
+  status: ConversationStatus;
+};
+
+export type ConversationReply = {
+  learner: ConversationTurn;
+  reply: ConversationTurn;
+  goalDone: boolean;
+  /** No more messages fit in this conversation. */
+  sessionFull: boolean;
+  status: ConversationStatus;
+};
+
+export type ConversationSummary = {
+  score: number;
+  feedbackVi: string;
+  mistakes: ConversationCorrection[];
+  phrases: { en: string; vi: string }[];
+  learnerTurns: number;
+};
+
 /** "Học viên X · đến 30/06/2027" or "· không thời hạn". */
 export const partnerLine = (name: string, until: string | null | undefined, formatDate: (iso: string) => string) =>
   `Học viên ${name} · ${until ? `đến ${formatDate(until)}` : "không thời hạn"}`;
@@ -537,6 +600,8 @@ const SERVER_DOWN_MESSAGE = "Máy chủ 4UME đang bận hoặc bảo trì. Hãy
 export class NetworkError extends Error {}
 
 const REQUEST_TIMEOUT_MS = 30_000;
+/** An AI reply (plus its recording) can take most of a minute when the first provider is busy. */
+const AI_TIMEOUT_MS = 70_000;
 /** Uploads (recordings, screenshots) on a slow mobile connection. */
 const UPLOAD_TIMEOUT_MS = 90_000;
 
@@ -581,7 +646,7 @@ export function setUnauthorizedHandler(fn: () => void) {
   onUnauthorized = fn;
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
   const auth = await authHeaders();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -590,7 +655,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...auth,
     ...(init.headers as Record<string, string> | undefined),
   };
-  const { res, data } = await send(path, { ...init, headers }, REQUEST_TIMEOUT_MS);
+  const { res, data } = await send(path, { ...init, headers }, timeoutMs);
   if (res.status === 401 && auth.Authorization) {
     onUnauthorized();
     throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
@@ -758,6 +823,14 @@ export const api = {
   practiceSentences: (level: VocabLevel, count = 10) =>
     request<PracticeSentence[]>(`/api/practice/sentences?level=${level}&count=${count}`),
   recordPractice: () => request<void>("/api/practice/record", { method: "POST" }),
+  conversationStatus: () => request<ConversationStatus>("/api/conversation/status"),
+  conversationScenarios: () => request<ConversationScenario[]>("/api/conversation/scenarios"),
+  /** Without `scenarioId` starts free talk at `level`. 429 = today's turns are used up. */
+  startConversation: (scenarioId: string | null, level: VocabLevel) =>
+    request<ConversationStart>("/api/conversation", { method: "POST", body: JSON.stringify({ scenarioId, level }) }, AI_TIMEOUT_MS),
+  sendConversationTurn: (id: string, text: string) =>
+    request<ConversationReply>(`/api/conversation/${id}/turns`, { method: "POST", body: JSON.stringify({ text }) }, AI_TIMEOUT_MS),
+  endConversation: (id: string) => request<ConversationSummary>(`/api/conversation/${id}/end`, { method: "POST" }, AI_TIMEOUT_MS),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

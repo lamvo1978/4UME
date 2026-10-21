@@ -18,7 +18,7 @@ public class SpeechOptions
     /// <summary>F0 allows 20 transactions per 60 seconds.</summary>
     public int RequestsPerMinute { get; set; } = 20;
 
-    /// <summary>Second Speech resource on the paid tier (S0), used only for pronunciation checks once the free one is spent.</summary>
+    /// <summary>Second Speech resource on the paid tier (S0), used for pronunciation checks and conversation voices once the free one is spent.</summary>
     public string? PaidKey { get; set; }
     public string? PaidRegion { get; set; }
 
@@ -45,10 +45,15 @@ public sealed class AzureSpeechClient(IHttpClientFactory httpFactory, IOptions<S
     /// <summary>Approximate billed characters for one sentence (text plus the prosody/break markup).</summary>
     public static int BilledChars(string text) => text.Trim().Length + 60;
 
-    public async Task<byte[]> SynthesizeAsync(string voice, string text, string rate, CancellationToken ct)
+    /// <param name="paid">Use the S0 resource; it has no per-minute spacing.</param>
+    /// <param name="maxAttempts">1 for a learner waiting on the reply: a throttled request fails at once instead of waiting.</param>
+    public async Task<byte[]> SynthesizeAsync(string voice, string text, string rate, CancellationToken ct, bool paid = false, int maxAttempts = 6)
     {
         var o = options.Value;
-        if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Azure Speech (AZURE_SPEECH_KEY, AZURE_SPEECH_REGION).");
+        if (paid ? !o.PaidConfigured : !o.Configured)
+            throw new InvalidOperationException("Chưa cấu hình Azure Speech (AZURE_SPEECH_KEY, AZURE_SPEECH_REGION).");
+        var key = paid ? o.PaidKey! : o.Key!;
+        var region = paid ? o.PaidRegion! : o.Region!;
 
         var lang = voice.Length >= 5 ? voice[..5] : "en-US";
         var ssml = $"""
@@ -57,19 +62,19 @@ public sealed class AzureSpeechClient(IHttpClientFactory httpFactory, IOptions<S
 
         for (var attempt = 1; ; attempt++)
         {
-            await WaitForSlotAsync(o.RequestsPerMinute, ct);
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{o.Region!.Trim()}.tts.speech.microsoft.com/cognitiveservices/v1")
+            if (!paid) await WaitForSlotAsync(o.RequestsPerMinute, ct);
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{region.Trim()}.tts.speech.microsoft.com/cognitiveservices/v1")
             {
                 Content = new StringContent(ssml, Encoding.UTF8, "application/ssml+xml"),
             };
-            request.Headers.Add("Ocp-Apim-Subscription-Key", o.Key!.Trim());
+            request.Headers.Add("Ocp-Apim-Subscription-Key", key.Trim());
             request.Headers.Add("X-Microsoft-OutputFormat", OutputFormat);
             request.Headers.UserAgent.ParseAdd("4UME/1.0");
 
             using var response = await httpFactory.CreateClient(HttpClientName).SendAsync(request, ct);
             if (response.IsSuccessStatusCode) return await response.Content.ReadAsByteArrayAsync(ct);
 
-            if (response.StatusCode == HttpStatusCode.TooManyRequests && attempt < 6)
+            if (response.StatusCode == HttpStatusCode.TooManyRequests && attempt < maxAttempts)
             {
                 var wait = response.Headers.RetryAfter?.Delta ?? TimeSpan.FromSeconds(10 * attempt);
                 logger.LogInformation("Azure Speech throttled; retrying in {Seconds}s", wait.TotalSeconds);

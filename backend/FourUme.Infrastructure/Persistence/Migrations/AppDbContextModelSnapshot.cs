@@ -233,6 +233,170 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.ToTable("BroadcastRecipients");
                 });
 
+            modelBuilder.Entity("FourUme.Domain.Entities.Conversation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("EndedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LearnerTurns")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<Guid?>("ScenarioId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("jsonb");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScenarioId");
+
+                    b.HasIndex("StartedAt");
+
+                    b.HasIndex("UserId", "StartedAt");
+
+                    b.ToTable("Conversations");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.ConversationScenario", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AiRole")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("GoalVi")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)");
+
+                    b.PrimitiveCollection<List<string>>("KeyPhrases")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<string>("Opening")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<bool>("Published")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Situation")
+                        .IsRequired()
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TitleVi")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Level", "Published");
+
+                    b.ToTable("ConversationScenarios");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.ConversationTurn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Correction")
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("FromLearner")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("HintVi")
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<int>("Index")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly>("LocalDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Suggestions")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("TtsChars")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("TtsPaid")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("ConversationId", "Index")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "LocalDate");
+
+                    b.ToTable("ConversationTurns");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.Deck", b =>
                 {
                     b.Property<string>("Id")
@@ -1398,6 +1562,35 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FourUme.Domain.Entities.Conversation", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.ConversationScenario", "Scenario")
+                        .WithMany()
+                        .HasForeignKey("ScenarioId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("FourUme.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Scenario");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.ConversationTurn", b =>
+                {
+                    b.HasOne("FourUme.Domain.Entities.Conversation", "Conversation")
+                        .WithMany("Turns")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+                });
+
             modelBuilder.Entity("FourUme.Domain.Entities.DeviceToken", b =>
                 {
                     b.HasOne("FourUme.Domain.Entities.User", "User")
@@ -1570,6 +1763,11 @@ namespace FourUme.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FourUme.Domain.Entities.Broadcast", b =>
                 {
                     b.Navigation("Recipients");
+                });
+
+            modelBuilder.Entity("FourUme.Domain.Entities.Conversation", b =>
+                {
+                    b.Navigation("Turns");
                 });
 
             modelBuilder.Entity("FourUme.Domain.Entities.Deck", b =>

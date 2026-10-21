@@ -86,6 +86,7 @@ v1 không thêm MediatR/CQRS/event bus trừ khi sau này cần.
 | `AppSettings` | Thông số hệ thống chỉnh trong admin (JSON) |
 | `AuditLogs` | Lịch sử thay đổi nội dung / quyền (trước / sau) |
 | `EmailCodes` | Mã xác nhận qua email (chỉ lưu bản băm) — [docs/email.md](docs/email.md) |
+| `ConversationScenarios`, `Conversations`, `ConversationTurns` | Đàm thoại với AI: tình huống nhập vai, các buổi và từng lượt nói (lời sửa, ký tự Azure) — [docs/conversation.md](docs/conversation.md) |
 
 Từ vựng / ngữ pháp nạp lần đầu từ `backend/data/` rồi database là nguồn chính (sửa qua web admin). Tiến trình luôn gắn người dùng trên DB — không dùng `localStorage` làm nguồn chính.
 

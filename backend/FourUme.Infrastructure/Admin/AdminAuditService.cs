@@ -4,6 +4,7 @@ using FourUme.Application.Feedback;
 using FourUme.Application.Premium;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
+using FourUme.Application.Conversations;
 using FourUme.Application.Grammar;
 using FourUme.Application.Invites;
 using FourUme.Application.Listening;
@@ -19,7 +20,8 @@ public class AdminAuditService(
     IAdminContentService content,
     IAdminGrammarService grammar,
     IAdminListeningService listening,
-    IAdminSettingsService settings) : IAdminAuditService
+    IAdminSettingsService settings,
+    IAdminConversationService conversation) : IAdminAuditService
 {
     /// <summary>User role / lock changes are deliberately not restorable: they are redone from the user page.</summary>
     private static readonly string[] RestorableTypes = [AuditEntities.Word, AuditEntities.Deck, AuditEntities.Grammar, AuditEntities.Listening, AuditEntities.Settings];
@@ -102,6 +104,9 @@ public class AdminAuditService(
                 break;
             case AuditEntities.Settings when log.EntityId == NotificationTexts.SettingKey:
                 await settings.RestoreNotificationTextsAsync(Read<NotificationTexts>(json), ct);
+                break;
+            case AuditEntities.Settings when log.EntityId == ConversationConfig.SettingKey:
+                await conversation.RestoreConfigAsync(Read<ConversationConfig>(json), ct);
                 break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");

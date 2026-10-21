@@ -44,6 +44,8 @@ import { RegisterScreen } from "../screens/RegisterScreen";
 import { ReviewScreen } from "../screens/ReviewScreen";
 import { SentenceHubScreen } from "../screens/SentenceHubScreen";
 import { SentencePracticeScreen } from "../screens/SentencePracticeScreen";
+import { ConversationHubScreen } from "../screens/ConversationHubScreen";
+import { ConversationScreen } from "../screens/ConversationScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { StudyHubScreen } from "../screens/StudyHubScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
@@ -289,6 +291,12 @@ export function RootNavigator() {
               options={({ route }) => ({
                 title: `${route.params.mode === "type" ? "Nghe – chép" : route.params.mode === "speak" ? "Nghe – nói" : "Luyện trộn"} · ${route.params.level}`,
               })}
+            />
+            <Stack.Screen name="ConversationHub" component={ConversationHubScreen} options={{ title: "Đàm thoại với AI" }} />
+            <Stack.Screen
+              name="Conversation"
+              component={ConversationScreen}
+              options={({ route }) => ({ title: `${route.params.title} · ${route.params.level}` })}
             />
           </>
         )}
