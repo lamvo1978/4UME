@@ -23,19 +23,48 @@ const ERRORS: Record<string, string> = {
   busy: "Micro đang bận, bạn thử lại nhé.",
 };
 
+export type SpeechOptions = {
+  /**
+   * Keep listening through pauses (a learner thinking mid-sentence) until `stop()`, a silence of `silenceMs`,
+   * or `maxMs`. Without it the recognizer ends at the first pause.
+   */
+  continuous?: boolean;
+  silenceMs?: number;
+  maxMs?: number;
+};
+
+const DEFAULT_SILENCE_MS = 5000;
+const DEFAULT_MAX_MS = 60_000;
+
+const join = (a: string, b: string) => [a, b].filter(Boolean).join(" ");
+
 /**
  * English speech to text with the phone's own recognizer (Apple / Google), free and unlimited.
  * `onFinal` gets the full transcript once the learner stops (or the recognizer decides they finished).
  */
-export function useSpeechToText(onFinal?: (text: string) => void, contextualStrings?: string[]) {
+export function useSpeechToText(onFinal?: (text: string) => void, contextualStrings?: string[], options?: SpeechOptions) {
   const id = useRef(0);
   if (!id.current) id.current = nextId++;
   const [listening, setListening] = useState(false);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
   const latest = useRef("");
+  /** Continuous mode: finished segments so far; each final result is a new utterance to append. */
+  const committed = useRef("");
   const finalRef = useRef(onFinal);
   finalRef.current = onFinal;
+  const continuous = !!options?.continuous;
+  const silenceMs = options?.silenceMs ?? DEFAULT_SILENCE_MS;
+  const maxMs = options?.maxMs ?? DEFAULT_MAX_MS;
+  const silenceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const maxTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTimers = useCallback(() => {
+    if (silenceTimer.current) clearTimeout(silenceTimer.current);
+    if (maxTimer.current) clearTimeout(maxTimer.current);
+    silenceTimer.current = null;
+    maxTimer.current = null;
+  }, []);
 
   useEffect(() => {
     if (!lib) return;
@@ -45,8 +74,19 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
       m.addListener("result", (e) => {
         if (!mine()) return;
         const t = e.results[0]?.transcript?.trim() ?? "";
-        latest.current = t;
-        setText(t);
+        if (continuous) {
+          const full = join(committed.current, t);
+          if (e.isFinal) committed.current = full;
+          latest.current = full;
+          setText(full);
+          if (silenceTimer.current) clearTimeout(silenceTimer.current);
+          silenceTimer.current = setTimeout(() => {
+            if (mine()) m.stop();
+          }, silenceMs);
+        } else {
+          latest.current = t;
+          setText(t);
+        }
       }),
       m.addListener("error", (e) => {
         if (!mine()) return;
@@ -55,6 +95,7 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
       m.addListener("end", () => {
         if (!mine()) return;
         owner = 0;
+        clearTimers();
         setListening(false);
         void setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true, interruptionMode: "duckOthers" }).catch(() => {});
         if (latest.current) finalRef.current?.(latest.current);
@@ -62,12 +103,13 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
     ];
     return () => {
       subs.forEach((s) => s.remove());
+      clearTimers();
       if (mine()) {
         owner = 0;
         m.abort();
       }
     };
-  }, []);
+  }, [continuous, silenceMs, clearTimers]);
 
   const start = useCallback(async () => {
     if (!lib) return;
@@ -75,6 +117,7 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
     setError("");
     setText("");
     latest.current = "";
+    committed.current = "";
     const permission = await m.requestPermissionsAsync();
     if (!permission.granted) {
       setError(ERRORS["not-allowed"]);
@@ -86,11 +129,21 @@ export function useSpeechToText(onFinal?: (text: string) => void, contextualStri
     m.start({
       lang: "en-US",
       interimResults: true,
-      continuous: false,
+      continuous,
       addsPunctuation: false,
       contextualStrings: contextualStrings?.length ? contextualStrings : undefined,
+      // Android 12 and below has no continuous mode; a longer end-of-speech silence is the closest there.
+      androidIntentOptions: continuous
+        ? { EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS: silenceMs, EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS: silenceMs }
+        : undefined,
     });
-  }, [contextualStrings]);
+    if (continuous) {
+      const me = id.current;
+      maxTimer.current = setTimeout(() => {
+        if (owner === me) m.stop();
+      }, maxMs);
+    }
+  }, [contextualStrings, continuous, silenceMs, maxMs]);
 
   const stop = useCallback(() => {
     if (lib && owner === id.current) lib.ExpoSpeechRecognitionModule.stop();

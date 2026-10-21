@@ -124,6 +124,7 @@ function Chat({
   const { refreshMe } = useAuth();
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [listening, setListening] = useState(false);
   const [sendError, setSendError] = useState("");
   const [ending, setEnding] = useState(false);
   const [goalDone, setGoalDone] = useState(false);
@@ -251,11 +252,15 @@ function Chat({
 
       {sendError ? <Text style={styles.error}>{sendError}</Text> : null}
       <View style={styles.sessionBar}>
-        <Text style={styles.sessionCount}>
-          Lượt {learnerTurns}/{status.maxTurnsPerSession}
-          {status.remaining > 0 ? ` · còn ${status.remaining} lượt hôm nay` : ""}
-        </Text>
-        {learnerTurns > 0 ? (
+        {listening ? (
+          <Text style={[styles.sessionCount, styles.listeningHint]}>Đang nghe… nói xong bấm ■ để gửi</Text>
+        ) : (
+          <Text style={styles.sessionCount}>
+            Lượt {learnerTurns}/{status.maxTurnsPerSession}
+            {status.remaining > 0 ? ` · còn ${status.remaining} lượt hôm nay` : ""}
+          </Text>
+        )}
+        {learnerTurns > 0 && !listening ? (
           <Pressable
             onPress={confirmEnd}
             disabled={ending || sending}
@@ -282,7 +287,14 @@ function Chat({
           returnKeyType="send"
           onSubmitEditing={() => void send(text)}
         />
-        <MicButton onText={(said) => void send(said)} size={44} disabled={locked} />
+        <MicButton
+          continuous
+          onText={(said) => void send(said)}
+          onPartial={setText}
+          onListening={setListening}
+          size={44}
+          disabled={locked}
+        />
         <Pressable
           onPress={() => void send(text)}
           disabled={locked || !text.trim()}
@@ -442,6 +454,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
   },
   sessionCount: { fontSize: 12, fontWeight: "600", color: colors.muted },
+  listeningHint: { color: colors.danger },
   endChip: {
     flexDirection: "row",
     alignItems: "center",

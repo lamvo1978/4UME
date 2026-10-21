@@ -33,7 +33,7 @@ Thông tin chung:
 **Keywords** (≤ 100 ký tự, phẩy không dấu cách, không lặp chữ đã có trong tên / tiêu đề phụ):
 
 ```
-ngữ pháp,luyện nghe,chính tả,flashcard,ôn tập,từ điển,CEFR,english,giao tiếp
+ngữ pháp,luyện nghe,chính tả,flashcard,ôn tập,từ điển,CEFR,english,giao tiếp,đàm thoại AI
 ```
 
 Dài 76 ký tự / 94 byte: chữ có dấu tốn 2–3 byte, nếu App Store Connect báo quá 100 thì bớt từ cuối.
