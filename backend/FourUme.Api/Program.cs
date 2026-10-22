@@ -20,10 +20,12 @@ using FourUme.Application.Speech;
 using FourUme.Application.Pronunciation;
 using FourUme.Application.Review;
 using FourUme.Application.Vocabulary;
+using FourUme.Application.Writing;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure;
 using FourUme.Infrastructure.Auth;
 using FourUme.Infrastructure.Conversations;
+using FourUme.Infrastructure.Writing;
 using FourUme.Infrastructure.Persistence;
 using FourUme.Infrastructure.Media;
 using FourUme.Infrastructure.Pronunciation;
@@ -112,6 +114,10 @@ builder.Services.AddRateLimiter(options =>
     options.AddPolicy(ConversationLimit, http => RateLimitPartition.GetFixedWindowLimiter(
         GetUserId(http.User)?.ToString() ?? ClientIp(http),
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 15, Window = TimeSpan.FromMinutes(1) }));
+    // Each grading is a long AI call; nobody writes a paragraph in under a minute.
+    options.AddPolicy(WritingLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+        GetUserId(http.User)?.ToString() ?? ClientIp(http),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1) }));
 });
 
 var app = builder.Build();
@@ -196,6 +202,13 @@ using (var scope = app.Services.CreateScope())
         conversationPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "conversation", "scenarios.json"));
     }
     await ConversationSeeder.SeedAsync(db, conversationPath, logger);
+
+    var writingPath = builder.Configuration["Writing:Path"];
+    if (string.IsNullOrWhiteSpace(writingPath))
+    {
+        writingPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data", "writing", "prompts.json"));
+    }
+    await WritingSeeder.SeedAsync(db, writingPath, logger);
     await app.BootstrapAdminsAsync(logger);
 }
 
@@ -706,6 +719,66 @@ app.MapPost("/api/conversation/{id:guid}/end", async (Guid id, ClaimsPrincipal p
     }
 }).RequireAuthorization().RequireRateLimiting(ConversationLimit);
 
+app.MapGet("/api/writing/status", async (ClaimsPrincipal principal, IWritingService writing, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await writing.GetStatusAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+app.MapGet("/api/writing/prompts", async (IWritingService writing, CancellationToken ct) =>
+    Results.Ok(await writing.GetPromptsAsync(ct))).RequireAuthorization();
+
+app.MapPost("/api/writing/submissions", async (SubmitWritingRequest request, ClaimsPrincipal principal, IWritingService writing, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await writing.SubmitAsync(userId.Value, request, ct));
+    }
+    catch (WritingException ex)
+    {
+        return Results.Json(new { error = ex.Message, code = ex.Code }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization().RequireRateLimiting(WritingLimit);
+
+app.MapGet("/api/writing/submissions", async (ClaimsPrincipal principal, IWritingService writing, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    return Results.Ok(await writing.GetHistoryAsync(userId.Value, ct));
+}).RequireAuthorization();
+
+app.MapGet("/api/writing/submissions/{id:guid}", async (Guid id, ClaimsPrincipal principal, IWritingService writing, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        return Results.Ok(await writing.GetAsync(userId.Value, id, ct));
+    }
+    catch (WritingException ex)
+    {
+        return Results.Json(new { error = ex.Message, code = ex.Code }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization();
+
+app.MapDelete("/api/writing/submissions/{id:guid}", async (Guid id, ClaimsPrincipal principal, IWritingService writing, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    try
+    {
+        await writing.DeleteAsync(userId.Value, id, ct);
+        return Results.NoContent();
+    }
+    catch (WritingException ex)
+    {
+        return Results.Json(new { error = ex.Message, code = ex.Code }, statusCode: ex.StatusCode);
+    }
+}).RequireAuthorization();
+
 app.MapGet("/api/practice", async (ClaimsPrincipal principal, IPracticeService practice, CancellationToken ct) =>
 {
     var userId = GetUserId(principal);
@@ -860,6 +933,7 @@ public partial class Program
     private const string LoginLimit = "login";
     private const string RedeemLimit = "redeem";
     private const string ConversationLimit = "conversation";
+    private const string WritingLimit = "writing";
 
     /// <summary>
     /// The visitor's address. The edge nginx overwrites X-Real-IP with the connecting address, so it can't be

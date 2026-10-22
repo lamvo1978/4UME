@@ -30,6 +30,7 @@ const ICONS = [
   { value: "time-outline", label: "Đồng hồ" },
   { value: "infinite-outline", label: "Vô hạn" },
   { value: "star-outline", label: "Ngôi sao" },
+  { value: "create-outline", label: "Bút viết" },
 ];
 
 const newPerk = (): PremiumPerk => ({ icon: "sparkles-outline", title: "", body: "", soon: true, visible: true });
@@ -142,7 +143,8 @@ export function PremiumPerksPage() {
           ? `Đang hiện ${soonShown} quyền lợi "Sắp có". Trước khi mở bán Premium qua App Store / Google Play, hãy ẩn những dòng chưa làm: cửa hàng thường từ chối màn mua hứa tính năng chưa có.`
           : "Mọi quyền lợi đang hiện đều đã có thật."}{" "}
         Trong tiêu đề và mô tả, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt); <b>{"{ai}"}</b> /{" "}
-        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI).
+        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI); <b>{"{w}"}</b> /{" "}
+        <b>{"{wFree}"}</b> bằng số bài chấm mỗi ngày của Premium / gói miễn phí (trang Luyện viết AI).
       </Alert>
 
       <PlansCard

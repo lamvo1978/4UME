@@ -23,10 +23,12 @@ COPY backend/data/vocabulary.json /app/data/vocabulary.json
 COPY backend/data/grammar /app/data/grammar
 COPY backend/data/listening /app/data/listening
 COPY backend/data/conversation /app/data/conversation
+COPY backend/data/writing /app/data/writing
 ENV ASPNETCORE_URLS=http://+:5088
 ENV Vocabulary__Path=/app/data/vocabulary.json
 ENV Grammar__Path=/app/data/grammar
 ENV Listening__Path=/app/data/listening
 ENV Conversation__Path=/app/data/conversation/scenarios.json
+ENV Writing__Path=/app/data/writing/prompts.json
 EXPOSE 5088
 ENTRYPOINT ["dotnet", "FourUme.Api.dll"]

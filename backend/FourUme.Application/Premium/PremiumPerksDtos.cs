@@ -3,7 +3,7 @@ namespace FourUme.Application.Premium;
 /// <param name="Icon">One of <see cref="PremiumPerkRules.Icons"/> (Ionicons names in the app).</param>
 /// <param name="Title">
 /// The app replaces "{n}" with the Premium daily pronunciation limit, "{ai}" / "{aiFree}" with the Premium / free
-/// daily AI conversation turns (also in <paramref name="Body"/>).
+/// daily AI conversation turns, "{w}" / "{wFree}" with the Premium / free daily writing checks (also in <paramref name="Body"/>).
 /// </param>
 /// <param name="Soon">Shown with a "Sắp có" tag: promised but not built yet.</param>
 public record PremiumPerk(string Icon, string Title, string Body, bool Soon = false, bool Visible = true);
@@ -34,6 +34,7 @@ public record PremiumPerks(List<PremiumPerk> Perks, List<PremiumPlan>? Plans = n
     [
         new("pulse-outline", "Chấm phát âm chi tiết {n} lượt/ngày", "Biết điểm từng âm, luyện tới khi chuẩn."),
         new("sparkles-outline", "Đàm thoại với AI {ai} lượt/ngày", "Nhập vai theo tình huống hoặc trò chuyện tự do, AI sửa câu ngay và tổng kết cuối buổi. Gói miễn phí: {aiFree} lượt/ngày."),
+        new("create-outline", "Luyện viết với AI {w} bài/ngày", "AI chấm điểm, sửa lỗi, viết lại cả đoạn và lưu toàn bộ bài đã viết. Gói miễn phí: {wFree} bài/ngày."),
         new("headset-outline", "Luyện nghe – nói, nghe – chép", "Nghe câu của người bản xứ rồi nói lại hoặc chép lại, máy so từng từ. Gói miễn phí: thử 1 lượt và được mở vào ngày quà giữ chuỗi."),
         new("ban-outline", "Không quảng cáo", "Học liền mạch, không bị chen ngang.", Soon: true),
         new("stats-chart-outline", "Thống kê âm hay đọc sai", "Gom những âm bạn hay sai và gợi ý từ để luyện lại đúng âm đó.", Soon: true),
@@ -56,7 +57,7 @@ public static class PremiumPerkRules
     [
         "pulse-outline", "ban-outline", "stats-chart-outline", "snow-outline", "cloud-download-outline", "heart-outline",
         "chatbubbles-outline", "school-outline", "ribbon-outline", "sparkles-outline", "mic-outline", "headset-outline",
-        "book-outline", "trophy-outline", "flame-outline", "time-outline", "infinite-outline", "star-outline",
+        "book-outline", "trophy-outline", "flame-outline", "time-outline", "infinite-outline", "star-outline", "create-outline",
     ];
 
     public const int MaxPerks = 12;

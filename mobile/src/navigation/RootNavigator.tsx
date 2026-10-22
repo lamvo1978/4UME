@@ -46,6 +46,9 @@ import { SentenceHubScreen } from "../screens/SentenceHubScreen";
 import { SentencePracticeScreen } from "../screens/SentencePracticeScreen";
 import { ConversationHubScreen } from "../screens/ConversationHubScreen";
 import { ConversationScreen } from "../screens/ConversationScreen";
+import { WritingEditorScreen } from "../screens/WritingEditorScreen";
+import { WritingHubScreen } from "../screens/WritingHubScreen";
+import { WritingResultScreen } from "../screens/WritingResultScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { StudyHubScreen } from "../screens/StudyHubScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
@@ -298,6 +301,9 @@ export function RootNavigator() {
               component={ConversationScreen}
               options={({ route }) => ({ title: `${route.params.title} · ${route.params.level}` })}
             />
+            <Stack.Screen name="WritingHub" component={WritingHubScreen} options={{ title: "Luyện viết với AI" }} />
+            <Stack.Screen name="WritingEditor" component={WritingEditorScreen} options={({ route }) => ({ title: route.params.title })} />
+            <Stack.Screen name="WritingResult" component={WritingResultScreen} options={{ title: "Kết quả chấm" }} />
           </>
         )}
       </Stack.Navigator>

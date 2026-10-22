@@ -1,5 +1,23 @@
 import type { NavigatorScreenParams } from "@react-navigation/native";
-import type { FeedbackCategory, GrammarMixedScope, VocabLevel } from "../api/client";
+import type { FeedbackCategory, GrammarMixedScope, VocabLevel, WritingSubmission } from "../api/client";
+
+/**
+ * `promptId` null = free writing at `level` (the learner types a topic). `text` / `parentId` come from
+ * "Viết lại bài này" on a graded paragraph.
+ */
+export type WritingEditorParams = {
+  promptId: string | null;
+  level: VocabLevel;
+  title: string;
+  promptEn?: string | null;
+  guideVi?: string;
+  keyPhrases?: string[];
+  minWords?: number;
+  maxWords?: number;
+  topic?: string | null;
+  text?: string;
+  parentId?: string;
+};
 
 /** "mix" alternates typed and spoken sentences. */
 export type PracticeMode = "type" | "speak" | "mix";
@@ -25,6 +43,10 @@ export type RootStackParamList = {
   ConversationHub: undefined;
   /** `scenarioId` null = free talk at `level`. */
   Conversation: { scenarioId: string | null; level: VocabLevel; title: string };
+  WritingHub: undefined;
+  WritingEditor: WritingEditorParams;
+  /** `submission` right after grading saves a reload; from the history only `id` is known. */
+  WritingResult: { id: string; submission?: WritingSubmission };
   Review: ReviewParams | undefined;
   GrammarReview: GrammarReviewParams | undefined;
   WordSearch: undefined;

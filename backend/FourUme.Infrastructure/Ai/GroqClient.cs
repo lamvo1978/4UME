@@ -19,9 +19,21 @@ public class GroqOptions
     public const string DefaultFallbackModels = "openai/gpt-oss-20b";
     /// <summary>Model for "Đàm thoại với AI" replies, tried before the others; empty uses <see cref="Model"/>.</summary>
     public string? ChatModel { get; set; }
+    /// <summary>
+    /// Comma-separated models for "Luyện viết với AI", tried in order. Free-tier limits are per model, so these stay
+    /// apart from <see cref="Model"/>, which the conversation replies use.
+    /// </summary>
+    public string? WritingModels { get; set; }
+    public const string DefaultWritingModels = "qwen/qwen3.8-27b,openai/gpt-oss-20b";
 
     public bool Configured => !string.IsNullOrWhiteSpace(ApiKey);
     public string ModelName => string.IsNullOrWhiteSpace(Model) ? DefaultModel : Model.Trim();
+
+    public IReadOnlyList<string> WritingModelList =>
+        (string.IsNullOrWhiteSpace(WritingModels) ? DefaultWritingModels : WritingModels)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
     public IReadOnlyList<string> Models => ModelsFor(false);
 
@@ -57,9 +69,13 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
 
     public bool Configured => options.Value.Configured;
     public string ModelName => options.Value.ModelName;
+    public IReadOnlyList<string> WritingModels => options.Value.WritingModelList;
 
     /// <param name="chat">A learner is waiting: little reasoning, a short reply, and <see cref="GroqOptions.ChatModel"/> first.</param>
-    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct, bool chat = false)
+    /// <param name="models">Models tried in order instead of the configured ones.</param>
+    /// <param name="maxTokens">Output cap instead of the default for <paramref name="chat"/>.</param>
+    public async Task<AiReply> GenerateJsonAsync(string instructions, string prompt, JsonObject schema, double temperature, CancellationToken ct, bool chat = false,
+        IReadOnlyList<string>? models = null, int? maxTokens = null)
     {
         var o = options.Value;
         if (!o.Configured) throw new InvalidOperationException("Chưa cấu hình Groq (GROQ_API_KEY) trên máy chủ.");
@@ -67,7 +83,7 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
         var system = instructions.TrimEnd() + "\n\nReply with one JSON object only, no other text. It must match this JSON schema, " +
                      "with every property listed in \"required\" present:\n" + ToJsonSchema(schema).ToJsonString();
         var client = httpFactory.CreateClient(HttpClientName);
-        var models = o.ModelsFor(chat);
+        models ??= o.ModelsFor(chat);
         var quotaHit = false;
         var overloaded = false;
         HttpStatusCode status = default;
@@ -81,11 +97,13 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
                     new JsonObject { ["role"] = "system", ["content"] = system },
                     new JsonObject { ["role"] = "user", ["content"] = prompt }),
                 ["temperature"] = temperature,
-                ["max_completion_tokens"] = chat ? ChatOutputTokens : MaxOutputTokens,
+                ["max_completion_tokens"] = maxTokens ?? (chat ? ChatOutputTokens : MaxOutputTokens),
                 ["response_format"] = new JsonObject { ["type"] = "json_object" },
             };
             // Reasoning tokens count against the output cap and the per-minute limit; "medium" keeps answer checks careful without using them up.
             if (models[m].StartsWith("openai/gpt-oss", StringComparison.OrdinalIgnoreCase)) body["reasoning_effort"] = chat ? "low" : "medium";
+            // Qwen writes its thinking into the answer unless told otherwise, which breaks JSON mode.
+            if (models[m].StartsWith("qwen/", StringComparison.OrdinalIgnoreCase)) body["reasoning_format"] = "hidden";
             var payload = body.ToJsonString();
 
             for (var attempt = 1; ; attempt++)
@@ -98,6 +116,14 @@ public sealed class GroqClient(IHttpClientFactory httpFactory, IOptions<GroqOpti
                 using var response = await client.SendAsync(request, ct);
                 status = response.StatusCode;
                 text = await response.Content.ReadAsStringAsync(ct);
+                if (status == HttpStatusCode.BadRequest && body.ContainsKey("reasoning_format") && text.Contains("reasoning_format"))
+                {
+                    logger.LogInformation("Groq {Model} rejects reasoning_format, sending without it", models[m]);
+                    body.Remove("reasoning_format");
+                    payload = body.ToJsonString();
+                    attempt--;
+                    continue;
+                }
                 if (response.IsSuccessStatusCode || !Transient(status) || attempt > 1) break;
                 logger.LogInformation("Groq {Model} {Status}, retrying", models[m], (int)status);
                 await Task.Delay(RetryDelay, ct);

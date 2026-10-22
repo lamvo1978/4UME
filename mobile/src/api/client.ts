@@ -495,6 +495,69 @@ export type ConversationSummary = {
   learnerTurns: number;
 };
 
+/** Checks left today for "Luyện viết với AI". */
+export type WritingStatus = {
+  enabled: boolean;
+  /** False while no grading AI is configured on the server. */
+  available: boolean;
+  premium: boolean;
+  dailyLimit: number;
+  usedToday: number;
+  remaining: number;
+  freeDailyLimit: number;
+  premiumDailyLimit: number;
+  rewritePremiumOnly: boolean;
+  freeHistoryCount: number;
+  /** Everyone's checks today reached the share open to this plan. */
+  dayFull: boolean;
+};
+
+export type WritingPrompt = {
+  id: string;
+  level: VocabLevel;
+  titleVi: string;
+  icon: string;
+  promptEn: string;
+  guideVi: string;
+  minWords: number;
+  maxWords: number;
+  keyPhrases: string[];
+};
+
+export type WritingCorrectionKind = "grammar" | "word" | "spelling" | "punctuation" | "style";
+
+/** `start` is where `original` sits in the learner's text; -1 when it couldn't be found. */
+export type WritingCorrection = { original: string; corrected: string; explainVi: string; kind: WritingCorrectionKind; start: number };
+
+export type WritingResult = {
+  score: number;
+  scores: { grammar: number; vocabulary: number; coherence: number; task: number };
+  feedbackVi: string;
+  corrections: WritingCorrection[];
+  /** null when locked for the free plan (`rewritePreview` is still shown). */
+  rewrite: string | null;
+  rewriteLocked: boolean;
+  rewritePreview: string;
+  upgrades: { en: string; vi: string; whyVi: string }[];
+};
+
+export type WritingSubmission = {
+  id: string;
+  promptId: string | null;
+  promptTitle: string | null;
+  promptEn: string | null;
+  level: VocabLevel;
+  topic: string | null;
+  text: string;
+  wordCount: number;
+  createdAt: string;
+  result: WritingResult;
+};
+
+export type WritingHistoryItem = { id: string; title: string; level: VocabLevel; score: number; wordCount: number; createdAt: string; excerpt: string };
+/** `hidden` = older paragraphs not listed on the free plan. */
+export type WritingHistory = { items: WritingHistoryItem[]; total: number; hidden: number };
+
 /** "Học viên X · đến 30/06/2027" or "· không thời hạn". */
 export const partnerLine = (name: string, until: string | null | undefined, formatDate: (iso: string) => string) =>
   `Học viên ${name} · ${until ? `đến ${formatDate(until)}` : "không thời hạn"}`;
@@ -586,6 +649,8 @@ export class ApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** Machine-readable reason some endpoints add, e.g. "limit" / "dayFull" / "busy" for writing checks. */
+    readonly code?: string,
   ) {
     super(message);
   }
@@ -660,7 +725,7 @@ async function request<T>(path: string, init: RequestInit = {}, timeoutMs = REQU
     onUnauthorized();
     throw new ApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401);
   }
-  if (!res.ok) throw new ApiError(errorMessage(res.status, data), res.status);
+  if (!res.ok) throw new ApiError(errorMessage(res.status, data), res.status, typeof data?.code === "string" ? data.code : undefined);
   return data as T;
 }
 
@@ -831,6 +896,18 @@ export const api = {
   sendConversationTurn: (id: string, text: string) =>
     request<ConversationReply>(`/api/conversation/${id}/turns`, { method: "POST", body: JSON.stringify({ text }) }, AI_TIMEOUT_MS),
   endConversation: (id: string) => request<ConversationSummary>(`/api/conversation/${id}/end`, { method: "POST" }, AI_TIMEOUT_MS),
+  writingStatus: () => request<WritingStatus>("/api/writing/status"),
+  writingPrompts: () => request<WritingPrompt[]>("/api/writing/prompts"),
+  /** 429 with `code` "limit" (own checks used up) or "dayFull"; 503 "busy" = AI failed, not counted. */
+  submitWriting: (body: { promptId: string | null; level: VocabLevel; topic?: string; text: string; parentId?: string | null }) =>
+    request<{ submission: WritingSubmission; status: WritingStatus }>(
+      "/api/writing/submissions",
+      { method: "POST", body: JSON.stringify(body) },
+      AI_TIMEOUT_MS,
+    ),
+  writingHistory: () => request<WritingHistory>("/api/writing/submissions"),
+  writingSubmission: (id: string) => request<WritingSubmission>(`/api/writing/submissions/${id}`),
+  deleteWriting: (id: string) => request<void>(`/api/writing/submissions/${id}`, { method: "DELETE" }),
   grammarLessons: () => request<GrammarLesson[]>("/api/grammar/lessons"),
   grammarLesson: (slug: string) => request<GrammarDetail>(`/api/grammar/lessons/${slug}`),
   completeGrammar: (slug: string, score: number, total: number) =>

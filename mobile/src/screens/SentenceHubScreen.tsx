@@ -52,7 +52,7 @@ export function SentenceHubScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>Luyện</Text>
         <Text style={styles.intro}>
-          Luyện nghe và nói theo giọng người bản xứ.
+          Luyện nghe, nói và viết cùng AI và giọng người bản xứ.
         </Text>
 
         <Pressable
@@ -65,6 +65,17 @@ export function SentenceHubScreen() {
           <View style={styles.modeBody}>
             <Text style={styles.modeTitle}>Đàm thoại với AI</Text>
             <Text style={styles.modeText}>Nhập vai theo tình huống hoặc trò chuyện tự do, AI sửa câu cho bạn.</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.muted} />
+        </Pressable>
+
+        <Pressable onPress={() => navigation.navigate("WritingHub")} style={({ pressed }) => [styles.mode, pressed && styles.pressed]}>
+          <View style={[styles.modeIcon, styles.talkIcon]}>
+            <Ionicons name="create" size={24} color={colors.white} />
+          </View>
+          <View style={styles.modeBody}>
+            <Text style={styles.modeTitle}>Luyện viết với AI</Text>
+            <Text style={styles.modeText}>Viết một đoạn văn theo đề hoặc tự chọn chủ đề, AI chấm điểm, sửa lỗi và viết lại cho hay hơn.</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color={colors.muted} />
         </Pressable>

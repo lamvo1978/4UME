@@ -89,6 +89,7 @@ Demo account is provided above. New accounts need an email verification code, so
 
 - Microphone is used only for pronunciation scoring when the user taps the record button. Audio is sent to Microsoft Azure Speech for scoring and is not stored.
 - "Đàm thoại với AI" (Luyện tab → first card): the learner practises English by talking with an AI, as role-play (ordering coffee, a job interview…) or free talk. Speech is turned into text by iOS speech recognition; only that text is sent to a third-party AI service to write the reply and correct mistakes. No audio, name or email is sent. Before the first conversation the app shows a consent dialog explaining this (Guideline 5.1.2(i)); nothing is sent unless the user taps "Đồng ý". Replies are short, educational and the AI is instructed to refuse unsafe topics. The demo account has enough daily turns to try it.
+- "Luyện viết với AI" (Luyện tab → second card): the learner writes a short English paragraph and an AI grades it (score, highlighted mistakes with Vietnamese explanations, a rewritten version). Only the paragraph (with its task and level) is sent to a third-party AI service; no name or email. A separate consent dialog is shown the first time the learner opens a writing task, before anything is written or sent (Guideline 5.1.2(i)). Paragraphs are saved so the learner can read them again and can be deleted one by one.
 - Notifications are optional: study reminders, a weekly summary, replies to the user's feedback, and occasional news about new lessons or features (can be turned off in Profile > Settings > "Tin mới từ 4UME"). No promotional or marketing messages are sent.
 - The app is free and has no in-app purchases or ads. The "Premium" screen only describes upcoming features ("coming soon"); nothing can be bought.
 - Premium days can be earned for free by inviting friends, or are provided to students of partner English centers that enroll them through an access code (Guideline 3.1.3(c), access purchased by the organization for its students). No payment is made by users in or outside the app.
@@ -119,7 +120,7 @@ Làm sau 5–7 ngày bạn bè thử trên TestFlight. Điền trước được
 | User Content → **Audio Data** | App Functionality | ghi âm chấm phát âm; *Linked = No*, không lưu |
 | User Content → **Photos or Videos** | App Functionality | ảnh tự đính kèm vào góp ý |
 | User Content → **Customer Support** | App Functionality | nội dung góp ý |
-| User Content → **Other User Content** | App Functionality | chữ các câu trong *Đàm thoại với AI* (lưu theo tài khoản, gửi tới dịch vụ AI để tạo câu trả lời) |
+| User Content → **Other User Content** | App Functionality | chữ các câu trong *Đàm thoại với AI* và đoạn văn trong *Luyện viết với AI* (lưu theo tài khoản, gửi tới dịch vụ AI để trả lời / chấm bài) |
 | Identifiers → **User ID** | App Functionality | mã tài khoản (kèm báo lỗi Sentry) |
 | Usage Data → **Product Interaction** | App Functionality | tiến độ học, ngày học |
 | Diagnostics → **Crash Data** | App Functionality | Sentry |
@@ -161,7 +162,7 @@ Học từ vựng, chấm phát âm, luyện nghe và ngữ pháp tiếng Anh m�
 
 ### An toàn dữ liệu (Data safety)
 
-- *Thu thập hoặc chia sẻ dữ liệu bắt buộc?* **Có**. *Mã hoá khi truyền*: **Có**. *Người dùng yêu cầu xoá được*: **Có**. *Chia sẻ với bên thứ ba*: **Không** (Azure, Resend, Expo, Sentry, dịch vụ AI của Đàm thoại là nhà cung cấp dịch vụ xử lý thay 4UME, Google không tính là chia sẻ).
+- *Thu thập hoặc chia sẻ dữ liệu bắt buộc?* **Có**. *Mã hoá khi truyền*: **Có**. *Người dùng yêu cầu xoá được*: **Có**. *Chia sẻ với bên thứ ba*: **Không** (Azure, Resend, Expo, Sentry, dịch vụ AI của Đàm thoại và Luyện viết là nhà cung cấp dịch vụ xử lý thay 4UME, Google không tính là chia sẻ).
 
 | Loại dữ liệu (Google) | Bắt buộc / tuỳ chọn | Mục đích | Ghi chú |
 |---|---|---|---|
@@ -172,7 +173,7 @@ Học từ vựng, chấm phát âm, luyện nghe và ngữ pháp tiếng Anh m�
 | Ảnh và video → **Ảnh** | Tuỳ chọn | Hỗ trợ khách hàng | ảnh đính kèm góp ý |
 | Hoạt động trong ứng dụng → **Tương tác trong ứng dụng** | Bắt buộc | Chức năng ứng dụng | tiến độ học |
 | Hoạt động trong ứng dụng → **Lịch sử tìm kiếm trong ứng dụng** | Tuỳ chọn | Chức năng ứng dụng | ô tra từ; *Xử lý tạm thời* = Có |
-| Hoạt động trong ứng dụng → **Nội dung khác do người dùng tạo** | Tuỳ chọn | Hỗ trợ khách hàng, Chức năng ứng dụng | nội dung góp ý; chữ các câu trong *Đàm thoại với AI* |
+| Hoạt động trong ứng dụng → **Nội dung khác do người dùng tạo** | Tuỳ chọn | Hỗ trợ khách hàng, Chức năng ứng dụng | nội dung góp ý; chữ các câu trong *Đàm thoại với AI*; đoạn văn trong *Luyện viết với AI* |
 | Thông tin và hiệu suất ứng dụng → **Nhật ký sự cố**, **Chẩn đoán** | Bắt buộc | Phân tích sự cố | Sentry |
 | Mã thiết bị hoặc mã khác → **Mã thiết bị hoặc mã khác** | Tuỳ chọn | Chức năng ứng dụng | mã nhận thông báo |
 

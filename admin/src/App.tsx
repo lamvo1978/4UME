@@ -11,6 +11,7 @@ import { ListeningPage } from "./pages/ListeningPage";
 import { PlacementPage } from "./pages/PlacementPage";
 import { SentencesPage } from "./pages/SentencesPage";
 import { ConversationPage } from "./pages/ConversationPage";
+import { WritingPage } from "./pages/WritingPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ImageAssignPage } from "./pages/ImageAssignPage";
 import { MediaPage } from "./pages/MediaPage";
@@ -76,6 +77,7 @@ export function App() {
         <Route path="placement" element={<PlacementPage />} />
         <Route path="sentences" element={<SentencesPage />} />
         <Route path="conversation" element={<ConversationPage />} />
+        <Route path="writing" element={<WritingPage />} />
         <Route path="listening" element={<ListeningPage />} />
         <Route path="listening/new" element={<ListeningEditPage key="new" />} />
         <Route path="listening/:slug" element={<ListeningEditPage />} />

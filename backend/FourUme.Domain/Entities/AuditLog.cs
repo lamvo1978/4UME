@@ -32,6 +32,7 @@ public static class AuditEntities
     public const string Placement = "placement";
     public const string Sentence = "sentence";
     public const string Conversation = "conversation";
+    public const string Writing = "writing";
 }
 
 public static class AuditActions
