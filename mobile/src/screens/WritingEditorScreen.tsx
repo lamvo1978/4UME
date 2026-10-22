@@ -28,6 +28,10 @@ export function WritingEditorScreen({ navigation, route }: Props) {
   const [asking, setAsking] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<{ message: string; premium: boolean } | null>(null);
+  /** While typing the prompt card shrinks so the keyboard leaves room to write; tapping it opens it again. */
+  const [typing, setTyping] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const compact = typing && !expanded;
   const loaded = useRef(false);
   const input = useRef<TextInput>(null);
 
@@ -130,20 +134,31 @@ export function WritingEditorScreen({ navigation, route }: Props) {
 
       <ScrollView style={styles.flex} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive">
         {params.promptEn ? (
-          <View style={styles.prompt}>
-            <Text style={styles.promptLabel}>Đề bài · {params.level}</Text>
-            <Text style={styles.promptText}>{params.promptEn}</Text>
-            {params.guideVi ? <Text style={styles.guide}>{params.guideVi}</Text> : null}
+          <Pressable style={styles.prompt} disabled={!compact} onPress={() => setExpanded(true)}>
+            <View style={styles.promptHead}>
+              <Text style={styles.promptLabel}>Đề bài · {params.level}</Text>
+              {compact ? <Ionicons name="chevron-down" size={16} color={colors.accent} /> : null}
+            </View>
+            <Text style={styles.promptText} numberOfLines={compact ? 2 : undefined}>
+              {params.promptEn}
+            </Text>
+            {params.guideVi && !compact ? <Text style={styles.guide}>{params.guideVi}</Text> : null}
             {params.keyPhrases?.length ? (
-              <View style={styles.phrases}>
-                {params.keyPhrases.map((p) => (
-                  <Pressable key={p} onPress={() => addPhrase(p)} style={({ pressed }) => [styles.phrase, pressed && styles.pressed]}>
-                    <Text style={styles.phraseText}>{p}</Text>
-                  </Pressable>
-                ))}
-              </View>
+              compact ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={styles.phrasesRow}>
+                  {params.keyPhrases.map((p) => (
+                    <PhraseChip key={p} text={p} onPress={() => addPhrase(p)} />
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.phrases}>
+                  {params.keyPhrases.map((p) => (
+                    <PhraseChip key={p} text={p} onPress={() => addPhrase(p)} />
+                  ))}
+                </View>
+              )
             ) : null}
-          </View>
+          </Pressable>
         ) : (
           <View style={styles.prompt}>
             <Text style={styles.promptLabel}>Viết tự do · {params.level}</Text>
@@ -171,17 +186,12 @@ export function WritingEditorScreen({ navigation, route }: Props) {
           autoCorrect={false}
           spellCheck={false}
           autoCapitalize="sentences"
+          onFocus={() => {
+            setTyping(true);
+            setExpanded(false);
+          }}
+          onBlur={() => setTyping(false)}
         />
-        <View style={styles.countRow}>
-          <Text style={[styles.count, { color: countColor }]}>
-            {words} từ · gợi ý {min}–{max} từ
-          </Text>
-          {text.length > MAX_CHARS - 100 ? (
-            <Text style={styles.chars}>
-              {text.length}/{MAX_CHARS} ký tự
-            </Text>
-          ) : null}
-        </View>
         <Text style={styles.hint}>Máy đã tắt tự sửa chính tả để AI thấy đúng lỗi của bạn. Nháp được lưu trên máy.</Text>
 
         {error ? (
@@ -197,11 +207,17 @@ export function WritingEditorScreen({ navigation, route }: Props) {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + 8 }]}>
-        {status ? (
-          <Text style={styles.quota}>
-            {status.remaining > 0 && !status.dayFull ? `Còn ${status.remaining}/${status.dailyLimit} bài chấm hôm nay` : "Hôm nay đã hết lượt chấm"}
+        <View style={styles.countRow}>
+          <Text style={[styles.count, { color: countColor }]}>
+            {words} từ · gợi ý {min}–{max}
+            {text.length > MAX_CHARS - 100 ? ` · ${text.length}/${MAX_CHARS} ký tự` : ""}
           </Text>
-        ) : null}
+          {status ? (
+            <Text style={styles.quota}>
+              {status.remaining > 0 && !status.dayFull ? `Còn ${status.remaining}/${status.dailyLimit} bài chấm` : "Hết lượt chấm hôm nay"}
+            </Text>
+          ) : null}
+        </View>
         <Pressable
           disabled={tooShort || sending}
           onPress={() => void submit()}
@@ -215,10 +231,20 @@ export function WritingEditorScreen({ navigation, route }: Props) {
   );
 }
 
+function PhraseChip({ text, onPress }: { text: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.phrase, pressed && styles.pressed]}>
+      <Text style={styles.phraseText}>{text}</Text>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, paddingTop: spacing.md, gap: spacing.sm },
   prompt: { gap: 6, padding: 14, borderRadius: 18, backgroundColor: colors.surface, ...shadow.card, shadowOpacity: 0.05 },
+  promptHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  phrasesRow: { gap: 6, paddingTop: 2 },
   promptLabel: { fontSize: 11, fontWeight: "800", color: colors.accent, textTransform: "uppercase", letterSpacing: 0.5 },
   promptText: { fontSize: 15, lineHeight: 22, color: colors.ink, fontWeight: "600" },
   guide: { fontSize: 13, lineHeight: 18, color: colors.muted },
@@ -237,15 +263,14 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: colors.ink,
   },
-  countRow: { flexDirection: "row", justifyContent: "space-between" },
-  count: { fontSize: 13, fontWeight: "700" },
-  chars: { fontSize: 12, color: colors.muted },
+  countRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 },
+  count: { flexShrink: 1, fontSize: 13, fontWeight: "700" },
   hint: { fontSize: 12, color: colors.muted, lineHeight: 17 },
   error: { gap: 6, padding: 12, borderRadius: 14, backgroundColor: colors.dangerSoft },
   errorText: { fontSize: 13, lineHeight: 18, color: colors.danger },
   errorLink: { fontSize: 13, fontWeight: "800", color: colors.accent },
   footer: { gap: 6, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, backgroundColor: colors.bg },
-  quota: { fontSize: 12, color: colors.muted, textAlign: "center" },
+  quota: { fontSize: 12, color: colors.muted },
   submit: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 15, borderRadius: 16, backgroundColor: colors.accent },
   submitText: { color: colors.white, fontSize: 16, fontWeight: "800" },
   disabled: { opacity: 0.5 },
