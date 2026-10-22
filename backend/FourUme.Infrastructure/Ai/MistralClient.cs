@@ -10,8 +10,12 @@ namespace FourUme.Infrastructure.Ai;
 public class MistralOptions
 {
     public const string SectionName = "Mistral";
-    public const string DefaultModel = "mistral-large-latest";
-    public const string DefaultWritingModels = "mistral-large-latest,mistral-small-latest";
+    /// <summary>
+    /// Pinned versions: on the free tier mistral-large-2512 allows 250,000 tokens a minute while mistral-large-4
+    /// (which "-latest" may point to) allows 20,000 and reasons before answering.
+    /// </summary>
+    public const string DefaultModel = "mistral-large-2512";
+    public const string DefaultWritingModels = "mistral-large-2512,mistral-small-2603";
     /// <summary>
     /// console.mistral.ai → API keys. Free mode lets Mistral train on the requests unless
     /// Admin panel → Privacy → "Anonymous improvement data" is switched off.
