@@ -11,11 +11,11 @@ public class MistralOptions
 {
     public const string SectionName = "Mistral";
     /// <summary>
-    /// Pinned versions: on the free tier mistral-large-2512 allows 250,000 tokens a minute while mistral-large-4
-    /// (which "-latest" may point to) allows 20,000 and reasons before answering.
+    /// Pinned versions. The free tier's Limits page lists the Large models but refuses them (403 tier_not_allowed),
+    /// and Small / Medium answer 429 there; the Ministral models are what it actually serves.
     /// </summary>
-    public const string DefaultModel = "mistral-large-2512";
-    public const string DefaultWritingModels = "mistral-large-2512,mistral-small-2603";
+    public const string DefaultModel = "ministral-14b-2512";
+    public const string DefaultWritingModels = "ministral-14b-2512";
     /// <summary>
     /// console.mistral.ai → API keys. Free mode lets Mistral train on the requests unless
     /// Admin panel → Privacy → "Anonymous improvement data" is switched off.
@@ -68,6 +68,7 @@ public sealed class MistralClient(IHttpClientFactory httpFactory, IOptions<Mistr
         var client = httpFactory.CreateClient(HttpClientName);
         var quotaHit = false;
         var overloaded = false;
+        var tierBlocked = new List<string>();
         HttpStatusCode status = default;
         var text = "";
         for (var m = 0; m < models.Count; m++)
@@ -126,17 +127,22 @@ public sealed class MistralClient(IHttpClientFactory httpFactory, IOptions<Mistr
 
             if (status == HttpStatusCode.TooManyRequests) quotaHit = true;
             else if (Transient(status)) overloaded = true;
-            var tryNext = Transient(status) || status is HttpStatusCode.TooManyRequests or HttpStatusCode.NotFound
+            // 403 tier_not_allowed: the plan doesn't include this model (the free tier lists more models than it serves).
+            var notInTier = status == HttpStatusCode.Forbidden && text.Contains("tier_not_allowed", StringComparison.OrdinalIgnoreCase);
+            if (notInTier) tierBlocked.Add(models[m]);
+            var tryNext = Transient(status) || notInTier || status is HttpStatusCode.TooManyRequests or HttpStatusCode.NotFound
                           || (status == HttpStatusCode.BadRequest && text.Contains("model", StringComparison.OrdinalIgnoreCase));
             if (!tryNext || m == models.Count - 1) break;
             logger.LogWarning("Mistral {Model} failed {Status}, trying {Next}", models[m], (int)status, models[m + 1]);
         }
 
         logger.LogWarning("Mistral failed {Status}: {Body}", (int)status, text.Length > 1500 ? text[..1500] : text);
+        var blocked = tierBlocked.Count > 0 ? $" Gói Mistral hiện tại không cho dùng {string.Join(", ", tierBlocked)} (đổi MISTRAL_WRITING_MODELS)." : "";
         throw new InvalidOperationException(status switch
         {
-            HttpStatusCode.TooManyRequests when quotaHit => "Đã hết lượt gọi Mistral (theo phút hoặc theo tháng). Hãy thử lại sau ít phút.",
-            _ when overloaded => "Mistral đang quá tải, hãy bấm lại sau ít phút.",
+            HttpStatusCode.TooManyRequests when quotaHit => "Đã hết lượt gọi Mistral (theo phút hoặc theo tháng). Hãy thử lại sau ít phút." + blocked,
+            _ when overloaded => "Mistral đang quá tải, hãy bấm lại sau ít phút." + blocked,
+            HttpStatusCode.Forbidden when tierBlocked.Count > 0 => blocked.Trim(),
             HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "Mistral từ chối khoá (MISTRAL_API_KEY không đúng).",
             HttpStatusCode.NotFound or HttpStatusCode.BadRequest when text.Contains("model", StringComparison.OrdinalIgnoreCase) =>
                 $"Mistral không có model \"{models[^1]}\" (đổi MISTRAL_WRITING_MODELS).",

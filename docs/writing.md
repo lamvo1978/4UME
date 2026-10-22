@@ -35,7 +35,7 @@ flowchart LR
   editor["Màn viết"] --> consent["Hộp đồng ý (lần đầu)"]
   consent --> api["POST /api/writing/submissions"]
   api --> quota["Lượt của người học + trần tổng ngày"]
-  quota --> ai["Mistral miễn phí, lỗi hoặc hết thì Groq miễn phí"]
+  quota --> ai["Groq miễn phí, hết lượt hoặc lỗi thì Mistral miễn phí"]
   ai --> check["Máy chủ tìm vị trí từng lỗi trong bài"]
   check --> save["Lưu WritingSubmission"]
   save --> result["Màn kết quả (ẩn bản viết lại nếu cần)"]
@@ -49,7 +49,7 @@ flowchart LR
 ## Chọn AI (chốt 22/10/2026)
 
 - **Giai đoạn đầu chỉ dùng gói miễn phí** cho cả người dùng miễn phí và Premium; Premium khác ở số lượt, bản viết lại và lịch sử.
-- **Mistral** (gói miễn phí, dùng được model lớn, có JSON schema chặt) chấm trước, **Groq** (gói miễn phí) dự phòng. Không dùng Gemini gói miễn phí (Google dùng nội dung để cải thiện sản phẩm), không tạo thêm tài khoản Groq (vi phạm chính sách Groq; thêm key trong cùng tổ chức cũng không thêm hạn mức).
+- **Groq** (`qwen/qwen3.8-27b`) chấm trước, **Mistral** (`ministral-14b-2512`) dự phòng khi Groq hết lượt theo phút / ngày. Lúc đầu định dùng Mistral làm chính, nhưng chấm thử thật (22/10) cho thấy gói miễn phí của Mistral không cho dùng model lớn (xem bảng dưới), và `ministral-14b` kém hẳn: cùng một bài A2, Groq tìm 7 lỗi trong 2,2 giây và tô đúng cả 7 chỗ; `ministral-14b` tìm 3 lỗi trong 10,2 giây và chèn `**` làm trích không khớp (máy chủ đã tự bỏ dấu markdown để vẫn tô được). Không dùng Gemini gói miễn phí (Google dùng nội dung để cải thiện sản phẩm), không tạo thêm tài khoản Groq (vi phạm chính sách Groq; thêm key trong cùng tổ chức cũng không thêm hạn mức).
 - Model của Groq cho chấm bài **khác** model của Đàm thoại (`gpt-oss-120b`), vì hạn mức miễn phí tính riêng từng model: mặc định `qwen/qwen3.8-27b` rồi `openai/gpt-oss-20b` (mỗi model 200.000 token/ngày, 8.000 token/phút, khoảng 40 bài/ngày).
 - Cả chuỗi phải xong trong khoảng 52 giây (nginx cắt yêu cầu ở 60 giây). AI không phải cuối chuỗi được tối đa 2/3 thời gian còn lại để chừa phần cho AI sau. Hết cả chuỗi thì app báo *AI đang bận, bấm chấm lại sau ít phút* và **không tính lượt**.
 - Thứ tự AI chỉnh trên admin, riêng cho miễn phí và Premium (Premium để trống = giống miễn phí). Khi có doanh thu có thể đặt Premium dùng Gemini (bật thanh toán cho khoá Gemini trước) mà không cần build lại app.
@@ -58,19 +58,20 @@ flowchart LR
 ### Lấy key Mistral
 
 1. [console.mistral.ai](https://console.mistral.ai) → đăng ký, giữ **Free mode**.
-2. **Admin panel → Privacy → tắt *Anonymous improvement data*** (mặc định gói miễn phí cho Mistral dùng dữ liệu để huấn luyện; trang `privacy/` đã ghi là 4UME tắt tuỳ chọn này).
+2. **Admin panel → API → Privacy → tắt *Allow the use of your API calls to train Mistral's AI models*** (mặc định gói miễn phí **bật**, tức Mistral được dùng dữ liệu để huấn luyện; trang `privacy/` đã ghi là 4UME tắt tuỳ chọn này). Để tắt luôn *Enable Labs models* (bật mục đó thì Mistral được dùng dữ liệu bất kể cài đặt khác).
 3. *API keys* → tạo key → thêm `MISTRAL_API_KEY=...` vào `.env` trên VPS rồi `docker compose up -d`.
 4. Xem hạn mức ở *Admin panel → API → Limits* (token/phút, lượt/giây, token/tháng) để đặt **Trần tổng mỗi ngày** cho hợp lý.
 
-Hạn mức gói miễn phí của tài khoản 4UME (xem ngày 22/10/2026, không thấy giới hạn theo ngày hay tháng):
+Gói miễn phí của tài khoản 4UME khi gọi thật (22/10/2026). Trang *Limits* liệt kê cả những model gói này **không** cho dùng, nên phải thử gọi mới biết:
 
-| Model | Token/phút | Lượt/giây | Ghi chú |
+| Model | Trang Limits | Gọi thật | Ghi chú |
 |---|---|---|---|
-| `mistral-large-2512` | 250.000 | 1 | **Model chính**: khoảng 50 bài/phút theo token, 60 bài/phút theo lượt |
-| `mistral-small-2603` | 20.000 | 1 | Dự phòng, khoảng 4 bài/phút |
-| `mistral-large-4`, `mistral-medium-latest` | 20.000 | ~1 | Không dùng: hạn mức thấp, `large-4` suy nghĩ trước khi trả lời nên chậm |
+| `mistral-large-2512`, `mistral-large-4` | 250.000 / 20.000 token/phút | **403** `tier_not_allowed` | Không có trong gói miễn phí |
+| `mistral-medium-latest`, `mistral-small-2603` | 20.000 token/phút | **429** kể cả khi gọi cách nhau 4 giây | Coi như chưa dùng được; thử lại sau bằng ô *Model* trong *Chấm thử* |
+| `ministral-14b-2512` | 937.500 token/phút, 0,5 lượt/giây | 200 | **Đang dùng** làm dự phòng (khoảng 30 bài/phút) |
+| `ministral-8b-2512` | 625.000 token/phút, 3,13 lượt/giây | 200 | Nhỏ hơn, chưa chấm thử |
 
-Model được ghi rõ phiên bản (không dùng `mistral-large-latest`) vì tên `-latest` có thể trỏ sang `mistral-large-4` có hạn mức thấp. Mistral ra bản mới thì kiểm tra lại trang *Limits* rồi đổi `MISTRAL_WRITING_MODELS`. Mỗi bài tốn khoảng 5.000 token, theo dõi tổng dùng ở *Admin panel → API → Usage*.
+Model nào bị 403 thì máy chủ ghi lại và chuyển sang model kế tiếp trong `MISTRAL_WRITING_MODELS`. Khi Mistral mở thêm model (hoặc khi trả phí), thử lại bằng *Chấm thử* (chọn Mistral, gõ tên model) rồi đổi `MISTRAL_WRITING_MODELS`, ví dụ `mistral-small-2603,ministral-14b-2512`. Mỗi bài tốn khoảng 5.000 token, theo dõi ở *Admin panel → API → Usage*.
 
 ## Lượt và trần tổng
 
@@ -79,7 +80,7 @@ Model được ghi rõ phiên bản (không dùng `mistral-large-latest`) vì t�
 | Bài chấm mỗi ngày (mặc định) | 1 | 10 |
 
 - "Ngày" của mỗi người theo giờ máy (header `X-Utc-Offset`), giống chuỗi ngày học.
-- **Trần tổng mỗi ngày** (mặc định 60 bài, mọi người cộng lại, tính theo ngày UTC = 7 giờ sáng giờ Việt Nam) giữ trong hạn mức miễn phí của AI. **Phần để dành cho Premium** (mặc định 30%): người dùng miễn phí dừng khi cả hệ thống đã chấm 70% trần, Premium vẫn chấm tới đủ trần. 0 = không giới hạn. Mặc định 60 là mức an toàn khi chỉ có Groq; khi đã có key Mistral (`mistral-large-2512` 250.000 token/phút, không thấy trần ngày / tháng) có thể nâng lên vài trăm bài, theo dõi *Usage* của Mistral vài tuần đầu.
+- **Trần tổng mỗi ngày** (mặc định 60 bài, mọi người cộng lại, tính theo ngày UTC = 7 giờ sáng giờ Việt Nam) giữ trong hạn mức miễn phí của AI. **Phần để dành cho Premium** (mặc định 30%): người dùng miễn phí dừng khi cả hệ thống đã chấm 70% trần, Premium vẫn chấm tới đủ trần. 0 = không giới hạn. Mặc định 60 bài khớp với hai model Groq miễn phí (khoảng 40 bài/ngày mỗi model, chất lượng tốt). Mistral `ministral-14b` không thấy trần ngày / tháng nên nâng trần lên được, nhưng phần vượt sẽ do model kém hơn chấm; theo dõi *Usage* của Mistral vài tuần đầu rồi mới nâng.
 - Hết lượt riêng: app gợi ý Premium. Chạm trần tổng: app báo quay lại ngày mai.
 - Màn **Premium** có dòng *Luyện viết với AI {w} bài/ngày* (gói miễn phí {wFree}); app thay `{w}` / `{wFree}` bằng số lượt đang cài. Nếu admin đã lưu danh sách quyền lợi riêng thì thêm tay dòng này ở *Quyền lợi Premium* (biểu tượng *Bút viết*).
 - Số lượt Premium cuối cùng và giá Premium sẽ chốt trước khi đưa lên store công khai.
@@ -96,7 +97,7 @@ Model được ghi rõ phiên bản (không dùng `mistral-large-latest`) vì t�
 
 - Bảng: `WritingPrompts`, `WritingSubmissions` (kết quả chấm lưu dạng JSON trong cột `Result`, kèm `Model`). Cài đặt trong `AppSettings` khoá `writing`. Đề mẫu (20 đề, 5 đề mỗi cấp) ở `backend/data/writing/prompts.json`, nạp lần đầu khi bảng trống.
 - AI: `MistralClient` (`response_format: json_schema` chặt; model từ chối thì chuyển sang JSON thường), `GroqOptions.WritingModels`, `AiClient.GradeJsonAsync` đi lần lượt theo thứ tự nhà cung cấp. Lệnh và đọc kết quả ở `WritingGrader`.
-- Biến môi trường: `MISTRAL_API_KEY` (không có thì chỉ chấm bằng Groq); tuỳ chọn `MISTRAL_WRITING_MODELS` (mặc định `mistral-large-2512,mistral-small-2603`), `GROQ_WRITING_MODELS` (mặc định `qwen/qwen3.8-27b,openai/gpt-oss-20b`).
+- Biến môi trường: `MISTRAL_API_KEY` (không có thì chỉ chấm bằng Groq); tuỳ chọn `MISTRAL_WRITING_MODELS` (mặc định `ministral-14b-2512`), `GROQ_WRITING_MODELS` (mặc định `qwen/qwen3.8-27b,openai/gpt-oss-20b`).
 - API app:
   - `GET /api/writing/status` — lượt còn lại hôm nay, `dayFull` khi chạm trần tổng.
   - `GET /api/writing/prompts` — đề đang hiện.

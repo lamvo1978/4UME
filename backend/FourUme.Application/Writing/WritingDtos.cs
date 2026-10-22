@@ -20,7 +20,7 @@ public record WritingConfig
     /// <summary>Most recent paragraphs a free learner can open again; Premium sees all.</summary>
     public int FreeHistoryCount { get; init; } = 5;
     /// <summary>AI providers tried in order (see <see cref="AiProviders"/>); unconfigured ones are skipped.</summary>
-    public List<string> Providers { get; init; } = [AiProviders.Mistral, AiProviders.Groq];
+    public List<string> Providers { get; init; } = [AiProviders.Groq, AiProviders.Mistral];
     /// <summary>Order for Premium learners; empty uses <see cref="Providers"/>.</summary>
     public List<string> PremiumProviders { get; init; } = [];
 }
