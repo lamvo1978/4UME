@@ -1,5 +1,6 @@
 import {
   IconAdjustments,
+  IconBallpen,
   IconBell,
   IconBook2,
   IconBooks,
@@ -54,6 +55,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { to: "/listening", label: "Bài nghe", icon: IconHeadphones },
       { to: "/sentences", label: "Luyện câu", icon: IconMessages },
       { to: "/conversation", label: "Đàm thoại AI", icon: IconMessageChatbot },
+      { to: "/writing", label: "Luyện viết AI", icon: IconBallpen },
       { to: "/placement", label: "Kiểm tra đầu vào", icon: IconClipboardCheck },
       { to: "/decks", label: "Bộ từ", icon: IconCards },
       { to: "/image-assign", label: "Gắn ảnh", icon: IconPhotoSearch },

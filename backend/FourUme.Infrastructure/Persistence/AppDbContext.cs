@@ -37,6 +37,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ConversationScenario> ConversationScenarios => Set<ConversationScenario>();
     public DbSet<Conversation> Conversations => Set<Conversation>();
     public DbSet<ConversationTurn> ConversationTurns => Set<ConversationTurn>();
+    public DbSet<WritingPrompt> WritingPrompts => Set<WritingPrompt>();
+    public DbSet<WritingSubmission> WritingSubmissions => Set<WritingSubmission>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -328,6 +330,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.HintVi).HasMaxLength(400);
             e.Property(x => x.Suggestions).HasColumnType("jsonb");
             e.HasOne(x => x.Conversation).WithMany(x => x.Turns).HasForeignKey(x => x.ConversationId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<WritingPrompt>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.TitleVi).HasMaxLength(120).IsRequired();
+            e.Property(x => x.Icon).HasMaxLength(48).IsRequired();
+            e.Property(x => x.PromptEn).HasMaxLength(700).IsRequired();
+            e.Property(x => x.GuideVi).HasMaxLength(400).IsRequired();
+            e.HasIndex(x => new { x.Level, x.Published });
+        });
+
+        modelBuilder.Entity<WritingSubmission>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.UserId, x.LocalDate });
+            e.HasIndex(x => new { x.UserId, x.CreatedAt });
+            e.HasIndex(x => x.CreatedAt);
+            e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.Topic).HasMaxLength(160);
+            e.Property(x => x.Text).HasMaxLength(2000).IsRequired();
+            e.Property(x => x.Result).HasColumnType("jsonb").IsRequired();
+            e.Property(x => x.Model).HasMaxLength(100).IsRequired();
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Prompt).WithMany().HasForeignKey(x => x.PromptId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<PlacementGrammarQuestion>(e =>

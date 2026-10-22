@@ -4,19 +4,49 @@ import { Linking, Modal, Pressable, StyleSheet, Text, View } from "react-native"
 import { colors, spacing } from "../theme";
 
 const PRIVACY_URL = "https://4ume.io.vn/privacy/";
-const keyOf = (userId: string) => `fourume.aiConsent.${userId}`;
+
+/** "talk" = Đàm thoại với AI, "writing" = Luyện viết với AI; each asks once since they send different things. */
+export type AiConsentKind = "talk" | "writing";
+
+const keyOf = (userId: string, kind: AiConsentKind) => (kind === "talk" ? `fourume.aiConsent.${userId}` : `fourume.aiConsent.${kind}.${userId}`);
 
 /** Apple 5.1.2(i): what the learner says goes to a third-party AI only after they agree, once per account on this phone. */
-export async function hasAiConsent(userId: string) {
-  return (await AsyncStorage.getItem(keyOf(userId))) === "yes";
+export async function hasAiConsent(userId: string, kind: AiConsentKind = "talk") {
+  return (await AsyncStorage.getItem(keyOf(userId, kind))) === "yes";
 }
 
-export function saveAiConsent(userId: string) {
-  return AsyncStorage.setItem(keyOf(userId), "yes");
+export function saveAiConsent(userId: string, kind: AiConsentKind = "talk") {
+  return AsyncStorage.setItem(keyOf(userId, kind), "yes");
 }
+
+const TEXTS: Record<AiConsentKind, { title: string; body: string; first: { icon: keyof typeof Ionicons.glyphMap; text: string }; use: string }> = {
+  talk: {
+    title: "Trò chuyện với AI",
+    body: "Để AI trả lời và sửa câu cho bạn, những câu bạn nói hoặc gõ trong phần này (dạng chữ) sẽ được gửi tới dịch vụ AI bên ngoài của đối tác 4UME.",
+    first: { icon: "mic-off-outline", text: "Không gửi bản ghi âm giọng nói của bạn." },
+    use: "Chỉ dùng để tạo câu trả lời, sửa lỗi và tổng kết buổi học.",
+  },
+  writing: {
+    title: "AI chấm bài viết",
+    body: "Để AI chấm điểm và sửa lỗi, đoạn văn bạn viết trong phần này sẽ được gửi tới dịch vụ AI bên ngoài của đối tác 4UME. 4UME lưu bài để bạn xem lại, bạn xoá được bất cứ lúc nào.",
+    first: { icon: "create-outline", text: "Chỉ gửi đoạn văn bạn bấm chấm, không gửi gì khác." },
+    use: "Chỉ dùng để chấm điểm, sửa lỗi và gợi ý cách viết hay hơn.",
+  },
+};
 
 /** Names no provider on purpose: the privacy policy lists them, so switching AI needs no app update. */
-export function AiConsentModal({ visible, onAgree, onDecline }: { visible: boolean; onAgree: () => void; onDecline: () => void }) {
+export function AiConsentModal({
+  visible,
+  onAgree,
+  onDecline,
+  kind = "talk",
+}: {
+  visible: boolean;
+  onAgree: () => void;
+  onDecline: () => void;
+  kind?: AiConsentKind;
+}) {
+  const t = TEXTS[kind];
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDecline}>
       <View style={styles.backdrop}>
@@ -24,15 +54,12 @@ export function AiConsentModal({ visible, onAgree, onDecline }: { visible: boole
           <View style={styles.icon}>
             <Ionicons name="sparkles" size={26} color={colors.white} />
           </View>
-          <Text style={styles.title}>Trò chuyện với AI</Text>
-          <Text style={styles.body}>
-            Để AI trả lời và sửa câu cho bạn, những câu bạn nói hoặc gõ trong phần này (dạng chữ) sẽ được gửi tới dịch vụ AI bên ngoài
-            của đối tác 4UME.
-          </Text>
+          <Text style={styles.title}>{t.title}</Text>
+          <Text style={styles.body}>{t.body}</Text>
           <View style={styles.points}>
-            <Point icon="mic-off-outline" text="Không gửi bản ghi âm giọng nói của bạn." />
+            <Point icon={t.first.icon} text={t.first.text} />
             <Point icon="person-remove-outline" text="Không gửi email hay tên của bạn." />
-            <Point icon="shield-checkmark-outline" text="Chỉ dùng để tạo câu trả lời, sửa lỗi và tổng kết buổi học." />
+            <Point icon="shield-checkmark-outline" text={t.use} />
           </View>
           <Pressable onPress={() => void Linking.openURL(PRIVACY_URL)} hitSlop={8}>
             <Text style={styles.link}>Xem chính sách quyền riêng tư</Text>

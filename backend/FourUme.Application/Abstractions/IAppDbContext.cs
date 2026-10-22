@@ -36,5 +36,7 @@ public interface IAppDbContext
     DbSet<ConversationScenario> ConversationScenarios { get; }
     DbSet<Conversation> Conversations { get; }
     DbSet<ConversationTurn> ConversationTurns { get; }
+    DbSet<WritingPrompt> WritingPrompts { get; }
+    DbSet<WritingSubmission> WritingSubmissions { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

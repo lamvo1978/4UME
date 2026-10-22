@@ -1,0 +1,202 @@
+[
+  {
+    "level": "A1",
+    "titleVi": "Giới thiệu bản thân",
+    "icon": "person-outline",
+    "promptEn": "Write about yourself. Say your name, how old you are, where you live and what you do.",
+    "guideVi": "Tên, tuổi, nơi sống, công việc hoặc việc học của bạn.",
+    "minWords": 30,
+    "maxWords": 80,
+    "keyPhrases": ["My name is…", "I am … years old.", "I live in…", "I work as…"]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Gia đình của tôi",
+    "icon": "people-outline",
+    "promptEn": "Write about your family. Who is in your family? What do they do? What do they like?",
+    "guideVi": "Các thành viên trong gia đình, công việc và sở thích của họ.",
+    "minWords": 30,
+    "maxWords": 80,
+    "keyPhrases": ["There are … people in my family.", "My father is…", "She likes…", "We often…"]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Một ngày của tôi",
+    "icon": "sunny-outline",
+    "promptEn": "Write about your day. What time do you get up? What do you do in the morning, afternoon and evening?",
+    "guideVi": "Giờ thức dậy và những việc bạn làm buổi sáng, chiều, tối.",
+    "minWords": 30,
+    "maxWords": 80,
+    "keyPhrases": ["I get up at…", "In the morning, I…", "After that,…", "I go to bed at…"]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Món ăn yêu thích",
+    "icon": "restaurant-outline",
+    "promptEn": "Write about your favourite food. What is it? When do you eat it? Why do you like it?",
+    "guideVi": "Món bạn thích, khi nào bạn ăn và vì sao bạn thích.",
+    "minWords": 30,
+    "maxWords": 80,
+    "keyPhrases": ["My favourite food is…", "It is very…", "I usually eat it…", "I like it because…"]
+  },
+  {
+    "level": "A1",
+    "titleVi": "Ngôi nhà của tôi",
+    "icon": "home-outline",
+    "promptEn": "Write about your home. Is it a house or a flat? How many rooms are there? What is your favourite room?",
+    "guideVi": "Nhà hay căn hộ, có mấy phòng, phòng bạn thích nhất.",
+    "minWords": 30,
+    "maxWords": 80,
+    "keyPhrases": ["I live in a…", "There is / There are…", "My favourite room is…", "It has…"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Cuối tuần vừa rồi",
+    "icon": "calendar-outline",
+    "promptEn": "Write about what you did last weekend. Where did you go, who were you with and what did you enjoy?",
+    "guideVi": "Bạn đã đi đâu, với ai, làm gì và thích điều gì (dùng thì quá khứ).",
+    "minWords": 50,
+    "maxWords": 120,
+    "keyPhrases": ["Last weekend, I…", "On Saturday morning,…", "We went to…", "The best part was…"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Tin nhắn hẹn bạn",
+    "icon": "chatbubble-outline",
+    "promptEn": "Write a message to a friend inviting them to go out with you this weekend. Say where you want to go, when to meet and why it will be fun.",
+    "guideVi": "Rủ bạn đi chơi: đi đâu, gặp lúc nào, vì sao sẽ vui.",
+    "minWords": 50,
+    "maxWords": 120,
+    "keyPhrases": ["Are you free on…?", "Would you like to…?", "Let's meet at…", "It will be fun because…"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Kỳ nghỉ đáng nhớ",
+    "icon": "airplane-outline",
+    "promptEn": "Write about a holiday you remember. Where did you go, what did you see and do, and how did you feel?",
+    "guideVi": "Nơi bạn đã đến, những gì bạn thấy, đã làm và cảm xúc của bạn.",
+    "minWords": 50,
+    "maxWords": 120,
+    "keyPhrases": ["A few years ago, I went to…", "We stayed in…", "I saw…", "I felt…"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Kế hoạch năm tới",
+    "icon": "flag-outline",
+    "promptEn": "Write about your plans for next year. What are you going to do in your work or study, and in your free time?",
+    "guideVi": "Kế hoạch về công việc / học tập và thời gian rảnh (dùng be going to, will).",
+    "minWords": 50,
+    "maxWords": 120,
+    "keyPhrases": ["Next year, I am going to…", "I would like to…", "I hope…", "I will try to…"]
+  },
+  {
+    "level": "A2",
+    "titleVi": "Người tôi ngưỡng mộ",
+    "icon": "heart-outline",
+    "promptEn": "Write about a person you admire. Who is this person, what are they like and why do you admire them?",
+    "guideVi": "Người đó là ai, tính cách thế nào và vì sao bạn ngưỡng mộ.",
+    "minWords": 50,
+    "maxWords": 120,
+    "keyPhrases": ["The person I admire most is…", "He / She is very…", "He / She always…", "I admire him / her because…"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Email kể chuyện cho bạn",
+    "icon": "mail-outline",
+    "promptEn": "Write an email to a friend who lives abroad. Tell them about a change in your life recently (a new job, a new home or a new hobby) and how you feel about it.",
+    "guideVi": "Kể về một thay đổi gần đây trong cuộc sống và cảm nghĩ của bạn, giọng thân mật.",
+    "minWords": 80,
+    "maxWords": 180,
+    "keyPhrases": ["It's been ages since…", "I've just…", "To be honest,…", "Write back soon!"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Học trực tuyến hay ở lớp",
+    "icon": "laptop-outline",
+    "promptEn": "Some people prefer studying online, others prefer classes in person. Which do you prefer and why? Give two reasons with examples.",
+    "guideVi": "Nêu lựa chọn của bạn và hai lý do, mỗi lý do có ví dụ.",
+    "minWords": 80,
+    "maxWords": 180,
+    "keyPhrases": ["In my opinion,…", "First of all,…", "For example,…", "That's why I think…"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Một lần gặp khó khăn",
+    "icon": "trail-sign-outline",
+    "promptEn": "Write about a time when something went wrong (for example on a trip or at work). What happened, what did you do, and what did you learn?",
+    "guideVi": "Chuyện gì xảy ra, bạn đã xử lý ra sao và rút ra bài học gì.",
+    "minWords": 80,
+    "maxWords": 180,
+    "keyPhrases": ["It all started when…", "Unfortunately,…", "In the end,…", "I learned that…"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Giới thiệu thành phố của bạn",
+    "icon": "business-outline",
+    "promptEn": "A foreign friend is coming to visit your city. Write to them about the best places to visit, the food they should try and some advice for getting around.",
+    "guideVi": "Nơi nên đến, món nên thử và lời khuyên đi lại cho một người bạn nước ngoài.",
+    "minWords": 80,
+    "maxWords": 180,
+    "keyPhrases": ["You should definitely…", "Don't miss…", "If you have time,…", "The easiest way to get around is…"]
+  },
+  {
+    "level": "B1",
+    "titleVi": "Điện thoại thông minh",
+    "icon": "phone-portrait-outline",
+    "promptEn": "Do smartphones make our lives better or worse? Write your opinion and explain it with your own experience.",
+    "guideVi": "Ý kiến của bạn về điện thoại thông minh, giải thích bằng trải nghiệm của chính bạn.",
+    "minWords": 80,
+    "maxWords": 180,
+    "keyPhrases": ["On the one hand,…", "On the other hand,…", "In my experience,…", "Overall,…"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Email phàn nàn dịch vụ",
+    "icon": "document-text-outline",
+    "promptEn": "Write a formal email to a company to complain about a product or service that disappointed you. Explain the problem, how it affected you and what you would like them to do.",
+    "guideVi": "Email trang trọng: vấn đề, ảnh hưởng tới bạn và yêu cầu cụ thể.",
+    "minWords": 120,
+    "maxWords": 250,
+    "keyPhrases": ["I am writing to complain about…", "Despite…", "As a result,…", "I would appreciate it if you could…"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Làm việc tại nhà",
+    "icon": "briefcase-outline",
+    "promptEn": "More and more companies let employees work from home. Discuss the advantages and disadvantages for both employees and companies, and give your own view.",
+    "guideVi": "Ưu và nhược điểm cho cả nhân viên lẫn công ty, kèm quan điểm của bạn.",
+    "minWords": 120,
+    "maxWords": 250,
+    "keyPhrases": ["One major advantage is…", "However, it can also…", "From the company's point of view,…", "All things considered,…"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Du lịch và môi trường",
+    "icon": "leaf-outline",
+    "promptEn": "Tourism brings money to Vietnam but can also harm the environment. What problems does it cause, and what could be done to make tourism more sustainable?",
+    "guideVi": "Vấn đề du lịch gây ra cho môi trường và các giải pháp bền vững.",
+    "minWords": 120,
+    "maxWords": 250,
+    "keyPhrases": ["A growing concern is…", "This leads to…", "One possible solution would be…", "If … were …, …"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Đánh giá một cuốn sách hoặc bộ phim",
+    "icon": "film-outline",
+    "promptEn": "Write a review of a book or film you enjoyed. Briefly describe what it is about, what makes it special and who you would recommend it to.",
+    "guideVi": "Tóm tắt ngắn, điểm đặc sắc và bạn giới thiệu cho ai.",
+    "minWords": 120,
+    "maxWords": 250,
+    "keyPhrases": ["Set in…, the story follows…", "What really stands out is…", "Although…,…", "I would highly recommend it to…"]
+  },
+  {
+    "level": "B2",
+    "titleVi": "Kỹ năng quan trọng nhất",
+    "icon": "bulb-outline",
+    "promptEn": "Which skill do you think is the most important for young people to learn today, and why? Support your answer with reasons and examples.",
+    "guideVi": "Chọn một kỹ năng, nêu lý do và ví dụ thuyết phục.",
+    "minWords": 120,
+    "maxWords": 250,
+    "keyPhrases": ["It is widely believed that…", "Not only … but also…", "A good example of this is…", "To sum up,…"]
+  }
+]

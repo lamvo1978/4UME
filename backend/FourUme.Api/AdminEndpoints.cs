@@ -13,6 +13,7 @@ using FourUme.Application.Notifications;
 using FourUme.Application.Placement;
 using FourUme.Application.Practice;
 using FourUme.Application.Pronunciation;
+using FourUme.Application.Writing;
 
 namespace FourUme.Api;
 
@@ -287,6 +288,28 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveConfigAsync(c, ct)));
         admin.MapPost("/conversation/config/reset", async (IAdminConversationService s, CancellationToken ct) =>
             Results.Ok(await s.ResetConfigAsync(ct)));
+
+        admin.MapGet("/writing/prompts", async (IAdminWritingService s, CancellationToken ct) => Results.Ok(await s.GetPromptsAsync(ct)));
+        admin.MapPost("/writing/prompts", async (SaveWritingPromptRequest r, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.CreateAsync(r, ct)));
+        admin.MapPost("/writing/prompts/batch", async (SaveWritingPromptBatchRequest r, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(new { created = await s.CreateBatchAsync(r, ct) }));
+        admin.MapPost("/writing/prompts/draft", async (WritingPromptDraftRequest r, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.DraftAsync(r, ct)));
+        admin.MapPut("/writing/prompts/{id:guid}", async (Guid id, SaveWritingPromptRequest r, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.UpdateAsync(id, r, ct)));
+        admin.MapDelete("/writing/prompts/{id:guid}", async (Guid id, IAdminWritingService s, CancellationToken ct) =>
+        {
+            await s.DeleteAsync(id, ct);
+            return Results.NoContent();
+        });
+        admin.MapGet("/writing/config", async (IAdminWritingService s, CancellationToken ct) => Results.Ok(await s.GetConfigAsync(ct)));
+        admin.MapPut("/writing/config", async (WritingConfig c, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveConfigAsync(c, ct)));
+        admin.MapPost("/writing/config/reset", async (IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetConfigAsync(ct)));
+        admin.MapPost("/writing/try", async (WritingTryRequest r, IAdminWritingService s, CancellationToken ct) =>
+            Results.Ok(await s.TryAsync(r, ct)));
 
         admin.MapGet("/listening", async (IAdminListeningService s, CancellationToken ct) => Results.Ok(await s.GetLessonsAsync(ct)));
         admin.MapGet("/listening/export", async (IAdminListeningService s, CancellationToken ct) =>

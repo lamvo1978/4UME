@@ -789,6 +789,56 @@ export type AdminConversationConfig = {
   voices: ListeningVoice[];
 };
 
+export type WritingPromptInput = {
+  level: PlacementLevel;
+  titleVi: string;
+  icon: string | null;
+  promptEn: string;
+  guideVi: string | null;
+  /** 0 = the level's default range. */
+  minWords: number;
+  maxWords: number;
+  keyPhrases: string[];
+  published: boolean;
+};
+/** `uses` = paragraphs graded on this prompt. */
+export type WritingPrompt = WritingPromptInput & { id: string; icon: string; guideVi: string; sortOrder: number; uses: number; updatedAt: string };
+export type WritingPromptDraftRequest = { level: PlacementLevel; count: number; topic?: string; notes?: string; provider?: string };
+export type WritingPromptDraft = { items: { prompt: WritingPromptInput; problems: string[]; duplicate: boolean }[]; model: string };
+export type WritingConfig = {
+  enabled: boolean;
+  freeDailyChecks: number;
+  premiumDailyChecks: number;
+  dailyTotalCap: number;
+  premiumReservePercent: number;
+  rewritePremiumOnly: boolean;
+  freeHistoryCount: number;
+  providers: string[];
+  premiumProviders: string[];
+};
+export type WritingUsage = { today: number; month: number; users: number; averageScore: number; models: Record<string, number> };
+export type AdminWritingConfig = {
+  value: WritingConfig;
+  defaults: WritingConfig;
+  updatedAt: string | null;
+  usage: WritingUsage;
+  /** Grading providers; `model` lists the models each tries. */
+  providers: AiProvider[];
+};
+export type WritingCorrection = { original: string; corrected: string; explainVi: string; kind: string; start: number };
+export type WritingResult = {
+  score: number;
+  scores: { grammar: number; vocabulary: number; coherence: number; task: number };
+  feedbackVi: string;
+  corrections: WritingCorrection[];
+  rewrite: string | null;
+  rewriteLocked: boolean;
+  rewritePreview: string;
+  upgrades: { en: string; vi: string; whyVi: string }[];
+};
+export type WritingTryRequest = { level: PlacementLevel; text: string; promptEn?: string; provider?: string; model?: string };
+export type WritingTry = { result: WritingResult; model: string; milliseconds: number };
+
 const json = (method: string, body: unknown): RequestInit => ({ method, body: JSON.stringify(body) });
 
 function query(params: Record<string, string | number | undefined>) {
@@ -935,6 +985,17 @@ export const api = {
   conversationConfig: () => request<AdminConversationConfig>("/api/admin/conversation/config"),
   saveConversationConfig: (c: ConversationConfig) => request<AdminConversationConfig>("/api/admin/conversation/config", json("PUT", c)),
   resetConversationConfig: () => request<AdminConversationConfig>("/api/admin/conversation/config/reset", { method: "POST" }),
+  writingPrompts: () => request<WritingPrompt[]>("/api/admin/writing/prompts"),
+  createWritingPrompt: (p: WritingPromptInput) => request<WritingPrompt>("/api/admin/writing/prompts", json("POST", p)),
+  createWritingPromptBatch: (prompts: WritingPromptInput[]) =>
+    request<{ created: number }>("/api/admin/writing/prompts/batch", json("POST", { prompts })),
+  updateWritingPrompt: (id: string, p: WritingPromptInput) => request<WritingPrompt>(`/api/admin/writing/prompts/${id}`, json("PUT", p)),
+  deleteWritingPrompt: (id: string) => request<void>(`/api/admin/writing/prompts/${id}`, { method: "DELETE" }),
+  draftWritingPrompts: (r: WritingPromptDraftRequest) => request<WritingPromptDraft>("/api/admin/writing/prompts/draft", json("POST", r)),
+  writingConfig: () => request<AdminWritingConfig>("/api/admin/writing/config"),
+  saveWritingConfig: (c: WritingConfig) => request<AdminWritingConfig>("/api/admin/writing/config", json("PUT", c)),
+  resetWritingConfig: () => request<AdminWritingConfig>("/api/admin/writing/config/reset", { method: "POST" }),
+  tryWriting: (r: WritingTryRequest) => request<WritingTry>("/api/admin/writing/try", json("POST", r)),
   listeningLessons: () => request<AdminListeningSummary[]>("/api/admin/listening"),
   listeningLesson: (slug: string) => request<AdminListeningDetail>(`/api/admin/listening/${slug}`),
   createListening: (l: ListeningLesson) => request<AdminListeningDetail>("/api/admin/listening", json("POST", l)),

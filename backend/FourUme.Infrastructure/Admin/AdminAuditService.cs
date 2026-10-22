@@ -10,6 +10,7 @@ using FourUme.Application.Invites;
 using FourUme.Application.Listening;
 using FourUme.Application.Notifications;
 using FourUme.Application.Pronunciation;
+using FourUme.Application.Writing;
 using FourUme.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,8 @@ public class AdminAuditService(
     IAdminGrammarService grammar,
     IAdminListeningService listening,
     IAdminSettingsService settings,
-    IAdminConversationService conversation) : IAdminAuditService
+    IAdminConversationService conversation,
+    IAdminWritingService writing) : IAdminAuditService
 {
     /// <summary>User role / lock changes are deliberately not restorable: they are redone from the user page.</summary>
     private static readonly string[] RestorableTypes = [AuditEntities.Word, AuditEntities.Deck, AuditEntities.Grammar, AuditEntities.Listening, AuditEntities.Settings];
@@ -108,6 +110,9 @@ public class AdminAuditService(
             case AuditEntities.Settings when log.EntityId == ConversationConfig.SettingKey:
                 await conversation.RestoreConfigAsync(Read<ConversationConfig>(json), ct);
                 break;
+            case AuditEntities.Settings when log.EntityId == WritingConfig.SettingKey:
+                await writing.RestoreConfigAsync(Read<WritingConfig>(json), ct);
+                break;
             default:
                 throw new InvalidOperationException("Mục này không khôi phục được.");
         }
@@ -135,6 +140,7 @@ public class AdminAuditService(
         AuditEntities.Settings => true,
         AuditEntities.Partner => Guid.TryParse(id, out var p) && await db.Partners.AnyAsync(x => x.Id == p, ct),
         AuditEntities.Placement => Guid.TryParse(id, out var q) && await db.PlacementGrammarQuestions.AnyAsync(x => x.Id == q, ct),
+        AuditEntities.Writing => Guid.TryParse(id, out var w) && await db.WritingPrompts.AnyAsync(x => x.Id == w, ct),
         _ => false,
     };
 }

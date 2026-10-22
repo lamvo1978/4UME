@@ -5,6 +5,8 @@ export const ENTITY_TYPES = [
   { value: "listening", label: "Bài nghe" },
   { value: "placement", label: "Kiểm tra đầu vào" },
   { value: "sentence", label: "Luyện câu" },
+  { value: "conversation", label: "Đàm thoại AI" },
+  { value: "writing", label: "Luyện viết AI" },
   { value: "media", label: "Hình ảnh" },
   { value: "user", label: "Người dùng" },
   { value: "settings", label: "Cài đặt" },
@@ -42,6 +44,10 @@ export function entityPath(type: string, id: string) {
       return "/placement";
     case "sentence":
       return "/sentences";
+    case "conversation":
+      return "/conversation";
+    case "writing":
+      return "/writing";
     case "media":
       return "/images";
     case "user":
@@ -59,7 +65,9 @@ export function entityPath(type: string, id: string) {
             ? "/feedback/settings"
             : id === "notificationTexts"
               ? "/notifications"
-              : "/settings";
+              : id === "conversation" || id === "writing"
+                ? `/${id}`
+                : "/settings";
     default:
       return null;
   }
@@ -98,6 +106,16 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     summaryVi: "Tóm tắt",
     published: "Hiện trong app",
     version: "Phiên bản",
+  },
+  writing: {
+    titleVi: "Tiêu đề",
+    level: "Cấp độ",
+    promptEn: "Đề bài",
+    guideVi: "Hướng dẫn",
+    minWords: "Số từ tối thiểu",
+    maxWords: "Số từ tối đa",
+    keyPhrases: "Cụm từ gợi ý",
+    published: "Hiện trong app",
   },
   media: { originalName: "Tên file", url: "Đường dẫn", width: "Rộng", height: "Cao", bytes: "Dung lượng" },
   user: { email: "Email", displayName: "Tên", role: "Quyền", locked: "Bị khoá", premiumUntil: "Premium đến" },
@@ -155,6 +173,14 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     feedbackReplyBody: "Trả lời góp ý · nội dung",
     promptTitle: "Hỏi bật nhắc học · tiêu đề",
     promptBody: "Hỏi bật nhắc học · nội dung",
+    freeDailyChecks: "Bài chấm miễn phí mỗi ngày",
+    premiumDailyChecks: "Bài chấm Premium mỗi ngày",
+    dailyTotalCap: "Trần tổng bài chấm mỗi ngày",
+    premiumReservePercent: "Phần để dành Premium (%)",
+    rewritePremiumOnly: "Bản viết lại chỉ cho Premium",
+    freeHistoryCount: "Bài lịch sử gói miễn phí",
+    providers: "Thứ tự AI chấm",
+    premiumProviders: "Thứ tự AI chấm · Premium",
   },
   partner: { name: "Tên đối tác", prefix: "Tiền tố mã", features: "Tính năng mở", note: "Ghi chú" },
   broadcast: {

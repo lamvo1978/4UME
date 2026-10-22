@@ -3,7 +3,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { adsOffered } from "../ads/rewarded";
-import { api, ConversationStatus, partnerLine, PremiumPerk, PremiumPlan, PronunciationStatus } from "../api/client";
+import { api, ConversationStatus, partnerLine, PremiumPerk, PremiumPlan, PronunciationStatus, WritingStatus } from "../api/client";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -39,6 +39,7 @@ export function PremiumScreen() {
   const [plans, setPlans] = useState<PremiumPlan[]>([]);
   const [failed, setFailed] = useState(false);
   const [talk, setTalk] = useState<ConversationStatus | null>(null);
+  const [writing, setWriting] = useState<WritingStatus | null>(null);
 
   useEffect(() => {
     api
@@ -49,6 +50,10 @@ export function PremiumScreen() {
       .conversationStatus()
       .then(setTalk)
       .catch(() => setTalk(null));
+    api
+      .writingStatus()
+      .then(setWriting)
+      .catch(() => setWriting(null));
     api
       .premiumPerks()
       .then((r) => {
@@ -75,12 +80,17 @@ export function PremiumScreen() {
   const premium = !!partner || timed;
   const daysLeft = timed ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
   const usage = status.enabled ? `Hôm nay còn ${status.remaining}/${status.dailyLimit}` : null;
-  /** "{n}" pronunciation checks, "{ai}" / "{aiFree}" AI conversation turns per day (Premium / free), as set in the admin. */
+  /**
+   * "{n}" pronunciation checks, "{ai}" / "{aiFree}" AI conversation turns and "{w}" / "{wFree}" writing checks per day
+   * (Premium / free), as set in the admin.
+   */
   const fill = (s: string) =>
     s
       .replace("{n}", String(status.premiumDailyLimit))
       .replace("{ai}", talk ? String(talk.premiumDailyLimit) : "nhiều")
-      .replace("{aiFree}", talk ? String(talk.freeDailyLimit) : "ít");
+      .replace("{aiFree}", talk ? String(talk.freeDailyLimit) : "ít")
+      .replace("{w}", writing ? String(writing.premiumDailyLimit) : "nhiều")
+      .replace("{wFree}", writing ? String(writing.freeDailyLimit) : "ít");
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={[styles.content, { paddingBottom: spacing.xl + insets.bottom }]}>

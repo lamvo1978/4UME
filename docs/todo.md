@@ -1,4 +1,4 @@
-# Việc tiếp theo (cập nhật 13/10/2026)
+# Việc tiếp theo (cập nhật 22/10/2026)
 
 Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật khẩu tạm, chứng chỉ PetHubPro, hộp thư Zoho) xem [todo-deploy.md](todo-deploy.md).
 
@@ -55,13 +55,14 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
 4. [x] **Giới thiệu bạn bè + mã trung tâm đối tác** (12/10) — xem [invites.md](invites.md). Còn lại: mở app thẳng từ link mời (universal link) và báo đẩy "bạn vừa nhận ngày Premium" khi có bản build EAS; nội dung phần IELTS.
    - [ ] **Khai báo giá cho trung tâm** trên admin: mỗi đối tác có bảng giá (tiền / học viên / tháng, áp dụng từ tháng nào), tháng nào lấy giá đang áp dụng tháng đó để đổi giá không làm sai các tháng cũ; thẻ *Thống kê tháng* và file Excel thêm cột **Thành tiền** + tổng tiền. Hiện thống kê mới đếm số tháng tính phí.
 5. [x] **Đàm thoại với AI** (21/10, nhánh `feature/ai-conversation`) — nhập vai theo tình huống A1–B2 và trò chuyện tự do, nói theo lượt (nhận dạng giọng của máy) hoặc gõ, AI sửa câu và tổng kết; lượt theo ngày cho miễn phí / Premium; admin bật được giọng Azure cho Premium (F0 trước, S0 sau). Xem [conversation.md](conversation.md). Còn lại: đổi lượt bằng quảng cáo, gọi thoại thời gian thực cho Premium, lịch sử buổi đàm thoại.
-6. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
-7. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
-8. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
-9. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai). Cần thông báo đẩy thật để "nhắc bạn" có ý nghĩa.
-10. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
-11. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
-12. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
+6. [x] **Luyện viết với AI** (22/10, nhánh `feature/ai-writing`) — viết theo đề A1–B2 hoặc viết tự do, AI chấm điểm (tổng + 4 mặt), tô lỗi kèm giải thích tiếng Việt, viết lại cả đoạn, gợi ý nâng cấp; lượt theo ngày + trần tổng mỗi ngày (để dành phần cho Premium); bản viết lại và toàn bộ lịch sử cho Premium; AI miễn phí: Mistral trước, Groq dự phòng; admin có *Chấm thử* để so model. Xem [writing.md](writing.md). Còn lại: tạo key Mistral (tắt *Anonymous improvement data*) và thêm vào `.env` VPS; chấm thử ~20 bài mẫu để chốt model và trần tổng; chốt số lượt Premium cùng lúc với giá trước khi lên store công khai.
+7. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
+8. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
+9. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
+10. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai). Cần thông báo đẩy thật để "nhắc bạn" có ý nghĩa.
+11. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
+12. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
+13. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
 
 ## Ý tưởng để sau
 

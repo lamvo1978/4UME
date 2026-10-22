@@ -106,6 +106,7 @@ public static class AiProviders
 {
     public const string Groq = "groq";
     public const string Gemini = "gemini";
+    public const string Mistral = "mistral";
 }
 
 /// <param name="Length">short / medium / long.</param>
