@@ -78,6 +78,7 @@ export function WritingEditorScreen({ navigation, route }: Props) {
     input.current?.focus();
   };
 
+  /** The hub asks before the learner starts writing; this only catches a consent lost meanwhile (reinstall, other route in). */
   async function submit() {
     if (!me || sending) return;
     if (!(await hasAiConsent(me.userId, "writing"))) {

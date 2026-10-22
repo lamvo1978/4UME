@@ -6,6 +6,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { api, VOCAB_LEVELS, VocabLevel, WritingHistory, WritingPrompt, WritingStatus } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
+import { AiConsentModal, hasAiConsent, saveAiConsent } from "../conversation/aiConsent";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
@@ -23,6 +24,8 @@ export function WritingHubScreen({ navigation }: NativeStackScreenProps<RootStac
   const [history, setHistory] = useState<WritingHistory | null>(null);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
+  /** Set while the AI consent box is open; holds where to go after "Đồng ý". */
+  const [asking, setAsking] = useState<{ prompt: WritingPrompt | null } | null>(null);
   const vocabLevel = me?.settings.vocabLevel;
 
   useEffect(() => {
@@ -54,13 +57,24 @@ export function WritingHubScreen({ navigation }: NativeStackScreenProps<RootStac
   const list = prompts.filter((p) => p.level === level);
   const countOf = (l: VocabLevel) => prompts.filter((p) => p.level === l).length;
   const [freeMin, freeMax] = wordRange(level);
-  const write = (p: WritingPrompt | null) =>
+  const go = (p: WritingPrompt | null) =>
     navigation.navigate("WritingEditor", p
       ? { promptId: p.id, level: p.level, title: p.titleVi, promptEn: p.promptEn, guideVi: p.guideVi, keyPhrases: p.keyPhrases, minWords: p.minWords, maxWords: p.maxWords }
       : { promptId: null, level, title: "Viết tự do" });
+  const write = async (p: WritingPrompt | null) => {
+    if (!me || (await hasAiConsent(me.userId, "writing"))) go(p);
+    else setAsking({ prompt: p });
+  };
+  const agree = async () => {
+    const pending = asking;
+    setAsking(null);
+    if (me) await saveAiConsent(me.userId, "writing").catch(() => {});
+    if (pending) go(pending.prompt);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
+      <AiConsentModal kind="writing" visible={asking !== null} onAgree={() => void agree()} onDecline={() => setAsking(null)} />
       <Text style={styles.intro}>
         Viết một đoạn văn tiếng Anh, AI chấm điểm theo cấp độ, chỉ ra từng lỗi kèm giải thích tiếng Việt và gợi ý cách viết hay hơn.
       </Text>
@@ -82,7 +96,7 @@ export function WritingHubScreen({ navigation }: NativeStackScreenProps<RootStac
 
       <Pressable
         disabled={blocked}
-        onPress={() => write(null)}
+        onPress={() => void write(null)}
         style={({ pressed }) => [styles.card, styles.freeCard, blocked && styles.blocked, pressed && styles.pressed]}
       >
         <View style={[styles.icon, styles.freeIcon]}>
@@ -105,7 +119,7 @@ export function WritingHubScreen({ navigation }: NativeStackScreenProps<RootStac
           <Pressable
             key={p.id}
             disabled={blocked}
-            onPress={() => write(p)}
+            onPress={() => void write(p)}
             style={({ pressed }) => [styles.card, blocked && styles.blocked, pressed && styles.pressed]}
           >
             <View style={styles.icon}>

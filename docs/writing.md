@@ -22,7 +22,7 @@ Hai dòng cuối chỉnh được trên admin (*Bản viết lại chỉ dành c
 
 - Tab **Luyện** → thẻ *Luyện viết với AI* (ngay dưới *Đàm thoại với AI*) → chọn cấp độ → *Viết tự do* hoặc một đề. Cuối màn là *Bài đã viết* (điểm, ngày, đoạn trích).
 - **Màn viết**: thẻ đề + cụm từ gợi ý (chạm để chèn vào bài), ô viết nhiều dòng, đếm số từ so với khoảng gợi ý (xanh khi vừa, cam khi dài quá). Bàn phím **tắt tự sửa chính tả** để AI thấy đúng lỗi của người học. Nháp tự lưu trên máy (theo tài khoản + đề), chấm xong thì xoá nháp. Cần ít nhất 10 từ, tối đa 1.500 ký tự (khoảng 250 từ).
-- **Hộp xin đồng ý** (Apple Guideline 5.1.2(i)): lần đầu bấm *Chấm bài*, app hỏi riêng cho phần viết (khoá `fourume.aiConsent.writing.<userId>`, khác khoá của Đàm thoại vì gửi nội dung khác). Không nêu tên nhà cung cấp; tên cụ thể nằm ở trang `privacy/`.
+- **Hộp xin đồng ý** (Apple Guideline 5.1.2(i)): giống Đàm thoại, lần đầu bấm *Viết tự do* hoặc một đề ở màn danh sách, app hỏi trước khi vào màn viết (màn viết chỉ hỏi lại nếu máy mất lựa chọn đã lưu, vd cài lại app). Hỏi riêng cho phần viết (khoá `fourume.aiConsent.writing.<userId>`, khác khoá của Đàm thoại vì gửi nội dung khác). Không nêu tên nhà cung cấp; tên cụ thể nằm ở trang `privacy/`.
 - Lúc chấm hiện lớp phủ *AI đang chấm bài… thường mất 10–40 giây*.
 - **Màn kết quả**: vòng điểm, 4 thanh điểm, nhận xét; bài của bạn với chỗ sai tô màu (chạm để xem thẻ sửa, có nút nghe câu đúng); danh sách *Lỗi cần sửa* (loại: ngữ pháp / dùng từ / chính tả / dấu câu / diễn đạt); *Bản viết lại hay hơn*; *Nâng cấp bài viết*; nút **Viết lại bài này** (mở lại màn viết với chữ cũ, chấm lại tính 1 lượt, bài mới ghi `ParentId` của bài cũ) và *Xoá bài này*.
 - Mỗi bài chấm xong tính là có học trong ngày (giữ chuỗi).
