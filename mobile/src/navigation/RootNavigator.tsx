@@ -49,6 +49,7 @@ import { ConversationScreen } from "../screens/ConversationScreen";
 import { WritingEditorScreen } from "../screens/WritingEditorScreen";
 import { WritingHubScreen } from "../screens/WritingHubScreen";
 import { WritingResultScreen } from "../screens/WritingResultScreen";
+import { CelebrationPreviewScreen } from "../screens/CelebrationPreviewScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { StudyHubScreen } from "../screens/StudyHubScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
@@ -257,6 +258,13 @@ export function RootNavigator() {
             <Stack.Screen name="WordSearch" component={WordSearchScreen} options={{ title: "Tìm từ" }} />
             <Stack.Screen name="About" component={AboutScreen} options={{ title: "Giới thiệu & bản quyền" }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "Cài đặt" }} />
+            {__DEV__ ? (
+              <Stack.Screen
+                name="CelebrationPreview"
+                component={CelebrationPreviewScreen}
+                options={{ title: "Ôn tập hôm nay" }}
+              />
+            ) : null}
             <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: "4UME Premium" }} />
             <Stack.Screen name="AdRewards" component={AdRewardsScreen} options={{ title: "Thêm lượt kiểm tra" }} />
             <Stack.Screen name="Weekly" component={WeeklyScreen} options={{ title: "Tổng kết tuần" }} />

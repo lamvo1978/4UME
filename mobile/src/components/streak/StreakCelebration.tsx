@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { api, Streak } from "../../api/client";
 import { CelebrationVideo } from "../../celebration/CelebrationVideo";
-import { CELEBRATION_STREAK } from "../../celebration/sources";
+import { CELEBRATION_STREAK, celebrationWidth } from "../../celebration/sources";
 import { colors, shadow, spacing } from "../../theme";
 import { FREEZE_EVERY, milestoneLine } from "./streakCopy";
 import { WeekStrip } from "./WeekStrip";
@@ -14,7 +14,7 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
   const [details, setDetails] = useState<Streak | null>(null);
   const [shown, setShown] = useState(Math.max(streak - 1, 0));
   const { width: windowWidth } = useWindowDimensions();
-  const videoWidth = Math.min(windowWidth - spacing.lg * 4, 280);
+  const videoWidth = celebrationWidth(windowWidth, spacing.lg * 4);
 
   useEffect(() => {
     api.stats().then((s) => setDetails(s.streak)).catch(() => undefined);
@@ -34,6 +34,7 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
             width={videoWidth}
             replayKey={streak}
             haptics={false}
+            wrapBackground="transparent"
           />
 
           <Text style={styles.count}>{shown}</Text>

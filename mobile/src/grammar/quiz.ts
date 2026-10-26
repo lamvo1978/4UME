@@ -90,6 +90,41 @@ function splitBody(body: string) {
   return `${body.slice(0, at).trimEnd()}\n${body.slice(at)}`;
 }
 
+const FILL_GAP = /_{3,}(\s*\([^)]*\))?/;
+
+function stripGapHint(text: string) {
+  return text.replace(/^\s*\([^)]*\)/, "").trimStart();
+}
+
+/** Text for the blank only — drops words that already appear right after `___` in the prompt. */
+export function fillGapInsert(prompt: string, answer: string) {
+  const m = prompt.match(/^(.*?)(_{3,})(\s*\([^)]*\))?(.*)$/s);
+  if (!m) return answer.trim();
+  const after = normalizeAnswer(stripGapHint(m[4]), true);
+  const gapWords = [...wordsOf(answer)];
+  let afterWords = [...wordsOf(after)];
+  while (gapWords.length > 0 && afterWords.length > 0 && gapWords[gapWords.length - 1] === afterWords[0]) {
+    gapWords.pop();
+    afterWords.shift();
+  }
+  const trimmed = gapWords.join(" ");
+  return trimmed || answer.trim();
+}
+
+function fillAccepted(prompt: string, answers: string[]) {
+  const ok = new Set<string>();
+  for (const a of answers) {
+    ok.add(normalizeAnswer(a, true));
+    ok.add(normalizeAnswer(fillGapInsert(prompt, a), true));
+  }
+  return ok;
+}
+
+/** Full sentence for a fill prompt, with the parenthetical hint removed. */
+export function fillSentence(prompt: string, answer: string) {
+  return prompt.replace(FILL_GAP, fillGapInsert(prompt, answer)).replace(/\s*\([^)]*\)/, "");
+}
+
 /** Splits a cloze paragraph into text runs around the gaps; `hints[i]` belongs to gap i. */
 export function splitCloze(prompt: string) {
   const parts: string[] = [];
@@ -155,7 +190,7 @@ export function displayAnswer(ex: GrammarExercise) {
     case "mcq":
       return ex.prompt.includes("___") ? ex.prompt.replace(/_{3,}/, ex.answer) : ex.answer;
     case "fill":
-      return ex.prompt.replace(/_{3,}/, ex.answers[0]).replace(/\s*\([^)]*\)/, "");
+      return fillSentence(ex.prompt, ex.answers[0]);
     case "order":
     case "transform":
       return ex.answer;
@@ -174,7 +209,7 @@ export function isCorrect(ex: GrammarExercise, given: string) {
     case "mcq":
       return given === ex.answer;
     case "fill":
-      return ex.answers.some((a) => normalizeAnswer(a, true) === normalizeAnswer(given, true));
+      return fillAccepted(ex.prompt, ex.answers).has(normalizeAnswer(given, true));
     case "order":
     case "transform":
       return normalizeAnswer(given) === normalizeAnswer(ex.answer);

@@ -178,6 +178,16 @@ export function speakAuto(text: string) {
   if (speechSettings.auto) speakAfterTransition(text);
 }
 
+/** Example sentence after a correct answer — phone voice, not the word recording API. */
+export function speakAutoSentence(text: string) {
+  if (!speechSettings.auto) return;
+  stopAll();
+  const t = ++token;
+  InteractionManager.runAfterInteractions(() => {
+    if (t === token) speak(text, speechSettings.rate, true);
+  });
+}
+
 export function stopSpeaking() {
   token++;
   stopAll();
