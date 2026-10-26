@@ -1,4 +1,4 @@
-# Việc tiếp theo (cập nhật 22/10/2026)
+# Việc tiếp theo (cập nhật 26/10/2026)
 
 Thứ tự gợi ý, việc trên làm trước. Từ 22/10 dừng làm tính năng mới: gắn AdMob, làm nốt việc dở, chờ Google Play duyệt để lên store chính thức, rồi mới sang [Phase 2](#phase-2-sau-khi-lên-store-chính-thức). Việc vận hành VPS (mật khẩu tạm, chứng chỉ PetHubPro, hộp thư Zoho) xem [todo-deploy.md](todo-deploy.md).
 
@@ -37,19 +37,21 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 - [x] **Gửi thông báo hàng loạt** (13/10): admin *Gửi thông báo* + công tắc **Tin mới từ 4UME** trong Cài đặt app (từ build sau build 4) — xem [notifications.md](notifications.md#giai-đoạn-3--gửi-thông-báo-hàng-loạt-đã-làm). **Đếm số lần chạm mở** (22/10, nhánh `feature/admob`): app báo lần chạm thông báo từ máy chủ, admin *Gửi thông báo* hiện "X đã mở (Y%)" mỗi đợt và tỉ lệ mở 30 ngày của *Tổng kết tuần* / *Gọi quay lại*; chỉ bản app từ build này mới báo. Tin khuyến mãi cần người dùng đồng ý rõ ràng (Apple Guideline 4.5.4): `NotifyNews` đang mặc định bật, nên chỉ gửi tin về nội dung / tính năng mới.
 - [x] **Rà soát Android** (13/10): tạo kênh thông báo trước khi xin quyền (Android 13+ không hiện hộp thoại nếu chưa có kênh), kênh `default` tên "Tin từ 4UME" cho thông báo từ máy chủ; né bàn phím trên Android (giao diện tràn viền). Có từ build Android thứ 2.
 - [x] **Kiểm tra nhanh bằng giọng của máy** khi hết lượt chấm Azure (22/10): nút trong khung *Tự so sánh*, máy nghe ra đúng từ hay không (không chấm từng âm). Có công tắc admin *Cài đặt → Kiểm tra giọng đọc*, **mặc định tắt** vì làm người học ít lý do lên Premium.
-- [x] **AdMob** (22/10, nhánh `feature/admob`): quảng cáo đổi lượt chấm + banner Trang chủ, hộp thoại đồng ý UMP và ATT — xem [ads.md](ads.md). Đang dùng ID thử nghiệm của Google, còn các bước làm tay ở mục *AdMob — việc làm tay* bên dưới.
+- [x] **AdMob** (22/10, đã gộp `main`): quảng cáo đổi lượt chấm + banner Trang chủ, UMP và ATT — xem [ads.md](ads.md). App ID và ad unit thật trong `mobile/app.json` / `mobile/eas.json`; bản dev vẫn dùng ad thử nghiệm của Google. Còn bước làm tay trên AdMob console và bật công tắc admin sau TestFlight — mục *AdMob — việc làm tay*.
+- [x] **Video celebration** (26/10): màn xong bài / chuỗi / quà luyện câu (`expo-video`, `mobile/assets/celebration/`).
+- [ ] **Build iOS + TestFlight** → App Store: checklist [release-ios.md](release-ios.md). `tsc` OK; đã nâng patch Expo SDK 57 trong `mobile/package-lock.json`.
 - [ ] Mua Premium trong app (In‑App Purchase / Google Play Billing) — Phase 2, xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
 
 ### AdMob — việc làm tay
 
 1. [ ] Vào được [apps.admob.com](https://apps.admob.com) (đang lỗi chuyển hướng trên Chrome: thử Safari / cửa sổ ẩn danh / Wi‑Fi). Tài khoản dùng chung với AdSense cho YouTube, mã nhà xuất bản `pub-3892770660039931`.
 2. [ ] Kiểm tra *Thanh toán*: thông tin thuế, địa chỉ nhận PIN.
-3. [ ] Thêm 2 app (iOS, Android, chọn "chưa có trên cửa hàng") → gửi **App ID** (`ca-app-pub-…~…`) để thay ID thử nghiệm trong `mobile/app.json`.
-4. [ ] Tạo 4 ad unit: *Rewarded* + *Banner* cho mỗi nền tảng → điền vào `EXPO_PUBLIC_ADMOB_*` trong `mobile/eas.json`. Hai ad unit *Rewarded* bật **Server-side verification**, URL `https://api.4ume.io.vn/api/ads/admob-reward`.
+3. [x] Thêm 2 app trên AdMob → **App ID** đã gắn trong `mobile/app.json` (`~5672835286` iOS, `~3489525077` Android).
+4. [x] 4 ad unit trong `mobile/eas.json`. [ ] Hai *Rewarded* bật **Server-side verification**, URL `https://api.4ume.io.vn/api/ads/admob-reward` (xác nhận trên console).
 5. [ ] *Privacy & messaging*: tạo thông báo đồng ý GDPR (EU/UK) và US states; *Blocking controls*: chặn hẹn hò, cờ bạc, rượu, đặt mức nội dung G.
-6. [ ] Deploy để `https://4ume.io.vn/app-ads.txt` lên mạng, rồi bấm *Check for updates* ở mục *app-ads.txt* trên AdMob.
-7. [ ] Build EAS mới (iOS + Android), thử bằng quảng cáo thử nghiệm trên máy thật, rồi mới bật công tắc **Cho xem quảng cáo đổi lượt chấm** và **Banner quảng cáo ở Trang chủ** trong admin.
-8. [ ] Sửa khai báo store theo [store-listing.md](store-listing.md) (Quảng cáo: Có, Data safety / App Privacy, Age Rating). Admin *Quyền lợi Premium*: bỏ nhãn *Sắp có* ở dòng "Không quảng cáo". Admin *Giới thiệu & bản quyền*: nếu đã từng sửa trên admin thì thêm tay mục *Quảng cáo — Google AdMob* (nội dung mặc định mới chỉ áp dụng khi chưa sửa).
+6. [x] `https://4ume.io.vn/app-ads.txt` đã lên mạng. [ ] Bấm *Check for updates* trên AdMob.
+7. [ ] Build EAS mới (iOS trước): xem [release-ios.md](release-ios.md). Thử trên máy thật, rồi bật **Cho xem quảng cáo đổi lượt chấm** và **Banner quảng cáo ở Trang chủ** trong admin.
+8. [ ] Dán mô tả / App Privacy / Age Rating trên App Store Connect theo [store-listing.md](store-listing.md) (đã cập nhật mô tả có quảng cáo). Admin *Quyền lợi Premium*: nếu đã lưu bản cũ thì *Đặt lại mặc định* hoặc bỏ *Sắp có* ở "Không quảng cáo" + tắt **Bảng giá**. *Giới thiệu & bản quyền*: thêm AdMob nếu đã sửa tay trên admin.
 9. [ ] Sau khi app lên Google Play / App Store: vào AdMob → *Apps* → **Link to app store** cho từng app, để hết chế độ quảng cáo giới hạn.
 - [x] **Báo lỗi crash tự động** (Sentry, gói miễn phí, 13/10): app (bản build thật, từ build 4) và API; chỉ gửi mã tài khoản, không email / IP / quay màn hình. Bật bằng biến môi trường: app `EXPO_PUBLIC_SENTRY_DSN` + `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` trên EAS, API `SENTRY_DSN_API` trong `.env` của VPS. Đã thêm vào `privacy/`. Khi khai App Privacy / Data safety: *Crash data* + *User ID*, không dùng để theo dõi. Web admin chưa gắn.
 

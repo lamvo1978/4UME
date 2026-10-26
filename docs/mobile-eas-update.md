@@ -1,0 +1,298 @@
+# Mobile: EAS Build, TestFlight và EAS Update (OTA)
+
+Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 26/10/2026.
+
+## Hai cách ship code mobile
+
+| Cách | Lệnh | Tốn **EAS Build** quota? | Khi nào dùng |
+|------|------|---------------------------|--------------|
+| **A — EAS Update (OTA)** | `eas update` | **Không** (dùng quota **EAS Update**, thường hào phóng hơn) | Sửa JS/TS, UI, copy, ảnh/video trong bundle, logic không đụng native |
+| **B — EAS Build** | `eas build` + `eas submit` | **Có** (mỗi platform ≈ 1 build) | Lần đầu lên TestFlight/App Store, thêm native module, đổi quyền/plugin, nâng SDK |
+
+**Dev local:** `npx expo start` — không tốn quota EAS.
+
+**Hết quota build trên cloud (Free plan):** dùng **`eas build --local`** trên máy — cùng profile `production`, **không** tốn slot build iOS/Android trên server EAS. Xem [Build local (`--local`)](#build-local-local) (iOS + Android).
+
+---
+
+## Trạng thái repo (quan trọng)
+
+- **`expo-updates` đã cấu hình** (`package.json`, `app.json` có `updates.url` + `runtimeVersion`, `eas.json` có `channel` preview/production).
+- **iOS:** đã build local + submit App Store / TestFlight (bản có OTA). Hotfix JS: `eas update --channel production`.
+- **Android:** chưa bản production có OTA trên Play — cần một lần build + upload (cloud hoặc `--local`) trước khi OTA Android có hiệu lực.
+- Bản store build **trước khi bật updates** → **không** nhận `eas update`.
+
+Chi tiết TestFlight lần đầu: [release-ios.md](release-ios.md).
+
+---
+
+## Sau khi app lên store — hotfix bằng OTA
+
+**Có thể dùng EAS Update** cho hotfix (UI ôn tập, grammar, celebration MP4, v.v.) **mà không** nộp lại App Store từng lần.
+
+Quy trình gợi ý:
+
+1. Merge fix lên `main`.
+2. (Tuỳ chọn) `eas update --branch preview` để team thử trước.
+3. Ship production:
+
+```bash
+cd mobile
+npx eas-cli@latest update --branch production --message "Mô tả hotfix ngắn"
+```
+
+4. User mở app (hoặc lần mở sau) → tải bundle mới. Theo dõi Sentry / phản hồi tester.
+
+### OTA **được** làm
+
+- JavaScript / TypeScript, React Native UI
+- Text tiếng Việt, logic client (API URL vẫn trỏ server hiện tại)
+- Asset trong bundle: `assets/celebration/*.mp4`, icon trong project, v.v.
+
+### OTA **không** thay thế build store khi
+
+- Thêm hoặc gỡ **native module** (AdMob, `expo-video`, speech, …)
+- Đổi **quyền** (Info.plist / AndroidManifest), plugin trong `app.json`
+- Đổi **bundle id**, signing, push capabilities
+- Nâng **Expo SDK** lớn
+
+→ Lúc đó: `eas build` + submit bản store mới (tăng `version` / build number).
+
+### Apple / Google
+
+- OTA kiểu Expo (chỉ JS) phù hợp **sửa lỗi / cải thiện** app học tập; không dùng để đổi hẳn mục đích app.
+- Hotfix backend/API: thường **deploy VPS** (xem dưới), app OTA không bắt buộc nếu client không đổi.
+
+---
+
+## Một lần setup `expo-updates` (làm trước build production “có OTA”)
+
+> Phần cài package + `app.json` / `eas.json` đã xong trong repo. **iOS** đã ship bản có OTA. **Android:** còn build + upload Play (bước 4–5).
+
+1. Trong `mobile/`:
+
+```bash
+npx expo install expo-updates
+```
+
+2. **`app.json`**: thêm `runtimeVersion` (ví dụ gắn với `version`: `"1.0.0"`) và cấu hình `updates.url` theo [Expo EAS Update docs](https://docs.expo.dev/eas-update/introduction/) cho project `7562124a-994f-4661-aba3-3cee57af0c30`.
+
+3. **`eas.json`**: map profile `production` → channel `production` (và tuỳ chọn `preview` → channel `preview`).
+
+4. **Một lần** build store (iOS + Android khi cần):
+
+```bash
+cd mobile
+npx eas-cli@latest build -p ios --profile production
+npx eas-cli@latest submit -p ios --profile production
+```
+
+5. Mọi hotfix sau (chỉ JS/assets): `eas update --branch production`.
+
+**Lưu ý:** Đổi `runtimeVersion` (ví dụ lên app `1.1.0` native) → cần **build mới**; update OTA chỉ áp dụng cho cùng `runtimeVersion`.
+
+---
+
+## Deploy VPS có cần không?
+
+| Thay đổi | VPS |
+|----------|-----|
+| Chỉ mobile (UI, OTA, MP4) | **Không** |
+| API / admin / DB / AdMob SSV backend | **Có** — `git pull` + Docker trên VPS ([deploy-vps.md](deploy-vps.md), [release-ios.md](release-ios.md) mục 1) |
+
+App production trỏ `EXPO_PUBLIC_API_URL=https://api.4ume.io.vn` (`eas.json`).
+
+---
+
+## Build local (`--local`)
+
+Cùng pipeline với EAS cloud (prebuild, env từ `eas.json`, credential **remote** trên expo.dev), chạy trên máy bạn — **không** tốn quota build cloud. Artifact mặc định copy vào `mobile/build-artifacts/` (gitignore).
+
+Chung trước mọi build:
+
+```bash
+cd ~/Projects/4UME/mobile
+npx eas-cli@latest whoami    # lamvo1978
+npx tsc --noEmit
+mkdir -p build-artifacts
+export EAS_LOCAL_BUILD_ARTIFACTS_DIR="$(pwd)/build-artifacts"
+```
+
+---
+
+### iOS (Mac)
+
+Dùng khi **hết quota** cloud hoặc quen build Xcode trên máy. Credential: distribution cert + provisioning trên EAS (đã dùng thành công cho 4UME).
+
+#### Chuẩn bị (một lần)
+
+| Công cụ | Kiểm tra | Ghi chú |
+|---------|----------|---------|
+| Xcode | `xcodebuild -version` | Mở Xcode ≥1 lần, chấp nhận license |
+| CocoaPods | `pod --version` | Project dùng CNG — `ios/` sinh lúc build, không commit |
+| **fastlane** | `fastlane --version` | Bắt buộc cho `eas build --local` iOS |
+
+Cài fastlane (Mac 4UME — **không** dùng Ruby hệ thống 2.6):
+
+```bash
+# Ruby Homebrew + fastlane (brew install fastlane có thể fail khi build openssl trên Intel)
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+gem install fastlane --user-install
+export PATH="$HOME/.gem/ruby/3.4.0/bin:$PATH"
+fastlane --version
+```
+
+Thêm dòng `export PATH=…` vào `~/.zshrc` để terminal mới vẫn thấy `fastlane`.
+
+Đăng nhập EAS (đã login `lamvo1978` thì bỏ qua):
+
+```bash
+cd mobile
+npx eas-cli@latest whoami
+npx eas-cli@latest login   # nếu cần
+```
+
+#### Build production local
+
+```bash
+# fastlane phải có trong PATH *cùng terminal* với lệnh build (spawn ENOENT nếu thiếu)
+export PATH="/usr/local/opt/ruby/bin:$HOME/.gem/ruby/3.4.0/bin:$PATH"
+which fastlane   # phải in ra đường dẫn, không rỗng
+
+npx eas-cli@latest build -p ios --profile production --local
+```
+
+Ghi `export PATH=…` vào `~/.zshrc` (hoặc symlink `fastlane` vào `/usr/local/bin`) để mỗi tab terminal đều thấy fastlane.
+
+- Lần đầu có thể **15–40 phút** (prebuild, `pod install`, archive).
+- File `.ipa` nằm trong `mobile/build-artifacts/` (đã gitignore).
+- Build number vẫn **autoIncrement** remote (`eas.json` → `appVersionSource: remote`).
+
+**Build lỗi, cần xem log Xcode:**
+
+```bash
+export EAS_LOCAL_BUILD_SKIP_CLEANUP=1
+# chạy lại lệnh build --local, xem thư mục working dir / logs (EAS in path cuối output)
+```
+
+**macOS 26/27 — `Distribution certificate ... hasn't been imported successfully` (Prepare credentials):**
+
+Bug EAS trên Tahoe: cert đã import nhưng `security find-identity -v` trả 0 identity. Trước khi build:
+
+```bash
+bash mobile/scripts/patch-eas-local-macos27.sh
+```
+
+Rồi chạy lại `eas build --local`. (Chạy lại script nếu `npx` tải lại cache EAS.)
+
+#### Đưa lên TestFlight / App Store
+
+Cách 1 — EAS Submit (giống cloud):
+
+```bash
+npx eas-cli@latest submit -p ios --profile production --path build-artifacts/build-*.ipa
+```
+
+Cách 2 — app **Transporter** (Mac App Store): kéo thả file `.ipa`.
+
+Sau khi build **có `expo-updates`** lên store, hotfix JS: `eas update --channel production --environment production --message "…"`.
+
+---
+
+### Android (Mac hoặc Linux)
+
+**Không cần fastlane.** Cần **Android Studio** (SDK + NDK do Gradle/EAS kéo khi build). Chạy trên Mac giống iOS; Windows chỉ qua WSL (Expo không hỗ trợ chính thức).
+
+#### Chuẩn bị (một lần)
+
+| Công cụ | Kiểm tra | Ghi chú |
+|---------|----------|---------|
+| Android Studio | Mở SDK Manager | Cài **Android SDK**, **SDK Platform** (API mà Expo SDK 57 yêu cầu), **SDK Build-Tools** |
+| `JAVA_HOME` | `echo $JAVA_HOME` | Thường JDK bundled trong Android Studio |
+| Biến môi trường | `echo $ANDROID_HOME` | Ví dụ macOS: `$HOME/Library/Android/sdk` |
+
+Thêm vào `~/.zshrc` (sửa path nếu SDK khác chỗ):
+
+```bash
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+```
+
+Keystore **upload** cho `com.fourume.app`: để EAS quản lý (giống cloud) — lần đầu có thể hỏi tạo/lưu trên [expo.dev](https://expo.dev) → **Credentials** → Android. Local build tải keystore remote khi `credentialsSource: remote` (mặc định).
+
+`google-services.json` phải có trong `mobile/` (Firebase / FCM — xem [todo.md](todo.md)).
+
+#### Build production local (`.aab` — Play Store)
+
+Profile `production` → **Android App Bundle** (mặc định), ký release bằng keystore EAS.
+
+```bash
+cd ~/Projects/4UME/mobile
+# ANDROID_HOME + PATH như trên
+npx tsc --noEmit
+export EAS_LOCAL_BUILD_ARTIFACTS_DIR="$(pwd)/build-artifacts"
+
+npx eas-cli@latest build -p android --profile production --local
+```
+
+- Artifact: `build-artifacts/build-*.aab`.
+- `versionCode` vẫn **autoIncrement** remote (`eas.json`).
+
+#### Build APK nhanh (test máy / tester — profile `preview`)
+
+```bash
+npx eas-cli@latest build -p android --profile preview --local
+```
+
+→ file `.apk` (internal distribution), không thay cho `.aab` lên Play production.
+
+#### Đưa lên Google Play
+
+**Lần đầu** (4UME): thường upload **bằng tay** Play Console → *Thử nghiệm kín* — xem [todo.md](todo.md) và [store-listing.md](store-listing.md#google-play-play-console).
+
+1. Play Console → app **4UME** → *Phát hành* → *Thử nghiệm* → tạo bản / kênh.
+2. *Tạo bản phát hành mới* → upload `build-artifacts/build-*.aab`.
+
+Sau khi cấu hình **Google Play service account** trên EAS, có thể:
+
+```bash
+npx eas-cli@latest submit -p android --profile production --path build-artifacts/build-*.aab
+```
+
+(hiện `eas.json` mới khai `submit.production.ios`; Android submit thêm khi có service account JSON trên EAS.)
+
+Sau bản **có `expo-updates`** trên Play, OTA Android dùng cùng lệnh `eas update --channel production …` (cùng `runtimeVersion` với bản đang phát hành).
+
+#### Android — lỗi thường gặp
+
+| Triệu chứng | Hướng xử lý |
+|-------------|-------------|
+| `SDK location not found` | Set `ANDROID_HOME`, cài SDK trong Android Studio |
+| Thiếu NDK / Build-Tools | SDK Manager → cài bản Gradle báo thiếu |
+| Keystore / credentials | `npx eas-cli@latest credentials -p android` |
+| Build chậm lần đầu | Gradle cache + download NDK — bình thường |
+
+Debug giống iOS: `EAS_LOCAL_BUILD_SKIP_CLEANUP=1` rồi build lại, xem log trong working dir.
+
+---
+
+## Lệnh thường dùng
+
+```bash
+cd mobile
+npx tsc --noEmit                    # trước khi update/build
+npx eas-cli@latest build -p ios --profile production --local
+npx eas-cli@latest build -p android --profile production --local
+npx eas-cli@latest submit -p ios --profile production --path build-artifacts/build-*.ipa
+npx eas-cli@latest update --channel production --environment production --message "…"
+```
+
+Project EAS: `extra.eas.projectId` trong `app.json`. Submit iOS: `ascAppId` trong `eas.json`.
+
+---
+
+## Liên quan
+
+- [release-ios.md](release-ios.md) — TestFlight, App Store Connect, AdMob thử nghiệm
+- [store-listing.md](store-listing.md) — mô tả store, *What to Test*
+- [todo.md](todo.md) — việc tay AdMob, Lottie (tùy chọn sau)

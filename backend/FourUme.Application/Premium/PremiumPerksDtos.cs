@@ -36,7 +36,7 @@ public record PremiumPerks(List<PremiumPerk> Perks, List<PremiumPlan>? Plans = n
         new("sparkles-outline", "Đàm thoại với AI {ai} lượt/ngày", "Nhập vai theo tình huống hoặc trò chuyện tự do, AI sửa câu ngay và tổng kết cuối buổi. Gói miễn phí: {aiFree} lượt/ngày."),
         new("create-outline", "Luyện viết với AI {w} bài/ngày", "AI chấm điểm, sửa lỗi, viết lại cả đoạn và lưu toàn bộ bài đã viết. Gói miễn phí: {wFree} bài/ngày."),
         new("headset-outline", "Luyện nghe – nói, nghe – chép", "Nghe câu của người bản xứ rồi nói lại hoặc chép lại, máy so từng từ. Gói miễn phí: thử 1 lượt và được mở vào ngày quà giữ chuỗi."),
-        new("ban-outline", "Không quảng cáo", "Học liền mạch, không bị chen ngang.", Soon: true),
+        new("ban-outline", "Không quảng cáo", "Không banner ở Trang chủ và không quảng cáo đổi lượt chấm phát âm."),
         new("stats-chart-outline", "Thống kê âm hay đọc sai", "Gom những âm bạn hay sai và gợi ý từ để luyện lại đúng âm đó.", Soon: true),
         new("snow-outline", "Thêm lượt đóng băng chuỗi", "Thêm lượt giữ chuỗi ngày học mỗi tháng cho những ngày bận.", Soon: true),
         new("cloud-download-outline", "Nghe không cần mạng", "Tải bài nghe về máy để nghe mọi lúc.", Soon: true),
@@ -44,7 +44,7 @@ public record PremiumPerks(List<PremiumPerk> Perks, List<PremiumPlan>? Plans = n
         new("chatbubbles-outline", "Luyện nói cả câu", "Chấm phát âm cả câu ví dụ và câu trong bài nghe.", Soon: true, Visible: false),
         new("school-outline", "Bộ từ chuyên đề", "Bộ từ cho IELTS, công việc, du lịch.", Soon: true, Visible: false),
         new("ribbon-outline", "Huy hiệu Premium", "Khung ảnh đại diện và huy hiệu riêng.", Soon: true, Visible: false),
-    ], DefaultPlans());
+    ], DefaultPlans(), ShowPrices: false);
 }
 
 /// <param name="UpdatedAt">null while the defaults are in use.</param>
