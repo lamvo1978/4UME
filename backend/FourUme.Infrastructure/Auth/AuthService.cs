@@ -7,6 +7,7 @@ using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Auth;
 using FourUme.Application.Feedback;
+using FourUme.Application.Pronunciation;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
 using FourUme.Infrastructure.Invites;
@@ -23,7 +24,8 @@ public class AuthService(
     PasswordHasher<User> passwordHasher,
     IActivityService activity,
     EmailCodeService codes,
-    IFeedbackService feedback) : IAuthService
+    IFeedbackService feedback,
+    IPronunciationService pronunciation) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
@@ -111,6 +113,7 @@ public class AuthService(
         var grammarPassed = await db.GrammarProgresses.CountAsync(p => p.UserId == userId && p.ReviewLevel > 0, ct);
         var grammarTotal = await db.GrammarLessons.CountAsync(l => l.Published, ct);
         var access = await Entitlements.GetAsync(db, userId, ct);
+        var banner = !access.Premium && (await pronunciation.GetConfigAsync(ct)).HomeBannerEnabled;
 
         return new MeResponse(
             user.Id, user.Email, user.DisplayName, known, hard, grammarPassed, grammarTotal,
@@ -120,7 +123,7 @@ public class AuthService(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
                 user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt, user.Avatar),
-            access.Premium, access.Features, access.PartnerName, access.PartnerUntil);
+            access.Premium, access.Features, access.PartnerName, access.PartnerUntil, banner);
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)

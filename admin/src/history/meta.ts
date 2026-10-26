@@ -140,6 +140,8 @@ export const FIELD_LABELS: Record<string, Record<string, string>> = {
     paidMonthlyMinutesCap: "Phút trả phí tối đa mỗi tháng",
     adRewardsEnabled: "Xem quảng cáo đổi lượt chấm",
     adRewardsPerDay: "Số quảng cáo tối đa mỗi ngày",
+    homeBannerEnabled: "Banner quảng cáo ở Trang chủ",
+    deviceCheckWhenOut: "Kiểm tra nhanh bằng giọng của máy khi hết lượt",
     tagline: "Câu giới thiệu",
     sections: "Các mục",
     perks: "Quyền lợi",

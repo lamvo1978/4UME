@@ -176,6 +176,8 @@ export type Me = {
   partnerName?: string | null;
   /** End of the centre's access; null runs until the centre ends it. */
   partnerUntil?: string | null;
+  /** Show the Home banner ad: switched on in admin and not Premium. */
+  adsBanner?: boolean;
 };
 
 export const FEATURE_IELTS = "ielts";
@@ -430,6 +432,8 @@ export type PronunciationStatus = {
   partnerUntil?: string | null;
   /** The learner's own Premium days on hold, resumed when the centre's access ends. */
   pausedPremiumDays?: number;
+  /** No detailed check left, but the word may be checked with the phone's own speech recognition (admin switch). */
+  deviceCheck?: boolean;
 };
 
 /** Turns left today for "Đàm thoại với AI"; `voice` says whether replies come with an Azure recording. */
@@ -816,6 +820,8 @@ export const api = {
   registerDevice: (token: string, platform: string, appVersion: string) =>
     request<void>("/api/me/devices", { method: "POST", body: JSON.stringify({ token, platform, appVersion }) }),
   removeDevice: (token: string) => request<void>(`/api/me/devices/${encodeURIComponent(token)}`, { method: "DELETE" }),
+  notificationOpened: (ids: { logId?: string; broadcastId?: string }) =>
+    request<void>("/api/me/notifications/opened", { method: "POST", body: JSON.stringify(ids) }),
   reviewForecast: (days = 7) => request<ReviewForecastDay[]>(`/api/review/forecast?days=${days}`),
   stats: () => request<Stats>("/api/me/stats"),
   weekly: (weeks: number) => request<Weekly>(`/api/me/weekly?weeks=${weeks}`),

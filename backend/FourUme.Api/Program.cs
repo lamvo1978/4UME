@@ -393,6 +393,14 @@ app.MapDelete("/api/me/devices/{token}", async (string token, ClaimsPrincipal pr
     return Results.NoContent();
 }).RequireAuthorization();
 
+app.MapPost("/api/me/notifications/opened", async (NotificationOpenedRequest request, ClaimsPrincipal principal, IPushNotifier push, CancellationToken ct) =>
+{
+    var userId = GetUserId(principal);
+    if (userId is null) return Results.Unauthorized();
+    await push.MarkOpenedAsync(userId.Value, request.LogId, request.BroadcastId, ct);
+    return Results.NoContent();
+}).RequireAuthorization();
+
 app.MapGet("/api/config", async (INotificationService notifications, IListeningService listening) =>
     Results.Ok(new AppConfigDto(await notifications.GetConfigAsync(), await listening.GetConfigAsync(), await notifications.GetTextsAsync())));
 

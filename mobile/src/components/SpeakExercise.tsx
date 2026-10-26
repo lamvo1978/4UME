@@ -11,11 +11,13 @@ import {
   useAudioPlayer,
   useAudioRecorder,
 } from "expo-audio";
-import { ComponentProps, useEffect, useRef, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
-import { adsOffered, watchRewardedAd } from "../ads/rewarded";
+import { AdNotFinishedError, adsOffered, watchRewardedAd } from "../ads/rewarded";
 import { api, ApiError, PhonemeScore, PronunciationResult, PronunciationStatus, Word } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import { RootStackParamList } from "../navigation/types";
+import { speechToTextAvailable, useSpeechToText } from "../speech/useSpeechToText";
 import { colors, spacing } from "../theme";
 import { speakWord, stopSpeaking } from "./SpeakButton";
 
@@ -76,6 +78,7 @@ export function SpeakExercise({
   onNext: () => void;
   onSkipAll: () => void;
 }) {
+  const { user } = useAuth();
   const recorder = useAudioRecorder(RECORDING);
   // Pausing would otherwise deactivate the iOS audio session ~100 ms later, cutting the recording that start() begins.
   const player = useAudioPlayer(null, { keepAudioSessionActive: true });
@@ -197,14 +200,16 @@ export function SpeakExercise({
 
   /** The recording the learner just made is scored with the check the ad earned, so they needn't read again. */
   async function watchAd() {
+    if (!status) return;
     setWatchingAd(true);
     setAdError("");
     try {
-      const next = await watchRewardedAd();
+      const next = await watchRewardedAd(user?.userId ?? "", status);
       onStatus(next);
-      if (recordingUri && next.serviceAvailable && next.remaining > 0) await check(recordingUri);
-    } catch {
-      setAdError("Chưa tải được quảng cáo, bạn thử lại sau nhé.");
+      if (next.adsWatchedToday <= status.adsWatchedToday) setAdError("Lượt này chưa được tính, bạn thử lại sau nhé.");
+      else if (recordingUri && next.serviceAvailable && next.remaining > 0) await check(recordingUri);
+    } catch (e) {
+      setAdError(e instanceof AdNotFinishedError ? e.message : "Chưa tải được quảng cáo, bạn thử lại sau nhé.");
     } finally {
       setWatchingAd(false);
     }
@@ -251,6 +256,7 @@ export function SpeakExercise({
             <Text style={styles.compareTitle}>Tự so sánh</Text>
             <Text style={styles.compareText}>Nghe giọng bạn rồi nghe giọng mẫu, xem đã giống chưa.</Text>
             <ListenRow onMine={playMine} onSample={playSample} />
+            {status?.deviceCheck && speechToTextAvailable ? <QuickCheck word={word.word} onStart={() => player.pause()} /> : null}
           </View>
           <LockedDetail status={status} onWatchAd={watchAd} watchingAd={watchingAd} adError={adError} />
         </>
@@ -373,6 +379,47 @@ function ListenButton({
       <Ionicons name={icon} size={18} color={colors.accent} />
       <Text style={styles.listenText}>{label}</Text>
     </Pressable>
+  );
+}
+
+const saysWord = (heard: string, word: string) => ` ${normalize(heard)} `.includes(` ${normalize(word)} `);
+
+/** Out of detailed checks: the phone's own recognizer tells whether it heard the word, without a per-sound score. */
+function QuickCheck({ word, onStart }: { word: string; onStart: () => void }) {
+  const [heard, setHeard] = useState<string | null>(null);
+  const contextual = useMemo(() => [word], [word]);
+  const stt = useSpeechToText(setHeard, contextual);
+  const ok = heard !== null && saysWord(heard, word);
+
+  function listen() {
+    stopSpeaking();
+    onStart();
+    setHeard(null);
+    void stt.start();
+  }
+
+  return (
+    <View style={styles.quick}>
+      <Pressable
+        onPress={stt.listening ? stt.stop : listen}
+        style={({ pressed }) => [styles.quickBtn, stt.listening && styles.quickBtnOn, pressed && styles.pressed]}
+      >
+        <Ionicons name={stt.listening ? "stop" : "mic-outline"} size={18} color={stt.listening ? colors.white : colors.accent} />
+        <Text style={[styles.quickBtnText, stt.listening && styles.quickBtnTextOn]}>
+          {stt.listening ? "Đang nghe… đọc lại từ này" : "Kiểm tra nhanh bằng giọng của máy"}
+        </Text>
+      </Pressable>
+      {heard !== null && !stt.listening ? (
+        <View style={[styles.quickResult, { backgroundColor: ok ? colors.accentSoft : colors.flameSoft }]}>
+          <Ionicons name={ok ? "checkmark-circle" : "help-circle"} size={18} color={ok ? colors.accent : colors.flameDeep} />
+          <Text style={[styles.quickResultText, { color: ok ? colors.accent : colors.flameDeep }]}>
+            {ok ? `Máy nghe đúng “${word}”` : `Máy nghe được “${heard}”. Bạn thử đọc rõ hơn nhé.`}
+          </Text>
+        </View>
+      ) : null}
+      {stt.error && !stt.listening ? <Text style={styles.adError}>{stt.error}</Text> : null}
+      <Text style={styles.adNote}>Chỉ cho biết máy có nghe ra từ không, không chấm từng âm.</Text>
+    </View>
   );
 }
 
@@ -522,6 +569,22 @@ const styles = StyleSheet.create({
   compareCard: { backgroundColor: colors.surface, borderRadius: 20, padding: spacing.md, gap: spacing.sm },
   compareTitle: { fontSize: 17, fontWeight: "800", color: colors.ink },
   compareText: { fontSize: 14, color: colors.muted, marginBottom: 4 },
+  quick: { gap: 6, marginTop: 4 },
+  quickBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
+  quickBtnOn: { backgroundColor: colors.danger, borderColor: colors.danger },
+  quickBtnText: { fontSize: 14, fontWeight: "700", color: colors.accent },
+  quickBtnTextOn: { color: colors.white },
+  quickResult: { flexDirection: "row", alignItems: "center", gap: 8, padding: 10, borderRadius: 12 },
+  quickResultText: { flex: 1, fontSize: 14, fontWeight: "600" },
   locked: {
     borderRadius: 20,
     padding: spacing.md,

@@ -28,6 +28,7 @@ public static class BroadcastRules
     /// <summary>People still waiting (quiet hours) this long after the start are skipped.</summary>
     public static readonly TimeSpan DeliveryWindow = TimeSpan.FromHours(24);
     public static readonly TimeSpan MaxScheduleAhead = TimeSpan.FromDays(30);
+    public const int PushStatsDays = 30;
 }
 
 public record BroadcastContent(string Title, string Body, string Screen);
@@ -45,6 +46,7 @@ public record BroadcastEstimate(int Matching, int Reachable, int OptedOut, int N
 
 /// <param name="Pending">Waiting for their quiet hours to end.</param>
 /// <param name="Skipped">Still waiting when the delivery window closed, or the broadcast was cancelled.</param>
+/// <param name="Opened">Recipients who tapped it; older app builds don't report taps.</param>
 public record BroadcastDto(
     Guid Id,
     string Title,
@@ -63,7 +65,11 @@ public record BroadcastDto(
     int Pending,
     int Failed,
     int Skipped,
-    string? LastError);
+    string? LastError,
+    int Opened);
+
+/// <summary>Scheduled server pushes of one kind over the last <see cref="BroadcastRules.PushStatsDays"/> days.</summary>
+public record PushKindStatsDto(string Kind, int Sent, int Opened);
 
 public interface IBroadcastService
 {
@@ -72,6 +78,8 @@ public interface IBroadcastService
     Task<PushResult> SendTestAsync(BroadcastContent content, CancellationToken ct = default);
     Task<BroadcastDto> CreateAsync(CreateBroadcastRequest request, CancellationToken ct = default);
     Task<IReadOnlyList<BroadcastDto>> ListAsync(CancellationToken ct = default);
+    /// <summary>Sent and opened counts of the scheduled pushes (weekly summary, comeback).</summary>
+    Task<IReadOnlyList<PushKindStatsDto>> PushStatsAsync(CancellationToken ct = default);
     /// <summary>Stops a scheduled broadcast, or the people still waiting in one being sent.</summary>
     Task<BroadcastDto> CancelAsync(Guid id, CancellationToken ct = default);
 }

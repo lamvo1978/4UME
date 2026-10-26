@@ -2,7 +2,7 @@
 
 Hai loại quảng cáo, chỉ cho tài khoản miễn phí, mục tiêu là có thêm doanh thu trả chi phí Azure và VPS mà không làm phiền người học:
 
-1. **Banner nhỏ** cuối Trang chủ (chưa làm, cần SDK, xem mục cuối).
+1. **Banner nhỏ** cuối Trang chủ (xem mục cuối).
 2. **Quảng cáo đổi lượt chấm**: người học **tự chọn** xem một quảng cáo có thưởng (rewarded ad) để được chấm phát âm thêm **1 lượt**.
 
 ## Quảng cáo đổi lượt chấm: nguyên tắc
@@ -26,43 +26,34 @@ Hai loại quảng cáo, chỉ cho tài khoản miễn phí, mục tiêu là có
   - `POST /api/ads/dev-reward`: **chỉ có ở môi trường Development** (docker compose local), giả lập một quảng cáo đã xem để thử luồng trên Expo Go.
   - Trạng thái `GET /api/pronunciation/status` có thêm `adsWatchedToday`, `adsDailyLimit` (0 = không mời xem quảng cáo: Premium, tắt quảng cáo, hoặc dịch vụ chấm tạm dừng), `adsLeftToday`.
 - Admin → Cài đặt → Kiểm tra giọng đọc: công tắc **Cho xem quảng cáo đổi lượt chấm** (mặc định **tắt**), **Quảng cáo tối đa mỗi ngày**, số quảng cáo đã xem trong tháng.
-- App: màn `AdRewardsScreen.tsx` (mở từ `components/profile/AdRewardsRow.tsx` trên Hồ sơ), nút trong `SpeakExercise.tsx`; cả hai gọi qua `mobile/src/ads/rewarded.ts`. Hiện tại chỉ bản dev hiện (gọi endpoint giả lập); bản phát hành ẩn cho tới khi có SDK.
+- App: màn `AdRewardsScreen.tsx` (mở từ `components/profile/AdRewardsRow.tsx` trên Hồ sơ), nút trong `SpeakExercise.tsx`; cả hai gọi qua `mobile/src/ads/rewarded.ts`.
 
-## Còn lại khi build bằng EAS
+### SDK AdMob trong app (22/10, nhánh `feature/admob`)
 
-1. Tạo tài khoản **AdMob**, thêm app iOS + Android, tạo 2 **Rewarded ad unit**.
-2. Trong mỗi ad unit bật **Server-side verification**, URL: `https://api.4ume.io.vn/api/ads/admob-reward`, bấm *Verify URL* (máy chủ trả 200).
-3. Cài `react-native-google-mobile-ads` (cần development build, Expo Go không chạy được), khai báo App ID trong `app.json`.
-4. Thay phần thân `rewarded.ts`:
-   - `rewardedAdsSupported()` trả `true` khi SDK sẵn sàng.
-   - `watchRewardedAd()`: tải `RewardedAd` với `serverSideVerificationOptions: { userId, customData: localDate() }`, hiện quảng cáo, khi có sự kiện nhận thưởng thì hỏi lại `/api/pronunciation/status` vài lần (mỗi 1 giây, tối đa ~8 giây) cho tới khi `adsWatchedToday` tăng. Người học đóng sớm thì báo lỗi nhẹ, không cộng lượt.
-   - Dùng ad unit thử nghiệm của Google khi chạy dev.
-5. Đồng ý quyền riêng tư:
-   - iOS: hộp thoại **App Tracking Transparency** (`expo-tracking-transparency`) và khai báo `NSUserTrackingUsageDescription`.
-   - Hộp thoại đồng ý **UMP** của Google (bắt buộc ở EU/UK, nên bật cho mọi nơi).
-   - Khai báo quảng cáo trong App Privacy (App Store) và Data safety (Google Play).
-   - AdMob: chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc, rượu…); đặt mức nội dung phù hợp mọi lứa tuổi.
-6. Thử bằng quảng cáo thử nghiệm trên máy thật, rồi mới bật công tắc trong admin.
+- Gói `react-native-google-mobile-ads` (v17) + `expo-tracking-transparency`, cấu hình plugin trong `mobile/app.json`: App ID iOS / Android (**đang là ID thử nghiệm của Google**, thay bằng ID thật khi có tài khoản), `delayAppMeasurementInit`, SKAdNetwork của Google, câu xin phép theo dõi (ATT) tiếng Việt. Android tự thêm quyền `AD_ID`.
+- `mobile/src/ads/sdk.ts`: chỉ nạp SDK khi có module native (Expo Go không có, app vẫn chạy, dùng endpoint giả lập như trước). `initAds()` chạy **một lần, chỉ khi sắp hiện quảng cáo** (banner đang bật hoặc người học bấm xem): hộp thoại đồng ý **UMP** của Google (chỉ hiện ở nơi luật yêu cầu, như EU/UK) → hộp thoại **ATT** trên iOS → mức nội dung **G** → khởi tạo SDK. Người không bao giờ gặp quảng cáo thì không bị hỏi gì.
+- Ad unit lấy từ biến `EXPO_PUBLIC_ADMOB_REWARDED_IOS/ANDROID`, `EXPO_PUBLIC_ADMOB_BANNER_IOS/ANDROID` trong `mobile/eas.json` (đang để trống). Bản dev hoặc thiếu biến thì dùng ad unit thử nghiệm của Google.
+- `rewarded.ts`: tải `RewardedAd` với `serverSideVerificationOptions: { userId, customData: localDate() }`, hiện ngay khi tải xong. Đóng trước khi xem hết thì báo "Bạn cần xem hết quảng cáo…". Xem hết thì hỏi lại `/api/pronunciation/status` mỗi giây, tối đa 8 giây, tới khi `adsWatchedToday` tăng; quá thời gian thì báo "Lượt này chưa được tính". Ad unit thử nghiệm không gọi máy chủ, nên bản dev tự gọi `dev-reward` sau khi xem.
+- Quảng cáo đổi lượt chỉ tính khi máy chủ nhận xác nhận có chữ ký: với ad unit thử nghiệm trên bản phát hành, xem xong vẫn **không** được cộng lượt. Vì vậy chỉ bật công tắc trong admin sau khi đã điền ad unit thật.
 
-## Câu chữ cần sửa khi bật quảng cáo
+## Việc làm tay
 
-Trang chủ `site/index.html` (đoạn nói về quảng cáo) hiện ghi "Nếu có quảng cáo, đó chỉ là một banner nhỏ…" và "Không quảng cáo bật toàn màn hình, không video bắt phải xem hết." Đề xuất thay bằng:
+Danh sách đầy đủ ở [todo.md](todo.md#admob--việc-làm-tay): vào AdMob (tài khoản dùng chung với AdSense cho YouTube, `pub-3892770660039931`), thêm 2 app, tạo 4 ad unit (bật **Server-side verification** cho 2 rewarded, URL `https://api.4ume.io.vn/api/ads/admob-reward`), thông báo đồng ý GDPR, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc, rượu…), `app-ads.txt`, build EAS, thử bằng quảng cáo thử nghiệm rồi mới bật công tắc.
 
-> 4UME không chèn quảng cáo vào bài học. Khi hết lượt chấm phát âm miễn phí trong ngày, bạn có thể tự chọn xem một quảng cáo ngắn để được chấm thêm một lượt. Không xem cũng không sao, bạn vẫn luyện bằng cách tự so sánh giọng. Premium không có quảng cáo.
+## Câu chữ đã sửa (22/10)
 
-Chính sách quyền riêng tư `site/privacy/index.html`: bỏ câu "không hiển thị quảng cáo", thêm mục:
+- Trang chủ `site/index.html` (*Lời hứa về quảng cáo*): banner nhỏ cuối Trang chủ cho tài khoản miễn phí, quảng cáo đổi lượt tự chọn, không quảng cáo tự bật toàn màn hình, Premium không có quảng cáo.
+- Chính sách quyền riêng tư `site/privacy/index.html`: bỏ câu "không hiển thị quảng cáo", thêm mục **Quảng cáo** (Google AdMob, mã quảng cáo, ATT, UMP, 4UME chỉ gửi mã tài khoản + ngày), ngày hiệu lực 22/10/2026.
+- `site/app-ads.txt`: `google.com, pub-3892770660039931, DIRECT, f08c47fec0942fa0`.
+- Nội dung mặc định *Giới thiệu & bản quyền* có thêm mục *Quảng cáo — Google AdMob* (nếu admin đã sửa màn này thì thêm tay).
+- Còn lại trên admin: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong *Quyền lợi Premium*.
 
-> **Quảng cáo.** Khi bạn tự chọn xem quảng cáo để đổi lượt chấm, quảng cáo do Google AdMob cung cấp. Google có thể thu thập mã nhận dạng thiết bị và dữ liệu sử dụng để hiển thị và đo lường quảng cáo, theo [chính sách của Google](https://policies.google.com/technologies/ads). Trên iOS, quảng cáo chỉ được cá nhân hoá nếu bạn cho phép theo dõi. 4UME chỉ gửi cho Google mã tài khoản ẩn danh để xác nhận bạn đã xem xong, không gửi email, tên hay nội dung học.
-
-Thêm nữa: tắt nhãn *Sắp có* của dòng "Không quảng cáo" trong admin *Quyền lợi Premium*, và thêm mục quảng cáo trong màn *Giới thiệu & bản quyền*.
-
-## Banner nhỏ (làm cùng đợt EAS)
+## Banner nhỏ
 
 - Chỉ **một banner** trên Trang chủ; **Premium không thấy**. Không quảng cáo xen giữa bài học, ôn tập, bài nghe, chép chính tả.
 - **Banner không bị đẩy xuống**: ghim cố định ở đáy màn Trang chủ, ngay trên thanh tab, **nằm ngoài vùng cuộn**. Các thẻ thêm vào Trang chủ (tổng kết tuần, kiểm tra trình độ, ôn tập…) chỉ làm phần nội dung phía trên dài ra và cuộn được, banner luôn nhìn thấy. Phần cuộn chừa khoảng trống dưới cùng bằng chiều cao banner để thẻ cuối không bị che.
 - Dùng *anchored adaptive banner* (chiều cao cố định theo bề rộng máy, khoảng 50–60 điểm) để bố cục không nhảy khi quảng cáo tải xong; chưa có quảng cáo thì không chừa ô trống.
 - Chừa khoảng cách với thanh tab và ghi chữ "Quảng cáo" (chính sách AdMob cấm đặt sát nút điều hướng).
-- **Đang có khung giả lập** `mobile/src/components/ads/HomeBanner.tsx` (ô nét đứt "Banner quảng cáo (giả lập)"), chỉ hiện ở bản dev để xem bố cục; bản phát hành không hiện. Khi có SDK: thay ô giả lập bằng banner thật, bỏ điều kiện `__DEV__`. Ẩn với Premium dựa vào `premium` trong `GET /api/me`.
-- Cần thêm một **Banner ad unit** cho mỗi nền tảng và một công tắc bật/tắt banner trong admin (mặc định tắt, giống quảng cáo đổi lượt).
+- **Đã làm** (22/10): `mobile/src/components/ads/HomeBanner.tsx` hiện `BannerAd` kiểu `ANCHORED_ADAPTIVE_BANNER`, chỉ chừa chỗ và hiện nhãn "Quảng cáo" khi quảng cáo đã tải xong. Hiện khi `adsBanner` trong `GET /api/me` là `true`: công tắc admin **Banner quảng cáo ở Trang chủ** (*Cài đặt → Kiểm tra giọng đọc*, lưu trong `PronunciationConfig.HomeBannerEnabled`, mặc định **tắt**) và người học không phải Premium. Expo Go (bản dev) vẫn hiện ô nét đứt giả lập khi công tắc bật.
+- Cần một **Banner ad unit** cho mỗi nền tảng (`EXPO_PUBLIC_ADMOB_BANNER_*`).
 - Doanh thu banner ở Việt Nam thấp (khoảng 0,1–0,5 USD / 1.000 lượt hiển thị), nên quảng cáo đổi lượt mới là nguồn chính.
-- Câu chữ trang chủ đề xuất ở trên cần thêm: "Tài khoản miễn phí có một banner nhỏ ở cuối Trang chủ."

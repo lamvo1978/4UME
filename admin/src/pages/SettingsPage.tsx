@@ -413,6 +413,20 @@ function PronunciationSettings({ settings }: { settings: AdminSettings }) {
           label="Cho xem quảng cáo đổi lượt chấm"
           description="Hết lượt, người dùng miễn phí có thể tự chọn xem một quảng cáo để chấm thêm 1 lần. Premium không thấy quảng cáo. Chỉ bật khi bản app có quảng cáo đã lên cửa hàng."
         />
+        <Switch
+          size="md"
+          checked={form.homeBannerEnabled}
+          onChange={(e) => setForm({ ...form, homeBannerEnabled: e.currentTarget.checked })}
+          label="Banner quảng cáo ở Trang chủ"
+          description="Một banner nhỏ ghim cuối Trang chủ cho người dùng miễn phí, không xen vào bài học. Premium không thấy. Bản app cũ chưa có quảng cáo thì không hiện gì."
+        />
+        <Switch
+          size="md"
+          checked={form.deviceCheckWhenOut}
+          onChange={(e) => setForm({ ...form, deviceCheckWhenOut: e.currentTarget.checked })}
+          label="Hết lượt thì cho kiểm tra nhanh bằng giọng của máy"
+          description="Thêm nút “Kiểm tra nhanh”: điện thoại nghe xem có đúng từ không (không chấm từng âm, không tốn Azure). Bật lên người học ít lý do lên Premium hơn."
+        />
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 5 }} spacing="md">
           <NumberInput
             label="Miễn phí mỗi ngày"

@@ -168,7 +168,7 @@ export function HomeScreen() {
           />
         </View>
       </ScrollView>
-      <HomeBanner premium={me?.premium} />
+      <HomeBanner enabled={me?.adsBanner} />
       <AvatarSheet
         visible={pickingAvatar}
         name={name}

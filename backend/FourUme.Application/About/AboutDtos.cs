@@ -41,6 +41,12 @@ public record AboutContent(string Tagline, List<AboutSection> Sections)
                 new("color-palette-outline", "Logo và biểu tượng",
                     "Logo và nhận diện 4UME thuộc về 4UME. Biểu tượng trong app là bộ Ionicons (giấy phép MIT)."),
             ]),
+            new("Quảng cáo",
+            [
+                new("shield-checkmark-outline", "Google AdMob",
+                    "Tài khoản miễn phí có một banner nhỏ ở Trang chủ và quảng cáo bạn tự chọn xem để thêm lượt chấm phát âm, do Google AdMob cung cấp. Premium không có quảng cáo.",
+                    "https://policies.google.com/technologies/ads"),
+            ]),
         ]);
 }
 

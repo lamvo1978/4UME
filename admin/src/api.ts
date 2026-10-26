@@ -158,6 +158,8 @@ export type PronunciationConfig = {
   monthlyMinutesCap: number;
   adRewardsEnabled: boolean;
   adRewardsPerDay: number;
+  homeBannerEnabled: boolean;
+  deviceCheckWhenOut: boolean;
   paidMonthlyMinutesCap: number;
 };
 export type AdminSettings = {
@@ -292,7 +294,10 @@ export type Broadcast = BroadcastContent & {
   failed: number;
   skipped: number;
   lastError: string | null;
+  /** Taps reported by app builds that count them. */
+  opened: number;
 };
+export type PushKindStats = { kind: string; sent: number; opened: number };
 export type AdminNotificationTexts = { value: NotificationTexts; defaults: NotificationTexts; updatedAt: string | null };
 
 export type FeedbackCategory = "idea" | "bug" | "content" | "other";
@@ -899,6 +904,7 @@ export const api = {
   resetFeedbackSettings: () => request<AdminFeedbackSettings>("/api/admin/feedback-settings/reset", { method: "POST" }),
   testPush: (userId: string) => request<PushResult>(`/api/admin/users/${userId}/test-push`, { method: "POST" }),
   broadcasts: () => request<Broadcast[]>("/api/admin/broadcasts"),
+  pushStats: () => request<PushKindStats[]>("/api/admin/broadcasts/push-stats"),
   createBroadcast: (b: CreateBroadcast) => request<Broadcast>("/api/admin/broadcasts", json("POST", b)),
   estimateBroadcast: (audience: BroadcastAudience, partnerId: string | null) =>
     request<BroadcastEstimate>("/api/admin/broadcasts/estimate", json("POST", { audience, partnerId })),

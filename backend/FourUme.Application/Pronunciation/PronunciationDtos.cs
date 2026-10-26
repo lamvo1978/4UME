@@ -13,6 +13,13 @@ public record PronunciationConfig
     public bool AdRewardsEnabled { get; init; }
     /// <summary>Rewarded ads that count per learner per day.</summary>
     public int AdRewardsPerDay { get; init; } = 10;
+    /// <summary>One AdMob banner pinned to the bottom of Home for free learners. Kept here with the other ad switch.</summary>
+    public bool HomeBannerEnabled { get; init; }
+    /// <summary>
+    /// Once detailed checks run out, the app may check the word with the phone's own speech recognition (heard / not heard,
+    /// no per-sound score). Off by default: a free fallback makes Premium's extra checks less needed.
+    /// </summary>
+    public bool DeviceCheckWhenOut { get; init; }
     /// <summary>Audio minutes sent to the free Azure resource per calendar month (UTC) across all users; F0 covers 300.</summary>
     public int MonthlyMinutesCap { get; init; } = 300;
     /// <summary>
@@ -55,6 +62,7 @@ public static class PronunciationRules
 /// <param name="PartnerName">Premium through a partner centre while set.</param>
 /// <param name="PartnerUntil">End of partner access; null runs until the centre's code is revoked.</param>
 /// <param name="PausedPremiumDays">Own Premium days on hold while studying with the centre.</param>
+/// <param name="DeviceCheck">No detailed check left, but the app may check the word with the phone's speech recognition.</param>
 public record PronunciationStatusDto(
     bool Enabled,
     bool Premium,
@@ -70,7 +78,8 @@ public record PronunciationStatusDto(
     int AdsLeftToday,
     string? PartnerName = null,
     DateTimeOffset? PartnerUntil = null,
-    int PausedPremiumDays = 0);
+    int PausedPremiumDays = 0,
+    bool DeviceCheck = false);
 
 public record PhonemeScoreDto(string Phoneme, int Score);
 

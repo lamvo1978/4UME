@@ -1,9 +1,10 @@
 # Việc tiếp theo (cập nhật 22/10/2026)
 
-Thứ tự gợi ý, việc trên làm trước. Việc vận hành VPS (mật khẩu tạm, chứng chỉ PetHubPro, hộp thư Zoho) xem [todo-deploy.md](todo-deploy.md).
+Thứ tự gợi ý, việc trên làm trước. Từ 22/10 dừng làm tính năng mới: gắn AdMob, làm nốt việc dở, chờ Google Play duyệt để lên store chính thức, rồi mới sang [Phase 2](#phase-2-sau-khi-lên-store-chính-thức). Việc vận hành VPS (mật khẩu tạm, chứng chỉ PetHubPro, hộp thư Zoho) xem [todo-deploy.md](todo-deploy.md).
 
 ## 1. Trang web bắt buộc để lên store
 
+- [x] **app-ads.txt** (22/10) `https://4ume.io.vn/app-ads.txt` cho AdMob (có sau lần deploy tới).
 - [x] **Chính sách quyền riêng tư** `https://4ume.io.vn/privacy/`, **xoá tài khoản trên web** `https://4ume.io.vn/delete-account/`, **trang hỗ trợ** `https://4ume.io.vn/` (nguồn `site/`).
 - [x] Bật lên VPS (11/10): DNS `@` và `www`, `4ume.conf` — xem [deploy-vps.md](deploy-vps.md#trang-web-4umeiovn).
 - Chi tiết: [app-store.md](app-store.md); nội dung trang và khi nào phải sửa: [site.md](site.md).
@@ -33,10 +34,23 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 ## 4. Bản build riêng (EAS) — cần tài khoản Apple Developer
 
 - [x] Thông báo đẩy thật từ máy chủ (13/10, iOS từ build 3): tổng kết tuần, gọi quay lại sau 14/30 ngày, báo khi 4UME trả lời góp ý, nút *Gửi thông báo thử* ở trang người dùng; nội dung sửa ở admin *Thông báo* — xem [notifications.md](notifications.md#giai-đoạn-2--thông-báo-đẩy-từ-máy-chủ-đã-làm-ios-trước). Android chờ Firebase (sau khi Google Play xong).
-- [x] **Gửi thông báo hàng loạt** (13/10): admin *Gửi thông báo* + công tắc **Tin mới từ 4UME** trong Cài đặt app (từ build sau build 4) — xem [notifications.md](notifications.md#giai-đoạn-3--gửi-thông-báo-hàng-loạt-đã-làm). Còn lại: đếm số lần chạm mở. Tin khuyến mãi cần người dùng đồng ý rõ ràng (Apple Guideline 4.5.4): `NotifyNews` đang mặc định bật, nên chỉ gửi tin về nội dung / tính năng mới.
+- [x] **Gửi thông báo hàng loạt** (13/10): admin *Gửi thông báo* + công tắc **Tin mới từ 4UME** trong Cài đặt app (từ build sau build 4) — xem [notifications.md](notifications.md#giai-đoạn-3--gửi-thông-báo-hàng-loạt-đã-làm). **Đếm số lần chạm mở** (22/10, nhánh `feature/admob`): app báo lần chạm thông báo từ máy chủ, admin *Gửi thông báo* hiện "X đã mở (Y%)" mỗi đợt và tỉ lệ mở 30 ngày của *Tổng kết tuần* / *Gọi quay lại*; chỉ bản app từ build này mới báo. Tin khuyến mãi cần người dùng đồng ý rõ ràng (Apple Guideline 4.5.4): `NotifyNews` đang mặc định bật, nên chỉ gửi tin về nội dung / tính năng mới.
 - [x] **Rà soát Android** (13/10): tạo kênh thông báo trước khi xin quyền (Android 13+ không hiện hộp thoại nếu chưa có kênh), kênh `default` tên "Tin từ 4UME" cho thông báo từ máy chủ; né bàn phím trên Android (giao diện tràn viền). Có từ build Android thứ 2.
-- [ ] Nhận dạng giọng của máy (`expo-speech-recognition`) khi hết lượt chấm Azure.
-- [ ] Nền cho AdMob và mua Premium trong app (In‑App Purchase / Google Play Billing) — xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
+- [x] **Kiểm tra nhanh bằng giọng của máy** khi hết lượt chấm Azure (22/10): nút trong khung *Tự so sánh*, máy nghe ra đúng từ hay không (không chấm từng âm). Có công tắc admin *Cài đặt → Kiểm tra giọng đọc*, **mặc định tắt** vì làm người học ít lý do lên Premium.
+- [x] **AdMob** (22/10, nhánh `feature/admob`): quảng cáo đổi lượt chấm + banner Trang chủ, hộp thoại đồng ý UMP và ATT — xem [ads.md](ads.md). Đang dùng ID thử nghiệm của Google, còn các bước làm tay ở mục *AdMob — việc làm tay* bên dưới.
+- [ ] Mua Premium trong app (In‑App Purchase / Google Play Billing) — Phase 2, xem [pronunciation.md](pronunciation.md#giai-đoạn-sau).
+
+### AdMob — việc làm tay
+
+1. [ ] Vào được [apps.admob.com](https://apps.admob.com) (đang lỗi chuyển hướng trên Chrome: thử Safari / cửa sổ ẩn danh / Wi‑Fi). Tài khoản dùng chung với AdSense cho YouTube, mã nhà xuất bản `pub-3892770660039931`.
+2. [ ] Kiểm tra *Thanh toán*: thông tin thuế, địa chỉ nhận PIN.
+3. [ ] Thêm 2 app (iOS, Android, chọn "chưa có trên cửa hàng") → gửi **App ID** (`ca-app-pub-…~…`) để thay ID thử nghiệm trong `mobile/app.json`.
+4. [ ] Tạo 4 ad unit: *Rewarded* + *Banner* cho mỗi nền tảng → điền vào `EXPO_PUBLIC_ADMOB_*` trong `mobile/eas.json`. Hai ad unit *Rewarded* bật **Server-side verification**, URL `https://api.4ume.io.vn/api/ads/admob-reward`.
+5. [ ] *Privacy & messaging*: tạo thông báo đồng ý GDPR (EU/UK) và US states; *Blocking controls*: chặn hẹn hò, cờ bạc, rượu, đặt mức nội dung G.
+6. [ ] Deploy để `https://4ume.io.vn/app-ads.txt` lên mạng, rồi bấm *Check for updates* ở mục *app-ads.txt* trên AdMob.
+7. [ ] Build EAS mới (iOS + Android), thử bằng quảng cáo thử nghiệm trên máy thật, rồi mới bật công tắc **Cho xem quảng cáo đổi lượt chấm** và **Banner quảng cáo ở Trang chủ** trong admin.
+8. [ ] Sửa khai báo store theo [store-listing.md](store-listing.md) (Quảng cáo: Có, Data safety / App Privacy, Age Rating). Admin *Quyền lợi Premium*: bỏ nhãn *Sắp có* ở dòng "Không quảng cáo". Admin *Giới thiệu & bản quyền*: nếu đã từng sửa trên admin thì thêm tay mục *Quảng cáo — Google AdMob* (nội dung mặc định mới chỉ áp dụng khi chưa sửa).
+9. [ ] Sau khi app lên Google Play / App Store: vào AdMob → *Apps* → **Link to app store** cho từng app, để hết chế độ quảng cáo giới hạn.
 - [x] **Báo lỗi crash tự động** (Sentry, gói miễn phí, 13/10): app (bản build thật, từ build 4) và API; chỉ gửi mã tài khoản, không email / IP / quay màn hình. Bật bằng biến môi trường: app `EXPO_PUBLIC_SENTRY_DSN` + `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` trên EAS, API `SENTRY_DSN_API` trong `.env` của VPS. Đã thêm vào `privacy/`. Khi khai App Privacy / Data safety: *Crash data* + *User ID*, không dùng để theo dõi. Web admin chưa gắn.
 
 ## 5. Nội dung
@@ -45,9 +59,9 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 - [ ] **Ngữ pháp (13/10)**: dùng *AI soạn thêm câu* trong admin để mỗi bài có kho **luyện thêm** khoảng 30 câu (có dạng *điền đoạn văn*), và soạn bộ câu **kiểm tra đầu vào** khoảng 20 câu mỗi cấp A1–B1 (tối thiểu 4 câu / cấp thì app mới hỏi) — trước khi build bản nộp store. Xem [grammar-lesson-schema.md](grammar-lesson-schema.md#ngữ-pháp-trong-kiểm-tra-đầu-vào).
 - [ ] Duyệt ảnh tự gán cho từ vựng.
 
-## 6. Tính năng mới (thứ tự đã chốt 11/10)
+## 6. Tính năng Phase 1 (đã chốt 11/10)
 
-Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc dùng dịch vụ bên ngoài thì sửa trang quyền riêng tư — xem [site.md](site.md#khi-nào-phải-sửa-trang).
+**Dừng làm tính năng mới từ 22/10**: chỉ gắn AdMob và làm nốt việc dở, chờ Google Play duyệt để lên store chính thức. Tính năng mới chuyển sang [Phase 2](#phase-2-sau-khi-lên-store-chính-thức). Mục nào thu thêm dữ liệu hoặc dùng dịch vụ bên ngoài thì sửa trang quyền riêng tư — xem [site.md](site.md#khi-nào-phải-sửa-trang).
 
 1. [x] **Ôn từ hay sai** (11/10) — xem [weak-words.md](weak-words.md). Còn lại: **thống kê âm hay sai** (đang là dòng *Sắp có* trong *Quyền lợi Premium*; điểm từng âm đã bắt đầu được lưu): bản cơ bản miễn phí, thống kê chi tiết có thể là quyền lợi Premium.
 2. [x] **Nghe chép chính tả** (11/10) — nút trong từng bài nghe, xem [listening.md](listening.md#người-học-thấy-gì-app).
@@ -56,13 +70,21 @@ Làm lần lượt từ trên xuống. Mục nào thu thêm dữ liệu hoặc d
    - [ ] **Khai báo giá cho trung tâm** trên admin: mỗi đối tác có bảng giá (tiền / học viên / tháng, áp dụng từ tháng nào), tháng nào lấy giá đang áp dụng tháng đó để đổi giá không làm sai các tháng cũ; thẻ *Thống kê tháng* và file Excel thêm cột **Thành tiền** + tổng tiền. Hiện thống kê mới đếm số tháng tính phí.
 5. [x] **Đàm thoại với AI** (21/10, nhánh `feature/ai-conversation`) — nhập vai theo tình huống A1–B2 và trò chuyện tự do, nói theo lượt (nhận dạng giọng của máy) hoặc gõ, AI sửa câu và tổng kết; lượt theo ngày cho miễn phí / Premium; admin bật được giọng Azure cho Premium (F0 trước, S0 sau). Xem [conversation.md](conversation.md). Còn lại: đổi lượt bằng quảng cáo, gọi thoại thời gian thực cho Premium, lịch sử buổi đàm thoại.
 6. [x] **Luyện viết với AI** (22/10, nhánh `feature/ai-writing`) — viết theo đề A1–B2 hoặc viết tự do, AI chấm điểm (tổng + 4 mặt), tô lỗi kèm giải thích tiếng Việt, viết lại cả đoạn, gợi ý nâng cấp; lượt theo ngày + trần tổng mỗi ngày (để dành phần cho Premium); bản viết lại và toàn bộ lịch sử cho Premium; AI miễn phí: Groq `qwen3.8-27b` trước, Mistral `ministral-14b` dự phòng (gói miễn phí của Mistral không cho dùng model lớn, xem [writing.md](writing.md#chọn-ai-chốt-22102026)); admin có *Chấm thử* để so model. Còn lại: thêm `MISTRAL_API_KEY` vào `.env` VPS (đã tắt cho Mistral dùng dữ liệu để huấn luyện); chấm thử ~20 bài mẫu để chốt model và trần tổng; chốt số lượt Premium cùng lúc với giá trước khi lên store công khai.
-7. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
-8. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
-9. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
-10. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai). Cần thông báo đẩy thật để "nhắc bạn" có ý nghĩa.
-11. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
-12. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
-13. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
+## Phase 2 (sau khi lên store chính thức)
+
+Chưa chốt thứ tự; hai ý tưởng mới (22/10) đứng đầu.
+
+1. [ ] **Bộ đề thi**: đề luyện theo cấp độ / dạng bài (từ vựng, ngữ pháp, nghe, đọc), có giờ làm bài, chấm điểm và xem lại câu sai; sau này có thể thêm đề theo chuẩn kỳ thi (IELTS cho học viên trung tâm đối tác).
+2. [ ] **Cá nhân hoá lộ trình học**: dựa vào kiểm tra trình độ, mục tiêu và từ / âm / ngữ pháp hay sai để gợi ý mỗi ngày nên học gì tiếp theo.
+3. [ ] **Mua Premium trong app** (In‑App Purchase / Google Play Billing); chốt giá và số lượt Premium của Đàm thoại / Luyện viết cùng lúc.
+4. [ ] **Truyện ngắn từ những từ đã học**: Gemini soạn đoạn văn ngắn theo chủ đề / cấp độ, admin duyệt trước khi đăng (giống quy trình bài nghe), có giọng đọc và tô sáng từ đã học.
+5. [ ] **Tiến độ theo cấp độ**: "Bạn đã nắm 62% từ vựng A2" trên Hồ sơ / Trang chủ, có đích để phấn đấu.
+6. [ ] **Chế độ tối và chữ to**: theo cài đặt của máy (giao diện tối, cỡ chữ hệ thống); kiểm tra lại các màn không vỡ bố cục khi chữ to.
+7. [ ] **Học cùng bạn bè**: kết bạn bằng mã, xem chuỗi ngày học của nhau, nút "nhắc bạn" (không có bảng xếp hạng công khai).
+8. [ ] **Ảnh chia sẻ chuỗi ngày học** lên Facebook / Zalo (ảnh tạo trong app, có logo + link `4ume.io.vn`).
+9. [ ] **Thống kê nội dung trên admin**: từ nhiều người sai nhất, âm hay đọc sai, bài hay bỏ dở, kết hợp các góp ý *Báo lỗi từ này* — biết nên sửa / bổ sung nội dung nào trước.
+10. [ ] **Chế độ lớp học**: giáo viên / người hướng dẫn tạo lớp, giao bộ từ, xem tiến độ học viên — cho các lớp học tình nguyện, đúng sứ mệnh miễn phí cho cộng đồng.
+11. [ ] Việc còn lại của các tính năng Phase 1: thống kê âm hay sai, universal link cho link mời, khai báo giá cho trung tâm, đổi lượt Đàm thoại bằng quảng cáo, lịch sử buổi đàm thoại.
 
 ## Ý tưởng để sau
 

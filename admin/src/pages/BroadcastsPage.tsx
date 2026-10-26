@@ -288,6 +288,7 @@ export function BroadcastsPage() {
       <Title order={4} mt="md">
         Đã gửi
       </Title>
+      <PushStats />
       {history.error ? <Alert color="red">{(history.error as Error).message}</Alert> : null}
       {history.isLoading ? <Skeleton h={100} radius="lg" /> : null}
       {history.data?.length === 0 ? (
@@ -367,11 +368,34 @@ function EstimateLine({
   );
 }
 
+const openRate = (opened: number, sent: number) => `${Math.round((opened / sent) * 100)}%`;
+
+const PUSH_KINDS: Record<string, string> = { weekly: "Tổng kết tuần", comeback: "Gọi quay lại" };
+
+/** Taps on the scheduled pushes; app builds before the count was added never report, so early numbers run low. */
+function PushStats() {
+  const stats = useQuery({ queryKey: ["push-stats"], queryFn: api.pushStats });
+  if (!stats.data?.length) return null;
+  return (
+    <Text fz="sm">
+      Thông báo tự động 30 ngày qua:{" "}
+      {stats.data
+        .map((s) => `${PUSH_KINDS[s.kind] ?? s.kind} ${s.opened}/${s.sent} đã mở (${openRate(s.opened, s.sent)})`)
+        .join(" · ")}
+      <Text span fz="xs" c="dimmed">
+        {" "}
+        · chỉ bản app mới báo lần mở, nên con số đầu tiên sẽ thấp hơn thực tế
+      </Text>
+    </Text>
+  );
+}
+
 function HistoryCard({ b, onCancel }: { b: Broadcast; onCancel: () => void }) {
   const status = STATUS[b.status];
   const open = b.status === "scheduled" || b.status === "sending";
   const parts = [
     b.status === "scheduled" ? null : `đã gửi ${b.sent}/${b.recipients}`,
+    b.sent ? `${b.opened} đã mở (${openRate(b.opened, b.sent)})` : null,
     b.pending ? `${b.pending} chờ hết giờ yên tĩnh` : null,
     b.failed ? `${b.failed} lỗi` : null,
     b.skipped ? `${b.skipped} bỏ qua` : null,

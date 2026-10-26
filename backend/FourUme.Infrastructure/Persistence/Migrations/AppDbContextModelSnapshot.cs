@@ -208,6 +208,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ClaimedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTimeOffset?>("OpenedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset?>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -976,6 +979,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
                     b.Property<DateOnly>("LocalDate")
                         .HasColumnType("date");
+
+                    b.Property<DateTimeOffset?>("OpenedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("SentAt")
                         .HasColumnType("timestamp with time zone");

@@ -73,6 +73,16 @@ public class BroadcastService(
     public async Task<IReadOnlyList<BroadcastDto>> ListAsync(CancellationToken ct = default) =>
         await Dtos(db.Broadcasts.AsNoTracking().OrderByDescending(b => b.CreatedAt).Take(HistorySize)).ToListAsync(ct);
 
+    public async Task<IReadOnlyList<PushKindStatsDto>> PushStatsAsync(CancellationToken ct = default)
+    {
+        var from = DateTimeOffset.UtcNow.AddDays(-BroadcastRules.PushStatsDays);
+        return await db.NotificationLogs.AsNoTracking()
+            .Where(l => l.SentAt >= from && l.Status == "sent")
+            .GroupBy(l => l.Kind)
+            .Select(g => new PushKindStatsDto(g.Key, g.Count(), g.Count(l => l.OpenedAt != null)))
+            .ToListAsync(ct);
+    }
+
     public async Task<BroadcastDto> CancelAsync(Guid id, CancellationToken ct = default)
     {
         var b = await db.Broadcasts.FirstOrDefaultAsync(x => x.Id == id, ct) ?? throw new KeyNotFoundException();
@@ -154,7 +164,8 @@ public class BroadcastService(
                     return !PushNotifier.InQuietHours(local.Hour * 60 + local.Minute, config);
                 })
                 .Select(p => p.Id).ToList();
-            var message = Message(b.Title, b.Body, b.Screen);
+            var plain = Message(b.Title, b.Body, b.Screen);
+            var message = plain with { Data = new Dictionary<string, string>(plain.Data) { [PushData.BroadcastId] = b.Id.ToString() } };
             foreach (var chunk in ready.Chunk(ClaimBatch)) await SendChunkAsync(b.Id, chunk, message, now, ct);
         }
 
@@ -265,5 +276,6 @@ public class BroadcastService(
         b.Recipients.Count(r => r.Status == S.Pending || r.Status == S.Sending),
         b.Recipients.Count(r => r.Status == S.Failed),
         b.Recipients.Count(r => r.Status == S.Expired || r.Status == S.Cancelled),
-        b.LastError));
+        b.LastError,
+        b.Recipients.Count(r => r.OpenedAt != null)));
 }

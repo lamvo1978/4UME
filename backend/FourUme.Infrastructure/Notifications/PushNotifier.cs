@@ -150,7 +150,8 @@ public class PushNotifier(AppDbContext db, INotificationService notifications, E
             return;
         }
 
-        var result = await DeliverAsync(userId, message, ct);
+        var tagged = message with { Data = new Dictionary<string, string>(message.Data) { [PushData.LogId] = log.Id.ToString() } };
+        var result = await DeliverAsync(userId, tagged, ct);
         log.Status = result.Sent > 0 ? "sent" : "failed";
         log.SentAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
@@ -158,6 +159,17 @@ public class PushNotifier(AppDbContext db, INotificationService notifications, E
 
     public Task<PushResult> SendToUserAsync(Guid userId, PushMessage message, CancellationToken ct = default) =>
         DeliverAsync(userId, message, ct);
+
+    public async Task MarkOpenedAsync(Guid userId, Guid? logId, Guid? broadcastId, CancellationToken ct = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        if (logId is { } log)
+            await db.NotificationLogs.Where(l => l.Id == log && l.UserId == userId && l.OpenedAt == null)
+                .ExecuteUpdateAsync(x => x.SetProperty(l => l.OpenedAt, now), ct);
+        if (broadcastId is { } broadcast)
+            await db.BroadcastRecipients.Where(r => r.BroadcastId == broadcast && r.UserId == userId && r.OpenedAt == null)
+                .ExecuteUpdateAsync(x => x.SetProperty(r => r.OpenedAt, now), ct);
+    }
 
     private async Task<PushResult> DeliverAsync(Guid userId, PushMessage message, CancellationToken ct)
     {

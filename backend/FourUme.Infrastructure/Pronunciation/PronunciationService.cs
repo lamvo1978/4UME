@@ -140,7 +140,7 @@ public class PronunciationService(IAppDbContext db, IClientClock clock, AzurePro
         var adsLimit = on && config.AdRewardsEnabled && !premium ? config.AdRewardsPerDay : 0;
         var status = new PronunciationStatusDto(config.Enabled, premium, access.PremiumUntil, limit, used, remaining, available,
             config.PremiumDailyLimit, config.FreeDailyLimit, ads, adsLimit, Math.Max(0, adsLimit - ads), access.PartnerName,
-            access.PartnerUntil, access.PausedPremiumDays);
+            access.PartnerUntil, access.PausedPremiumDays, config.DeviceCheckWhenOut && remaining == 0);
         return new Budget(status, useFree, usePaid);
     }
 

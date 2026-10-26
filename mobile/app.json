@@ -68,6 +68,21 @@
           "microphonePermission": "4UME dùng micro để chấm phát âm và để bạn luyện nói.",
           "speechRecognitionPermission": "4UME chuyển câu bạn nói thành chữ để so với câu mẫu khi luyện nói và để bạn trò chuyện với AI."
         }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3892770660039931~3489525077",
+          "iosAppId": "ca-app-pub-3892770660039931~5672835286",
+          "delayAppMeasurementInit": true,
+          "skAdNetworkItems": ["cstr6suwn9.skadnetwork"]
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "4UME chỉ có quảng cáo khi bạn tự chọn xem để thêm lượt chấm, và một banner nhỏ ở Trang chủ. Cho phép để quảng cáo hợp với bạn hơn; không cho phép thì bạn vẫn thấy số quảng cáo như vậy."
+        }
       ]
     ],
     "extra": {

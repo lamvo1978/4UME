@@ -42,6 +42,8 @@ public class BroadcastRecipient
     /// <summary>A claim left "sending" by a run that stopped half-way is retried after a while.</summary>
     public DateTimeOffset? ClaimedAt { get; set; }
     public DateTimeOffset? SentAt { get; set; }
+    /// <summary>First tap on the notification, reported by app builds that know how to.</summary>
+    public DateTimeOffset? OpenedAt { get; set; }
 }
 
 public static class BroadcastStatuses

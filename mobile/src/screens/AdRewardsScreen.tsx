@@ -4,14 +4,16 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { adsOffered, watchRewardedAd } from "../ads/rewarded";
+import { AdNotFinishedError, adsOffered, watchRewardedAd } from "../ads/rewarded";
 import { api, PronunciationStatus } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 
 /** Free learners stock up on today's pronunciation checks by choosing to watch rewarded ads, one check each. */
 export function AdRewardsScreen() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [status, setStatus] = useState<PronunciationStatus | null>(null);
   const [failed, setFailed] = useState(false);
@@ -30,7 +32,7 @@ export function AdRewardsScreen() {
     setWatching(true);
     setMessage(null);
     try {
-      const next = await watchRewardedAd();
+      const next = await watchRewardedAd(user?.userId ?? "", status);
       const earned = next.adsWatchedToday > status.adsWatchedToday;
       setStatus(next);
       setMessage(
@@ -38,8 +40,11 @@ export function AdRewardsScreen() {
           ? { ok: true, text: `Đã thêm 1 lượt. Hôm nay bạn còn ${next.remaining} lượt chấm.` }
           : { ok: false, text: "Lượt này chưa được tính, bạn thử lại sau nhé." },
       );
-    } catch {
-      setMessage({ ok: false, text: "Chưa tải được quảng cáo, bạn thử lại sau nhé." });
+    } catch (e) {
+      setMessage({
+        ok: false,
+        text: e instanceof AdNotFinishedError ? e.message : "Chưa tải được quảng cáo, bạn thử lại sau nhé.",
+      });
     } finally {
       setWatching(false);
     }

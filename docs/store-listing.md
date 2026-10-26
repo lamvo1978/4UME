@@ -22,7 +22,7 @@ Thông tin chung:
 - **Kiểm tra trình độ** lúc bắt đầu.
 - **Thói quen**: mục tiêu mỗi ngày, chuỗi ngày học (có ngày đóng băng), nhắc học, tổng kết tuần.
 - **Mời bạn bè** nhận ngày Premium; **mã trung tâm** cho học viên trung tâm đối tác.
-- Miễn phí, không quảng cáo, không bán gói trả phí (màn Premium chỉ giới thiệu, ghi "Sắp mở đăng ký").
+- Miễn phí, không bán gói trả phí (màn Premium chỉ giới thiệu). Từ bản có AdMob (nhánh `feature/admob`): tài khoản miễn phí có một banner ở cuối Trang chủ và quảng cáo tự chọn xem để thêm lượt chấm phát âm; Premium không có quảng cáo. **Bản build nào có AdMob thì phải khai "có quảng cáo" ở cả hai store** (các mục đánh dấu *[AdMob]* bên dưới).
 
 ## App Store (App Store Connect → App Information / phiên bản 1.0)
 
@@ -80,7 +80,11 @@ MỜI BẠN BÈ
 
 **What to Test** (TestFlight, bản có Đàm thoại): `Mới: Đàm thoại với AI (tab Luyện → thẻ đầu tiên). Chọn cấp độ, trò chuyện tự do hoặc nhập vai một tình huống, bấm micro để nói hoặc gõ chữ. Thử nói sai một câu xem AI có sửa ngay không, rồi bấm Kết thúc để xem tổng kết. Góp ý cho 4UME nếu AI trả lời lạ hoặc chậm.`
 
-**Age Rating**: trả lời *None / No* hết → **4+**. *Unrestricted Web Access*: No. *User-generated content*: No (góp ý chỉ gửi cho 4UME, người dùng không thấy của nhau).
+**What to Test** (TestFlight, bản có Luyện viết): `Mới: Luyện viết với AI (tab Luyện → thẻ thứ hai). Chọn cấp độ, viết theo đề hoặc viết tự do một đoạn tiếng Anh, bấm Chấm bài. AI cho điểm, tô màu chỗ sai (chạm vào để xem cách sửa và giải thích), viết lại cả đoạn và gợi ý từ hay hơn. Thử cố ý viết sai vài chỗ xem AI có bắt đúng không, rồi bấm "Viết lại bài này" để sửa và chấm lại. Góp ý cho 4UME nếu AI chấm sai hoặc chậm.`
+
+**What to Test** (TestFlight, bản có AdMob): `Mới: quảng cáo cho tài khoản miễn phí (đang là quảng cáo thử nghiệm của Google). Lần đầu gặp quảng cáo, máy hỏi có cho phép theo dõi không, chọn gì cũng được. Hết lượt chấm phát âm trong ngày, thử bấm "Xem quảng cáo để chấm bản ghi này" hoặc Hồ sơ → Thêm lượt kiểm tra. Góp ý cho 4UME nếu quảng cáo làm phiền hoặc che mất nội dung.`
+
+**Age Rating**: trả lời *None / No* hết → **4+**. *[AdMob]* Bản có quảng cáo: mục *Advertising* chọn **Yes**, vẫn ra 4+. *Unrestricted Web Access*: No. *User-generated content*: No (góp ý chỉ gửi cho 4UME, người dùng không thấy của nhau).
 
 **App Review Information → Notes**:
 
@@ -91,7 +95,8 @@ Demo account is provided above. New accounts need an email verification code, so
 - "Đàm thoại với AI" (Luyện tab → first card): the learner practises English by talking with an AI, as role-play (ordering coffee, a job interview…) or free talk. Speech is turned into text by iOS speech recognition; only that text is sent to a third-party AI service to write the reply and correct mistakes. No audio, name or email is sent. Before the first conversation the app shows a consent dialog explaining this (Guideline 5.1.2(i)); nothing is sent unless the user taps "Đồng ý". Replies are short, educational and the AI is instructed to refuse unsafe topics. The demo account has enough daily turns to try it.
 - "Luyện viết với AI" (Luyện tab → second card): the learner writes a short English paragraph and an AI grades it (score, highlighted mistakes with Vietnamese explanations, a rewritten version). Only the paragraph (with its task and level) is sent to a third-party AI service; no name or email. A separate consent dialog is shown the first time the learner opens a writing task, before anything is written or sent (Guideline 5.1.2(i)). Paragraphs are saved so the learner can read them again and can be deleted one by one.
 - Notifications are optional: study reminders, a weekly summary, replies to the user's feedback, and occasional news about new lessons or features (can be turned off in Profile > Settings > "Tin mới từ 4UME"). No promotional or marketing messages are sent.
-- The app is free and has no in-app purchases or ads. The "Premium" screen only describes upcoming features ("coming soon"); nothing can be bought.
+- The app is free and has no in-app purchases. The "Premium" screen only describes Premium; nothing can be bought.
+- [AdMob build only] Free accounts see Google AdMob ads: one banner pinned at the bottom of Home, and an optional rewarded ad the learner chooses to watch for one extra pronunciation check after the free daily checks run out (Profile > "Thêm lượt kiểm tra", or the button under a pronunciation exercise). No ads appear inside lessons, reviews or listening. The App Tracking Transparency prompt is shown only right before the first ad, and ads still work if the user declines. Premium accounts see no ads.
 - Premium days can be earned for free by inviting friends, or are provided to students of partner English centers that enroll them through an access code (Guideline 3.1.3(c), access purchased by the organization for its students). No payment is made by users in or outside the app.
 - Account deletion: Profile > Settings > Delete account.
 ```
@@ -101,7 +106,7 @@ Demo account is provided above. New accounts need an email verification code, so
 Làm sau 5–7 ngày bạn bè thử trên TestFlight. Điền trước được, chỉ bấm *Add for Review* khi đã chọn bản build cuối.
 
 1. **Tài khoản demo** (làm trước): admin → *Người dùng* → *Thêm tài khoản* với email demo ở trên, cấp Premium (để người duyệt chấm phát âm không bị hết lượt). Đăng nhập tài khoản này trên điện thoại, học vài thẻ từ, một bài nghe, một bài ngữ pháp để màn hình có dữ liệu. Không gắn mã trung tâm (tab IELTS chỉ có chữ *Sắp có*, dễ bị coi là chưa hoàn thiện).
-2. **App Information**: Name, Subtitle, danh mục *Education*, *Content Rights* → **Yes, contains third-party content** và có quyền dùng (ảnh Pexels / Pixabay, giọng đọc máy). *Age Rating* → bảng câu hỏi mới của Apple: trả lời **No / None** hết, kể cả *Messaging and Chat*, *User-Generated Content* (góp ý chỉ gửi 4UME), *Advertising*, *Parental Controls*, *Age Assurance* → ra **4+**.
+2. **App Information**: Name, Subtitle, danh mục *Education*, *Content Rights* → **Yes, contains third-party content** và có quyền dùng (ảnh Pexels / Pixabay, giọng đọc máy). *Age Rating* → bảng câu hỏi mới của Apple: trả lời **No / None** hết, kể cả *Messaging and Chat*, *User-Generated Content* (góp ý chỉ gửi 4UME), *Advertising* (*[AdMob]* bản có quảng cáo chọn **Yes**), *Parental Controls*, *Age Assurance* → ra **4+**.
 3. **Pricing and Availability**: *Free*. Quốc gia: chỉ **Vietnam** cho lần đầu. Nếu chọn cả EU, Apple bắt khai *trader status* (Digital Services Act) và hiện công khai địa chỉ, số điện thoại.
 4. **App Privacy**: Privacy Policy URL + bảng bên dưới, bấm *Publish*.
 5. **Phiên bản 1.0**: ảnh `store/ios/screenshots-6.9/` (1290×2796, Apple nhận cho ô 6,9"), Promotional Text, Description, Keywords, Support URL, Copyright.
@@ -127,6 +132,15 @@ Làm sau 5–7 ngày bạn bè thử trên TestFlight. Điền trước được
 
 Không chọn: Location, Contacts, Browsing History, Purchases, Financial Info, Health, Advertising Data, Device ID (mã nhận thông báo không tính là Device ID).
 
+*[AdMob]* Bản có quảng cáo: thêm phần Google AdMob thu thập, theo [hướng dẫn của Google cho App Privacy](https://developers.google.com/admob/ios/privacy/data-disclosure). Các mục dưới: *Linked to user = No*, mục đích **Third-Party Advertising** (kèm *Analytics* nếu Apple hỏi); **Used for tracking = Yes** cho *Device ID* và *Advertising Data* (IDFA chỉ có khi người dùng cho phép ATT).
+
+| Loại dữ liệu (Apple) | Ghi chú |
+|---|---|
+| Location → **Coarse Location** | Google đoán vị trí gần đúng từ địa chỉ IP |
+| Identifiers → **Device ID** | mã quảng cáo IDFA (khi cho phép theo dõi) |
+| Usage Data → **Product Interaction**, **Advertising Data** | lượt xem / chạm quảng cáo |
+| Diagnostics → **Crash Data**, **Performance Data**, **Other Diagnostic Data** | SDK quảng cáo |
+
 ## Google Play (Play Console)
 
 **Tên app** (≤ 30): `4UME - Học tiếng Anh`
@@ -146,7 +160,8 @@ Học từ vựng, chấm phát âm, luyện nghe và ngữ pháp tiếng Anh m�
 ### Nội dung ứng dụng (App content)
 
 - **Chính sách quyền riêng tư**: `https://4ume.io.vn/privacy/`
-- **Quảng cáo**: *Không, ứng dụng không chứa quảng cáo*.
+- **Quảng cáo**: *Không, ứng dụng không chứa quảng cáo*. *[AdMob]* Bản có quảng cáo: **Có, ứng dụng chứa quảng cáo** (Google Play hiện nhãn *Chứa quảng cáo*).
+- *[AdMob]* **Mã nhận dạng quảng cáo (Advertising ID)**: *Có*, dùng cho **Quảng cáo hoặc tiếp thị** (SDK AdMob khai quyền `AD_ID`). Bản trước AdMob trả lời *Không*.
 - **Quyền truy cập ứng dụng**: *Một số chức năng bị hạn chế* → thêm hướng dẫn: tài khoản demo ở trên, ghi chú "Registration needs an email verification code; please use this account."
 - **Phân loại nội dung (IARC)**: danh mục *Reference, News, or Educational*; trả lời *Không* cho bạo lực, tình dục, ngôn từ, chất kích thích, cờ bạc; *Người dùng có tương tác / chia sẻ nội dung với nhau*: Không; *Chia sẻ vị trí*: Không; *Mua hàng kỹ thuật số*: Không.
 - **Đối tượng mục tiêu**: **13–15, 16–17, 18 trở lên** (không chọn dưới 13, khớp trang quyền riêng tư). *Có thể thu hút trẻ em*: Không.
@@ -176,6 +191,15 @@ Học từ vựng, chấm phát âm, luyện nghe và ngữ pháp tiếng Anh m�
 | Hoạt động trong ứng dụng → **Nội dung khác do người dùng tạo** | Tuỳ chọn | Hỗ trợ khách hàng, Chức năng ứng dụng | nội dung góp ý; chữ các câu trong *Đàm thoại với AI*; đoạn văn trong *Luyện viết với AI* |
 | Thông tin và hiệu suất ứng dụng → **Nhật ký sự cố**, **Chẩn đoán** | Bắt buộc | Phân tích sự cố | Sentry |
 | Mã thiết bị hoặc mã khác → **Mã thiết bị hoặc mã khác** | Tuỳ chọn | Chức năng ứng dụng | mã nhận thông báo |
+
+*[AdMob]* Bản có quảng cáo: *Chia sẻ với bên thứ ba* đổi thành **Có** (Google AdMob), và thêm theo [hướng dẫn Data safety của Google cho AdMob](https://developers.google.com/admob/android/privacy/play-data-disclosure):
+
+| Loại dữ liệu (Google) | Thu thập / chia sẻ | Mục đích | Ghi chú |
+|---|---|---|---|
+| Vị trí → **Vị trí gần đúng** | Cả hai | Quảng cáo hoặc tiếp thị, Phân tích, Chống gian lận | từ địa chỉ IP |
+| Hoạt động trong ứng dụng → **Tương tác trong ứng dụng** | Cả hai | Quảng cáo hoặc tiếp thị, Phân tích | lượt xem / chạm quảng cáo |
+| Thông tin và hiệu suất ứng dụng → **Nhật ký sự cố**, **Chẩn đoán** | Cả hai | Phân tích, Chống gian lận | SDK quảng cáo |
+| Mã thiết bị hoặc mã khác → **Mã thiết bị hoặc mã khác** | Cả hai | Quảng cáo hoặc tiếp thị, Phân tích, Chống gian lận | mã quảng cáo (Advertising ID) |
 
 ### Thử nghiệm kín (Closed testing)
 

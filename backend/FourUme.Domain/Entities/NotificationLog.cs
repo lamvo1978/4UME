@@ -14,4 +14,6 @@ public class NotificationLog
     public DateTimeOffset SentAt { get; set; } = DateTimeOffset.UtcNow;
     /// <summary>pending · sent · failed</summary>
     public string Status { get; set; } = "pending";
+    /// <summary>First tap on the notification, reported by app builds that know how to.</summary>
+    public DateTimeOffset? OpenedAt { get; set; }
 }

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import type { Me, NotificationConfig, NotificationTexts, ReviewForecastDay } from "../api/client";
+import { api, type Me, type NotificationConfig, type NotificationTexts, type ReviewForecastDay } from "../api/client";
 import { addDays, toDayKey } from "../utils/dates";
 import {
   comebackContent,
@@ -200,20 +200,29 @@ function targetOf(response: Notifications.NotificationResponse | null): Notifica
   return null;
 }
 
+/** Server pushes carry an id so admin can count taps; local reminders have none and aren't reported. */
+function reportOpened(response: Notifications.NotificationResponse) {
+  const data = response.notification.request.content.data;
+  const logId = typeof data?.logId === "string" ? data.logId : undefined;
+  const broadcastId = typeof data?.broadcastId === "string" ? data.broadcastId : undefined;
+  if (logId || broadcastId) api.notificationOpened({ logId, broadcastId }).catch(() => undefined);
+}
+
 /** Calls `open` for notification taps, including the one that launched the app. Returns an unsubscribe function. */
 export function onNotificationTap(open: (target: NotificationTarget) => void) {
   if (Platform.OS === "web") return () => undefined;
   let active = true;
   Notifications.getLastNotificationResponseAsync()
     .then((response) => {
+      if (!active || !response) return;
+      reportOpened(response);
       const target = targetOf(response);
-      if (active && target) {
-        open(target);
-        Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
-      }
+      if (target) open(target);
+      Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
     })
     .catch(() => undefined);
   const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+    reportOpened(response);
     const target = targetOf(response);
     if (target) open(target);
   });

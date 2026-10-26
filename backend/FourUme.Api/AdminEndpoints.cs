@@ -134,6 +134,7 @@ public static class AdminEndpoints
             Results.Ok(await s.ResetNotificationTextsAsync(ct)));
 
         admin.MapGet("/broadcasts", async (IBroadcastService s, CancellationToken ct) => Results.Ok(await s.ListAsync(ct)));
+        admin.MapGet("/broadcasts/push-stats", async (IBroadcastService s, CancellationToken ct) => Results.Ok(await s.PushStatsAsync(ct)));
         admin.MapPost("/broadcasts", async (CreateBroadcastRequest r, IBroadcastService s, CancellationToken ct) =>
             Results.Ok(await s.CreateAsync(r, ct)));
         admin.MapPost("/broadcasts/estimate", async (BroadcastAudienceRequest r, IBroadcastService s, CancellationToken ct) =>

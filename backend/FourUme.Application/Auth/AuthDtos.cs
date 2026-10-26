@@ -42,7 +42,9 @@ public record MeResponse(
     /// <summary>Set while the learner is a partner's student.</summary>
     string? PartnerName = null,
     /// <summary>End of partner access; null runs until the code is revoked.</summary>
-    DateTimeOffset? PartnerUntil = null);
+    DateTimeOffset? PartnerUntil = null,
+    /// <summary>Show the Home banner ad: switched on in admin and the learner isn't Premium.</summary>
+    bool AdsBanner = false);
 
 /// <summary>Every field is optional; only the ones sent are changed.</summary>
 public record UpdateSettingsRequest(

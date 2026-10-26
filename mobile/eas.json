@@ -7,6 +7,10 @@
     "base": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.4ume.io.vn",
+        "EXPO_PUBLIC_ADMOB_REWARDED_IOS": "ca-app-pub-3892770660039931/3622306884",
+        "EXPO_PUBLIC_ADMOB_REWARDED_ANDROID": "ca-app-pub-3892770660039931/4369868612",
+        "EXPO_PUBLIC_ADMOB_BANNER_IOS": "ca-app-pub-3892770660039931/1601728336",
+        "EXPO_PUBLIC_ADMOB_BANNER_ANDROID": "ca-app-pub-3892770660039931/4419463361",
         "SENTRY_ALLOW_FAILURE": "true"
       }
     },

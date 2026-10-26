@@ -9,6 +9,13 @@ public static class PushKinds
     public const string Test = "test";
 }
 
+/// <summary>Keys in <see cref="PushMessage.Data"/> the app sends back when the notification is tapped.</summary>
+public static class PushData
+{
+    public const string LogId = "logId";
+    public const string BroadcastId = "broadcastId";
+}
+
 /// <param name="Data">Read by the app when the notification is tapped: <c>screen</c> plus its parameters.</param>
 public record PushMessage(string Title, string Body, IReadOnlyDictionary<string, string> Data);
 
@@ -26,4 +33,11 @@ public interface IPushNotifier
 
     /// <summary>Tells the learner an admin answered; skipped during their quiet hours. Never throws.</summary>
     Task FeedbackReplyAsync(Guid userId, Guid ticketId, string subject, string reply, CancellationToken ct = default);
+
+    /// <summary>Records the first tap on a server push or a broadcast of this user; unknown ids are ignored.</summary>
+    Task MarkOpenedAsync(Guid userId, Guid? logId, Guid? broadcastId, CancellationToken ct = default);
 }
+
+/// <param name="LogId">From a scheduled push (weekly, comeback).</param>
+/// <param name="BroadcastId">From an admin broadcast.</param>
+public record NotificationOpenedRequest(Guid? LogId, Guid? BroadcastId);
