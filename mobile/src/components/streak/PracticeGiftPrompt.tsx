@@ -1,8 +1,9 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { api } from "../../api/client";
 import { localDate } from "../../ads/rewarded";
+import { CelebrationVideo } from "../../celebration/CelebrationVideo";
+import { CELEBRATION_GIFT } from "../../celebration/sources";
 import { colors, shadow, spacing } from "../../theme";
 
 const SHOWN_KEY = "practiceGiftShown";
@@ -16,6 +17,9 @@ export async function practiceGiftToAnnounce() {
 
 /** Announces the streak gift: the Luyện tab is open for the rest of today. */
 export function PracticeGiftPrompt({ days, onOpen, onClose }: { days: number; onOpen: () => void; onClose: () => void }) {
+  const { width: windowWidth } = useWindowDimensions();
+  const videoWidth = Math.min(windowWidth - spacing.lg * 4, 280);
+
   const done = (then: () => void) => {
     AsyncStorage.setItem(SHOWN_KEY, localDate()).catch(() => undefined);
     then();
@@ -24,9 +28,12 @@ export function PracticeGiftPrompt({ days, onOpen, onClose }: { days: number; on
     <Modal visible animationType="fade" transparent onRequestClose={() => done(onClose)}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <View style={styles.icon}>
-            <Ionicons name="gift" size={44} color={colors.flame} />
-          </View>
+          <CelebrationVideo
+            source={CELEBRATION_GIFT}
+            width={videoWidth}
+            replayKey={days}
+            haptics={false}
+          />
           <Text style={styles.title}>Quà giữ chuỗi {days} ngày!</Text>
           <Text style={styles.sub}>Hôm nay bạn được mở tab Luyện — nghe chép, nghe nói thoải mái tới 23:59.</Text>
           <Pressable style={({ pressed }) => [styles.button, pressed && styles.pressed]} onPress={() => done(onOpen)}>
@@ -49,19 +56,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 28,
     padding: spacing.lg,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.md,
     ...shadow.card,
   },
-  icon: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.flameSoft,
-    marginBottom: spacing.md,
-  },
-  title: { fontSize: 20, fontWeight: "800", color: colors.ink, textAlign: "center" },
+  title: { marginTop: spacing.sm, fontSize: 20, fontWeight: "800", color: colors.ink, textAlign: "center" },
   sub: { marginTop: 8, fontSize: 15, color: colors.muted, textAlign: "center", lineHeight: 21 },
   button: { alignSelf: "stretch", marginTop: spacing.lg, paddingVertical: 15, borderRadius: 16, alignItems: "center", backgroundColor: colors.flame },
   buttonText: { color: colors.white, fontSize: 17, fontWeight: "800" },

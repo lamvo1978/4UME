@@ -396,7 +396,7 @@ export function ReviewScreen({ navigation, route }: Props) {
   if (!ex) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <DoneCelebration perfect={stats.words > 0 && stats.withMistakes === 0} />
+        <DoneCelebration />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn hôm nay"}</Text>
         <Text style={styles.doneSub}>
           Đã {practice ? "luyện" : "ôn"} {stats.words} từ qua {total} bài tập.

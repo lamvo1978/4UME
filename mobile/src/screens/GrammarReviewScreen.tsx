@@ -176,7 +176,7 @@ export function GrammarReviewScreen({ route, navigation }: Props) {
   if (outcome) {
     return (
       <View style={[styles.center, styles.pad]}>
-        <DoneCelebration perfect={lessons.length > 0 && outcome.withMistakes === 0} />
+        <DoneCelebration />
         <Text style={styles.doneTitle}>{practice ? "Xong lượt luyện" : "Xong bài ôn ngữ pháp"}</Text>
         <Text style={styles.doneSub}>
           {lessons.length} bài · {quiz.items.length} câu
