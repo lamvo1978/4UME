@@ -91,6 +91,7 @@ public static class DependencyInjection
         services.AddSingleton<AzureSpeechClient>();
         services.AddSingleton<ListeningAudioJobs>();
         services.AddSingleton<SentenceAudioJobs>();
+        services.AddSingleton<ExampleAudioJobs>();
         services.AddScoped<IWordAudioService, WordAudioService>();
         services.AddScoped<IPracticeService, PracticeService>();
         services.AddScoped<IAdminPracticeService, AdminPracticeService>();

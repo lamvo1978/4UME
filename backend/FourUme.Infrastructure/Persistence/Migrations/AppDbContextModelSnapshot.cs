@@ -1444,9 +1444,21 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ExampleAudioText")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ExampleAudioUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("ExampleVi")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("ExampleVoice")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("ImagePending")
                         .HasColumnType("boolean");

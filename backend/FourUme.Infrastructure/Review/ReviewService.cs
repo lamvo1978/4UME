@@ -207,7 +207,7 @@ public class ReviewService(IAppDbContext db, IActivityService activity, IClientC
     private static ReviewItemDto BuildItem(Word word, int level, IReadOnlyList<PoolWord> pool)
     {
         var dto = new WordDto(
-            word.Id, word.Text, word.Ipa, word.Pos, word.Level, word.MeaningVi, word.Example, word.ExampleVi,
+            word.Id, word.Text, word.Ipa, word.Pos, word.Level, word.MeaningVi, word.Example, word.ExampleVi, word.PublicExampleAudioUrl,
             word.PublicImageUrl, WordStatus.Known, WordForms.Describe(word.Text, word.Pos));
 
         return new ReviewItemDto(level, dto,

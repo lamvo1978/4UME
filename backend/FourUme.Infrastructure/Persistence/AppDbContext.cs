@@ -233,6 +233,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Text).HasMaxLength(120).IsRequired();
             e.Property(x => x.Level).HasMaxLength(8).IsRequired();
             e.Property(x => x.ImageUrl).HasMaxLength(500);
+            e.Property(x => x.ExampleVoice).HasMaxLength(64);
+            e.Property(x => x.ExampleAudioUrl).HasMaxLength(200);
+            e.Property(x => x.ExampleAudioText).HasMaxLength(500);
             e.HasIndex(x => x.ImagePending).HasFilter("\"ImagePending\"");
             e.Property(x => x.Published).HasDefaultValue(true);
             e.HasOne(x => x.Deck).WithMany(x => x.Words).HasForeignKey(x => x.DeckId).OnDelete(DeleteBehavior.Restrict);

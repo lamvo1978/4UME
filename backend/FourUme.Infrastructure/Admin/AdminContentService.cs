@@ -2,14 +2,22 @@ using System.Text.RegularExpressions;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Admin;
 using FourUme.Domain.Entities;
+using FourUme.Infrastructure.Listening;
 using FourUme.Infrastructure.Media;
+using FourUme.Infrastructure.Speech;
 using FourUme.Infrastructure.Vocabulary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace FourUme.Infrastructure.Admin;
 
-public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions> mediaOptions, Auditor auditor) : IAdminContentService
+public partial class AdminContentService(
+    IAppDbContext db,
+    IOptions<MediaOptions> mediaOptions,
+    Auditor auditor,
+    ExampleAudioJobs exampleAudioJobs,
+    AzureSpeechClient speech,
+    ListeningAudioJobs listeningJobs) : IAdminContentService
 {
     private readonly string _mediaFolder = Path.GetFullPath(mediaOptions.Value.Path);
 
@@ -212,6 +220,7 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         var word = await db.Words.FirstOrDefaultAsync(w => w.Id == id, ct) ?? throw new KeyNotFoundException();
         var learners = await db.WordProgresses.CountAsync(p => p.WordId == id, ct);
         if (learners > 0) throw new ContentConflictException($"Đã có {learners} người học từ này. Hãy ẩn từ thay vì xoá để giữ tiến độ của họ.");
+        exampleAudioJobs.DeleteAudio(word.ExampleAudioUrl);
         db.Words.Remove(word);
         auditor.Record(AuditEntities.Word, id, AuditActions.Delete, word.Text, Auditor.Snapshot(word), null);
         await db.SaveChangesAsync(ct);
@@ -275,7 +284,19 @@ public partial class AdminContentService(IAppDbContext db, IOptions<MediaOptions
         word.DeckId = r.DeckId;
         word.Ipa = r.Ipa?.Trim() ?? "";
         word.MeaningVi = Required(r.MeaningVi, "Nghĩa tiếng Việt", 500);
-        word.Example = r.Example?.Trim() ?? "";
+        var example = r.Example?.Trim() ?? "";
+        if (example != word.Example)
+        {
+            if (example.Length == 0)
+            {
+                exampleAudioJobs.DeleteAudio(word.ExampleAudioUrl);
+                word.ExampleAudioUrl = null;
+                word.ExampleAudioText = null;
+                word.ExampleVoice = null;
+            }
+        }
+
+        word.Example = example;
         word.ExampleVi = r.ExampleVi?.Trim() ?? "";
         var imageUrl = string.IsNullOrEmpty(image) ? null : image;
         if (imageUrl != word.ImageUrl) word.ImagePending = false;

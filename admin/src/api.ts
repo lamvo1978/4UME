@@ -743,6 +743,7 @@ export type SentenceAudioStatus = {
   monthChars: number;
   monthCharLimit: number;
 };
+export type WordExampleAudioStatus = SentenceAudioStatus;
 /** `giftEveryDays` 0 turns the streak gift off. */
 export type PracticeConfig = { giftEveryDays: number; freeTrial: boolean };
 export type SentenceFileItem = { id?: string | null; level: string; topic?: string | null; en: string; vi: string; published?: boolean };
@@ -964,6 +965,9 @@ export const api = {
   exportWords: (f: WordFilters) => request<ExportWord[]>(`/api/admin/words/export?${query({ ...f, page: undefined, pageSize: undefined })}`),
   importWords: (rows: ImportWordRow[], updateExisting: boolean, commit: boolean) =>
     request<ImportWordsResult>("/api/admin/words/import", json("POST", { rows, updateExisting, commit })),
+  wordExampleAudio: () => request<WordExampleAudioStatus>("/api/admin/words/example-audio"),
+  startWordExampleAudio: (body?: { maxMonthPercent?: number }) =>
+    request<WordExampleAudioStatus>("/api/admin/words/example-audio", json("POST", body ?? {})),
 
   grammarLessons: () => request<AdminGrammarSummary[]>("/api/admin/grammar"),
   grammarLesson: (slug: string) => request<AdminGrammarDetail>(`/api/admin/grammar/${slug}`),

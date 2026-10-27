@@ -13,6 +13,7 @@ public record DeckSummaryDto(
     string? Levels);
 
 /// <param name="Forms">Irregular forms for the card, e.g. "go – went – gone"; null when regular.</param>
+/// <param name="ExampleAudioUrl">Azure recording of <see cref="Example"/>; null until generated or after the example text changes.</param>
 public record WordDto(
     string Id,
     string Word,
@@ -22,6 +23,7 @@ public record WordDto(
     string MeaningVi,
     string Example,
     string ExampleVi,
+    string? ExampleAudioUrl,
     string? ImageUrl,
     WordStatus Status,
     string? Forms);
