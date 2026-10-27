@@ -1,6 +1,6 @@
 # Mobile: EAS Build, TestFlight và EAS Update (OTA)
 
-Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 26/10/2026.
+Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 27/10/2026.
 
 ## Hai cách ship code mobile
 
@@ -18,7 +18,7 @@ Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập 
 ## Trạng thái repo (quan trọng)
 
 - **`expo-updates` đã cấu hình** (`package.json`, `app.json` có `updates.url` + `runtimeVersion`, `eas.json` có `channel` preview/production).
-- **iOS:** đã build local + submit App Store / TestFlight (bản có OTA). Hotfix JS: `eas update --channel production`.
+- **iOS:** TestFlight **1.0.0 (21)** (AdMob + celebration + OTA). Golive: gắn build trên Connect + Submit — xem [release-ios.md](release-ios.md#tiến-độ-golive-ios-cập-nhật-27102026); sau live → AdMob link store. Hotfix JS: `eas update --channel production`.
 - **Android:** chưa bản production có OTA trên Play — cần một lần build + upload (cloud hoặc `--local`) trước khi OTA Android có hiệu lực.
 - Bản store build **trước khi bật updates** → **không** nhận `eas update`.
 
@@ -106,7 +106,17 @@ App production trỏ `EXPO_PUBLIC_API_URL=https://api.4ume.io.vn` (`eas.json`).
 
 ## Build local (`--local`)
 
-Cùng pipeline với EAS cloud (prebuild, env từ `eas.json`, credential **remote** trên expo.dev), chạy trên máy bạn — **không** tốn quota build cloud. Artifact mặc định copy vào `mobile/build-artifacts/` (gitignore).
+Cùng **công thức** với EAS cloud (prebuild, env trong `eas.json`, credential **remote** trên expo.dev), chạy trên máy bạn — **không** tốn quota build cloud. Artifact mặc định copy vào `mobile/build-artifacts/` (gitignore).
+
+**“Local phải giống cloud chứ?”** — về ý tưởng thì đúng: cùng profile `production`, cùng `app.json`, cùng bước bundle + archive. Thực tế vẫn có chỗ **lệch**:
+
+| Yếu tố | Cloud (build 15 ổn) | Local (build 19 lỗi) |
+|--------|----------------------|----------------------|
+| Môi trường bundle | Máy EAS, **không** có `.env.local` trên repo | Mac của bạn — Expo thường **load `mobile/.env.local`** lúc đóng gói JS (API LAN, v.v.) |
+| Xcode / macOS | Image cố định trên server | Xcode + macOS trên Mac (Tahoe 26/27 hay cần patch credential) |
+| Mã nguồn | Commit **16bafdc**, chưa `expo-updates` | Commit mới hơn + **`expo-updates`** (native mới) |
+
+So sánh build **15 vs 19** vì vậy **không chỉ** “cloud vs local”, mà còn **hai bản app khác nhau** (có/không OTA native). Local vẫn ship được bản ổn nếu: tắt `.env.local` trước build, kiểm tra `.ipa` có `main.jsbundle`, **tự mở thử trên iPhone** (TestFlight chỉ mình) rồi mới thêm nhóm Friends.
 
 Chung trước mọi build:
 
@@ -154,10 +164,20 @@ npx eas-cli@latest login   # nếu cần
 
 #### Build production local
 
+**Khuyến nghị** — script tự cất `.env.local`, patch macOS 27, build, kiểm tra `main.jsbundle`, rồi **khôi phục** `.env.local` (simulator/dev như cũ):
+
+```bash
+cd ~/Projects/4UME/mobile
+bash scripts/eas-local-ios-production.sh
+```
+
+Tay (nếu không dùng script):
+
 ```bash
 # fastlane phải có trong PATH *cùng terminal* với lệnh build (spawn ENOENT nếu thiếu)
 export PATH="/usr/local/opt/ruby/bin:$HOME/.gem/ruby/3.4.0/bin:$PATH"
 which fastlane   # phải in ra đường dẫn, không rỗng
+mv .env.local .env.local.off   # nhớ đổi tên lại sau build
 
 npx eas-cli@latest build -p ios --profile production --local
 ```
@@ -174,6 +194,12 @@ Ghi `export PATH=…` vào `~/.zshrc` (hoặc symlink `fastlane` vào `/usr/loca
 export EAS_LOCAL_BUILD_SKIP_CLEANUP=1
 # chạy lại lệnh build --local, xem thư mục working dir / logs (EAS in path cuối output)
 ```
+
+**iOS 27 / Xcode 27 — crash ngay khi mở (`UIScene life cycle is required`, `NoSceneLifecycleAdoption`):**
+
+App build bằng **Xcode 27** trên máy local mà **chưa** bật scene lifecycle sẽ chết trước màn đăng nhập. Bản EAS **cloud** cũ (Xcode 16) có thể vẫn chạy trên iPhone iOS 27 — đừng nhầm là “local = hỏng”.
+
+Repo đã bật `expo-build-properties` → `ios.enableSceneSupport: true` (Expo SDK 57). Sau khi đổi: build lại `.ipa` (OTA **không** sửa được).
 
 **macOS 26/27 — `Distribution certificate ... hasn't been imported successfully` (Prepare credentials):**
 
@@ -196,6 +222,16 @@ npx eas-cli@latest submit -p ios --profile production --path build-artifacts/bui
 Cách 2 — app **Transporter** (Mac App Store): kéo thả file `.ipa`.
 
 Sau khi build **có `expo-updates`** lên store, hotfix JS: `eas update --channel production --environment production --message "…"`.
+
+**Trước khi submit:** đổi tên tạm `mobile/.env.local` (Expo có thể load file này lúc bundle — API dev LAN không được nhúng vào bản TestFlight). Sau build, kiểm tra `.ipa` có bundle JS:
+
+```bash
+unzip -l build-artifacts/build-*.ipa | grep main.jsbundle
+```
+
+Phải thấy `main.jsbundle` (hoặc `assets/index.bundle` tùy pipeline). Thiếu file → **đừng** đưa lên TestFlight.
+
+**Crash ngay khi mở (chưa tới đăng nhập):** thường là bản native lỗi, không phải OTA. So sánh với build TestFlight **ổn** gần nhất (ví dụ 1.0.0 **15** cloud vs **19** local + `expo-updates`). Trên App Store Connect → nhóm TestFlight: **gỡ build lỗi**, giữ bản ổn cho tester. Build tiếp theo: ưu tiên **`eas build` cloud** (giống 15) hoặc local sau khi pass bước kiểm tra `.ipa` trên; thử trên máy thật trước khi mở rộng tester.
 
 ---
 

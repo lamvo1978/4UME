@@ -23,7 +23,8 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
     return () => clearTimeout(tick);
   }, [streak]);
 
-  const earnedFreeze = streak > 0 && streak % FREEZE_EVERY === 0;
+  const every = details?.freezeEvery ?? FREEZE_EVERY;
+  const earnedFreeze = !!details?.freezeOnStreak && streak > 0 && every > 0 && streak % every === 0;
 
   return (
     <Modal visible animationType="fade" transparent onRequestClose={onClose}>

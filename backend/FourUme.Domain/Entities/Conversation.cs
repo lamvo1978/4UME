@@ -33,6 +33,8 @@ public class Conversation
     public Guid? ScenarioId { get; set; }
     public ConversationScenario? Scenario { get; set; }
     public string Level { get; set; } = string.Empty;
+    /// <summary>Quota bucket for this talk: first, streak_gift, premium, or addon; null on sessions started before Phase 2.</summary>
+    public string? SessionKind { get; set; }
     public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? EndedAt { get; set; }
     /// <summary>Messages the learner sent (each one used a turn of the daily allowance).</summary>

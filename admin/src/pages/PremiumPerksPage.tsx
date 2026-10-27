@@ -46,7 +46,7 @@ export function PremiumPerksPage() {
   const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
-    if (stored) setForm(stored);
+    if (stored) setForm({ ...stored, addonPlans: stored.addonPlans ?? [], iapEnabled: stored.iapEnabled ?? false });
   }, [stored]);
 
   const dirty = !!form && !!stored && JSON.stringify(form) !== JSON.stringify(stored);
@@ -143,16 +143,33 @@ export function PremiumPerksPage() {
           ? `Đang hiện ${soonShown} quyền lợi "Sắp có". Trước khi mở bán Premium qua App Store / Google Play, hãy ẩn những dòng chưa làm: cửa hàng thường từ chối màn mua hứa tính năng chưa có.`
           : "Mọi quyền lợi đang hiện đều đã có thật."}{" "}
         Trong tiêu đề và mô tả, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt); <b>{"{ai}"}</b> /{" "}
-        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI); <b>{"{w}"}</b> /{" "}
+        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI); <b>{"{aiSession}"}</b> /{" "}
+        <b>{"{aiTurns}"}</b> bằng số buổi và lượt/buổi đàm thoại Premium; <b>{"{w}"}</b> /{" "}
         <b>{"{wFree}"}</b> bằng số bài chấm mỗi ngày của Premium / gói miễn phí (trang Luyện viết AI).
       </Alert>
 
       <PlansCard
+        title="Bảng giá Premium"
         plans={form.plans}
         showPrices={form.showPrices}
         onChange={(plans) => setForm({ ...form, plans })}
         onShow={(showPrices) => setForm({ ...form, showPrices })}
       />
+      <PlansCard
+        title="Bảng giá mở rộng đàm thoại"
+        plans={form.addonPlans ?? []}
+        showPrices={form.showPrices}
+        onChange={(addonPlans) => setForm({ ...form, addonPlans })}
+        onShow={(showPrices) => setForm({ ...form, showPrices })}
+        defaultMonthly={15000}
+      />
+      <Paper p="md" radius="lg" shadow="xs">
+        <Switch
+          checked={form.iapEnabled ?? false}
+          onChange={(e) => setForm({ ...form, iapEnabled: e.currentTarget.checked })}
+          label="IAP sẵn sàng (Phase 2 — chưa bật trên app)"
+        />
+      </Paper>
 
       <Title order={4} mt="sm">
         Quyền lợi
@@ -213,7 +230,7 @@ export function PremiumPerksPage() {
         variant="default"
         leftSection={<IconPlus size={18} />}
         onClick={() => setForm({ ...form, perks: [...form.perks, newPerk()] })}
-        disabled={form.perks.length >= 12}
+        disabled={form.perks.length >= 14}
         style={{ alignSelf: "flex-start" }}
       >
         Thêm quyền lợi
@@ -261,15 +278,19 @@ function planSummary(plan: PremiumPlan, monthly: PremiumPlan | undefined): strin
 }
 
 function PlansCard({
+  title,
   plans,
   showPrices,
   onChange,
   onShow,
+  defaultMonthly = 19000,
 }: {
+  title: string;
   plans: PremiumPlan[];
   showPrices: boolean;
   onChange: (plans: PremiumPlan[]) => void;
   onShow: (show: boolean) => void;
+  defaultMonthly?: number;
 }) {
   const monthly = plans.find((p) => p.months === 1);
   const setPlan = (i: number, plan: PremiumPlan) => onChange(plans.map((x, j) => (j === i ? plan : x)));
@@ -280,7 +301,7 @@ function PlansCard({
       <Stack gap="sm">
         <Group justify="space-between" align="flex-start">
           <div>
-            <Title order={4}>Bảng giá</Title>
+            <Title order={4}>{title}</Title>
             <Text fz="sm" c="dimmed">
               Hiện trên màn Premium với nhãn “Sắp mở bán” cho tới khi app có mua trong ứng dụng. Giá nên khớp với giá đặt trên App Store / Google Play.
             </Text>
@@ -340,7 +361,7 @@ function PlansCard({
         <Button
           variant="default"
           leftSection={<IconPlus size={18} />}
-          onClick={() => onChange([...plans, { months: nextMonths, price: (monthly?.price ?? 19000) * nextMonths, badge: "", visible: true }])}
+          onClick={() => onChange([...plans, { months: nextMonths, price: (monthly?.price ?? defaultMonthly) * nextMonths, badge: "", visible: true }])}
           disabled={plans.length >= 4 || nextMonths === 0}
           style={{ alignSelf: "flex-start" }}
         >

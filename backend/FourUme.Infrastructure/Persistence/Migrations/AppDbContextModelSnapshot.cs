@@ -259,6 +259,10 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<int?>("Score")
                         .HasColumnType("integer");
 
+                    b.Property<string>("SessionKind")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
                     b.Property<DateTimeOffset>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1324,6 +1328,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<int>("BestStreak")
                         .HasColumnType("integer");
 
+                    b.Property<DateTimeOffset?>("ConversationAddonUntil")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1393,6 +1400,9 @@ namespace FourUme.Infrastructure.Persistence.Migrations
 
                     b.Property<double>("SpeechRate")
                         .HasColumnType("double precision");
+
+                    b.Property<int?>("StreakFreezeGrantMonth")
+                        .HasColumnType("integer");
 
                     b.Property<int>("StreakFreezes")
                         .HasColumnType("integer");

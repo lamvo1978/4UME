@@ -37,6 +37,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
+      ],
       "expo-notifications",
       [
         "expo-audio",
@@ -89,7 +97,8 @@
           "userTrackingPermission": "4UME chỉ có quảng cáo khi bạn tự chọn xem để thêm lượt chấm, và một banner nhỏ ở Trang chủ. Cho phép để quảng cáo hợp với bạn hơn; không cho phép thì bạn vẫn thấy số quảng cáo như vậy."
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-updates"
     ],
     "extra": {
       "eas": {
@@ -101,7 +110,9 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/7562124a-994f-4661-aba3-3cee57af0c30"
+      "url": "https://u.expo.dev/7562124a-994f-4661-aba3-3cee57af0c30",
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
     }
   }
 }

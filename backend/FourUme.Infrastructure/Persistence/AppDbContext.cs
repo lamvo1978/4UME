@@ -314,6 +314,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(x => new { x.UserId, x.StartedAt });
             e.HasIndex(x => x.StartedAt);
             e.Property(x => x.Level).HasMaxLength(8).IsRequired();
+            e.Property(x => x.SessionKind).HasMaxLength(16);
             e.Property(x => x.Summary).HasColumnType("jsonb");
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Scenario).WithMany().HasForeignKey(x => x.ScenarioId).OnDelete(DeleteBehavior.SetNull);

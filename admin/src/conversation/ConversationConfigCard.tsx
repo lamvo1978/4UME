@@ -17,7 +17,7 @@ export function ConversationConfigCard() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (config.data) setDraft(config.data.value);
+    if (config.data) setDraft({ ...config.data.defaults, ...config.data.value });
   }, [config.data]);
 
   if (config.error) return <Alert color="red">{(config.error as Error).message}</Alert>;
@@ -72,9 +72,21 @@ export function ConversationConfigCard() {
         )}
 
         <SimpleGrid cols={{ base: 1, sm: 3 }}>
-          <NumberInput label="Lượt nói mỗi ngày · miễn phí" min={0} max={1000} value={draft.freeDailyTurns} onChange={(v) => set({ freeDailyTurns: num(v) })} />
-          <NumberInput label="Lượt nói mỗi ngày · Premium" min={0} max={1000} value={draft.premiumDailyTurns} onChange={(v) => set({ premiumDailyTurns: num(v) })} />
-          <NumberInput label="Lượt tối đa mỗi buổi" min={2} max={100} value={draft.maxTurnsPerSession} onChange={(v) => set({ maxTurnsPerSession: num(v) })} />
+          <NumberInput label="Lượt nói mỗi ngày · miễn phí (cũ)" min={0} max={1000} value={draft.freeDailyTurns} onChange={(v) => set({ freeDailyTurns: num(v) })} />
+          <NumberInput label="Lượt nói mỗi ngày · Premium (cũ)" min={0} max={1000} value={draft.premiumDailyTurns} onChange={(v) => set({ premiumDailyTurns: num(v) })} />
+          <NumberInput label="Trần kỹ thuật mỗi buổi" min={2} max={100} value={draft.maxTurnsPerSession} onChange={(v) => set({ maxTurnsPerSession: num(v) })} />
+        </SimpleGrid>
+
+        <Divider label="Buổi & lượt (Phase 2)" labelPosition="left" />
+        <SimpleGrid cols={{ base: 1, sm: 3 }}>
+          <NumberInput label="Buổi thử · lượt" min={0} max={100} value={draft.freeFirstSessionTurns} onChange={(v) => set({ freeFirstSessionTurns: num(v) })} />
+          <NumberInput label="Quà chuỗi · mỗi (ngày)" min={0} max={365} value={draft.streakGiftEveryDays} onChange={(v) => set({ streakGiftEveryDays: num(v) })} />
+          <NumberInput label="Quà chuỗi · lượt/buổi" min={0} max={100} value={draft.streakGiftSessionTurns} onChange={(v) => set({ streakGiftSessionTurns: num(v) })} />
+          <NumberInput label="Premium · buổi/ngày" min={0} max={50} value={draft.premiumSessionsPerDay} onChange={(v) => set({ premiumSessionsPerDay: num(v) })} />
+          <NumberInput label="Premium · lượt/buổi" min={0} max={100} value={draft.premiumTurnsPerSession} onChange={(v) => set({ premiumTurnsPerSession: num(v) })} />
+          <NumberInput label="Mở rộng · buổi/ngày" min={0} max={50} value={draft.addonSessionsPerDay} onChange={(v) => set({ addonSessionsPerDay: num(v) })} />
+          <NumberInput label="Mở rộng · lượt/buổi" min={0} max={100} value={draft.addonTurnsPerSession} onChange={(v) => set({ addonTurnsPerSession: num(v) })} />
+          <NumberInput label="Mở rộng · trần lượt/ngày" min={0} max={1000} value={draft.addonDailyTurnCap} onChange={(v) => set({ addonDailyTurnCap: num(v) })} />
         </SimpleGrid>
 
         <Divider label="Giọng đọc câu trả lời" labelPosition="left" />

@@ -51,7 +51,8 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
   if (!status || !scenarios) return <View style={styles.center}><ActivityIndicator color={colors.accent} /></View>;
 
   const open = status.enabled && status.available;
-  const blocked = !open || status.remaining <= 0;
+  const canStart = !!status.nextSessionKind && status.remaining > 0;
+  const blocked = !open || !canStart;
   const list = scenarios.filter((s) => s.level === level);
   const countOf = (l: VocabLevel) => scenarios.filter((s) => s.level === l).length;
   const go = (scenario: ConversationScenario | null) =>
@@ -149,32 +150,67 @@ function QuotaNote({ status, onPremium }: { status: ConversationStatus; onPremiu
       </View>
     );
   }
-  if (status.remaining <= 0) {
+
+  const turns = status.turnsPerSession || status.maxTurnsPerSession;
+  const noSession = !status.nextSessionKind || status.remaining <= 0;
+
+  if (noSession) {
+    const title =
+      status.blockedReason === "need_premium"
+        ? "Chưa có buổi miễn phí hôm nay"
+        : status.premium
+          ? "Hết buổi đàm thoại hôm nay"
+          : "Hết buổi miễn phí hôm nay";
+    const body = emptyCopy(status);
     return (
       <View style={styles.lock}>
         <Ionicons name="time-outline" size={26} color={colors.accent} />
-        <Text style={styles.lockTitle}>Hết lượt nói hôm nay</Text>
-        <Text style={styles.lockText}>
-          {status.premium
-            ? "Bạn đã dùng hết lượt hôm nay, mai quay lại nhé."
-            : `Gói miễn phí có ${status.freeDailyLimit} lượt nói mỗi ngày, Premium có ${status.premiumDailyLimit} lượt.`}
-        </Text>
-        {!status.premium ? (
+        <Text style={styles.lockTitle}>{title}</Text>
+        <Text style={styles.lockText}>{body}</Text>
+        {status.blockedReason === "need_premium" || (!status.premium && status.blockedReason !== "no_sessions_left") ? (
           <Pressable style={({ pressed }) => [styles.lockButton, pressed && styles.pressed]} onPress={onPremium}>
             <Text style={styles.lockButtonText}>Xem Premium</Text>
+          </Pressable>
+        ) : status.premium && !status.conversationAddon ? (
+          <Pressable style={({ pressed }) => [styles.lockButton, pressed && styles.pressed]} onPress={onPremium}>
+            <Text style={styles.lockButtonText}>Mở rộng đàm thoại</Text>
           </Pressable>
         ) : null}
       </View>
     );
   }
+
+  const kind = status.nextSessionKind;
+  const intro =
+    kind === "first"
+      ? "Bạn có một buổi thử đàm thoại AI."
+      : kind === "streak_gift"
+        ? "Hôm nay bạn có quà chuỗi: một buổi đàm thoại tới 23:59."
+        : kind === "premium"
+          ? "Buổi Premium hôm nay"
+          : "Buổi mở rộng đàm thoại";
+
   return (
     <View style={styles.note}>
       <Ionicons name="chatbubbles-outline" size={18} color={colors.accent} />
       <Text style={styles.noteText}>
-        {status.premium ? "Premium · " : ""}Còn {status.remaining}/{status.dailyLimit} lượt nói hôm nay · mỗi buổi tối đa {status.maxTurnsPerSession} lượt.
+        {status.premium ? "Premium · " : ""}
+        {intro} · Còn {status.remaining}/{status.dailyLimit} lượt hôm nay · tối đa {turns} lượt/buổi.
       </Text>
     </View>
   );
+}
+
+function emptyCopy(status: ConversationStatus): string {
+  if (status.blockedReason === "need_premium") {
+    return "Hôm nay không còn buổi miễn phí. Giữ chuỗi 7 ngày để nhận một buổi (tới 23:59). Hoặc nâng cấp Premium (1 buổi/ngày).";
+  }
+  if (status.premium && !status.conversationAddon) {
+    const extra = status.addonSessionsPerDay ?? 3;
+    const turns = status.addonTurnsPerSession ?? status.maxTurnsPerSession ?? 20;
+    return `Bạn đã dùng buổi Premium hôm nay. Gói mở rộng thêm ${extra} buổi/ngày (${turns} lượt/buổi) — xem màn Premium.`;
+  }
+  return "Bạn đã dùng hết buổi đàm thoại hôm nay, mai quay lại nhé.";
 }
 
 const styles = StyleSheet.create({

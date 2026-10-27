@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FourUme.Application.About;
+using FourUme.Application.Activity;
 using FourUme.Application.Feedback;
 using FourUme.Application.Premium;
 using FourUme.Application.Abstractions;
@@ -100,6 +101,9 @@ public class AdminAuditService(
                 break;
             case AuditEntities.Settings when log.EntityId == ReferralConfig.SettingKey:
                 await settings.RestoreReferralAsync(Read<ReferralConfig>(json), ct);
+                break;
+            case AuditEntities.Settings when log.EntityId == StreakFreezeConfig.SettingKey:
+                await settings.RestoreStreakFreezeAsync(Read<StreakFreezeConfig>(json), ct);
                 break;
             case AuditEntities.Settings when log.EntityId == FeedbackSettings.SettingKey:
                 await settings.RestoreFeedbackAsync(Read<FeedbackSettings>(json), ct);

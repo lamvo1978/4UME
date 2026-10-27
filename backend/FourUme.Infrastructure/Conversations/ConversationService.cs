@@ -53,6 +53,8 @@ public sealed partial class ConversationService(
         var config = await LoadConfigAsync(db, ct);
         var status = await BuildStatusAsync(userId, config, ct);
         EnsureOpen(status);
+        if (status.NextSessionKind is null)
+            throw new ConversationException(429, BlockedMessage(status));
         if (status.Remaining <= 0) throw new ConversationException(429, "Bạn đã dùng hết lượt đàm thoại hôm nay.");
 
         ConversationScenario? scenario = null;
@@ -63,7 +65,7 @@ public sealed partial class ConversationService(
         }
         var level = scenario?.Level ?? NormalizeLevel(request.Level);
 
-        var conversation = new Conversation { UserId = userId, ScenarioId = scenario?.Id, Level = level };
+        var conversation = new Conversation { UserId = userId, ScenarioId = scenario?.Id, Level = level, SessionKind = status.NextSessionKind };
         var (text, hint, suggestions) = scenario is null ? FreeTalkOpening(level) : (scenario.Opening, scenario.GoalVi, scenario.KeyPhrases.Take(3).ToList());
         var spoken = status.Voice == ConversationVoices.Azure ? await voice.ReadAsync(text, level, config, ct) : SpokenReply.Device;
         var opening = new ConversationTurn
@@ -98,7 +100,8 @@ public sealed partial class ConversationService(
         var status = await BuildStatusAsync(userId, config, ct);
         EnsureOpen(status);
         if (status.Remaining <= 0) throw new ConversationException(429, "Bạn đã dùng hết lượt đàm thoại hôm nay.");
-        if (conversation.LearnerTurns >= config.MaxTurnsPerSession)
+        var sessionLimit = ConversationQuota.SessionTurnLimit(config, conversation);
+        if (conversation.LearnerTurns >= sessionLimit)
             throw new ConversationException(400, "Buổi này đã đủ lượt, bạn xem tổng kết rồi bắt đầu buổi mới nhé.");
 
         var history = await db.ConversationTurns.AsNoTracking()
@@ -159,7 +162,7 @@ public sealed partial class ConversationService(
         var after = status with { UsedToday = status.UsedToday + 1, Remaining = Math.Max(0, status.Remaining - 1) };
         return new ConversationReplyDto(ToDto(learnerTurn, null), ToDto(aiTurn, spoken.Url),
             conversation.ScenarioId is not null && parsed.GoalDone,
-            conversation.LearnerTurns >= config.MaxTurnsPerSession,
+            conversation.LearnerTurns >= sessionLimit,
             after);
     }
 
@@ -215,16 +218,43 @@ public sealed partial class ConversationService(
 
     private async Task<ConversationStatusDto> BuildStatusAsync(Guid userId, ConversationConfig config, CancellationToken ct)
     {
-        var premium = (await Entitlements.GetAsync(db, userId, ct)).Premium;
-        var today = clock.Today;
-        var used = await db.ConversationTurns.CountAsync(t => t.UserId == userId && t.LocalDate == today && t.FromLearner, ct);
-        var limit = premium ? config.PremiumDailyTurns : config.FreeDailyTurns;
+        var access = await Entitlements.GetAsync(db, userId, ct);
+        var quota = await ConversationQuota.ComputeAsync(db, clock, userId, config, access, ct);
         var on = config.Enabled && ai.Configured;
-        var azure = premium && on && await voice.AvailableAsync(config, ct);
-        return new ConversationStatusDto(config.Enabled, ai.Configured, premium, limit, used, on ? Math.Max(0, limit - used) : 0,
-            config.FreeDailyTurns, config.PremiumDailyTurns, config.MaxTurnsPerSession,
-            azure ? ConversationVoices.Azure : ConversationVoices.Device);
+        var remaining = on ? Math.Max(0, quota.TurnAllowanceToday - quota.TurnsUsedToday) : 0;
+        var azure = access.Premium && on && await voice.AvailableAsync(config, ct);
+        return new ConversationStatusDto(
+            config.Enabled,
+            ai.Configured,
+            access.Premium,
+            quota.TurnAllowanceToday,
+            quota.TurnsUsedToday,
+            remaining,
+            config.FreeDailyTurns,
+            config.PremiumDailyTurns,
+            config.MaxTurnsPerSession,
+            azure ? ConversationVoices.Azure : ConversationVoices.Device,
+            quota.SessionsAllowedToday,
+            quota.SessionsUsedToday,
+            quota.TurnsPerSession,
+            quota.NextSessionKind,
+            quota.BlockedReason,
+            access.ConversationAddon,
+            access.ConversationAddonUntil,
+            config.PremiumSessionsPerDay,
+            config.PremiumTurnsPerSession,
+            config.AddonSessionsPerDay,
+            config.AddonTurnsPerSession,
+            config.AddonDailyTurnCap);
     }
+
+    private static string BlockedMessage(ConversationStatusDto status) => status.BlockedReason switch
+    {
+        ConversationBlockedReasons.NeedPremium => "Đàm thoại AI nằm trong Premium (1 buổi/ngày). Xem quyền lợi Premium nhé.",
+        ConversationBlockedReasons.NoSessionsLeft when status.Premium && !status.ConversationAddon =>
+            "Bạn đã dùng buổi Premium hôm nay. Ngày mai có thêm 1 buổi. Cần học thêm? Xem Mở rộng đàm thoại.",
+        _ => "Bạn đã dùng hết buổi đàm thoại hôm nay.",
+    };
 
     private static void EnsureOpen(ConversationStatusDto status)
     {

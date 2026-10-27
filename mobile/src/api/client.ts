@@ -80,6 +80,13 @@ export type NotificationConfig = {
 
 export type ListeningConfig = { countsTowardStreak: boolean };
 
+export type StreakFreezeConfig = {
+  freezeEvery: number;
+  premiumMonthlyGrant: boolean;
+  maxFreezesFree: number;
+  maxFreezesPremium: number;
+};
+
 /** Reminder wording edited in the admin; `{name}` placeholders are filled in by the app. */
 export type NotificationTexts = {
   dueTitles: string[];
@@ -105,6 +112,7 @@ export type AppConfig = {
   listening?: ListeningConfig;
   /** Missing on servers older than the admin editor; the app falls back to its built-in texts. */
   notificationTexts?: Partial<NotificationTexts>;
+  streakFreeze?: StreakFreezeConfig;
 };
 
 export type ListeningKind = "dialogue" | "story" | "news";
@@ -178,6 +186,9 @@ export type Me = {
   partnerUntil?: string | null;
   /** Show the Home banner ad: switched on in admin and not Premium. */
   adsBanner?: boolean;
+  premiumUntil?: string | null;
+  conversationAddon?: boolean;
+  conversationAddonUntil?: string | null;
 };
 
 export const FEATURE_IELTS = "ielts";
@@ -218,6 +229,9 @@ export type Streak = {
   best: number;
   freezes: number;
   maxFreezes: number;
+  /** Free-tier milestone for earning a freeze; from admin config. */
+  freezeEvery?: number;
+  freezeOnStreak?: boolean;
   studiedToday: boolean;
   todayNewWords: number;
   todayReviews: number;
@@ -449,6 +463,18 @@ export type ConversationStatus = {
   premiumDailyLimit: number;
   maxTurnsPerSession: number;
   voice: "device" | "azure";
+  sessionsAllowedToday?: number;
+  sessionsUsedToday?: number;
+  turnsPerSession?: number;
+  nextSessionKind?: string | null;
+  blockedReason?: "need_premium" | "no_sessions_left" | null;
+  conversationAddon?: boolean;
+  conversationAddonUntil?: string | null;
+  premiumSessionsPerDay?: number;
+  premiumTurnsPerSession?: number;
+  addonSessionsPerDay?: number;
+  addonTurnsPerSession?: number;
+  addonDailyTurnCap?: number;
 };
 
 export type ConversationScenario = {
@@ -867,7 +893,15 @@ export const api = {
   pronunciationStatus: () => request<PronunciationStatus>("/api/pronunciation/status"),
   about: () => request<AboutContent>("/api/about"),
   premiumPerks: () =>
-    request<{ perks: PremiumPerk[]; plans?: PremiumPlan[] }>("/api/premium-perks").then((r) => ({ perks: r.perks, plans: r.plans ?? [] })),
+    request<{ perks: PremiumPerk[]; plans?: PremiumPlan[]; addonPlans?: PremiumPlan[]; showPrices?: boolean; iapEnabled?: boolean }>(
+      "/api/premium-perks",
+    ).then((r) => ({
+      perks: r.perks,
+      plans: r.plans ?? [],
+      addonPlans: r.addonPlans ?? [],
+      showPrices: r.showPrices !== false,
+      iapEnabled: r.iapEnabled ?? false,
+    })),
   assessPronunciation,
   /** Development servers only: grants the check a watched ad would. */
   devAdReward: () => request<PronunciationStatus>("/api/ads/dev-reward", { method: "POST" }),

@@ -91,6 +91,7 @@ export type AdminUser = {
   premiumUntil: string | null;
   /** Set while the user is an active partner student. */
   partnerName?: string | null;
+  conversationAddonUntil?: string | null;
 };
 export type AdminUserPartnerCode = {
   id: string;
@@ -151,6 +152,12 @@ export type NotificationConfig = {
   freezeNoticeTime: string;
 };
 export type ListeningConfig = { countsTowardStreak: boolean };
+export type StreakFreezeConfig = {
+  freezeEvery: number;
+  premiumMonthlyGrant: boolean;
+  maxFreezesFree: number;
+  maxFreezesPremium: number;
+};
 export type PronunciationConfig = {
   enabled: boolean;
   freeDailyLimit: number;
@@ -175,6 +182,7 @@ export type AdminSettings = {
     paidConfigured: boolean;
   };
   referral: { value: ReferralConfig; defaults: ReferralConfig; updatedAt: string | null };
+  streakFreeze: { value: StreakFreezeConfig; defaults: StreakFreezeConfig; updatedAt: string | null };
 };
 export type ReferralConfig = {
   enabled: boolean;
@@ -242,7 +250,7 @@ export type AboutContent = { tagline: string; sections: AboutSection[] };
 export type AdminAbout = { value: AboutContent; defaults: AboutContent; updatedAt: string | null };
 export type PremiumPerk = { icon: string; title: string; body: string; soon: boolean; visible: boolean };
 export type PremiumPlan = { months: number; price: number; badge: string; visible: boolean };
-export type PremiumPerks = { perks: PremiumPerk[]; plans: PremiumPlan[]; showPrices: boolean };
+export type PremiumPerks = { perks: PremiumPerk[]; plans: PremiumPlan[]; showPrices: boolean; addonPlans?: PremiumPlan[]; iapEnabled?: boolean };
 export type AdminPremiumPerks = { value: PremiumPerks; defaults: PremiumPerks; updatedAt: string | null };
 
 export type FeedbackReplyTemplate = { title: string; body: string };
@@ -767,6 +775,14 @@ export type ConversationConfig = {
   enabled: boolean;
   freeDailyTurns: number;
   premiumDailyTurns: number;
+  freeFirstSessionTurns: number;
+  streakGiftEveryDays: number;
+  streakGiftSessionTurns: number;
+  premiumSessionsPerDay: number;
+  premiumTurnsPerSession: number;
+  addonSessionsPerDay: number;
+  addonTurnsPerSession: number;
+  addonDailyTurnCap: number;
   maxTurnsPerSession: number;
   premiumAzureVoice: boolean;
   azureVoice: string;
@@ -871,6 +887,8 @@ export const api = {
   setUserLocked: (id: string, locked: boolean) => request<AdminUserDetail>(`/api/admin/users/${id}/lock`, json("PUT", { locked })),
   setUserPremium: (id: string, until: string | null) =>
     request<AdminUserDetail>(`/api/admin/users/${id}/premium`, json("PUT", { until })),
+  setUserConversationAddon: (id: string, until: string | null) =>
+    request<AdminUserDetail>(`/api/admin/users/${id}/conversation-addon`, json("PUT", { until })),
 
   settings: () => request<AdminSettings>("/api/admin/settings"),
   saveNotificationSettings: (c: NotificationConfig) => request<AdminSettings>("/api/admin/settings/notifications", json("PUT", c)),
@@ -881,6 +899,10 @@ export const api = {
   resetPronunciationSettings: () => request<AdminSettings>("/api/admin/settings/pronunciation/reset", { method: "POST" }),
   saveReferralSettings: (c: ReferralConfig) => request<AdminSettings>("/api/admin/settings/referral", json("PUT", c)),
   resetReferralSettings: () => request<AdminSettings>("/api/admin/settings/referral/reset", { method: "POST" }),
+  saveStreakFreezeSettings: (c: StreakFreezeConfig) => request<AdminSettings>("/api/admin/settings/streak-freeze", json("PUT", c)),
+  resetStreakFreezeSettings: () => request<AdminSettings>("/api/admin/settings/streak-freeze/reset", { method: "POST" }),
+  setUserStreakFreezes: (id: string, streakFreezes: number) =>
+    request<AdminUserDetail>(`/api/admin/users/${id}/streak-freezes`, json("PUT", { streakFreezes })),
   partners: () => request<AdminPartner[]>("/api/admin/partners"),
   partner: (id: string) => request<AdminPartnerDetail>(`/api/admin/partners/${id}`),
   createPartner: (p: SavePartner) => request<AdminPartnerDetail>("/api/admin/partners", json("POST", p)),

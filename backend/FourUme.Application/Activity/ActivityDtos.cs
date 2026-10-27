@@ -19,6 +19,10 @@ public record StreakDto(
     int Best,
     int Freezes,
     int MaxFreezes,
+    /// <summary>Free-tier streak milestone for earning a freeze (from admin config).</summary>
+    int FreezeEvery,
+    /// <summary>True when the learner earns freezes from streak milestones (free tier), not monthly Premium grants.</summary>
+    bool FreezeOnStreak,
     bool StudiedToday,
     int TodayNewWords,
     int TodayReviews,

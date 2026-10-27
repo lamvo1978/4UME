@@ -18,6 +18,8 @@ public class PremiumPerksService(IAppDbContext db) : IPremiumPerksService
         var perks = stored is null ? null : JsonSerializer.Deserialize<PremiumPerks>(stored, Json);
         if (perks is null) return PremiumPerks.Default();
         // Saved before the price list existed.
-        return perks.Plans is null ? perks with { Plans = PremiumPerks.DefaultPlans() } : perks;
+        if (perks.Plans is null) perks = perks with { Plans = PremiumPerks.DefaultPlans() };
+        if (perks.AddonPlans is null) perks = perks with { AddonPlans = PremiumPerks.DefaultAddonPlans() };
+        return perks;
     }
 }

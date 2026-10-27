@@ -1,8 +1,24 @@
 # Phát hành iOS (TestFlight → App Store)
 
-Checklist thực hiện sau khi gộp AdMob và video celebration trên `main` (cập nhật 26/10/2026).
+Checklist thực hiện sau khi gộp AdMob, celebration và **Premium / đóng băng / mở rộng đàm thoại (core)** trên `main` (cập nhật 28/10/2026).
 
 **EAS Build vs EAS Update (OTA), hotfix sau khi lên store, quota:** xem [mobile-eas-update.md](mobile-eas-update.md).
+
+## Tiến độ golive iOS (cập nhật 28/10/2026)
+
+| Bước | Việc | Trạng thái |
+|------|------|------------|
+| 1 | Deploy API trên VPS (migrations + Premium core) | ⏳ Sau merge PR: `git pull` + `docker compose up -d --build api` |
+| 2 | Build + TestFlight production | ✅ **1.0.0 (21)** (AdMob + celebration); ⏳ **build 22+** sau merge PR này |
+| 3 | TestFlight: admin bật banner + rewarded; SSV, celebration | ✅ |
+| 4 | Admin trước nộp: Premium, tắt bảng giá, AdMob copy | ✅ |
+| 5 | AdMob console: SSV (iOS + Android Rewarded), UMP EU + US | ✅ |
+| 6 | Connect: Promotional Text, Description, Age Rating (*Advertising* Yes), App Privacy (+ AdMob), Review Notes, demo, *Manually release* | ✅ (27/10) |
+| 7 | Connect: phiên bản 1.0 **gắn build mới nhất (22+)** + screenshot/mô tả | ⏳ **Làm sát golive** |
+| 8 | *Add for Review* → *Submit* | ⏳ Sau bước 7 |
+| 9 | AdMob → **Link to App Store** (iOS) | ⏳ Sau app **live** |
+
+**Còn lại trước khi public:** bước **7 → 8**, rồi **9** sau khi release.
 
 ## Đã kiểm tra trong repo
 
@@ -32,7 +48,16 @@ npx eas-cli@latest submit -p ios --profile production   # hoặc chọn build tr
 
 **Local trên Mac** (hết quota cloud / quen build máy): xem [mobile-eas-update.md — Build iOS trên Mac (`--local`)](mobile-eas-update.md#build-ios-trên-mac-local).
 
+Script gói sẵn (cất `.env.local`, `tsc`, `--local`):
+
+```bash
+cd ~/Projects/4UME/mobile
+./scripts/eas-local-ios-production.sh
+```
+
 Build number tự tăng (`autoIncrement` trong `eas.json`). Không cần đổi `version` trong `app.json` nếu vẫn là 1.0.0 công khai đầu tiên.
+
+**Sau merge (VPS):** API cần migrate — `cd /opt/4ume/deploy/vps && docker compose up -d --build api` (hoặc pull image CI nếu bạn dùng pipeline).
 
 ## 3. TestFlight (5–7 ngày hoặc ít nhất vài ngày)
 

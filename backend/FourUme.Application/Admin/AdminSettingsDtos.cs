@@ -1,4 +1,5 @@
 using FourUme.Application.About;
+using FourUme.Application.Activity;
 using FourUme.Application.Feedback;
 using FourUme.Application.Invites;
 using FourUme.Application.Premium;
@@ -27,11 +28,15 @@ public record AdminPronunciationSettingsDto(
 /// <param name="UpdatedAt">null while the defaults are in use.</param>
 public record AdminReferralSettingsDto(ReferralConfig Value, ReferralConfig Defaults, DateTimeOffset? UpdatedAt);
 
+/// <param name="UpdatedAt">null while the defaults are in use.</param>
+public record AdminStreakFreezeSettingsDto(StreakFreezeConfig Value, StreakFreezeConfig Defaults, DateTimeOffset? UpdatedAt);
+
 public record AdminSettingsDto(
     AdminNotificationSettingsDto Notifications,
     AdminListeningSettingsDto Listening,
     AdminPronunciationSettingsDto Pronunciation,
-    AdminReferralSettingsDto Referral);
+    AdminReferralSettingsDto Referral,
+    AdminStreakFreezeSettingsDto StreakFreeze);
 
 public interface IAdminSettingsService
 {
@@ -52,6 +57,10 @@ public interface IAdminSettingsService
     Task<AdminSettingsDto> SaveReferralAsync(ReferralConfig config, CancellationToken ct = default);
     Task<AdminSettingsDto> ResetReferralAsync(CancellationToken ct = default);
     Task RestoreReferralAsync(ReferralConfig config, CancellationToken ct = default);
+    /// <summary>Validates with <see cref="StreakFreezeRules"/>; throws InvalidOperationException listing the problems.</summary>
+    Task<AdminSettingsDto> SaveStreakFreezeAsync(StreakFreezeConfig config, CancellationToken ct = default);
+    Task<AdminSettingsDto> ResetStreakFreezeAsync(CancellationToken ct = default);
+    Task RestoreStreakFreezeAsync(StreakFreezeConfig config, CancellationToken ct = default);
     Task<AdminAboutDto> GetAboutAsync(CancellationToken ct = default);
     /// <summary>Validates with <see cref="AboutRules"/>; throws InvalidOperationException listing the problems.</summary>
     Task<AdminAboutDto> SaveAboutAsync(AboutContent content, CancellationToken ct = default);

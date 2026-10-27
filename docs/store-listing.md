@@ -222,4 +222,5 @@ Tài khoản cá nhân: cần **ít nhất 12 người thử, tham gia liên t�
 
 - **iPhone 6,9"** (1320×2868) bắt buộc; 6,5" tuỳ chọn (Apple tự thu nhỏ từ 6,9"). 3–10 ảnh.
 - **Android điện thoại**: 2–8 ảnh, tỉ lệ 9:16; **ảnh nổi bật** 1024×500.
-- Gợi ý thứ tự: Trang chủ (chuỗi ngày + mục tiêu) → thẻ từ vựng có hình → chấm phát âm → bài nghe / chép chính tả → bài ngữ pháp → tổng kết tuần. Chụp bằng tài khoản demo, không lộ email thật.
+- Gợi ý thứ tự (7 ảnh): Trang chủ → thẻ từ vựng → chấm phát âm → bài nghe → ngữ pháp → **tab Luyện** → tổng kết tuần. Nguồn: `store/raw/01.png` … (gitignore) + `store/.venv/bin/python store/make_assets.py`.
+- **Upload App Store Connect:** ô *iPhone 6.1" / Dynamic Island (medium)* → **`store/ios/screenshots-6.1-connect/`** (1179×2556). Ô 6,9" → `store/ios/screenshots-6.9/` (1290×2796). Chụp bằng tài khoản demo, không lộ email thật.

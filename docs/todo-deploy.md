@@ -1,9 +1,10 @@
-# Việc còn lại sau khi triển khai (cập nhật 10/10/2026)
+# Việc còn lại sau khi triển khai (cập nhật 28/10/2026)
 
 ## Nhật ký thay đổi
 
 | Ngày | Commit | Nội dung |
 |---|---|---|
+| 28/10 | *(PR Premium core)* | Đóng băng chuỗi (config admin), quota đàm thoại buổi/lượt, gói mở rộng (`ConversationAddonUntil`), migrations mới — **deploy API bắt buộc** (`docker compose up -d --build api`). App: màn Premium (section + giá tham khảo), hub đàm thoại. Doc: [streak-freeze.md](streak-freeze.md), [premium-iap-roadmap.md](premium-iap-roadmap.md). |
 | 09/10 | `821f1e2`, `0d1d4ef` | Lên VPS cạnh PetHubPro, SSL wildcard tự gia hạn qua Cloudflare |
 | 09/10 | `667b868` | Tài khoản quản trị gốc đổi thành `admin@4ume.io.vn` |
 | 09/10 | `30012c8` | Tìm / gắn ảnh Pexels, Pixabay trong admin (trang *Gắn ảnh*, *Tự gán ảnh*, duyệt ảnh tự gán) |

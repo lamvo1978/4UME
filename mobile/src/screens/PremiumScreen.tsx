@@ -1,14 +1,49 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, ReactNode, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { adsOffered } from "../ads/rewarded";
 import { api, ConversationStatus, partnerLine, PremiumPerk, PremiumPlan, PronunciationStatus, WritingStatus } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import { phonemeChip, scoreColor, verdict } from "../components/SpeakExercise";
 import { colors, shadow, spacing } from "../theme";
 import { formatDayMonthYear } from "../utils/dates";
 
 const DAY_MS = 86_400_000;
+
+/** Fallback when API returns no add-on plans (admin chưa lưu / lỗi mạng). */
+const REFERENCE_PREMIUM_PLANS: PremiumPlan[] = [
+  { months: 1, price: 19_000, badge: "" },
+  { months: 3, price: 54_000, badge: "" },
+  { months: 6, price: 99_000, badge: "" },
+  { months: 12, price: 159_000, badge: "Tiết kiệm nhất" },
+];
+
+const REFERENCE_ADDON_PLANS: PremiumPlan[] = [
+  { months: 1, price: 15_000, badge: "" },
+  { months: 3, price: 39_000, badge: "" },
+  { months: 6, price: 72_000, badge: "" },
+  { months: 12, price: 120_000, badge: "" },
+];
+
+const ADDON_PERK_TITLE = "Mở rộng đàm thoại AI";
+
+/** Khớp mặc định admin khi chưa gọi được `/api/conversation/status`. */
+const ADDON_QUOTA_FALLBACK = { premiumSessions: 1, addonSessions: 3, addonTurns: 20, addonCap: 60 };
+
+function addonQuota(talk: ConversationStatus | null) {
+  return {
+    premiumSessions: talk?.premiumSessionsPerDay ?? ADDON_QUOTA_FALLBACK.premiumSessions,
+    addonSessions: talk?.addonSessionsPerDay ?? ADDON_QUOTA_FALLBACK.addonSessions,
+    addonTurns: talk?.addonTurnsPerSession ?? talk?.maxTurnsPerSession ?? ADDON_QUOTA_FALLBACK.addonTurns,
+    addonCap: talk?.addonDailyTurnCap ?? ADDON_QUOTA_FALLBACK.addonCap,
+  };
+}
+
+function addonBenefitSummary(talk: ConversationStatus | null): string {
+  const q = addonQuota(talk);
+  return `Thêm ${q.addonSessions} buổi đàm thoại mỗi ngày · tối đa ${q.addonTurns} lượt/buổi · trần ${q.addonCap} lượt/ngày từ gói mở rộng (cộng thêm buổi Premium: ${q.premiumSessions} buổi/ngày).`;
+}
 
 /** Illustration only: what a detailed check looks like for a word with one weak sound. */
 const SAMPLE = {
@@ -34,9 +69,12 @@ const perkIcon = (name: string): ComponentProps<typeof Ionicons>["name"] =>
 
 export function PremiumScreen() {
   const insets = useSafeAreaInsets();
+  const { me } = useAuth();
   const [status, setStatus] = useState<PronunciationStatus | null>(null);
   const [perks, setPerks] = useState<PremiumPerk[]>([]);
   const [plans, setPlans] = useState<PremiumPlan[]>([]);
+  const [addonPlans, setAddonPlans] = useState<PremiumPlan[]>([]);
+  const [showPrices, setShowPrices] = useState(true);
   const [failed, setFailed] = useState(false);
   const [talk, setTalk] = useState<ConversationStatus | null>(null);
   const [writing, setWriting] = useState<WritingStatus | null>(null);
@@ -59,6 +97,8 @@ export function PremiumScreen() {
       .then((r) => {
         setPerks(r.perks);
         setPlans(r.plans);
+        setAddonPlans(r.addonPlans ?? []);
+        setShowPrices(r.showPrices !== false);
       })
       .catch(() => setPerks([]));
   }, []);
@@ -75,22 +115,36 @@ export function PremiumScreen() {
     );
   }
 
-  const partner = status.premium ? status.partnerName : null;
-  const timed = status.premium && !!status.premiumUntil && new Date(status.premiumUntil).getTime() > Date.now();
-  const premium = !!partner || timed;
-  const daysLeft = timed ? Math.max(1, Math.ceil((new Date(status.premiumUntil!).getTime() - Date.now()) / DAY_MS)) : 0;
+  const partner = me?.partnerName ?? (status.premium ? status.partnerName : null);
+  const premiumUntil = me?.premiumUntil ?? status.premiumUntil;
+  const timed = !!premiumUntil && new Date(premiumUntil).getTime() > Date.now();
+  const premium = me?.premium ?? (status.premium || !!partner || timed);
+  const hasAddon = me?.conversationAddon ?? talk?.conversationAddon ?? false;
+  const addonUntil = me?.conversationAddonUntil ?? talk?.conversationAddonUntil;
+  const daysLeft = timed && premiumUntil ? Math.max(1, Math.ceil((new Date(premiumUntil).getTime() - Date.now()) / DAY_MS)) : 0;
   const usage = status.enabled ? `Hôm nay còn ${status.remaining}/${status.dailyLimit}` : null;
   /**
    * "{n}" pronunciation checks, "{ai}" / "{aiFree}" AI conversation turns and "{w}" / "{wFree}" writing checks per day
    * (Premium / free), as set in the admin.
    */
+  const q = addonQuota(talk);
+  const aiSessions = String(q.premiumSessions);
+  const aiTurns = String(talk?.premiumTurnsPerSession ?? talk?.maxTurnsPerSession ?? q.addonTurns);
   const fill = (s: string) =>
     s
       .replace("{n}", String(status.premiumDailyLimit))
+      .replace("{aiSession}", aiSessions)
+      .replace("{aiTurns}", aiTurns)
+      .replace("{addonSession}", String(q.addonSessions))
+      .replace("{addonTurns}", String(q.addonTurns))
+      .replace("{addonCap}", String(q.addonCap))
       .replace("{ai}", talk ? String(talk.premiumDailyLimit) : "nhiều")
       .replace("{aiFree}", talk ? String(talk.freeDailyLimit) : "ít")
       .replace("{w}", writing ? String(writing.premiumDailyLimit) : "nhiều")
       .replace("{wFree}", writing ? String(writing.freeDailyLimit) : "ít");
+  const premiumPlansShown = plans.length > 0 ? plans : REFERENCE_PREMIUM_PLANS;
+  const addonPlansShown = addonPlans.length > 0 ? addonPlans : REFERENCE_ADDON_PLANS;
+  const perksMain = perks.filter((p) => p.title !== ADDON_PERK_TITLE);
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={[styles.content, { paddingBottom: spacing.xl + insets.bottom }]}>
@@ -106,7 +160,9 @@ export function PremiumScreen() {
             <Text style={styles.heroStatusText}>
               {partner
                 ? partnerLine(partner, status.partnerUntil, formatDayMonthYear)
-                : `Đang dùng đến ${formatDayMonthYear(status.premiumUntil!)} · còn ${daysLeft} ngày`}
+                : premiumUntil
+                  ? `Đang dùng đến ${formatDayMonthYear(premiumUntil)} · còn ${daysLeft} ngày`
+                  : "Đang dùng Premium"}
             </Text>
           </View>
         ) : null}
@@ -117,32 +173,71 @@ export function PremiumScreen() {
         ) : null}
       </View>
 
-      {perks.length > 0 ? (
-        <>
-          <Text style={[styles.sectionTitle, styles.sectionGap]}>Quyền lợi Premium</Text>
-          <View style={styles.card}>
-            {perks.map((perk, i) => (
-              <View key={`${perk.title}-${i}`} style={[styles.perkRow, i > 0 && styles.freeRowBorder]}>
-                <View style={styles.perkIcon}>
-                  <Ionicons name={perkIcon(perk.icon)} size={18} color={colors.accent} />
-                </View>
-                <View style={styles.flex}>
-                  <View style={styles.perkHead}>
-                    <Text style={styles.perkTitle}>{fill(perk.title)}</Text>
-                    {perk.soon ? <Text style={styles.soonTag}>Sắp có</Text> : null}
+      <SectionPanel title="Gói Premium" tone="premium">
+        {perks.length > 0 ? (
+          <>
+            <Text style={styles.subsectionTitle}>Quyền lợi</Text>
+            <View style={styles.card}>
+              {perksMain.map((perk, i) => (
+                <View key={`${perk.title}-${i}`} style={[styles.perkRow, i > 0 && styles.freeRowBorder]}>
+                  <View style={styles.perkIcon}>
+                    <Ionicons name={perkIcon(perk.icon)} size={18} color={colors.accent} />
                   </View>
-                  {perk.body ? <Text style={styles.perkBody}>{fill(perk.body)}</Text> : null}
+                  <View style={styles.flex}>
+                    <View style={styles.perkHead}>
+                      <Text style={styles.perkTitle}>{fill(perk.title)}</Text>
+                      {perk.soon ? <Text style={styles.soonTag}>Sắp có</Text> : null}
+                    </View>
+                    {perk.body ? <Text style={styles.perkBody}>{fill(perk.body)}</Text> : null}
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))}
+            </View>
+          </>
+        ) : null}
+        {showPrices ? <PriceList title="Bảng giá" plans={premiumPlansShown} compactHead /> : null}
+      </SectionPanel>
+
+      <SectionPanel title="Mở rộng đàm thoại AI" tone="addon">
+        <View style={styles.card}>
+          <View style={styles.addonQuotaBlock}>
+            <Text style={styles.addonQuotaTitle}>Quyền lợi gói mở rộng</Text>
+            <Text style={styles.perkBody}>{addonBenefitSummary(talk)}</Text>
+            <Text style={styles.addonQuotaHint}>Mỗi lượt = một lần bạn nói hoặc gõ; AI sửa câu và tổng kết cuối buổi.</Text>
           </View>
-        </>
-      ) : null}
+          {hasAddon && addonUntil ? (
+            <View style={styles.addonStatusBlock}>
+              <View style={styles.addonActiveRow}>
+                <Ionicons name="checkmark-circle" size={18} color={colors.gold} />
+                <Text style={styles.perkTitle}>Gói mở rộng đến {formatDayMonthYear(addonUntil)}</Text>
+              </View>
+              <Text style={styles.perkBody}>Bạn đang dùng quyền lợi trên đến hết ngày trong gói.</Text>
+            </View>
+          ) : premium && !partner ? (
+            <View style={styles.addonStatusBlock}>
+              <Text style={styles.perkBody}>
+                Dành cho bạn đã có Premium — luyện giao tiếp nhiều hơn với số buổi/lượt ở trên. Thanh toán trong app sắp mở; admin có thể bật gói mở rộng để thử trước.
+              </Text>
+            </View>
+          ) : partner ? (
+            <View style={styles.addonStatusBlock}>
+              <Text style={styles.perkBody}>
+                Học viên trung tâm dùng Premium từ mã đối tác. Gói mở rộng đàm thoại là gói cá nhân — bạn có thể mua sau khi có Premium riêng.
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.addonStatusBlock}>
+              <Text style={styles.perkTitle}>Gói nâng cao · dành cho thành viên Premium</Text>
+              <Text style={styles.perkBody}>Chỉ đăng ký được khi bạn đang có Premium — xem quyền lợi cụ thể ở trên.</Text>
+            </View>
+          )}
+        </View>
+        <PriceList title="Giá mở rộng (tham khảo)" plans={addonPlansShown} compactHead />
+      </SectionPanel>
 
-      {plans.length > 0 ? <PriceList plans={plans} /> : null}
-
-      <View style={styles.sectionHead}>
-        <Text style={styles.sectionTitle}>Kết quả chấm trông thế này</Text>
+      <SectionPanel title="Minh họa & so sánh" tone="neutral">
+      <View style={styles.sectionHeadInline}>
+        <Text style={styles.subsectionTitle}>Kết quả chấm trông thế này</Text>
         <Text style={styles.sampleTag}>Ví dụ</Text>
       </View>
       <View style={styles.card}>
@@ -171,7 +266,7 @@ export function PremiumScreen() {
         </View>
       </View>
 
-      <Text style={[styles.sectionTitle, styles.sectionGap]}>Lượt chấm chi tiết mỗi ngày</Text>
+      <Text style={[styles.subsectionTitle, styles.subsectionGap]}>Lượt chấm chi tiết mỗi ngày</Text>
       <View style={styles.plans}>
         <PlanTile
           name="Miễn phí"
@@ -193,7 +288,7 @@ export function PremiumScreen() {
         {adsOffered(status) ? " Bạn cũng có thể tự chọn xem quảng cáo để có thêm lượt trong ngày (mỗi quảng cáo 1 lượt)." : ""}
       </Text>
 
-      <Text style={[styles.sectionTitle, styles.sectionGap]}>Luôn miễn phí cho mọi người</Text>
+      <Text style={[styles.subsectionTitle, styles.subsectionGap]}>Luôn miễn phí cho mọi người</Text>
       <View style={styles.card}>
         {ALWAYS_FREE.map((f, i) => (
           <View key={f.text} style={[styles.freeRow, i > 0 && styles.freeRowBorder]}>
@@ -204,6 +299,7 @@ export function PremiumScreen() {
           </View>
         ))}
       </View>
+      </SectionPanel>
 
       {!premium ? (
         <Text style={styles.soon}>Nhận ngày Premium khi mời bạn bè cùng học, hoặc nhập mã của trung tâm đối tác ở Hồ sơ → Mời bạn bè.</Text>
@@ -214,12 +310,32 @@ export function PremiumScreen() {
 
 const vnd = (n: number) => `${n.toLocaleString("vi-VN")}đ`;
 
-function PriceList({ plans }: { plans: PremiumPlan[] }) {
+function SectionPanel({
+  title,
+  tone,
+  children,
+}: {
+  title: string;
+  tone: "premium" | "addon" | "neutral";
+  children: ReactNode;
+}) {
+  return (
+    <View style={[styles.sectionPanel, tone === "addon" && styles.sectionPanelAddon, tone === "premium" && styles.sectionPanelPremium]}>
+      <View style={styles.sectionPanelHead}>
+        <View style={[styles.sectionAccent, tone === "addon" && styles.sectionAccentAddon, tone === "premium" && styles.sectionAccentPremium]} />
+        <Text style={styles.sectionPanelTitle}>{title}</Text>
+      </View>
+      {children}
+    </View>
+  );
+}
+
+function PriceList({ title, plans, compactHead }: { title: string; plans: PremiumPlan[]; compactHead?: boolean }) {
   const monthly = plans.find((p) => p.months === 1);
   return (
     <>
-      <View style={styles.sectionHead}>
-        <Text style={styles.sectionTitle}>Bảng giá Premium</Text>
+      <View style={compactHead ? styles.sectionHeadInline : styles.sectionHead}>
+        <Text style={compactHead ? styles.subsectionTitle : styles.sectionTitle}>{title}</Text>
         <Text style={styles.soonTag}>Sắp mở bán</Text>
       </View>
       <View style={styles.prices}>
@@ -284,7 +400,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   center: { alignItems: "center", justifyContent: "center", padding: spacing.lg },
   muted: { color: colors.muted, textAlign: "center" },
-  content: { padding: spacing.lg, paddingTop: spacing.md },
+  content: { padding: spacing.lg, paddingTop: spacing.md, gap: spacing.md },
   hero: {
     alignItems: "center",
     gap: spacing.xs,
@@ -316,7 +432,25 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.15)",
   },
   heroStatusText: { fontSize: 13, fontWeight: "700", color: colors.white },
+  sectionPanel: {
+    gap: spacing.sm,
+    padding: spacing.md,
+    borderRadius: 24,
+    backgroundColor: colors.bgAlt,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  sectionPanelPremium: { backgroundColor: "#DCE8E2" },
+  sectionPanelAddon: { backgroundColor: colors.iceSoft, borderColor: "#B8D4EB" },
+  sectionPanelHead: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 2 },
+  sectionAccent: { width: 4, height: 22, borderRadius: 2, backgroundColor: colors.accent },
+  sectionAccentPremium: { backgroundColor: colors.accent },
+  sectionAccentAddon: { backgroundColor: colors.ice },
+  sectionPanelTitle: { fontSize: 17, fontWeight: "800", color: colors.ink, flex: 1 },
+  subsectionTitle: { fontSize: 15, fontWeight: "700", color: colors.ink },
+  subsectionGap: { marginTop: spacing.sm, marginBottom: spacing.xs },
   sectionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: spacing.lg, marginBottom: spacing.sm },
+  sectionHeadInline: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.xs },
   sectionTitle: { fontSize: 18, fontWeight: "700", color: colors.ink },
   sectionGap: { marginTop: spacing.lg, marginBottom: spacing.sm },
   sampleTag: {
@@ -413,6 +547,17 @@ const styles = StyleSheet.create({
   },
   perkHead: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 6 },
   perkTitle: { fontSize: 15, fontWeight: "700", color: colors.ink, flexShrink: 1 },
+  addonActiveRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
+  addonQuotaBlock: { gap: 6 },
+  addonQuotaTitle: { fontSize: 14, fontWeight: "800", color: colors.ink },
+  addonQuotaHint: { fontSize: 12, lineHeight: 17, color: colors.muted },
+  addonStatusBlock: {
+    gap: 6,
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+  },
   perkBody: { marginTop: 2, fontSize: 13, lineHeight: 18, color: colors.muted },
   soonTag: {
     fontSize: 10,

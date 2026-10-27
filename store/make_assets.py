@@ -46,10 +46,22 @@ def feature_graphic() -> None:
 
 
 def screenshots() -> None:
-    """store/raw/*.png|jpg (iPhone screenshots, in the order to show) -> Play (2:1 max) and App Store 6.9"."""
-    raw = sorted(p for p in (ROOT / "store" / "raw").glob("*") if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
-    play_dir, ios_dir = OUT / "screenshots", ROOT / "store" / "ios" / "screenshots-6.9"
-    for d in (play_dir, ios_dir):
+    """store/raw/01.png … (iPhone screenshots, in order) -> Play, App Store 6.9", and 6.1" Connect slot."""
+    raw_dir = ROOT / "store" / "raw"
+    # Only numbered files (01.png …); accept .PNG from iPhone AirDrop.
+    raw = sorted(
+        p
+        for p in raw_dir.iterdir()
+        if p.is_file()
+        and p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+        and p.stem.isdigit()
+    )
+    if not raw:
+        raise SystemExit(f"No numbered screenshots in {raw_dir} (expected 01.png, 02.png, …)")
+    play_dir = OUT / "screenshots"
+    ios_69 = ROOT / "store" / "ios" / "screenshots-6.9"
+    ios_61 = ROOT / "store" / "ios" / "screenshots-6.1-connect"
+    for d in (play_dir, ios_69, ios_61):
         d.mkdir(parents=True, exist_ok=True)
     for i, path in enumerate(raw, 1):
         shot = Image.open(path).convert("RGB")
@@ -58,9 +70,12 @@ def screenshots() -> None:
         scaled = shot.resize((round(shot.width * 2160 / shot.height), 2160), Image.LANCZOS)
         canvas.paste(scaled, ((1080 - scaled.width) // 2, 0))
         canvas.save(play_dir / f"{i:02d}.png", optimize=True)
-        # The App Store 6.9" slot takes 1290x2796 (6.7" iPhones) as-is; anything else is scaled to 1320x2868.
+        # App Store 6.9" / 6.7": 1290×2796 (or scale to 1320×2868).
         ios = shot if shot.size in {(1290, 2796), (1320, 2868)} else shot.resize((1320, 2868), Image.LANCZOS)
-        ios.save(ios_dir / f"{i:02d}.png", optimize=True)
+        ios.save(ios_69 / f"{i:02d}.png", optimize=True)
+        # Connect tab "iPhone 6.1" / Dynamic Island medium: 1179×2556 portrait.
+        ios_61_out = ios if ios.size == (1290, 2796) else ios.resize((1290, 2796), Image.LANCZOS)
+        ios_61_out.resize((1179, 2556), Image.LANCZOS).save(ios_61 / f"{i:02d}.png", optimize=True)
 
 
 if __name__ == "__main__":
