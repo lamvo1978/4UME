@@ -21,7 +21,14 @@ import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck, IconDeviceFloppy, IconHistory, IconRestore } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
-import { api, type AdminSettings, type NotificationConfig, type PronunciationConfig, type ReferralConfig } from "../api";
+import {
+  api,
+  type AdminSettings,
+  type NotificationConfig,
+  type PronunciationConfig,
+  type ReferralConfig,
+  type StreakFreezeConfig,
+} from "../api";
 import { Select } from "../components/AppSelect";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { WEEKDAY_NAMES } from "../history/meta";
@@ -159,6 +166,7 @@ export function SettingsPage() {
       </Group>
 
       <ListeningSettings settings={settings.data} />
+      <StreakFreezeSettings settings={settings.data} />
       <PronunciationSettings settings={settings.data} />
       <ReferralSettings settings={settings.data} />
 
@@ -318,6 +326,131 @@ export function SettingsPage() {
         onRestored={() => setHistoryOpen(false)}
       />
     </Stack>
+  );
+}
+
+function StreakFreezeSettings({ settings }: { settings: AdminSettings }) {
+  const queryClient = useQueryClient();
+  const block = settings.streakFreeze;
+  const [form, setForm] = useState<StreakFreezeConfig>(block.value);
+  const [saving, setSaving] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+
+  useEffect(() => setForm(block.value), [block.value]);
+
+  const dirty = JSON.stringify(form) !== JSON.stringify(block.value);
+  const atDefaults = JSON.stringify(block.value) === JSON.stringify(block.defaults);
+  const num = (key: keyof StreakFreezeConfig) => (v: string | number) =>
+    setForm({ ...form, [key]: typeof v === "number" ? v : 0 });
+
+  async function run(action: () => Promise<AdminSettings>, message: string) {
+    setSaving(true);
+    try {
+      queryClient.setQueryData(["settings"], await action());
+      queryClient.invalidateQueries({ queryKey: ["audit"] });
+      notifySaved(message);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Section
+      title="Đóng băng chuỗi"
+      description="Quy tắc nhận lượt và trần dự trữ. Miễn phí: +1 mỗi N ngày chuỗi. Premium: +1 lần học đầu tháng (nếu bật). App đọc qua API stats và /api/config."
+    >
+      <Stack gap="md">
+        <Group justify="space-between" align="center">
+          <Text fz="xs" c="dimmed">
+            {block.updatedAt ? `Sửa lần cuối ${fullTime(block.updatedAt)}.` : "Đang dùng giá trị mặc định."}
+          </Text>
+          <ActionIcon variant="subtle" aria-label="Lịch sử" onClick={() => setHistoryOpen(true)}>
+            <IconHistory size={18} />
+          </ActionIcon>
+        </Group>
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+          <NumberInput
+            label="Mốc chuỗi (miễn phí)"
+            description="Cộng 1 lượt khi chuỗi đạt bội số này"
+            min={1}
+            max={30}
+            suffix=" ngày"
+            value={form.freezeEvery}
+            onChange={num("freezeEvery")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Trần miễn phí"
+            description="Tối đa lượt dự trữ và ngày lỡ liên tiếp"
+            min={0}
+            max={10}
+            value={form.maxFreezesFree}
+            onChange={num("maxFreezesFree")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+          <NumberInput
+            label="Trần Premium"
+            description="Khi đang có Premium"
+            min={0}
+            max={10}
+            value={form.maxFreezesPremium}
+            onChange={num("maxFreezesPremium")}
+            inputWrapperOrder={["label", "description", "input", "error"]}
+          />
+        </SimpleGrid>
+        <Switch
+          size="md"
+          checked={form.premiumMonthlyGrant}
+          onChange={(e) => setForm({ ...form, premiumMonthlyGrant: e.currentTarget.checked })}
+          label="Premium: +1 lượt lần học đầu mỗi tháng"
+          description="Tắt thì Premium chỉ hưởng trần cao hơn, không cộng thêm theo tháng."
+        />
+        <Group justify="flex-end" gap="sm">
+          <Button variant="default" disabled={atDefaults || saving} onClick={() => setConfirmReset(true)}>
+            Mặc định
+          </Button>
+          <Button
+            leftSection={<IconDeviceFloppy size={18} />}
+            disabled={!dirty}
+            loading={saving}
+            onClick={() => run(() => api.saveStreakFreezeSettings(form), "Đã lưu quy tắc đóng băng chuỗi")}
+          >
+            Lưu
+          </Button>
+        </Group>
+      </Stack>
+      <Modal opened={confirmReset} onClose={() => setConfirmReset(false)} title="Khôi phục mặc định?">
+        <Stack>
+          <Text fz="sm">Quy tắc đóng băng trở về mặc định (7 ngày / trần 2 và 4). Bản hiện tại vẫn trong lịch sử.</Text>
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setConfirmReset(false)}>
+              Huỷ
+            </Button>
+            <Button
+              leftSection={<IconRestore size={18} />}
+              loading={saving}
+              onClick={() => {
+                setConfirmReset(false);
+                run(() => api.resetStreakFreezeSettings(), "Đã khôi phục mặc định đóng băng chuỗi");
+              }}
+            >
+              Khôi phục
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+      <HistoryDrawer
+        opened={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        entityType="settings"
+        entityId="streakFreeze"
+        title="Đóng băng chuỗi"
+        onRestored={() => setHistoryOpen(false)}
+      />
+    </Section>
   );
 }
 

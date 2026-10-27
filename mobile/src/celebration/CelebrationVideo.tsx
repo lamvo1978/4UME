@@ -2,6 +2,7 @@ import * as Haptics from "expo-haptics";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEffect } from "react";
 import { AccessibilityInfo, StyleSheet, View } from "react-native";
+import { colors } from "../theme";
 import { CELEBRATION_DONE, CELEBRATION_WIDTH_OVER_HEIGHT } from "./sources";
 
 export type CelebrationVideoProps = {
@@ -10,14 +11,19 @@ export type CelebrationVideoProps = {
   replayKey?: number;
   rounded?: boolean;
   haptics?: boolean;
+  /** Letterbox behind the clip; default matches app screen (`colors.bg`). */
+  wrapBackground?: string;
+  contentFit?: "cover" | "contain";
 };
 
 export function CelebrationVideo({
   source = CELEBRATION_DONE,
   width,
   replayKey = 0,
-  rounded = true,
+  rounded = false,
   haptics = true,
+  wrapBackground = colors.bg,
+  contentFit = "contain",
 }: CelebrationVideoProps) {
   const height = width / CELEBRATION_WIDTH_OVER_HEIGHT;
 
@@ -45,8 +51,14 @@ export function CelebrationVideo({
   }, [replayKey, player, haptics]);
 
   return (
-    <View style={[styles.wrap, { width, height }, rounded && styles.rounded]}>
-      <VideoView style={styles.video} player={player} contentFit="cover" nativeControls={false} />
+    <View
+      style={[
+        styles.wrap,
+        { width, height, backgroundColor: wrapBackground },
+        rounded && styles.rounded,
+      ]}
+    >
+      <VideoView style={styles.video} player={player} contentFit={contentFit} nativeControls={false} />
     </View>
   );
 }
@@ -55,7 +67,6 @@ const styles = StyleSheet.create({
   wrap: {
     alignSelf: "center",
     overflow: "hidden",
-    backgroundColor: "#C5E8F5",
   },
   rounded: { borderRadius: 24 },
   video: { width: "100%", height: "100%" },

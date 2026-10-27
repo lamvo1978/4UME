@@ -97,7 +97,9 @@ public record AccessDto(
     string? PartnerName,
     IReadOnlyList<string> Features,
     DateTimeOffset? PartnerUntil = null,
-    int PausedPremiumDays = 0);
+    int PausedPremiumDays = 0,
+    bool ConversationAddon = false,
+    DateTimeOffset? ConversationAddonUntil = null);
 
 /// <param name="DisplayName">The invited friend's display name.</param>
 /// <param name="StudyDays">Days studied so far that count (capped at the requirement).</param>

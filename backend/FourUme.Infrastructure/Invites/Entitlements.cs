@@ -11,18 +11,23 @@ public static class Entitlements
     {
         await PremiumHold.SyncAsync(db, userId, ct);
         var now = DateTimeOffset.UtcNow;
-        var until = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.PremiumUntil).FirstOrDefaultAsync(ct);
+        var user = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => new { u.PremiumUntil, u.ConversationAddonUntil }).FirstOrDefaultAsync(ct);
+        var until = user?.PremiumUntil;
+        var addonUntil = user?.ConversationAddonUntil;
         var codes = await db.PartnerCodes.AsNoTracking()
             .Where(c => c.UsedById == userId && c.RevokedAt == null && (c.ExpiresAt == null || c.ExpiresAt > now))
             .Select(c => new { c.Partner!.Name, c.Partner.Features, c.ExpiresAt, c.HeldPremium })
             .ToListAsync(ct);
-        if (codes.Count == 0) return new AccessDto(until > now, until, null, []);
+        var premiumCore = codes.Count > 0 || until > now;
+        var conversationAddon = premiumCore && addonUntil > now;
+        if (codes.Count == 0)
+            return new AccessDto(premiumCore, until, null, [], ConversationAddon: conversationAddon, ConversationAddonUntil: addonUntil);
 
         var partnerName = string.Join(", ", codes.Select(p => p.Name).Distinct());
         var features = codes.SelectMany(p => FeatureKeys.Parse(p.Features)).Distinct().ToList();
         var partnerUntil = codes.Any(c => c.ExpiresAt is null) ? null : codes.Max(c => c.ExpiresAt);
         var held = codes.Aggregate(TimeSpan.Zero, (sum, c) => sum + (c.HeldPremium ?? TimeSpan.Zero));
-        return new AccessDto(true, until, partnerName, features, partnerUntil, (int)Math.Ceiling(held.TotalDays));
+        return new AccessDto(true, until, partnerName, features, partnerUntil, (int)Math.Ceiling(held.TotalDays), conversationAddon, addonUntil);
     }
 }
 

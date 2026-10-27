@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, View, useWindowDimensions } from "react-native";
 import { CelebrationVideo } from "../celebration/CelebrationVideo";
+import { celebrationWidth } from "../celebration/sources";
 import { colors } from "../theme";
 
 /** End-of-session hero: Grok `celebration-done.mp4`. */
 export function DoneCelebration() {
   const { width: windowWidth } = useWindowDimensions();
-  const sceneWidth = Math.min(windowWidth - 48, 340);
+  const sceneWidth = celebrationWidth(windowWidth);
   const [replayKey, setReplayKey] = useState(0);
 
   return (
     <View style={styles.column}>
-      <CelebrationVideo width={sceneWidth} replayKey={replayKey} />
+      <CelebrationVideo width={sceneWidth} replayKey={replayKey} wrapBackground="transparent" />
       {__DEV__ ? (
         <Text style={styles.replayHint} onPress={() => setReplayKey((k) => k + 1)}>
           Chạy lại animation

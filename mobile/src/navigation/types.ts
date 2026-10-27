@@ -63,6 +63,8 @@ export type RootStackParamList = {
   /** wordId/wordText come from "Báo lỗi từ này" on a word card. */
   FeedbackNew: { category?: FeedbackCategory; wordId?: string; wordText?: string } | undefined;
   FeedbackThread: { id: string; justSent?: boolean };
+  /** Dev: preview celebration / session-done layout. */
+  CelebrationPreview: undefined;
 };
 
 /** "ielts" only exists in the Study hub, for partner students with that feature. */

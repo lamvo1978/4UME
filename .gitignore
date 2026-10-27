@@ -13,3 +13,4 @@ mobile/dist/
 backups/
 drafts/
 store/raw/
+store/.venv/

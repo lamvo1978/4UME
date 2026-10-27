@@ -123,7 +123,8 @@ public class AuthService(
                 user.DailyGoal, user.SpeechRate, user.AutoSpeak, user.ReminderEnabled, user.ReminderTime,
                 user.NotifyRescue, user.NotifyWeekly, user.NotifyNews, user.TimeZone,
                 user.VocabLevel, user.EasyWordMode, user.PlacementTakenAt, user.Avatar),
-            access.Premium, access.Features, access.PartnerName, access.PartnerUntil, banner);
+            access.Premium, access.Features, access.PartnerName, access.PartnerUntil, banner,
+            access.PremiumUntil, access.ConversationAddon, access.ConversationAddonUntil);
     }
 
     public async Task<MeResponse> UpdateSettingsAsync(Guid userId, UpdateSettingsRequest request, CancellationToken ct = default)

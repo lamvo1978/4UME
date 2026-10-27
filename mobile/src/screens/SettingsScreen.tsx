@@ -81,10 +81,17 @@ export function SettingsScreen() {
         </View>
 
         <View style={[styles.card, styles.gapTop]}>
+          {__DEV__ ? (
+            <ActionRow
+              icon="sparkles-outline"
+              label="Giả lập màn xong bài (dev)"
+              onPress={() => navigation.navigate("CelebrationPreview")}
+            />
+          ) : null}
           <ActionRow
             icon="information-circle-outline"
             label="Giới thiệu & bản quyền"
-            last
+            last={!__DEV__}
             onPress={() => navigation.navigate("About")}
           />
         </View>

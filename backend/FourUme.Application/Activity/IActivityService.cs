@@ -22,7 +22,9 @@ public interface IActivityService
 
 public static class StreakRules
 {
-    public const int MaxFreezes = 2;
+    public const int MonthlyGrant = 1;
+    public const int MaxFreezesFree = 2;
+    public const int MaxFreezesPremium = 4;
     /// <summary>A freeze is earned every time the streak reaches a multiple of this.</summary>
     public const int FreezeEvery = 7;
     public const int HistoryDays = 35;

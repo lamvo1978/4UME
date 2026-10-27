@@ -44,7 +44,10 @@ public record MeResponse(
     /// <summary>End of partner access; null runs until the code is revoked.</summary>
     DateTimeOffset? PartnerUntil = null,
     /// <summary>Show the Home banner ad: switched on in admin and the learner isn't Premium.</summary>
-    bool AdsBanner = false);
+    bool AdsBanner = false,
+    DateTimeOffset? PremiumUntil = null,
+    bool ConversationAddon = false,
+    DateTimeOffset? ConversationAddonUntil = null);
 
 /// <summary>Every field is optional; only the ones sent are changed.</summary>
 public record UpdateSettingsRequest(

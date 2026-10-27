@@ -10,7 +10,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.fourume.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSSpeechRecognitionUsageDescription": "4UME chuyển câu bạn nói thành chữ để so với câu mẫu khi luyện nói và để bạn trò chuyện với AI.",
+        "NSMicrophoneUsageDescription": "4UME dùng micro để chấm phát âm và để bạn luyện nói."
       }
     },
     "android": {
@@ -27,13 +29,22 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "com.google.android.gms.permission.AD_ID"
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
+      ],
       "expo-notifications",
       [
         "expo-audio",
@@ -86,13 +97,22 @@
           "userTrackingPermission": "4UME chỉ có quảng cáo khi bạn tự chọn xem để thêm lượt chấm, và một banner nhỏ ở Trang chủ. Cho phép để quảng cáo hợp với bạn hơn; không cho phép thì bạn vẫn thấy số quảng cáo như vậy."
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-updates"
     ],
     "extra": {
       "eas": {
         "projectId": "7562124a-994f-4661-aba3-3cee57af0c30"
       }
     },
-    "owner": "lamvo1978"
+    "owner": "lamvo1978",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7562124a-994f-4661-aba3-3cee57af0c30",
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }

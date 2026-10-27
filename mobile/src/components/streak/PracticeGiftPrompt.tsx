@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "r
 import { api } from "../../api/client";
 import { localDate } from "../../ads/rewarded";
 import { CelebrationVideo } from "../../celebration/CelebrationVideo";
-import { CELEBRATION_GIFT } from "../../celebration/sources";
+import { CELEBRATION_GIFT, celebrationWidth } from "../../celebration/sources";
 import { colors, shadow, spacing } from "../../theme";
 
 const SHOWN_KEY = "practiceGiftShown";
@@ -18,7 +18,7 @@ export async function practiceGiftToAnnounce() {
 /** Announces the streak gift: the Luyện tab is open for the rest of today. */
 export function PracticeGiftPrompt({ days, onOpen, onClose }: { days: number; onOpen: () => void; onClose: () => void }) {
   const { width: windowWidth } = useWindowDimensions();
-  const videoWidth = Math.min(windowWidth - spacing.lg * 4, 280);
+  const videoWidth = celebrationWidth(windowWidth, spacing.lg * 4);
 
   const done = (then: () => void) => {
     AsyncStorage.setItem(SHOWN_KEY, localDate()).catch(() => undefined);
@@ -33,6 +33,7 @@ export function PracticeGiftPrompt({ days, onOpen, onClose }: { days: number; on
             width={videoWidth}
             replayKey={days}
             haptics={false}
+            wrapBackground="transparent"
           />
           <Text style={styles.title}>Quà giữ chuỗi {days} ngày!</Text>
           <Text style={styles.sub}>Hôm nay bạn được mở tab Luyện — nghe chép, nghe nói thoải mái tới 23:59.</Text>

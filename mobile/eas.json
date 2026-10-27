@@ -11,19 +11,23 @@
         "EXPO_PUBLIC_ADMOB_REWARDED_ANDROID": "ca-app-pub-3892770660039931/4369868612",
         "EXPO_PUBLIC_ADMOB_BANNER_IOS": "ca-app-pub-3892770660039931/1601728336",
         "EXPO_PUBLIC_ADMOB_BANNER_ANDROID": "ca-app-pub-3892770660039931/4419463361",
-        "SENTRY_ALLOW_FAILURE": "true"
-      }
+        "SENTRY_ALLOW_FAILURE": "true",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      },
+      "channel": "base"
     },
     "preview": {
       "extends": "base",
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "extends": "base",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {

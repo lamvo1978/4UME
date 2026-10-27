@@ -1,4 +1,4 @@
-# Hồ sơ App Store và Google Play (bản nháp 13/10/2026)
+# Hồ sơ App Store và Google Play (bản nháp, cập nhật 26/10/2026 — AdMob + celebration)
 
 Nội dung để dán vào App Store Connect và Play Console. Đọc lại, sửa câu chữ nếu chưa ưng rồi copy. Khai dữ liệu phải khớp [trang quyền riêng tư](../site/privacy/index.html); app thêm quảng cáo / mua Premium / dịch vụ mới thì sửa cả hai — xem [site.md](site.md#khi-nào-phải-sửa-trang).
 
@@ -41,7 +41,7 @@ Dài 76 ký tự / 94 byte: chữ có dấu tốn 2–3 byte, nếu App Store Co
 **Promotional Text** (≤ 170, sửa được mà không cần duyệt lại):
 
 ```
-Mỗi ngày vài phút: học từ mới, ôn đúng lúc sắp quên, đọc to để được chấm phát âm. Miễn phí, không có quảng cáo chen ngang khi học.
+Mỗi ngày vài phút: học từ, ôn đúng lúc, chấm phát âm. Miễn phí; không quảng cáo trong bài học. Tài khoản miễn phí có banner nhỏ ở Trang chủ và có thể tự chọn xem quảng cáo để thêm lượt chấm.
 ```
 
 **Description** (≤ 4000):
@@ -65,6 +65,10 @@ LUYỆN NGHE VÀ CHÉP CHÍNH TẢ
 NGỮ PHÁP DỄ HIỂU
 • 46 bài ngữ pháp từ A1 đến B1, giải thích bằng tiếng Việt, kèm bài tập và ôn lại.
 
+LUYỆN NÓI VÀ VIẾT VỚI AI
+• Đàm thoại: nhập vai hoặc trò chuyện tự do, AI sửa câu và tổng kết.
+• Luyện viết: viết theo đề hoặc tự do, AI chấm điểm và gợi ý sửa.
+
 HỌC THÀNH THÓI QUEN
 • Kiểm tra trình độ lúc bắt đầu để học đúng mức.
 • Đặt mục tiêu mỗi ngày, giữ chuỗi ngày học, nhận nhắc học vào giờ bạn chọn.
@@ -73,16 +77,20 @@ HỌC THÀNH THÓI QUEN
 MỜI BẠN BÈ
 • Rủ bạn cùng học, cả hai cùng nhận thêm ngày Premium.
 
-4UME - MIỄN PHÍ và không có quảng cáo chen ngang làm ảnh hưởng đến việc học. Mọi góp ý, bạn nhắn cho chúng tôi ngay trong app.
+4UME MIỄN PHÍ, chưa bán Premium trong app. Quảng cáo Google AdMob chỉ ở Trang chủ (banner nhỏ) hoặc khi bạn tự chọn xem để thêm lượt chấm phát âm; không có quảng cáo trong bài học, ôn tập hay nghe. Tài khoản Premium không có quảng cáo. Góp ý: nhắn trong app.
 ```
 
-**What's New** (bản 1.0): `Phiên bản đầu tiên của 4UME.`
+**What's New** (bản 1.0 lên App Store lần đầu): `Phiên bản đầu tiên của 4UME trên App Store.`
+
+**What's New** (bản TestFlight sau AdMob, nếu vẫn ghi 1.0.0): `Quảng cáo tùy chọn cho tài khoản miễn phí, cải thiện màn chúc mừng khi hoàn thành bài học, và các sửa lỗi nhỏ.`
 
 **What to Test** (TestFlight, bản có Đàm thoại): `Mới: Đàm thoại với AI (tab Luyện → thẻ đầu tiên). Chọn cấp độ, trò chuyện tự do hoặc nhập vai một tình huống, bấm micro để nói hoặc gõ chữ. Thử nói sai một câu xem AI có sửa ngay không, rồi bấm Kết thúc để xem tổng kết. Góp ý cho 4UME nếu AI trả lời lạ hoặc chậm.`
 
 **What to Test** (TestFlight, bản có Luyện viết): `Mới: Luyện viết với AI (tab Luyện → thẻ thứ hai). Chọn cấp độ, viết theo đề hoặc viết tự do một đoạn tiếng Anh, bấm Chấm bài. AI cho điểm, tô màu chỗ sai (chạm vào để xem cách sửa và giải thích), viết lại cả đoạn và gợi ý từ hay hơn. Thử cố ý viết sai vài chỗ xem AI có bắt đúng không, rồi bấm "Viết lại bài này" để sửa và chấm lại. Góp ý cho 4UME nếu AI chấm sai hoặc chậm.`
 
 **What to Test** (TestFlight, bản có AdMob): `Mới: quảng cáo cho tài khoản miễn phí (đang là quảng cáo thử nghiệm của Google). Lần đầu gặp quảng cáo, máy hỏi có cho phép theo dõi không, chọn gì cũng được. Hết lượt chấm phát âm trong ngày, thử bấm "Xem quảng cáo để chấm bản ghi này" hoặc Hồ sơ → Thêm lượt kiểm tra. Góp ý cho 4UME nếu quảng cáo làm phiền hoặc che mất nội dung.`
+
+**What to Test** (TestFlight, bản gộp AdMob + celebration — dán một khối): `Bật quảng cáo trên admin nếu chưa thấy banner. Thử banner ở Trang chủ và quảng cáo tự chọn khi hết lượt chấm phát âm (xem hết quảng cáo → lượt phải tăng). Hoàn thành một bài ôn hoặc giữ chuỗi ngày: xem video chúc mừng có chạy mượt không. Tab Luyện: thử Đàm thoại và Luyện viết với AI. Góp ý nếu quảng cáo che nội dung hoặc video lag.`
 
 **Age Rating**: trả lời *None / No* hết → **4+**. *[AdMob]* Bản có quảng cáo: mục *Advertising* chọn **Yes**, vẫn ra 4+. *Unrestricted Web Access*: No. *User-generated content*: No (góp ý chỉ gửi cho 4UME, người dùng không thấy của nhau).
 
@@ -214,4 +222,5 @@ Tài khoản cá nhân: cần **ít nhất 12 người thử, tham gia liên t�
 
 - **iPhone 6,9"** (1320×2868) bắt buộc; 6,5" tuỳ chọn (Apple tự thu nhỏ từ 6,9"). 3–10 ảnh.
 - **Android điện thoại**: 2–8 ảnh, tỉ lệ 9:16; **ảnh nổi bật** 1024×500.
-- Gợi ý thứ tự: Trang chủ (chuỗi ngày + mục tiêu) → thẻ từ vựng có hình → chấm phát âm → bài nghe / chép chính tả → bài ngữ pháp → tổng kết tuần. Chụp bằng tài khoản demo, không lộ email thật.
+- Gợi ý thứ tự (7 ảnh): Trang chủ → thẻ từ vựng → chấm phát âm → bài nghe → ngữ pháp → **tab Luyện** → tổng kết tuần. Nguồn: `store/raw/01.png` … (gitignore) + `store/.venv/bin/python store/make_assets.py`.
+- **Upload App Store Connect:** ô *iPhone 6.1" / Dynamic Island (medium)* → **`store/ios/screenshots-6.1-connect/`** (1179×2556). Ô 6,9" → `store/ios/screenshots-6.9/` (1290×2796). Chụp bằng tài khoản demo, không lộ email thật.

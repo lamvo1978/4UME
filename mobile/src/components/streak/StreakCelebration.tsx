@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { api, Streak } from "../../api/client";
 import { CelebrationVideo } from "../../celebration/CelebrationVideo";
-import { CELEBRATION_STREAK } from "../../celebration/sources";
+import { CELEBRATION_STREAK, celebrationWidth } from "../../celebration/sources";
 import { colors, shadow, spacing } from "../../theme";
 import { FREEZE_EVERY, milestoneLine } from "./streakCopy";
 import { WeekStrip } from "./WeekStrip";
@@ -14,7 +14,7 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
   const [details, setDetails] = useState<Streak | null>(null);
   const [shown, setShown] = useState(Math.max(streak - 1, 0));
   const { width: windowWidth } = useWindowDimensions();
-  const videoWidth = Math.min(windowWidth - spacing.lg * 4, 280);
+  const videoWidth = celebrationWidth(windowWidth, spacing.lg * 4);
 
   useEffect(() => {
     api.stats().then((s) => setDetails(s.streak)).catch(() => undefined);
@@ -23,7 +23,8 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
     return () => clearTimeout(tick);
   }, [streak]);
 
-  const earnedFreeze = streak > 0 && streak % FREEZE_EVERY === 0;
+  const every = details?.freezeEvery ?? FREEZE_EVERY;
+  const earnedFreeze = !!details?.freezeOnStreak && streak > 0 && every > 0 && streak % every === 0;
 
   return (
     <Modal visible animationType="fade" transparent onRequestClose={onClose}>
@@ -34,6 +35,7 @@ export function StreakCelebration({ streak, onClose }: { streak: number; onClose
             width={videoWidth}
             replayKey={streak}
             haptics={false}
+            wrapBackground="transparent"
           />
 
           <Text style={styles.count}>{shown}</Text>

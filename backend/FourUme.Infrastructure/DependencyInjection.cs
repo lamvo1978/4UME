@@ -68,6 +68,7 @@ public static class DependencyInjection
         services.AddScoped<IGrammarService, GrammarService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<IActivityService, ActivityService>();
+        services.AddScoped<IStreakFreezeSettings, StreakFreezeSettings>();
         services.AddScoped<IReferralService, ReferralService>();
         services.AddScoped<IAdminPartnerService, AdminPartnerService>();
         services.AddScoped<INotificationService, NotificationService>();

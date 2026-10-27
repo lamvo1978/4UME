@@ -31,7 +31,8 @@ public record AdminUserDto(
     int GrammarPassed,
     DateTimeOffset? PremiumUntil,
     /// <summary>Set while the user is an active partner student.</summary>
-    string? PartnerName = null);
+    string? PartnerName = null,
+    DateTimeOffset? ConversationAddonUntil = null);
 
 /// <param name="HeldDays">The user's own Premium days paused by this code.</param>
 public record AdminUserPartnerCodeDto(
@@ -98,6 +99,9 @@ public record SetRoleRequest(string Role);
 public record SetLockRequest(bool Locked);
 /// <param name="Until">End of Premium; null removes it.</param>
 public record SetPremiumRequest(DateTimeOffset? Until);
+public record SetConversationAddonRequest(DateTimeOffset? Until);
+
+public record SetStreakFreezesRequest(int StreakFreezes);
 
 /// <summary>What the history stores for a user change (no personal data beyond what the list shows).</summary>
 public record UserAccessSnapshot(string Email, string DisplayName, string Role, bool Locked, DateTimeOffset? PremiumUntil = null);
@@ -110,6 +114,8 @@ public interface IAdminUserService
     Task<AdminUserDetailDto> SetRoleAsync(Guid id, string role, DateOnly today, CancellationToken ct = default);
     Task<AdminUserDetailDto> SetLockedAsync(Guid id, bool locked, DateOnly today, CancellationToken ct = default);
     Task<AdminUserDetailDto> SetPremiumAsync(Guid id, DateTimeOffset? until, DateOnly today, CancellationToken ct = default);
+    Task<AdminUserDetailDto> SetConversationAddonAsync(Guid id, DateTimeOffset? until, DateOnly today, CancellationToken ct = default);
+    Task<AdminUserDetailDto> SetStreakFreezesAsync(Guid id, int streakFreezes, DateOnly today, CancellationToken ct = default);
 }
 
 /// <summary>Whether a signed-in account may still use the API (exists and is not locked); cached briefly per user.</summary>

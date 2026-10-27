@@ -10,7 +10,8 @@ import { KeyboardScreen } from "../components/KeyboardScreen";
 import { LetterTiles } from "../components/LetterTiles";
 import { MatchPairs } from "../components/MatchPairs";
 import { SentenceBuilder, sentenceTokens } from "../components/SentenceBuilder";
-import { speakAfterTransition, speakAuto, stopSpeaking, WordVoices } from "../components/SpeakButton";
+import { SpeakButton, speakAfterTransition, speakAutoSentence, stopSpeaking, WordVoices } from "../components/SpeakButton";
+import { tokenize } from "../listening/meta";
 import { SpeakExercise } from "../components/SpeakExercise";
 import { ReportWordButton } from "../feedback/ReportWordButton";
 import { RootStackParamList } from "../navigation/types";
@@ -278,7 +279,10 @@ export function ReviewScreen({ navigation, route }: Props) {
   function complete(result: Feedback) {
     if (!ex || feedback) return;
     setFeedback(result);
-    if (ex.type !== "matching") speakAuto(ex.items[0].word.word);
+    if (result.correct && ex.type !== "matching") {
+      const example = ex.items[0].word.example?.trim();
+      if (example) speakAutoSentence(example);
+    }
     if (!result.correct) {
       ex.items.forEach((it) => addMistake(it.word.id));
       return;
@@ -526,14 +530,14 @@ export function ReviewScreen({ navigation, route }: Props) {
           </Text>
           {ex.type !== "matching" ? (
             <>
-              <View style={styles.feedbackWordRow}>
-                <Text style={styles.feedbackWord}>{item.word.word}</Text>
-                {item.word.ipa ? <Text style={styles.feedbackIpa}>{item.word.ipa}</Text> : null}
-                <WordVoices text={item.word.word} size="sm" />
-              </View>
               <Text style={styles.feedbackMeaning}>{item.word.meaningVi}</Text>
               {item.word.forms ? <Text style={styles.feedbackForms}>{item.word.forms}</Text> : null}
-              {item.word.example ? <Text style={styles.feedbackExample}>{item.word.example}</Text> : null}
+              {item.word.example ? (
+                <View style={styles.feedbackExampleRow}>
+                  <ExampleHighlight sentence={item.word.example} highlight={item.word.word} />
+                  <SpeakButton text={item.word.example} size="sm" />
+                </View>
+              ) : null}
             </>
           ) : null}
           {!feedback.correct ? (
@@ -546,6 +550,34 @@ export function ReviewScreen({ navigation, route }: Props) {
         </View>
       ) : null}
     </KeyboardScreen>
+  );
+}
+
+function highlightKeys(phrase: string) {
+  return new Set(
+    phrase
+      .trim()
+      .toLowerCase()
+      .replace(/['’]/g, "'")
+      .split(/\s+/)
+      .filter(Boolean),
+  );
+}
+
+function ExampleHighlight({ sentence, highlight }: { sentence: string; highlight: string }) {
+  const keys = highlightKeys(highlight);
+  return (
+    <Text style={[styles.feedbackExample, styles.flex]}>
+      {tokenize(sentence).map((t, i) =>
+        t.word && keys.has(t.word) ? (
+          <Text key={i} style={styles.feedbackExampleBold}>
+            {t.text}
+          </Text>
+        ) : (
+          t.text
+        ),
+      )}
+    </Text>
   );
 }
 
@@ -683,12 +715,12 @@ const styles = StyleSheet.create({
   feedbackOk: { backgroundColor: colors.accentSoft },
   feedbackBad: { backgroundColor: colors.dangerSoft },
   feedbackTitle: { fontSize: 18, fontWeight: "800" },
-  feedbackWordRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, flexWrap: "wrap" },
-  feedbackWord: { fontSize: 20, fontWeight: "700", color: colors.ink },
-  feedbackIpa: { fontSize: 15, color: colors.muted },
+  flex: { flex: 1 },
   feedbackMeaning: { fontSize: 16, fontWeight: "600", color: colors.ink },
   feedbackForms: { fontSize: 14, fontWeight: "700", color: colors.flameDeep },
-  feedbackExample: { fontSize: 15, color: colors.muted, fontStyle: "italic" },
+  feedbackExampleRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  feedbackExample: { fontSize: 15, lineHeight: 22, color: colors.muted, fontStyle: "italic" },
+  feedbackExampleBold: { fontWeight: "800", color: colors.ink, fontStyle: "italic" },
   feedbackNote: { fontSize: 13, color: colors.muted, marginBottom: spacing.xs },
   primaryBtn: {
     backgroundColor: colors.accent,

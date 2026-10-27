@@ -5,11 +5,14 @@ import { colors, shadow, spacing } from "../../theme";
 import { FREEZE_EVERY, previousMilestone, streakStatus } from "../streak/streakCopy";
 import { WeekStrip } from "../streak/WeekStrip";
 
-function explainFreeze(max: number) {
-  Alert.alert(
-    "Đóng băng chuỗi",
-    `Cứ mỗi ${FREEZE_EVERY} ngày học liên tiếp, bạn nhận 1 lượt đóng băng (giữ tối đa ${max}).\n\nNếu lỡ quên học một ngày, app tự dùng 1 lượt để chuỗi không bị mất.`
-  );
+function explainFreeze(streak: Streak) {
+  const max = streak.maxFreezes;
+  const every = streak.freezeEvery ?? FREEZE_EVERY;
+  const body =
+    streak.freezeOnStreak === false
+      ? `Lần học đầu tiên mỗi tháng, bạn nhận 1 lượt đóng băng (giữ tối đa ${max}).`
+      : `Cứ mỗi ${every} ngày học liên tiếp, bạn nhận 1 lượt đóng băng (giữ tối đa ${max}).`;
+  Alert.alert("Đóng băng chuỗi", body);
 }
 
 export function StreakCard({ streak }: { streak: Streak }) {
@@ -34,7 +37,11 @@ export function StreakCard({ streak }: { streak: Streak }) {
             <Ionicons name="trophy" size={14} color={colors.gold} />
             <Text style={styles.bestText}>Kỷ lục {streak.best}</Text>
           </View>
-          <Pressable style={styles.freezes} onPress={() => explainFreeze(streak.maxFreezes)} hitSlop={6}>
+          <Pressable
+            style={styles.freezes}
+            onPress={() => explainFreeze(streak)}
+            hitSlop={6}
+          >
             {Array.from({ length: streak.maxFreezes }, (_, i) => (
               <View key={i} style={[styles.freezeDot, i < streak.freezes && styles.freezeDotOn]}>
                 <Ionicons name="snow" size={13} color={i < streak.freezes ? colors.white : colors.idle} />

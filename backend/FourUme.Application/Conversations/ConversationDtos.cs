@@ -9,9 +9,19 @@ public record ConversationConfig
     public const string SettingKey = "conversation";
 
     public bool Enabled { get; init; } = true;
-    /// <summary>Messages a learner may send per day without Premium.</summary>
+    /// <summary>Legacy daily cap shown in older clients; quota logic uses session fields below.</summary>
     public int FreeDailyTurns { get; init; } = 10;
     public int PremiumDailyTurns { get; init; } = 100;
+    /// <summary>One-time free trial session (turns).</summary>
+    public int FreeFirstSessionTurns { get; init; } = 12;
+    /// <summary>Streak gift interval; 0 disables.</summary>
+    public int StreakGiftEveryDays { get; init; } = 7;
+    public int StreakGiftSessionTurns { get; init; } = 12;
+    public int PremiumSessionsPerDay { get; init; } = 1;
+    public int PremiumTurnsPerSession { get; init; } = 20;
+    public int AddonSessionsPerDay { get; init; } = 3;
+    public int AddonTurnsPerSession { get; init; } = 20;
+    public int AddonDailyTurnCap { get; init; } = 60;
     /// <summary>Learner messages per conversation; afterwards the app offers the summary.</summary>
     public int MaxTurnsPerSession { get; init; } = 20;
     /// <summary>Premium replies are read with an Azure voice instead of the phone's; off by default.</summary>
@@ -21,6 +31,20 @@ public record ConversationConfig
     public int FreeMonthlyChars { get; init; } = 100_000;
     /// <summary>Characters per month on the paid resource (S0) once the free share is used; 0 never uses S0.</summary>
     public int PaidMonthlyChars { get; init; } = 200_000;
+}
+
+public static class ConversationSessionKinds
+{
+    public const string First = "first";
+    public const string StreakGift = "streak_gift";
+    public const string Premium = "premium";
+    public const string Addon = "addon";
+}
+
+public static class ConversationBlockedReasons
+{
+    public const string NeedPremium = "need_premium";
+    public const string NoSessionsLeft = "no_sessions_left";
 }
 
 public static class ConversationRules
@@ -51,6 +75,14 @@ public static class ConversationRules
         var problems = new List<string>();
         if (c.FreeDailyTurns is < 0 or > MaxLimit) problems.Add($"Lượt miễn phí mỗi ngày phải từ 0 đến {MaxLimit}.");
         if (c.PremiumDailyTurns is < 0 or > MaxLimit) problems.Add($"Lượt Premium mỗi ngày phải từ 0 đến {MaxLimit}.");
+        if (c.FreeFirstSessionTurns is < 0 or > MaxSessionTurns) problems.Add($"Lượt buổi thử phải từ 0 đến {MaxSessionTurns}.");
+        if (c.StreakGiftEveryDays is < 0 or > 365) problems.Add("Chu kỳ quà chuỗi phải từ 0 đến 365 ngày.");
+        if (c.StreakGiftSessionTurns is < 0 or > MaxSessionTurns) problems.Add($"Lượt buổi quà chuỗi phải từ 0 đến {MaxSessionTurns}.");
+        if (c.PremiumSessionsPerDay is < 0 or > 50) problems.Add("Số buổi Premium mỗi ngày phải từ 0 đến 50.");
+        if (c.PremiumTurnsPerSession is < 0 or > MaxSessionTurns) problems.Add($"Lượt mỗi buổi Premium phải từ 0 đến {MaxSessionTurns}.");
+        if (c.AddonSessionsPerDay is < 0 or > 50) problems.Add("Số buổi mở rộng mỗi ngày phải từ 0 đến 50.");
+        if (c.AddonTurnsPerSession is < 0 or > MaxSessionTurns) problems.Add($"Lượt mỗi buổi mở rộng phải từ 0 đến {MaxSessionTurns}.");
+        if (c.AddonDailyTurnCap is < 0 or > MaxLimit) problems.Add($"Trần lượt mở rộng mỗi ngày phải từ 0 đến {MaxLimit}.");
         if (c.MaxTurnsPerSession is < 2 or > MaxSessionTurns) problems.Add($"Lượt mỗi buổi phải từ 2 đến {MaxSessionTurns}.");
         if (c.FreeMonthlyChars is < 0 or > MaxMonthlyChars) problems.Add("Ký tự F0 mỗi tháng không hợp lệ.");
         if (c.PaidMonthlyChars is < 0 or > MaxMonthlyChars) problems.Add("Ký tự S0 mỗi tháng không hợp lệ.");
@@ -107,7 +139,20 @@ public record ConversationStatusDto(
     int FreeDailyLimit,
     int PremiumDailyLimit,
     int MaxTurnsPerSession,
-    string Voice);
+    string Voice,
+    int SessionsAllowedToday = 0,
+    int SessionsUsedToday = 0,
+    int TurnsPerSession = 0,
+    string? NextSessionKind = null,
+    string? BlockedReason = null,
+    bool ConversationAddon = false,
+    DateTimeOffset? ConversationAddonUntil = null,
+    /// <summary>From admin config — for Premium screen copy (not user-specific).</summary>
+    int PremiumSessionsPerDay = 1,
+    int PremiumTurnsPerSession = 20,
+    int AddonSessionsPerDay = 3,
+    int AddonTurnsPerSession = 20,
+    int AddonDailyTurnCap = 60);
 
 public record ConversationScenarioDto(Guid Id, string Level, string TitleVi, string Icon, string GoalVi, string AiRole, IReadOnlyList<string> KeyPhrases);
 

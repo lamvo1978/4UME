@@ -57,6 +57,7 @@ public class AdminUserService(
             u.CreatedAt,
             u.LockedAt,
             u.PremiumUntil,
+            u.ConversationAddonUntil,
             LastStudy = u.StudyDays.Where(d => !d.Frozen).Max(d => (DateOnly?)d.Date),
             Known = u.WordProgresses.Count(p => p.Status == WordStatus.Known),
             Grammar = u.GrammarProgresses.Count(p => p.ReviewLevel > 0),
@@ -77,7 +78,7 @@ public class AdminUserService(
 
         return new PagedResult<AdminUserDto>(
             items.Select(r => new AdminUserDto(r.Id, r.Email, r.DisplayName, r.Role, r.CreatedAt, r.LockedAt, r.LastStudy,
-                streaks.GetValueOrDefault(r.Id), r.Known, r.Grammar, r.PremiumUntil, r.Partner)).ToList(),
+                streaks.GetValueOrDefault(r.Id), r.Known, r.Grammar, r.PremiumUntil, r.Partner, r.ConversationAddonUntil)).ToList(),
             total, page, size);
     }
 
@@ -102,7 +103,7 @@ public class AdminUserService(
 
         return new AdminUserDetailDto(
             new AdminUserDto(user.Id, user.Email, user.DisplayName, user.Role, user.CreatedAt, user.LockedAt, lastStudy,
-                ActivityService.CurrentStreak(dates, today), known, grammarPassed, user.PremiumUntil, partner),
+                ActivityService.CurrentStreak(dates, today), known, grammarPassed, user.PremiumUntil, partner, user.ConversationAddonUntil),
             Math.Max(user.BestStreak, ActivityService.LongestRun(dates)),
             user.StreakFreezes,
             await db.StudyDays.CountAsync(d => d.UserId == id && !d.Frozen, ct),
@@ -207,6 +208,35 @@ public class AdminUserService(
             until is null ? $"Tắt Premium: {user.Email}" : $"Premium đến {until:dd/MM/yyyy}: {user.Email}", before, Snapshot(user));
         await db.SaveChangesAsync(ct);
         await PremiumHold.SyncAsync(db, user.Id, ct);
+        return (await GetUserAsync(id, today, ct))!;
+    }
+
+    public async Task<AdminUserDetailDto> SetConversationAddonAsync(Guid id, DateTimeOffset? until, DateOnly today, CancellationToken ct = default)
+    {
+        if (until is { } u && u <= DateTimeOffset.UtcNow) throw new InvalidOperationException("Ngày hết hạn gói mở rộng phải ở tương lai.");
+        var user = await db.Users.FirstOrDefaultAsync(x => x.Id == id, ct) ?? throw new KeyNotFoundException();
+        if (user.ConversationAddonUntil == until) return (await GetUserAsync(id, today, ct))!;
+
+        var before = Snapshot(user);
+        user.ConversationAddonUntil = until;
+        auditor.Record(AuditEntities.User, user.Id.ToString(), AuditActions.Update,
+            until is null ? $"Tắt gói mở rộng đàm thoại: {user.Email}" : $"Gói mở rộng đàm thoại đến {until:dd/MM/yyyy}: {user.Email}", before, Snapshot(user));
+        await db.SaveChangesAsync(ct);
+        return (await GetUserAsync(id, today, ct))!;
+    }
+
+    public async Task<AdminUserDetailDto> SetStreakFreezesAsync(Guid id, int streakFreezes, DateOnly today, CancellationToken ct = default)
+    {
+        if (streakFreezes is < StreakFreezeRules.MinCap or > StreakFreezeRules.MaxCap)
+            throw new InvalidOperationException($"Lượt đóng băng phải từ {StreakFreezeRules.MinCap} đến {StreakFreezeRules.MaxCap}.");
+        var user = await db.Users.FirstOrDefaultAsync(x => x.Id == id, ct) ?? throw new KeyNotFoundException();
+        if (user.StreakFreezes == streakFreezes) return (await GetUserAsync(id, today, ct))!;
+
+        var before = user.StreakFreezes;
+        user.StreakFreezes = streakFreezes;
+        auditor.Record(AuditEntities.User, user.Id.ToString(), AuditActions.Update,
+            $"Lượt đóng băng → {streakFreezes}: {user.Email}", new { streakFreezes = before }, new { streakFreezes });
+        await db.SaveChangesAsync(ct);
         return (await GetUserAsync(id, today, ct))!;
     }
 

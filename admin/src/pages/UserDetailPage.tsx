@@ -7,6 +7,7 @@ import {
   Grid,
   Group,
   Modal,
+  NumberInput,
   Paper,
   SegmentedControl,
   SimpleGrid,
@@ -32,7 +33,7 @@ import {
   IconUsersGroup,
 } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, isPremium, type AdminUserDetail, type AdminUserInvites, type PushResult } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
@@ -173,7 +174,7 @@ export function UserDetailPage() {
         <Stat label="Ngày đã học" value={d.totalStudyDays.toLocaleString("vi-VN")} hint={`Học gần nhất: ${studyAgo(u.lastStudyDate)}`} />
         <Stat label="Từ đã thuộc" value={u.knownWords.toLocaleString("vi-VN")} hint={`${d.hardWords} từ khó`} />
         <Stat label="Ngữ pháp" value={`${u.grammarPassed}/${d.grammarTotal}`} hint="bài đã qua" />
-        <Stat label="Lượt đóng băng" value={String(d.streakFreezes)} hint="giữ chuỗi khi lỡ ngày" />
+        <StreakFreezesStat userId={u.id} value={d.streakFreezes} onSaved={applied} />
       </SimpleGrid>
 
       <Grid gap="md" align="stretch">
@@ -198,6 +199,7 @@ export function UserDetailPage() {
       </Grid>
 
       <PremiumCard detail={d} onDone={applied} />
+      <ConversationAddonCard detail={d} onDone={applied} />
       {d.invites ? <InvitesCard invites={d.invites} onChanged={() => queryClient.invalidateQueries({ queryKey: ["user", id] })} /> : null}
 
       <Card title="Thiết bị nhận thông báo">
@@ -275,6 +277,53 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+function StreakFreezesStat({
+  userId,
+  value,
+  onSaved,
+}: {
+  userId: string;
+  value: number;
+  onSaved: (d: AdminUserDetail) => void;
+}) {
+  const [count, setCount] = useState(value);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => setCount(value), [value]);
+  const dirty = count !== value;
+
+  async function save() {
+    setBusy(true);
+    try {
+      onSaved(await api.setUserStreakFreezes(userId, count));
+      notifySaved("Đã cập nhật lượt đóng băng");
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Paper p="md" radius="lg" shadow="xs">
+      <Group align="flex-end" gap="xs" wrap="nowrap">
+        <NumberInput
+          label="Lượt đóng băng"
+          description="Chỉnh tay khi hỗ trợ"
+          min={0}
+          max={10}
+          value={count}
+          onChange={(v) => setCount(typeof v === "number" ? v : 0)}
+          style={{ flex: 1 }}
+          inputWrapperOrder={["label", "description", "input", "error"]}
+        />
+        <Button size="sm" disabled={!dirty} loading={busy} onClick={save} mb={2}>
+          Lưu
+        </Button>
+      </Group>
+    </Paper>
+  );
+}
+
 function Stat({ label, value, hint, accent }: { label: string; value: string; hint?: string; accent?: boolean }) {
   return (
     <Paper p="md" radius="lg" shadow="xs">
@@ -324,6 +373,80 @@ const PREMIUM_MONTHS = [
   { value: "6", label: "6 tháng" },
   { value: "12", label: "1 năm" },
 ];
+
+/** Conversation add-on (requires Premium); granted by hand until IAP ships. */
+function ConversationAddonCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: AdminUserDetail) => void }) {
+  const u = detail.user;
+  const active = isPremium({ premiumUntil: u.premiumUntil }) || !!u.partnerName;
+  const addon = u.conversationAddonUntil ? new Date(u.conversationAddonUntil).getTime() > Date.now() : false;
+  const [mode, setMode] = useState<"extend" | "remove" | null>(null);
+  const [months, setMonths] = useState("1");
+  const [busy, setBusy] = useState(false);
+
+  if (!active) return null;
+
+  const from = addon ? new Date(u.conversationAddonUntil!) : new Date();
+  const until = new Date(from);
+  until.setMonth(until.getMonth() + Number(months));
+
+  async function run() {
+    setBusy(true);
+    try {
+      onDone(await api.setUserConversationAddon(u.id, mode === "remove" ? null : until.toISOString()));
+      notifySaved(mode === "remove" ? "Đã tắt gói mở rộng" : `Gói mở rộng đến ${shortDate(until.toISOString())}`);
+      setMode(null);
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Paper p="md" radius="lg" shadow="xs">
+      <Group justify="space-between" wrap="wrap" gap="sm">
+        <div>
+          <Text fw={700}>{addon ? `Mở rộng đàm thoại đến ${shortDate(u.conversationAddonUntil!)}` : "Chưa có gói mở rộng đàm thoại"}</Text>
+          <Text fz="sm" c="dimmed">
+            Thêm buổi chat mỗi ngày khi user đã có Premium. Chỉ để test trước IAP.
+          </Text>
+        </div>
+        <Group gap="sm">
+          {addon ? (
+            <Button variant="default" color="red" onClick={() => setMode("remove")}>
+              Tắt gói mở rộng
+            </Button>
+          ) : null}
+          <Button variant="light" onClick={() => setMode("extend")}>
+            {addon ? "Gia hạn" : "Bật gói mở rộng"}
+          </Button>
+        </Group>
+      </Group>
+      <Modal opened={!!mode} onClose={() => setMode(null)} title={mode === "remove" ? "Tắt gói mở rộng?" : addon ? "Gia hạn gói mở rộng" : "Bật gói mở rộng"} centered>
+        <Stack>
+          {mode === "remove" ? (
+            <Text fz="sm">User mất thêm buổi từ gói mở rộng ngay (buổi Premium hằng ngày vẫn giữ).</Text>
+          ) : (
+            <>
+              <SegmentedControl fullWidth data={PREMIUM_MONTHS} value={months} onChange={setMonths} />
+              <Text fz="sm">
+                Gói mở rộng của <b>{u.displayName}</b> đến <b>{shortDate(until.toISOString())}</b>.
+              </Text>
+            </>
+          )}
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setMode(null)}>
+              Huỷ
+            </Button>
+            <Button loading={busy} onClick={run}>
+              Xác nhận
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </Paper>
+  );
+}
 
 /** Premium is granted by hand until in-app purchases exist; extending adds to the current end date. */
 function PremiumCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: AdminUserDetail) => void }) {

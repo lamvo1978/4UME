@@ -2,6 +2,7 @@ using FourUme.Application.Activity;
 using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Domain.Enums;
+using FourUme.Infrastructure.Invites;
 using FourUme.Infrastructure.Listening;
 using FourUme.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FourUme.Infrastructure.Activity;
 
-public class ActivityService(AppDbContext db, IClientClock clock, IReferralService referrals, ILogger<ActivityService> logger) : IActivityService
+public class ActivityService(AppDbContext db, IClientClock clock, IStreakFreezeSettings streakFreeze, IReferralService referrals, ILogger<ActivityService> logger) : IActivityService
 {
     private static readonly string[] CefrOrder = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -18,7 +19,11 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
         try
         {
             var today = clock.Today;
-            await ApplyFreezesAsync(userId, today, ct);
+            var cfg = await streakFreeze.GetAsync(ct);
+            var (cap, premium) = await GetFreezeAccessAsync(userId, cfg, ct);
+            if (premium && cfg.PremiumMonthlyGrant)
+                await EnsureMonthlyGrantAsync(userId, today, cap, ct);
+            await ApplyFreezesAsync(userId, today, cap, ct);
 
             var (newWords, reviews, grammar, listens) = kind switch
             {
@@ -47,11 +52,12 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
             if (inserted.FirstOrDefault())
             {
                 var current = CurrentStreak(await LoadDatesAsync(userId, ct), today);
-                var earned = current % StreakRules.FreezeEvery == 0 ? 1 : 0;
+                var every = Math.Max(1, cfg.FreezeEvery);
+                var earned = !premium && current % every == 0 ? 1 : 0;
                 await db.Database.ExecuteSqlAsync($"""
                     UPDATE "Users"
                     SET "BestStreak" = GREATEST("BestStreak", {current}),
-                        "StreakFreezes" = LEAST({StreakRules.MaxFreezes}, "StreakFreezes" + {earned})
+                        "StreakFreezes" = LEAST({cap}, "StreakFreezes" + {earned})
                     WHERE "Id" = {userId}
                     """, ct);
                 await referrals.OnStudyDayAsync(userId, ct);
@@ -66,7 +72,9 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
     public async Task<StreakDto> GetStreakAsync(Guid userId, CancellationToken ct = default)
     {
         var today = clock.Today;
-        await ApplyFreezesAsync(userId, today, ct);
+        var cfg = await streakFreeze.GetAsync(ct);
+        var (cap, premium) = await GetFreezeAccessAsync(userId, cfg, ct);
+        await ApplyFreezesAsync(userId, today, cap, ct);
 
         var user = await db.Users.AsNoTracking()
             .Where(u => u.Id == userId)
@@ -91,7 +99,9 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
             current,
             Math.Max(user.BestStreak, LongestRun(dates)),
             user.StreakFreezes,
-            StreakRules.MaxFreezes,
+            cap,
+            Math.Max(1, cfg.FreezeEvery),
+            !premium,
             todayRow is { Frozen: false },
             todayRow?.NewWords ?? 0,
             todayRow?.Reviews ?? 0,
@@ -165,7 +175,9 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
     public async Task<WeeklyDto> GetWeeklyAsync(Guid userId, int weeks, CancellationToken ct = default)
     {
         var today = clock.Today;
-        await ApplyFreezesAsync(userId, today, ct);
+        var cfg = await streakFreeze.GetAsync(ct);
+        var (cap, _) = await GetFreezeAccessAsync(userId, cfg, ct);
+        await ApplyFreezesAsync(userId, today, cap, ct);
 
         var createdAt = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.CreatedAt).FirstAsync(ct);
         var joined = DateOnly.FromDateTime(createdAt.ToOffset(clock.Offset).DateTime);
@@ -223,8 +235,27 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
         return count;
     }
 
+    private async Task<(int Cap, bool Premium)> GetFreezeAccessAsync(Guid userId, StreakFreezeConfig cfg, CancellationToken ct)
+    {
+        var premium = (await Entitlements.GetAsync(db, userId, ct)).Premium;
+        return (premium ? cfg.MaxFreezesPremium : cfg.MaxFreezesFree, premium);
+    }
+
+    /// <summary>Premium only: +1 freeze on first study in each local calendar month.</summary>
+    private async Task EnsureMonthlyGrantAsync(Guid userId, DateOnly today, int cap, CancellationToken ct)
+    {
+        var month = today.Year * 100 + today.Month;
+        await db.Database.ExecuteSqlAsync($"""
+            UPDATE "Users"
+            SET "StreakFreezes" = LEAST({cap}, "StreakFreezes" + {StreakRules.MonthlyGrant}),
+                "StreakFreezeGrantMonth" = {month}
+            WHERE "Id" = {userId}
+              AND ("StreakFreezeGrantMonth" IS NULL OR "StreakFreezeGrantMonth" <> {month})
+            """, ct);
+    }
+
     /// <summary>Spends freezes to cover missed days right before today, if there are enough of them.</summary>
-    private async Task ApplyFreezesAsync(Guid userId, DateOnly today, CancellationToken ct)
+    private async Task ApplyFreezesAsync(Guid userId, DateOnly today, int cap, CancellationToken ct)
     {
         var last = await db.StudyDays
             .Where(d => d.UserId == userId && d.Date < today)
@@ -232,7 +263,7 @@ public class ActivityService(AppDbContext db, IClientClock clock, IReferralServi
         if (last is null) return;
 
         var gap = today.DayNumber - last.Value.DayNumber - 1;
-        if (gap < 1 || gap > StreakRules.MaxFreezes) return;
+        if (gap < 1 || gap > cap) return;
 
         var spent = await db.Database.ExecuteSqlAsync($"""
             UPDATE "Users" SET "StreakFreezes" = "StreakFreezes" - {gap}

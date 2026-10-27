@@ -14,6 +14,8 @@ public class User
     public DateTimeOffset? LockedAt { get; set; }
     /// <summary>Premium until this moment, granted by an admin or earned through invites; partner students have Premium separately.</summary>
     public DateTimeOffset? PremiumUntil { get; set; }
+    /// <summary>Conversation add-on until this moment (IAP or admin); only effective while <see cref="PremiumUntil"/> or partner Premium is active.</summary>
+    public DateTimeOffset? ConversationAddonUntil { get; set; }
     /// <summary>The learner's own invite code; created the first time they open the invite screen.</summary>
     public string? ReferralCode { get; set; }
 
@@ -39,6 +41,8 @@ public class User
     public DateTimeOffset? PlacementTakenAt { get; set; }
 
     public int StreakFreezes { get; set; }
+    /// <summary>Local calendar month (YYYYMM) when the monthly freeze grant was last applied.</summary>
+    public int? StreakFreezeGrantMonth { get; set; }
     public int BestStreak { get; set; }
     /// <summary>When the one free try of sentence practice was used; null while it is still available.</summary>
     public DateTimeOffset? PracticeTrialAt { get; set; }

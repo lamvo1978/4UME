@@ -76,6 +76,10 @@ public static class AdminEndpoints
             Results.Ok(await push.SendTestAsync(id, ct)));
         admin.MapPut("/users/{id:guid}/premium", async (Guid id, SetPremiumRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
             Results.Ok(await s.SetPremiumAsync(id, r.Until, clock.Today, ct)));
+        admin.MapPut("/users/{id:guid}/conversation-addon", async (Guid id, SetConversationAddonRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
+            Results.Ok(await s.SetConversationAddonAsync(id, r.Until, clock.Today, ct)));
+        admin.MapPut("/users/{id:guid}/streak-freezes", async (Guid id, SetStreakFreezesRequest r, IAdminUserService s, IClientClock clock, CancellationToken ct) =>
+            Results.Ok(await s.SetStreakFreezesAsync(id, r.StreakFreezes, clock.Today, ct)));
 
         admin.MapGet("/settings", async (IAdminSettingsService s, CancellationToken ct) => Results.Ok(await s.GetAsync(ct)));
         admin.MapPut("/settings/notifications", async (NotificationConfig c, IAdminSettingsService s, CancellationToken ct) =>
@@ -94,6 +98,10 @@ public static class AdminEndpoints
             Results.Ok(await s.SaveReferralAsync(c, ct)));
         admin.MapPost("/settings/referral/reset", async (IAdminSettingsService s, CancellationToken ct) =>
             Results.Ok(await s.ResetReferralAsync(ct)));
+        admin.MapPut("/settings/streak-freeze", async (StreakFreezeConfig c, IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.SaveStreakFreezeAsync(c, ct)));
+        admin.MapPost("/settings/streak-freeze/reset", async (IAdminSettingsService s, CancellationToken ct) =>
+            Results.Ok(await s.ResetStreakFreezeAsync(ct)));
 
         admin.MapGet("/partners", async (IAdminPartnerService s, CancellationToken ct) => Results.Ok(await s.ListAsync(ct)));
         admin.MapGet("/partners/{id:guid}", async (Guid id, IAdminPartnerService s, CancellationToken ct) => Results.Ok(await s.GetAsync(id, ct)));

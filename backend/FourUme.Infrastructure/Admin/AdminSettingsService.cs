@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FourUme.Application.About;
 using FourUme.Application.Abstractions;
+using FourUme.Application.Activity;
 using FourUme.Application.Admin;
 using FourUme.Application.Feedback;
 using FourUme.Application.Invites;
@@ -24,6 +25,7 @@ public class AdminSettingsService(
     IPremiumPerksService premiumPerks,
     IFeedbackSettingsService feedback,
     IReferralService referral,
+    IStreakFreezeSettings streakFreeze,
     Auditor auditor) : IAdminSettingsService
 {
     private const string ReferralSummary = "Thông số mời bạn bè";
@@ -33,6 +35,7 @@ public class AdminSettingsService(
     private const string NotificationsSummary = "Thông số thông báo";
     private const string ListeningSummary = "Thông số góc nghe";
     private const string PronunciationSummary = "Thông số kiểm tra giọng đọc";
+    private const string StreakFreezeSummary = "Thông số đóng băng chuỗi";
     private const string AboutSummary = "Nội dung Giới thiệu & bản quyền";
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
@@ -40,7 +43,7 @@ public class AdminSettingsService(
     {
         var updated = await db.AppSettings.AsNoTracking()
             .Where(s => s.Key == NotificationConfig.SettingKey || s.Key == ListeningConfig.SettingKey || s.Key == PronunciationConfig.SettingKey
-                || s.Key == ReferralConfig.SettingKey)
+                || s.Key == ReferralConfig.SettingKey || s.Key == StreakFreezeConfig.SettingKey)
             .ToDictionaryAsync(s => s.Key, s => s.UpdatedAt, ct);
         return new AdminSettingsDto(
             new AdminNotificationSettingsDto(await notifications.GetConfigAsync(ct), new NotificationConfig(),
@@ -51,7 +54,31 @@ public class AdminSettingsService(
                 updated.TryGetValue(PronunciationConfig.SettingKey, out var p) ? p : null,
                 await pronunciation.GetMonthUsageAsync(ct), azure.Configured, azure.PaidConfigured),
             new AdminReferralSettingsDto(await referral.GetConfigAsync(ct), new ReferralConfig(),
-                updated.TryGetValue(ReferralConfig.SettingKey, out var r) ? r : null));
+                updated.TryGetValue(ReferralConfig.SettingKey, out var r) ? r : null),
+            new AdminStreakFreezeSettingsDto(await streakFreeze.GetAsync(ct), new StreakFreezeConfig(),
+                updated.TryGetValue(StreakFreezeConfig.SettingKey, out var sf) ? sf : null));
+    }
+
+    public async Task<AdminSettingsDto> SaveStreakFreezeAsync(StreakFreezeConfig config, CancellationToken ct = default)
+    {
+        await ApplyStreakFreezeAsync(config, AuditActions.Update, ct);
+        return await GetAsync(ct);
+    }
+
+    public async Task<AdminSettingsDto> ResetStreakFreezeAsync(CancellationToken ct = default)
+    {
+        await ResetAsync(StreakFreezeConfig.SettingKey, StreakFreezeSummary, await streakFreeze.GetAsync(ct), new StreakFreezeConfig(), ct);
+        return await GetAsync(ct);
+    }
+
+    public Task RestoreStreakFreezeAsync(StreakFreezeConfig config, CancellationToken ct = default) =>
+        ApplyStreakFreezeAsync(config, AuditActions.Restore, ct);
+
+    private async Task ApplyStreakFreezeAsync(StreakFreezeConfig config, string action, CancellationToken ct)
+    {
+        var problems = StreakFreezeRules.Validate(config);
+        if (problems.Count > 0) throw new InvalidOperationException(string.Join(" ", problems));
+        await WriteAsync(StreakFreezeConfig.SettingKey, StreakFreezeSummary, action, await streakFreeze.GetAsync(ct), config, ct);
     }
 
     public async Task<AdminSettingsDto> SaveReferralAsync(ReferralConfig config, CancellationToken ct = default)
