@@ -12,6 +12,15 @@ public class Word
     public string MeaningVi { get; set; } = string.Empty;
     public string Example { get; set; } = string.Empty;
     public string ExampleVi { get; set; } = string.Empty;
+    /// <summary>Azure voice used for <see cref="ExampleAudioUrl"/>.</summary>
+    public string? ExampleVoice { get; set; }
+    /// <summary>"/media/word-examples/…mp3"; null until generated (the app falls back to the phone's voice).</summary>
+    public string? ExampleAudioUrl { get; set; }
+    /// <summary>English example the audio was made from; stale when it differs from <see cref="Example"/>.</summary>
+    public string? ExampleAudioText { get; set; }
+    /// <summary>Recording learners hear; null when missing or stale.</summary>
+    public string? PublicExampleAudioUrl =>
+        ExampleAudioUrl is not null && ExampleAudioText == Example ? ExampleAudioUrl : null;
     public string? ImageUrl { get; set; }
     /// <summary>Set when the image was picked automatically; the app hides it until an admin approves it.</summary>
     public bool ImagePending { get; set; }

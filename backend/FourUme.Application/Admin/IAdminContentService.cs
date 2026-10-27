@@ -31,4 +31,8 @@ public interface IAdminContentService
     Task<AdminMediaDto> UploadMediaAsync(Stream content, string originalName, bool squareCrop, Guid uploadedBy, CancellationToken ct = default);
     /// <summary>Only images no word uses can be deleted.</summary>
     Task DeleteMediaAsync(Guid id, CancellationToken ct = default);
+
+    Task<ExampleAudioStatusDto> GetExampleAudioStatusAsync(CancellationToken ct = default);
+    /// <param name="request">When <see cref="StartExampleAudioRequest.MaxMonthPercent"/> is set, only uses that share of the monthly char limit minus usage so far.</param>
+    Task<ExampleAudioStatusDto> StartExampleAudioAsync(StartExampleAudioRequest? request, CancellationToken ct = default);
 }

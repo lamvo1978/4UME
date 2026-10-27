@@ -78,6 +78,19 @@ public record SaveWordRequest(
     string? ImageUrl,
     bool Published);
 
+public record ExampleAudioStatusDto(
+    bool Configured,
+    bool Running,
+    int Done,
+    int Total,
+    string? Error,
+    int Missing,
+    int MonthChars,
+    int MonthCharLimit);
+
+/// <param name="MaxMonthPercent">Cap this run to at most this share of <see cref="ExampleAudioStatusDto.MonthCharLimit"/> minus chars already used this month; null = use all remaining quota up to the limit.</param>
+public record StartExampleAudioRequest(int? MaxMonthPercent);
+
 public record AdminMediaDto(
     Guid Id,
     string Url,

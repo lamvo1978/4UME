@@ -279,6 +279,8 @@ export type Word = {
   meaningVi: string;
   example: string;
   exampleVi: string;
+  /** Azure recording of `example`; null until generated or after the example text changes. */
+  exampleAudioUrl: string | null;
   imageUrl: string | null;
   status: number;
   /** Irregular forms, e.g. "go – went – gone" or "số nhiều: children". */

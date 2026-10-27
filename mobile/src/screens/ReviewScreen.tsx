@@ -281,7 +281,7 @@ export function ReviewScreen({ navigation, route }: Props) {
     setFeedback(result);
     if (result.correct && ex.type !== "matching") {
       const example = ex.items[0].word.example?.trim();
-      if (example) speakAutoSentence(example);
+      if (example) speakAutoSentence(example, ex.items[0].word.exampleAudioUrl);
     }
     if (!result.correct) {
       ex.items.forEach((it) => addMistake(it.word.id));
@@ -535,7 +535,7 @@ export function ReviewScreen({ navigation, route }: Props) {
               {item.word.example ? (
                 <View style={styles.feedbackExampleRow}>
                   <ExampleHighlight sentence={item.word.example} highlight={item.word.word} />
-                  <SpeakButton text={item.word.example} size="sm" />
+                  <SpeakButton text={item.word.example} recordingUrl={item.word.exampleAudioUrl} size="sm" />
                 </View>
               ) : null}
             </>

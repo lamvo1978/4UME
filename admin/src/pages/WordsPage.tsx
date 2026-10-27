@@ -25,6 +25,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, mediaSrc, type AdminWord, type WordFilters } from "../api";
 import { Select } from "../components/AppSelect";
 import { notifyError, notifySaved, posLabel } from "../lib";
+import { ExampleAudioCard } from "../vocabulary/ExampleAudioCard";
 
 const PAGE_SIZE = 50;
 
@@ -146,6 +147,8 @@ export function WordsPage() {
           </Button>
         </Group>
       </Group>
+
+      <ExampleAudioCard />
 
       <Paper p="sm" radius="lg" shadow="xs">
         <SimpleGrid cols={{ base: 2, sm: 3, lg: 6 }} spacing="xs">

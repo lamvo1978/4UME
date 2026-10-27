@@ -178,13 +178,24 @@ export function speakAuto(text: string) {
   if (speechSettings.auto) speakAfterTransition(text);
 }
 
-/** Example sentence after a correct answer — phone voice, not the word recording API. */
-export function speakAutoSentence(text: string) {
+/** Vocabulary example: Azure recording when present, otherwise the phone voice. */
+export function speakExample(text: string, audioUrl?: string | null) {
+  stopAll();
+  const t = ++token;
+  void warmUp().then(async () => {
+    if (t !== token) return;
+    if (audioUrl) speakRecording(audioUrl, text, await randomVoice());
+    else speak(text, speechSettings.rate, true);
+  });
+}
+
+/** Example after a correct answer when auto-speak is on. */
+export function speakAutoSentence(text: string, audioUrl?: string | null) {
   if (!speechSettings.auto) return;
   stopAll();
   const t = ++token;
   InteractionManager.runAfterInteractions(() => {
-    if (t === token) speak(text, speechSettings.rate, true);
+    if (t === token) speakExample(text, audioUrl);
   });
 }
 
@@ -195,12 +206,22 @@ export function stopSpeaking() {
 
 const SIZES = { sm: 30, md: 40, lg: 88 } as const;
 
-/** Reads a sentence (random English voice of the phone), or a word in the given Azure voice. */
-export function SpeakButton({ text, size = "md", voice }: { text: string; size?: keyof typeof SIZES; voice?: WordVoice }) {
+/** Reads a sentence or example (`recordingUrl`), or a word in the given Azure voice. */
+export function SpeakButton({
+  text,
+  size = "md",
+  voice,
+  recordingUrl,
+}: {
+  text: string;
+  size?: keyof typeof SIZES;
+  voice?: WordVoice;
+  recordingUrl?: string | null;
+}) {
   const d = SIZES[size];
   return (
     <Pressable
-      onPress={() => (voice ? speakWord(text, voice) : speak(text, speechSettings.rate, true))}
+      onPress={() => (voice ? speakWord(text, voice) : speakExample(text, recordingUrl))}
       hitSlop={10}
       accessibilityLabel={voice === "male" ? "Nghe giọng nam" : voice === "female" ? "Nghe giọng nữ" : "Nghe"}
       style={({ pressed }) => [

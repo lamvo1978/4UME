@@ -265,7 +265,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
             <View style={styles.exampleBox}>
               <View style={styles.exampleRow}>
                 <Text style={styles.example}>{current.example}</Text>
-                <SpeakButton text={current.example} size="sm" />
+                <SpeakButton text={current.example} recordingUrl={current.exampleAudioUrl} size="sm" />
               </View>
               {current.exampleVi ? <Text style={styles.exampleVi}>{current.exampleVi}</Text> : null}
             </View>

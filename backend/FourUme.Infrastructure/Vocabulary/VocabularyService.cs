@@ -84,7 +84,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
                 return new
                 {
                     Dto = new WordDto(
-                        w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicImageUrl,
+                        w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicExampleAudioUrl, w.PublicImageUrl,
                         p?.Status ?? WordStatus.New, WordForms.Describe(w.Text, w.Pos)),
                     w.SortOrder,
                     Easy = PlacementRules.Rank(w.Level) < startRank,
@@ -121,7 +121,7 @@ public class VocabularyService(IAppDbContext db, IActivityService activity) : IV
             {
                 var w = words[h.Id];
                 return new WordSearchResultDto(
-                    new WordDto(w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicImageUrl,
+                    new WordDto(w.Id, w.Text, w.Ipa, w.Pos, w.Level, w.MeaningVi, w.Example, w.ExampleVi, w.PublicExampleAudioUrl, w.PublicImageUrl,
                         status.GetValueOrDefault(h.Id, WordStatus.New), WordForms.Describe(w.Text, w.Pos)),
                     w.DeckId,
                     w.Deck.TitleVi,

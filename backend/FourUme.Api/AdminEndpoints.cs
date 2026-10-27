@@ -208,6 +208,10 @@ public static class AdminEndpoints
             await s.DeleteWordAsync(id, ct);
             return Results.NoContent();
         });
+        admin.MapGet("/words/example-audio", async (IAdminContentService s, CancellationToken ct) =>
+            Results.Ok(await s.GetExampleAudioStatusAsync(ct)));
+        admin.MapPost("/words/example-audio", async (StartExampleAudioRequest? r, IAdminContentService s, CancellationToken ct) =>
+            Results.Ok(await s.StartExampleAudioAsync(r, ct)));
 
         admin.MapGet("/grammar", async (IAdminGrammarService s, CancellationToken ct) => Results.Ok(await s.GetLessonsAsync(ct)));
         admin.MapGet("/grammar/export", async (IAdminGrammarService s, CancellationToken ct) =>
