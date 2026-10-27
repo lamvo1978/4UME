@@ -43,11 +43,13 @@ if [[ -z "$IPA" ]]; then
   exit 1
 fi
 
-if unzip -l "$IPA" | grep -q 'main.jsbundle'; then
+listing="$(unzip -l "$IPA" 2>/dev/null || true)"
+if [[ "$listing" == *main.jsbundle* ]]; then
   echo "OK: main.jsbundle in $IPA"
-  if unzip -p "$IPA" 'Payload/*.app/main.jsbundle' 2>/dev/null | strings | grep -q 'api.4ume.io.vn'; then
+  APP_BUNDLE="$(unzip -Z1 "$IPA" 2>/dev/null | grep -E 'Payload/[^/]+\.app/main\.jsbundle$' | head -1)"
+  if [[ -n "$APP_BUNDLE" ]] && unzip -p "$IPA" "$APP_BUNDLE" 2>/dev/null | strings | grep -q 'api.4ume.io.vn'; then
     echo "OK: bundle references https://api.4ume.io.vn"
-  elif unzip -p "$IPA" 'Payload/*.app/main.jsbundle' 2>/dev/null | strings | grep -qE '192\.168\.|127\.0\.0\.1:5088'; then
+  elif [[ -n "$APP_BUNDLE" ]] && unzip -p "$IPA" "$APP_BUNDLE" 2>/dev/null | strings | grep -qE '192\.168\.|127\.0\.0\.1:5088'; then
     echo "ERROR: bundle still has dev API URL — check .env.local was moved aside."
     exit 1
   fi
