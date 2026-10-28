@@ -10,7 +10,9 @@ Người học mới làm một bài trắc nghiệm ngắn để 4UME biết n�
 2. **Người dùng cũ chưa có cấp**: Trang chủ có thẻ *Kiểm tra trình độ từ vựng* (không bắt buộc).
 3. **Hồ sơ → Cài đặt (bánh răng) → Cài đặt học → Trình độ từ vựng**: đổi cấp A1–B2, đổi cách xử lý từ dễ, nút *Kiểm tra* / *Kiểm tra lại*.
 
-Phần ngữ pháp kiểm tra đầu vào chạy A1–B2 khi mỗi cấp có ≥ 4 câu đang bật trên admin. Câu B2 mẫu import: `backend/data/placement-grammar-b2-import.json`.
+Phần ngữ pháp kiểm tra đầu vào chạy A1–B2 khi mỗi cấp có ≥ 4 câu đang bật trên admin.
+
+**Import câu B2 mẫu:** file `backend/data/placement-grammar-b2-import.json` — vào admin **Kiểm tra đầu vào** (sidebar), nút `{ }` → **Nhập từ file JSON**. **Không** dùng trang **Ngữ pháp** (khung đó cần `slug` bài học, không phải câu trắc nghiệm đầu vào).
 
 ## Bài kiểm tra
 

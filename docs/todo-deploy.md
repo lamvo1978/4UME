@@ -4,7 +4,7 @@
 
 | Ngày | Commit | Nội dung |
 |---|---|---|
-| 28/10 | *(PR word search + grammar B2)* | **App:** Tìm từ — đọc ví dụ, ảnh + phóng to (`expo-blur`, cần **build store mới**). MCQ chấp nhận nhiều đáp án (`acceptedAnswers`). **API:** migration `PlacementGrammarAcceptedAnswers`; seeder 10 bài ngữ pháp B2. **Admin:** tick *Cũng đúng* trên MCQ. Sau merge: `git pull` + `docker compose up -d --build api` (migrate DB). Import câu đầu vào B2: `backend/data/placement-grammar-b2-import.json`. |
+| 28/10 | *(PR word search + grammar B2)* | **App:** Tìm từ — đọc ví dụ, ảnh + phóng to (`expo-blur`, cần **build store mới**). MCQ chấp nhận nhiều đáp án (`acceptedAnswers`). **API:** migration `PlacementGrammarAcceptedAnswers`; seeder 10 bài ngữ pháp B2. **Admin:** tick *Cũng đúng* trên MCQ. Sau merge: `git pull` + `docker compose up -d --build api` (migrate DB). Import câu đầu vào B2: admin **Kiểm tra đầu vào** → `{ }` → `backend/data/placement-grammar-b2-import.json` (không phải trang Ngữ pháp). |
 | 28/10 | *(PR Premium core)* | Đóng băng chuỗi (config admin), quota đàm thoại buổi/lượt, gói mở rộng (`ConversationAddonUntil`), migrations mới — **deploy API bắt buộc** (`docker compose up -d --build api`). App: màn Premium (section + giá tham khảo), hub đàm thoại. Doc: [streak-freeze.md](streak-freeze.md), [premium-iap-roadmap.md](premium-iap-roadmap.md). |
 | 09/10 | `821f1e2`, `0d1d4ef` | Lên VPS cạnh PetHubPro, SSL wildcard tự gia hạn qua Cloudflare |
 | 09/10 | `667b868` | Tài khoản quản trị gốc đổi thành `admin@4ume.io.vn` |
