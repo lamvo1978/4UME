@@ -141,11 +141,15 @@ export function PlacementPage() {
               <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
                 <Text fw={600}>{q.prompt}</Text>
                 <Group gap={6}>
-                  {q.options.map((o) => (
-                    <Badge key={o} variant={o === q.answer ? "filled" : "outline"} color={o === q.answer ? "teal" : "gray"} tt="none">
-                      {o}
-                    </Badge>
-                  ))}
+                  {q.options.map((o) => {
+                    const also = (q.acceptedAnswers ?? []).includes(o);
+                    const primary = o === q.answer;
+                    return (
+                      <Badge key={o} variant={primary || also ? "filled" : "outline"} color={primary ? "teal" : also ? "blue" : "gray"} tt="none">
+                        {o}
+                      </Badge>
+                    );
+                  })}
                 </Group>
                 {q.lessonSlug ? (
                   <Text fz="xs" c="dimmed">

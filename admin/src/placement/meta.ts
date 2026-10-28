@@ -12,6 +12,7 @@ export const emptyQuestion = (level: PlacementLevel): PlacementGrammarInput => (
   prompt: "",
   options: ["", "", ""],
   answer: "",
+  acceptedAnswers: [],
   explanationVi: "",
   lessonSlug: null,
   published: true,

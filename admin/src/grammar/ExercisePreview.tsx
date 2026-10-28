@@ -77,8 +77,16 @@ function Question({ exercise: ex, onAnswer, locked }: QuestionProps) {
   }
 }
 
+function mcqAccepted(ex: GrammarExercise) {
+  const ok = new Set<string>();
+  if (ex.answer) ok.add(ex.answer);
+  for (const a of ex.acceptedAnswers ?? []) ok.add(a);
+  return ok;
+}
+
 function Mcq({ exercise: ex, onAnswer, locked }: QuestionProps) {
   const [picked, setPicked] = useState<string | null>(null);
+  const accepted = mcqAccepted(ex);
   return (
     <>
       <Text fz="lg" fw={600}>
@@ -86,7 +94,8 @@ function Mcq({ exercise: ex, onAnswer, locked }: QuestionProps) {
       </Text>
       <Stack gap={8}>
         {ex.options?.map((o, i) => {
-          const state = locked && picked !== null ? (o === ex.answer ? "teal" : o === picked ? "red" : "gray") : "gray";
+          const right = accepted.has(o);
+          const state = locked && picked !== null ? (right ? "teal" : o === picked ? "red" : "gray") : "gray";
           return (
             <Button
               key={i}
@@ -97,7 +106,7 @@ function Mcq({ exercise: ex, onAnswer, locked }: QuestionProps) {
               onClick={() => {
                 if (locked) return;
                 setPicked(o);
-                onAnswer(o === ex.answer);
+                onAnswer(right);
               }}
             >
               {o || "…"}

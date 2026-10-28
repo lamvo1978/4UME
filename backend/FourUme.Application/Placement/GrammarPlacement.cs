@@ -1,3 +1,5 @@
+using FourUme.Application.Grammar;
+
 namespace FourUme.Application.Placement;
 
 public static class GrammarPlacementRules
@@ -22,12 +24,15 @@ public static class GrammarPlacementRules
         if (options.Any(string.IsNullOrWhiteSpace)) errors.Add("Có lựa chọn bị trống.");
         if (options.Distinct(StringComparer.OrdinalIgnoreCase).Count() != options.Count) errors.Add("Các lựa chọn bị trùng nhau.");
         if (string.IsNullOrWhiteSpace(q.Answer) || !options.Contains(q.Answer)) errors.Add("Đáp án phải là một trong các lựa chọn.");
+        if (q.AcceptedAnswers?.Any(a => !options.Contains(a, StringComparer.OrdinalIgnoreCase)) == true)
+            errors.Add("Đáp án phụ phải nằm trong các lựa chọn.");
         return errors;
     }
 }
 
-/// <param name="Answer">Index of the correct option; like the vocabulary part, the test only steers the learner's own suggestion.</param>
-public record PlacementGrammarQuestionDto(Guid Id, string Prompt, IReadOnlyList<string> Options, int Answer, string? LessonSlug);
+/// <param name="Answer">Index of the canonical correct option (for feedback).</param>
+/// <param name="AcceptedAnswers">Indices of every option that counts as correct after shuffling.</param>
+public record PlacementGrammarQuestionDto(Guid Id, string Prompt, IReadOnlyList<string> Options, int Answer, IReadOnlyList<int> AcceptedAnswers, string? LessonSlug);
 public record PlacementGrammarLevelDto(string Level, IReadOnlyList<PlacementGrammarQuestionDto> Questions);
 
 public record AdminPlacementGrammarDto(
@@ -36,6 +41,7 @@ public record AdminPlacementGrammarDto(
     string Prompt,
     IReadOnlyList<string> Options,
     string Answer,
+    IReadOnlyList<string> AcceptedAnswers,
     string ExplanationVi,
     string? LessonSlug,
     bool Published,
@@ -48,7 +54,8 @@ public record SavePlacementGrammarRequest(
     string Answer,
     string? ExplanationVi,
     string? LessonSlug,
-    bool Published = true);
+    bool Published = true,
+    List<string>? AcceptedAnswers = null);
 
 public record SavePlacementGrammarBatchRequest(List<SavePlacementGrammarRequest> Questions);
 
@@ -69,7 +76,8 @@ public record PlacementGrammarFileItem(
     string Answer,
     string? ExplanationVi,
     string? LessonSlug,
-    bool Published = true);
+    bool Published = true,
+    List<string>? AcceptedAnswers = null);
 
 /// <param name="Commit">False only previews what would change.</param>
 public record ImportPlacementGrammarRequest(List<PlacementGrammarFileItem> Questions, bool Commit);

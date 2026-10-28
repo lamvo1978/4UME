@@ -68,6 +68,8 @@ public sealed class GrammarExercise
     public string? Sentence { get; set; }
     public List<string>? Options { get; set; }
     public string? Answer { get; set; }
+    /// <summary>mcq: other correct options besides <see cref="Answer"/>.</summary>
+    public List<string>? AcceptedAnswers { get; set; }
     public List<string>? Answers { get; set; }
     public List<string>? Distractors { get; set; }
     public string? Correction { get; set; }
@@ -203,6 +205,7 @@ public static partial class GrammarValidator
                 if (e.Options is not { Count: >= 2 } || e.Options.Any(Blank)) errors.Add($"{where}: cần ít nhất 2 lựa chọn, không để trống.");
                 else if (e.Options.Distinct().Count() != e.Options.Count) errors.Add($"{where}: các lựa chọn bị trùng.");
                 else if (e.Answer is null || !e.Options.Contains(e.Answer)) errors.Add($"{where}: đáp án phải là một trong các lựa chọn.");
+                else if (e.AcceptedAnswers?.Any(a => !e.Options.Contains(a)) == true) errors.Add($"{where}: đáp án phụ phải nằm trong các lựa chọn.");
                 break;
             case "fill":
                 if (e.Prompt?.Contains("___") != true) errors.Add($"{where}: câu cần có chỗ trống ___.");

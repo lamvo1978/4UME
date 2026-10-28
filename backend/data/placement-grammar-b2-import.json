@@ -1,0 +1,76 @@
+[
+  {
+    "level": "B2",
+    "prompt": "If I ___ studied law, I would be a lawyer now.",
+    "options": ["had", "have", "would have"],
+    "answer": "had",
+    "acceptedAnswers": [],
+    "explanationVi": "Điều kiện hỗn hợp: If + past perfect → hiện tại.",
+    "lessonSlug": "mixed-conditionals",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "By next Friday, she ___ the project.",
+    "options": ["will finish", "will have finished", "will be finishing"],
+    "answer": "will have finished",
+    "explanationVi": "By + mốc thời gian → future perfect.",
+    "lessonSlug": "future-perfect-continuous",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "You ___ me about the delay — I waited for an hour!",
+    "options": ["should tell", "should have told", "must tell"],
+    "answer": "should have told",
+    "explanationVi": "Hối tiếc quá khứ: should have + V3.",
+    "lessonSlug": "modals-past",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "I need to ___ my phone repaired.",
+    "options": ["make", "have", "do"],
+    "answer": "have",
+    "acceptedAnswers": ["get"],
+    "explanationVi": "have/get + object + V3.",
+    "lessonSlug": "causative-have-get",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "___ finished the report, he sent it to the client.",
+    "options": ["Having", "Have", "Had"],
+    "answer": "Having",
+    "explanationVi": "Having + V3 = sau khi đã xong.",
+    "lessonSlug": "participle-clauses",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "It ___ Tom who suggested the idea.",
+    "options": ["is", "was", "were"],
+    "answer": "was",
+    "explanationVi": "Cleft: It was Tom who...",
+    "lessonSlug": "cleft-sentences",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "Never ___ such beautiful scenery.",
+    "options": ["I have seen", "have I seen", "I saw"],
+    "answer": "have I seen",
+    "explanationVi": "Never have I... (đảo ngữ).",
+    "lessonSlug": "inversion-emphasis",
+    "published": true
+  },
+  {
+    "level": "B2",
+    "prompt": "The company ___ to be planning layoffs.",
+    "options": ["is said", "says", "is saying"],
+    "answer": "is said",
+    "explanationVi": "Reporting passive: is said to be...",
+    "lessonSlug": "passive-reporting",
+    "published": true
+  }
+]

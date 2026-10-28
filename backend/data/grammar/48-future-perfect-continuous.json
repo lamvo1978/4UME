@@ -1,0 +1,42 @@
+{
+  "slug": "future-perfect-continuous",
+  "version": 1,
+  "titleVi": "Tương lai hoàn thành và tiếp diễn",
+  "titleEn": "Future perfect and future continuous",
+  "level": "B2",
+  "order": 48,
+  "summaryVi": "will have + V3 (hoàn thành trước một thời điểm tương lai); will be + V-ing (đang diễn ra tại một thời điểm tương lai).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + will have + V3 (+ by / before + thời điểm)", "example": { "en": "By next June, I will have finished university.", "vi": "Đến tháng 6 năm sau, tôi sẽ đã tốt nghiệp." } },
+        { "kind": "affirmative", "pattern": "S + will be + V-ing (+ at / this time + thời điểm)", "example": { "en": "This time tomorrow, I will be flying to Tokyo.", "vi": "Giờ này ngày mai, tôi sẽ đang bay tới Tokyo." } },
+        { "kind": "note", "pattern": "Future perfect nhấn KẾT QUẢ; future continuous nhấn QUÁ TRÌNH đang diễn ra.", "example": { "en": "By 6 p.m. she will have cooked dinner. / At 6 p.m. she will be cooking dinner.", "vi": "6 giờ tối cô ấy sẽ nấu xong. / 6 giờ tối cô ấy sẽ đang nấu." } }
+      ]
+    },
+    { "type": "signals", "words": ["by", "by the time", "before", "at this time tomorrow", "in two hours", "when", "while"] },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "By 2027 I will finish the project.", "right": "By 2027 I will have finished the project.", "noteVi": "Trước mốc tương lai → will have + V3." },
+        { "wrong": "At 8 p.m. I will work.", "right": "At 8 p.m. I will be working.", "noteVi": "Đang làm lúc 8 tối → will be + V-ing." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "fpc-01", "type": "mcq", "prompt": "By the end of this month, we ___ all the reports.", "options": ["will finish", "will have finished", "will be finishing"], "answer": "will have finished", "explanationVi": "By + mốc thời gian → future perfect." },
+    { "id": "fpc-02", "type": "mcq", "prompt": "Don't call at nine — I ___ a meeting.", "options": ["will have", "will be having", "will have had"], "answer": "will be having", "explanationVi": "Lúc 9 giờ đang họp → will be + V-ing." },
+    { "id": "fpc-03", "type": "mcq", "prompt": "How long ___ here by next year?", "options": ["will you work", "will you have worked", "will you be working"], "answer": "will you have worked", "explanationVi": "How long + by → hoàn thành đến lúc đó." },
+    { "id": "fpc-04", "type": "fill", "prompt": "This time next week, they ___ (travel) across Europe.", "answers": ["will be traveling", "will be travelling"], "explanationVi": "This time next week → will be + V-ing." },
+    { "id": "fpc-05", "type": "fill", "prompt": "She ___ (not / complete) the course by Friday. (future perfect negative)", "answers": ["won't have completed", "will not have completed"], "explanationVi": "will not have + V3." },
+    { "id": "fpc-06", "type": "order", "promptVi": "Đến năm 2030, họ sẽ đã xây xong cầu mới.", "answer": "By 2030, they will have built the new bridge.", "distractors": ["will"], "explanationVi": "By 2030 → will have + V3." },
+    { "id": "fpc-07", "type": "transform", "instructionVi": "Viết lại dùng future continuous", "source": "At midnight I'll watch the fireworks.", "answer": "At midnight I'll be watching the fireworks.", "distractors": ["have"], "explanationVi": "At midnight → đang xem." },
+    { "id": "fpc-08", "type": "error", "sentence": "By tomorrow he [will work] here for ten years.", "correction": "will have worked", "explanationVi": "By tomorrow + khoảng thời gian → will have worked." },
+    { "id": "fpc-09", "type": "mcq", "prompt": "When you arrive, I ___ dinner.", "options": ["will cook", "will be cooking", "will have cooked"], "answer": "will be cooking", "explanationVi": "When you arrive = lúc đó đang nấu (thường dùng continuous)." },
+    { "id": "fpc-10", "type": "fill", "prompt": "By the time the film starts, we ___ (find) our seats.", "answers": ["will have found"], "explanationVi": "By the time → xong trước khi phim bắt đầu." },
+    { "id": "fpc-11", "type": "order", "promptVi": "Lúc này ngày mai, tôi sẽ đang thi.", "answer": "This time tomorrow, I will be taking an exam.", "distractors": ["have"], "explanationVi": "will be taking." },
+    { "id": "fpc-12", "type": "transform", "instructionVi": "Viết lại dùng future perfect", "source": "They'll send the package before Monday.", "answer": "They will have sent the package by Monday.", "distractors": ["be"], "explanationVi": "by Monday → will have sent." }
+  ]
+}

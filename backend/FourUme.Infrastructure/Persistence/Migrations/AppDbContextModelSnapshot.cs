@@ -1102,6 +1102,10 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.PrimitiveCollection<List<string>>("AcceptedAnswers")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("Answer")
                         .IsRequired()
                         .HasMaxLength(200)

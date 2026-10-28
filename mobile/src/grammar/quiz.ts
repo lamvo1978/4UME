@@ -156,6 +156,17 @@ export function clozeGapCorrect(accepted: string[], given: string) {
   return accepted.some((a) => normalizeAnswer(a, true) === normalizeAnswer(given, true));
 }
 
+/** mcq: primary answer plus any other accepted options. */
+export function mcqAccepted(ex: Extract<GrammarExercise, { type: "mcq" }>) {
+  const ok = new Set<string>([ex.answer]);
+  for (const a of ex.acceptedAnswers ?? []) ok.add(a);
+  return ok;
+}
+
+export function mcqIsCorrect(ex: Extract<GrammarExercise, { type: "mcq" }>, given: string) {
+  return mcqAccepted(ex).has(given);
+}
+
 export function normalizeAnswer(s: string, stripEndPunctuation = false) {
   let out = s.replace(/[’‘]/g, "'").trim().toLowerCase().replace(/\s+/g, " ");
   if (stripEndPunctuation) out = out.replace(/[.!?,;:]+$/, "").trim();
@@ -207,7 +218,7 @@ export function displayAnswer(ex: GrammarExercise) {
 export function isCorrect(ex: GrammarExercise, given: string) {
   switch (ex.type) {
     case "mcq":
-      return given === ex.answer;
+      return mcqIsCorrect(ex, given);
     case "fill":
       return fillAccepted(ex.prompt, ex.answers).has(normalizeAnswer(given, true));
     case "order":

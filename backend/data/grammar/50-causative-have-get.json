@@ -1,0 +1,41 @@
+{
+  "slug": "causative-have-get",
+  "version": 1,
+  "titleVi": "Causative: have / get something done",
+  "titleEn": "Causative structures",
+  "level": "B2",
+  "order": 50,
+  "summaryVi": "Nhờ người khác làm giúp: have/get + object + V3; get thân mật hơn have.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "S + have + object + V3", "example": { "en": "I had my hair cut yesterday.", "vi": "Hôm qua tôi đi cắt tóc (nhờ thợ)." } },
+        { "kind": "affirmative", "pattern": "S + get + object + V3", "example": { "en": "We got the car repaired.", "vi": "Chúng tôi nhờ sửa xe." } },
+        { "kind": "note", "pattern": "Chủ ngữ không tự làm — người khác làm cho.", "example": { "en": "She had her nails done.", "vi": "Cô ấy đi làm móng." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "I cut my hair at the salon.", "right": "I had my hair cut at the salon.", "noteVi": "Nếu thợ cắt → had + hair + cut." },
+        { "wrong": "I had cut my hair.", "right": "I had my hair cut.", "noteVi": "Cấu trúc causative: object + V3." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "cv-01", "type": "mcq", "prompt": "I need to ___ my eyes tested.", "options": ["have", "make", "do"], "answer": "have", "explanationVi": "have + eyes + tested." },
+    { "id": "cv-02", "type": "mcq", "prompt": "We're going to ___ the house painted this summer.", "options": ["have", "get", "make"], "answer": "have", "acceptedAnswers": ["get"], "explanationVi": "have/get + house + painted." },
+    { "id": "cv-03", "type": "fill", "prompt": "She ___ (get) her laptop fixed last week.", "answers": ["got"], "explanationVi": "get + object + V3 → got fixed." },
+    { "id": "cv-04", "type": "fill", "prompt": "Did you ___ (have) your passport renewed?", "answers": ["have"], "explanationVi": "have + passport + renewed." },
+    { "id": "cv-05", "type": "order", "promptVi": "Anh ấy nhờ ai đó sửa ống nước.", "answer": "He had the pipes repaired.", "distractors": ["repair"], "explanationVi": "had + pipes + repaired." },
+    { "id": "cv-06", "type": "transform", "instructionVi": "Viết causative", "source": "A mechanic repaired our car.", "answer": "We had our car repaired.", "distractors": ["got"], "explanationVi": "We had our car repaired." },
+    { "id": "cv-07", "type": "error", "sentence": "I [had cut] my hair at the barber's.", "correction": "had my hair cut", "explanationVi": "had my hair cut (thợ cắt)." },
+    { "id": "cv-08", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["She had repaired the roof.", "She had the roof repaired.", "She had the roof repair."], "answer": "She had the roof repaired.", "explanationVi": "have + object + V3." },
+    { "id": "cv-09", "type": "fill", "prompt": "They ___ (get) all the windows cleaned before the party.", "answers": ["got"], "explanationVi": "got + windows + cleaned." },
+    { "id": "cv-10", "type": "order", "promptVi": "Tôi sẽ nhờ ai đó dịch tài liệu này.", "answer": "I will have this document translated.", "distractors": ["translate"], "explanationVi": "will have + document + translated." },
+    { "id": "cv-11", "type": "transform", "instructionVi": "Viết causative (get)", "source": "Someone cleaned the carpets for us.", "answer": "We got the carpets cleaned.", "distractors": ["had"], "explanationVi": "got + carpets + cleaned." },
+    { "id": "cv-12", "type": "error", "sentence": "He got [repair] his phone.", "correction": "repaired", "explanationVi": "got his phone repaired." }
+  ]
+}

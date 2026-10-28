@@ -1,4 +1,4 @@
-import { ActionIcon, Alert, Button, Group, Modal, Radio, Select, Stack, Switch, Text, TextInput, Textarea } from "@mantine/core";
+import { ActionIcon, Alert, Button, Checkbox, Group, Modal, Radio, Select, Stack, Switch, Text, TextInput, Textarea } from "@mantine/core";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import type { AdminGrammarSummary, PlacementGrammarInput, PlacementLevel } from "../api";
@@ -23,15 +23,26 @@ export function PlacementQuestionModal({ opened, onClose, initial, title, lesson
 
   useEffect(() => {
     if (!opened) return;
-    setQ({ ...initial, options: initial.options.length ? initial.options : ["", "", ""] });
+    setQ({ ...initial, acceptedAnswers: initial.acceptedAnswers ?? [], options: initial.options.length ? initial.options : ["", "", ""] });
     setError("");
   }, [opened, initial]);
 
   const set = (patch: Partial<PlacementGrammarInput>) => setQ((s) => ({ ...s, ...patch }));
   const setOption = (i: number, value: string) =>
     setQ((s) => {
+      const old = s.options[i];
       const options = s.options.map((o, j) => (j === i ? value : o));
-      return { ...s, options, answer: s.answer === s.options[i] ? value : s.answer };
+      const acceptedAnswers = (s.acceptedAnswers ?? []).map((a) => (a === old ? value : a)).filter((a) => a && a !== s.answer);
+      return { ...s, options, acceptedAnswers, answer: s.answer === old ? value : s.answer };
+    });
+
+  const toggleAlso = (opt: string, on: boolean) =>
+    setQ((s) => {
+      const extra = new Set(s.acceptedAnswers ?? []);
+      if (on) extra.add(opt);
+      else extra.delete(opt);
+      extra.delete(s.answer);
+      return { ...s, acceptedAnswers: [...extra] };
     });
 
   async function save() {
@@ -79,17 +90,46 @@ export function PlacementQuestionModal({ opened, onClose, initial, title, lesson
           value={q.prompt}
           onChange={(e) => set({ prompt: e.currentTarget.value })}
         />
-        <Radio.Group label="Lựa chọn" description="Chấm tròn = đáp án đúng" value={q.answer} onChange={(v) => set({ answer: v })}>
+        <Radio.Group
+          label="Lựa chọn"
+          description="Chấm tròn = đáp án chính; tick “Cũng đúng” khi bài dạy nhiều cách (will / be going to…)"
+          value={q.answer}
+          onChange={(v) =>
+            setQ((s) => ({
+              ...s,
+              answer: v,
+              acceptedAnswers: (s.acceptedAnswers ?? []).filter((a) => a !== v),
+            }))
+          }
+        >
           <Stack gap={6} mt={6}>
             {q.options.map((o, i) => (
-              <Group key={i} gap="xs" wrap="nowrap">
-                <Radio value={o} disabled={!o.trim()} aria-label={`Đáp án ${i + 1}`} />
-                <TextInput style={{ flex: 1 }} value={o} onChange={(e) => setOption(i, e.currentTarget.value)} placeholder={`Lựa chọn ${i + 1}`} />
+              <Group key={i} gap="xs" wrap="nowrap" align="flex-start">
+                <Radio mt={8} value={o} disabled={!o.trim()} aria-label={`Đáp án chính ${i + 1}`} />
+                <Stack gap={4} style={{ flex: 1 }}>
+                  <TextInput value={o} onChange={(e) => setOption(i, e.currentTarget.value)} placeholder={`Lựa chọn ${i + 1}`} />
+                  {o.trim() && o !== q.answer ? (
+                    <Checkbox
+                      size="xs"
+                      label="Cũng đúng"
+                      checked={(q.acceptedAnswers ?? []).includes(o)}
+                      onChange={(e) => toggleAlso(o, e.currentTarget.checked)}
+                    />
+                  ) : null}
+                </Stack>
                 <ActionIcon
                   variant="subtle"
                   color="red"
+                  mt={4}
                   disabled={q.options.length <= 3}
-                  onClick={() => set({ options: q.options.filter((_, j) => j !== i), answer: q.answer === o ? "" : q.answer })}
+                  onClick={() =>
+                    setQ((s) => ({
+                      ...s,
+                      options: s.options.filter((_, j) => j !== i),
+                      answer: s.answer === o ? "" : s.answer,
+                      acceptedAnswers: (s.acceptedAnswers ?? []).filter((a) => a !== o),
+                    }))
+                  }
                   aria-label="Xoá lựa chọn"
                 >
                   <IconTrash size={16} />

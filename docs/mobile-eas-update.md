@@ -1,6 +1,6 @@
 # Mobile: EAS Build, TestFlight và EAS Update (OTA)
 
-Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 27/10/2026.
+Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 28/10/2026.
 
 ## Hai cách ship code mobile
 
@@ -51,7 +51,7 @@ npx eas-cli@latest update --branch production --message "Mô tả hotfix ngắn"
 
 ### OTA **không** thay thế build store khi
 
-- Thêm hoặc gỡ **native module** (AdMob, `expo-video`, speech, …)
+- Thêm hoặc gỡ **native module** (AdMob, `expo-video`, **`expo-blur`**, speech, …)
 - Đổi **quyền** (Info.plist / AndroidManifest), plugin trong `app.json`
 - Đổi **bundle id**, signing, push capabilities
 - Nâng **Expo SDK** lớn

@@ -1,0 +1,45 @@
+{
+  "slug": "formal-connectors",
+  "version": 1,
+  "titleVi": "Liên từ trang trọng",
+  "titleEn": "Formal connectors",
+  "level": "B2",
+  "order": 56,
+  "summaryVi": "nevertheless, whereas, hence, moreover, in spite of / despite + N/V-ing — nối ý trang trọng, văn viết.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Một số liên từ B2",
+      "headers": ["Từ / cụm", "Ý nghĩa", "Ví dụ"],
+      "cells": [
+        ["nevertheless / however", "tuy nhiên", "It was raining; nevertheless, we went out."],
+        ["whereas", "trong khi (tương phản)", "She loves cities, whereas he prefers the countryside."],
+        ["moreover / furthermore", "hơn nữa", "The plan is cheap; moreover, it is effective."],
+        ["despite / in spite of + N/V-ing", "mặc dù", "Despite the rain, the event continued."],
+        ["hence / therefore", "vì vậy", "The evidence was weak; hence, they acquitted him."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Despite of the cost, we bought it.", "right": "Despite the cost, we bought it.", "noteVi": "Despite / in spite of, không despite of." },
+        { "wrong": "Although she was tired, but she kept working.", "right": "Although she was tired, she kept working.", "noteVi": "Không dùng although và but cùng lúc." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "fc-01", "type": "mcq", "prompt": "The salary is low; ___, many people apply for the job.", "options": ["nevertheless", "because", "so that"], "answer": "nevertheless", "explanationVi": "Tuy lương thấp nhưng vẫn…" },
+    { "id": "fc-02", "type": "mcq", "prompt": "He enjoys team sports, ___ she prefers individual activities.", "options": ["whereas", "therefore", "moreover"], "answer": "whereas", "explanationVi": "Tương phản hai người." },
+    { "id": "fc-03", "type": "mcq", "prompt": "___ the heavy traffic, we arrived on time.", "options": ["Despite", "Although", "However"], "answer": "Despite", "explanationVi": "Despite + noun." },
+    { "id": "fc-04", "type": "fill", "prompt": "The data is incomplete; ___, we cannot draw a firm conclusion.", "answers": ["therefore", "hence", "thus"], "explanationVi": "Kết luận → therefore/hence." },
+    { "id": "fc-05", "type": "fill", "prompt": "___ (despite / be) tired, she finished the presentation.", "answers": ["Despite being", "In spite of being"], "explanationVi": "Despite being tired." },
+    { "id": "fc-06", "type": "order", "promptVi": "Dự án tiết kiệm chi phí; hơn nữa, nó thân thiện môi trường.", "answer": "The project saves costs; moreover, it is eco-friendly.", "distractors": ["however"], "explanationVi": "moreover = hơn nữa." },
+    { "id": "fc-07", "type": "error", "sentence": "[Despite of] the warning, they continued.", "correction": "Despite", "explanationVi": "Despite the warning." },
+    { "id": "fc-08", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Whereas he is shy, but she is outgoing.", "He is shy, whereas she is outgoing.", "Whereas he is shy, she is outgoing however."], "answer": "He is shy, whereas she is outgoing.", "explanationVi": "whereas nối hai mệnh đề." },
+    { "id": "fc-09", "type": "transform", "instructionVi": "Viết lại dùng Despite", "source": "Even though it was cold, we swam in the sea.", "answer": "Despite the cold, we swam in the sea.", "distractors": ["Although"], "explanationVi": "Despite + noun." },
+    { "id": "fc-10", "type": "fill", "prompt": "The company failed to meet targets; ___, the CEO resigned.", "answers": ["consequently", "therefore", "hence"], "explanationVi": "Hệ quả → consequently." },
+    { "id": "fc-11", "type": "order", "promptVi": "Tôi thích làm việc sáng; trong khi đó, đồng nghiệp tôi là cú đêm.", "answer": "I like working in the morning, whereas my colleague is a night owl.", "distractors": ["however"], "explanationVi": "whereas = trong khi (tương phản)." },
+    { "id": "fc-12", "type": "error", "sentence": "We succeeded [in spite] the difficulties.", "correction": "in spite of", "explanationVi": "in spite of + noun." }
+  ]
+}

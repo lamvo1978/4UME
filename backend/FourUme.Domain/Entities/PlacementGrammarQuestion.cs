@@ -8,8 +8,10 @@ public class PlacementGrammarQuestion
     /// <summary>A sentence with ___ for the gap, or an instruction when the options are whole sentences.</summary>
     public string Prompt { get; set; } = string.Empty;
     public List<string> Options { get; set; } = [];
-    /// <summary>One of <see cref="Options"/>.</summary>
+    /// <summary>One of <see cref="Options"/>; the canonical correct choice shown in the editor.</summary>
     public string Answer { get; set; } = string.Empty;
+    /// <summary>Other options that are also grammatically correct (e.g. will vs be going to).</summary>
+    public List<string> AcceptedAnswers { get; set; } = [];
     public string ExplanationVi { get; set; } = string.Empty;
     /// <summary>Grammar lesson the question tests; a wrong answer suggests starting there.</summary>
     public string? LessonSlug { get; set; }

@@ -1,0 +1,40 @@
+{
+  "slug": "cleft-sentences",
+  "version": 1,
+  "titleVi": "Câu chẻ (cleft)",
+  "titleEn": "Cleft sentences",
+  "level": "B2",
+  "order": 52,
+  "summaryVi": "It is/was … that/who … để nhấn một phần câu (người, thời gian, lý do, v.v.).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "It + is/was + [phần nhấn] + that/who + mệnh đề còn lại", "example": { "en": "It was John who called you.", "vi": "Chính John đã gọi cho bạn." } },
+        { "kind": "note", "pattern": "Người → who; vật / thời gian / lý do → that (hoặc when / where / because).", "example": { "en": "It was in 2020 that we met.", "vi": "Chính năm 2020 chúng tôi gặp nhau." } }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "en": "It is honesty that matters most.", "vi": "Chính sự trung thực mới quan trọng nhất." },
+        { "en": "It was because of the rain that we cancelled the trip.", "vi": "Chính vì mưa mà chúng tôi hủy chuyến đi." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "cl-01", "type": "mcq", "prompt": "It ___ Maria who solved the problem.", "options": ["is", "was", "were"], "answer": "was", "explanationVi": "Quá khứ: It was Maria who..." },
+    { "id": "cl-02", "type": "mcq", "prompt": "It was the manager ___ I wanted to speak to.", "options": ["who", "which", "what"], "answer": "who", "explanationVi": "Người → who." },
+    { "id": "cl-03", "type": "fill", "prompt": "It is hard work ___ makes you succeed.", "answers": ["that"], "explanationVi": "Vật / ý tưởng → that." },
+    { "id": "cl-04", "type": "transform", "instructionVi": "Viết cleft nhấn 'Tom'", "source": "Tom broke the window.", "answer": "It was Tom who broke the window.", "distractors": ["that"], "explanationVi": "It was Tom who..." },
+    { "id": "cl-05", "type": "transform", "instructionVi": "Viết cleft nhấn 'last night'", "source": "We discussed the plan last night.", "answer": "It was last night that we discussed the plan.", "distractors": ["when"], "explanationVi": "It was last night that..." },
+    { "id": "cl-06", "type": "order", "promptVi": "Chính tiếng Anh là thứ tôi cần luyện.", "answer": "It is English that I need to practice.", "distractors": ["what"], "explanationVi": "It is English that..." },
+    { "id": "cl-07", "type": "error", "sentence": "It was her [which] told me the news.", "correction": "who", "explanationVi": "Người → who." },
+    { "id": "cl-08", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["It was in Hanoi which we first met.", "It was in Hanoi that we first met.", "It was in Hanoi when we first met."], "answer": "It was in Hanoi that we first met.", "explanationVi": "Nơi chốn nhấn → that (hoặc where)." },
+    { "id": "cl-09", "type": "fill", "prompt": "It ___ (be) your support that helped me most.", "answers": ["was", "is"], "explanationVi": "It was/is ... that..." },
+    { "id": "cl-10", "type": "transform", "instructionVi": "Viết cleft", "source": "She needs more time.", "answer": "It is more time that she needs.", "distractors": ["who"], "explanationVi": "It is more time that she needs." },
+    { "id": "cl-11", "type": "order", "promptVi": "Chính anh ấy đã quên cuộc hẹn.", "answer": "It was he who forgot the appointment.", "distractors": ["that"], "explanationVi": "It was he who..." },
+    { "id": "cl-12", "type": "error", "sentence": "It is patience [what] counts in this job.", "correction": "that", "explanationVi": "It is patience that counts." }
+  ]
+}

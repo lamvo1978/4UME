@@ -20,7 +20,8 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
     {
         ["mcq"] = """
             mcq: "prompt" (a sentence with ___ for the gap, or an instruction such as "Chọn câu đúng." when the options are whole sentences),
-            "options" (3 or 4 distinct, plausible options), "answer" (exactly one of the options). Only one option may be correct.
+            "options" (3 or 4 distinct, plausible options), "answer" (the best / lesson-default correct option),
+            "acceptedAnswers" (optional: other options that are also correct when the lesson allows more than one form, e.g. will and be going to). Omit or [] if only one option works.
             """,
         ["fill"] = """
             fill: "prompt" with exactly one ___ and, right after it, the base word in brackets whenever more than one form could fit,
@@ -77,7 +78,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
         You are a strict English teacher checking grammar exercises written for Vietnamese learners.
         For each exercise decide whether it is correct and usable:
         - the given answer is grammatically correct and natural;
-        - no other option / answer would also be correct (for mcq and error) unless it is listed as accepted (for fill and cloze);
+        - no other option / answer would also be correct (for mcq unless listed in acceptedAnswers; for error) unless it is listed as accepted (for fill and cloze);
         - for error: the bracketed part is really wrong and the correction fixes it, and nothing else in the sentence is wrong;
         - for order/transform: the answer is the only natural sentence that can be built;
         - for cloze: the text is natural and connected, and every gap has exactly the answers listed;
@@ -264,6 +265,8 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
                 n.Prompt = Clean(e.Prompt);
                 n.Options = CleanList(e.Options);
                 n.Answer = Clean(e.Answer);
+                if (n.Options is { Count: > 0 } opts && n.Answer is { } ans)
+                    n.AcceptedAnswers = McqAnswers.NormalizeAlso(opts, ans, e.AcceptedAnswers);
                 break;
             case "fill":
                 n.Prompt = Clean(e.Prompt);
@@ -329,6 +332,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
                             ["sentence"] = Str(),
                             ["options"] = strings.DeepClone(),
                             ["answer"] = Str(),
+                            ["acceptedAnswers"] = strings.DeepClone(),
                             ["answers"] = strings.DeepClone(),
                             ["blanks"] = new JsonObject { ["type"] = "ARRAY", ["items"] = strings.DeepClone() },
                             ["distractors"] = strings.DeepClone(),
@@ -338,7 +342,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
                         // Every field is required: with optional fields the AI sometimes drops the ones that matter (e.g. mcq options).
                         // Fields the type doesn't use come back empty and Normalize drops them.
                         ["required"] = Names("type", "prompt", "promptVi", "instructionVi", "source", "sentence", "options", "answer",
-                            "answers", "blanks", "distractors", "correction", "explanationVi"),
+                            "acceptedAnswers", "answers", "blanks", "distractors", "correction", "explanationVi"),
                     },
                 },
             },

@@ -60,7 +60,16 @@ export type PlacementQuestion = {
 };
 export type PlacementLevel = { level: VocabLevel; questions: PlacementQuestion[] };
 /** `prompt` has ___ for the gap; `lessonSlug` is the grammar lesson the question tests. */
-export type PlacementGrammarQuestion = { id: string; prompt: string; options: string[]; answer: number; lessonSlug: string | null };
+export type PlacementGrammarQuestion = {
+  id: string;
+  prompt: string;
+  options: string[];
+  /** Index of the canonical correct option (feedback). */
+  answer: number;
+  /** Every option index that counts as correct after shuffling. */
+  acceptedAnswers: number[];
+  lessonSlug: string | null;
+};
 export type PlacementGrammarLevel = { level: VocabLevel; questions: PlacementGrammarQuestion[] };
 export type PlacementResult = { me: Me; markedKnown: number; cleared: number };
 
@@ -324,7 +333,7 @@ export type VerbNote = { phrase: string; tenseVi: string };
 type ExerciseBase = { id: string; explanationVi: string; verbs?: VerbNote[] };
 
 export type GrammarExercise =
-  | (ExerciseBase & { type: "mcq"; prompt: string; options: string[]; answer: string })
+  | (ExerciseBase & { type: "mcq"; prompt: string; options: string[]; answer: string; acceptedAnswers?: string[] })
   | (ExerciseBase & { type: "fill"; prompt: string; answers: string[] })
   | (ExerciseBase & { type: "order"; promptVi: string; answer: string; distractors?: string[] })
   | (ExerciseBase & { type: "transform"; instructionVi: string; source: string; answer: string; distractors?: string[] })

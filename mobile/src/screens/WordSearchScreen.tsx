@@ -1,19 +1,24 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { BlurView } from "expo-blur";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   Keyboard,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
-import { api, WordSearchResult } from "../api/client";
-import { WordVoices } from "../components/SpeakButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { api, mediaUrl, WordSearchResult } from "../api/client";
+import { SpeakButton, WordVoices } from "../components/SpeakButton";
 import { RootStackParamList } from "../navigation/types";
 import { colors, shadow, spacing } from "../theme";
 import { posLabel } from "../vocabulary/deckMeta";
@@ -163,7 +168,13 @@ function ResultCard({
   onOpenDeck: () => void;
 }) {
   const w = item.word;
+  const insets = useSafeAreaInsets();
+  const window = useWindowDimensions();
   const [busy, setBusy] = useState(false);
+  const [brokenImage, setBrokenImage] = useState(false);
+  const [imageOpen, setImageOpen] = useState(false);
+  const thumbUrl = w.imageUrl && !brokenImage ? mediaUrl(w.imageUrl) : null;
+  const previewSize = Math.round(Math.min(window.width * 0.88, window.height * 0.55, 320));
 
   async function change(status: number) {
     setBusy(true);
@@ -176,23 +187,61 @@ function ResultCard({
 
   return (
     <View style={styles.card}>
-      <Pressable style={({ pressed }) => [styles.row, pressed && styles.pressed]} onPress={onToggle}>
-        <View style={styles.rowText}>
-          {item.matchedForm ? (
-            <Text style={styles.via}>
-              “{item.matchedForm}” là một dạng của “{w.word}”
+      <View style={styles.row}>
+        {thumbUrl ? (
+          <Pressable
+            onPress={() => setImageOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel={`Phóng to ảnh minh họa từ ${w.word}`}
+            style={({ pressed }) => [pressed && styles.pressed]}
+          >
+            <Image source={{ uri: thumbUrl }} style={styles.thumb} onError={() => setBrokenImage(true)} />
+          </Pressable>
+        ) : null}
+        <Pressable style={({ pressed }) => [styles.rowMain, pressed && styles.pressed]} onPress={onToggle}>
+          <View style={styles.rowText}>
+            {item.matchedForm ? (
+              <Text style={styles.via}>
+                “{item.matchedForm}” là một dạng của “{w.word}”
+              </Text>
+            ) : null}
+            <Text style={styles.word}>
+              {w.word} <Text style={styles.meta}>· {posLabel(w.pos)} · {w.level}</Text>
             </Text>
-          ) : null}
-          <Text style={styles.word}>
-            {w.word} <Text style={styles.meta}>· {posLabel(w.pos)} · {w.level}</Text>
-          </Text>
-          <Text style={styles.meaning} numberOfLines={open ? undefined : 1}>
-            {w.meaningVi}
-          </Text>
+            <Text style={styles.meaning} numberOfLines={open ? undefined : 1}>
+              {w.meaningVi}
+            </Text>
+          </View>
+          <StatusBadge status={w.status} />
+          <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.muted} />
+        </Pressable>
+      </View>
+
+      <Modal visible={imageOpen} transparent animationType="fade" onRequestClose={() => setImageOpen(false)}>
+        <View style={styles.viewerRoot}>
+          <BlurView intensity={55} tint="dark" style={StyleSheet.absoluteFill} />
+          <Pressable
+            style={[StyleSheet.absoluteFill, styles.viewerScrim]}
+            onPress={() => setImageOpen(false)}
+            accessibilityLabel="Đóng ảnh"
+          >
+            <View style={styles.viewerBody}>
+              {thumbUrl ? (
+                <Image
+                  source={{ uri: thumbUrl }}
+                  style={{ width: previewSize, height: previewSize }}
+                  resizeMode="contain"
+                />
+              ) : null}
+              <Text style={styles.viewerWord}>{w.word}</Text>
+              <Text style={styles.viewerMeaning}>{w.meaningVi}</Text>
+            </View>
+            <View style={[styles.viewerClose, { top: insets.top + 12 }]} pointerEvents="none">
+              <Ionicons name="close" size={24} color={colors.white} />
+            </View>
+          </Pressable>
         </View>
-        <StatusBadge status={w.status} />
-        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.muted} />
-      </Pressable>
+      </Modal>
 
       {open ? (
         <View style={styles.detail}>
@@ -203,8 +252,11 @@ function ResultCard({
           </View>
           {w.example ? (
             <View style={styles.example}>
-              <Text style={styles.exampleEn}>{w.example}</Text>
-              <Text style={styles.exampleVi}>{w.exampleVi}</Text>
+              <View style={styles.exampleRow}>
+                <Text style={styles.exampleEn}>{w.example}</Text>
+                <SpeakButton text={w.example} recordingUrl={w.exampleAudioUrl} size="sm" />
+              </View>
+              {w.exampleVi ? <Text style={styles.exampleVi}>{w.exampleVi}</Text> : null}
             </View>
           ) : null}
           <Pressable onPress={onOpenDeck} hitSlop={6}>
@@ -289,7 +341,28 @@ const styles = StyleSheet.create({
   hintSub: { fontSize: 14, color: colors.muted, textAlign: "center", lineHeight: 20 },
   card: { borderRadius: 18, backgroundColor: colors.surface, ...shadow.card, shadowOpacity: 0.05 },
   row: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14 },
+  rowMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10 },
   pressed: { opacity: 0.6 },
+  thumb: { width: 52, height: 52, borderRadius: 12, backgroundColor: colors.bg },
+  viewerRoot: { flex: 1 },
+  viewerScrim: {
+    backgroundColor: "rgba(0, 0, 0, 0.48)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  viewerBody: { alignItems: "center", paddingHorizontal: spacing.lg, maxWidth: "100%" },
+  viewerWord: { marginTop: 16, fontSize: 22, fontWeight: "700", color: colors.white, textAlign: "center" },
+  viewerMeaning: { marginTop: 4, fontSize: 17, color: "rgba(255,255,255,0.88)", textAlign: "center" },
+  viewerClose: {
+    position: "absolute",
+    right: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   rowText: { flex: 1, gap: 2 },
   word: { fontSize: 17, fontWeight: "700", color: colors.ink },
   meta: { fontSize: 13, fontWeight: "500", color: colors.muted },
@@ -317,7 +390,8 @@ const styles = StyleSheet.create({
   ipa: { fontSize: 15, color: colors.muted },
   forms: { flex: 1, textAlign: "right", fontSize: 14, fontWeight: "700", color: colors.flameDeep },
   example: { backgroundColor: colors.bg, borderRadius: 12, padding: 10, gap: 4 },
-  exampleEn: { fontSize: 15, color: colors.ink, fontStyle: "italic" },
+  exampleRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+  exampleEn: { flex: 1, fontSize: 15, lineHeight: 21, color: colors.ink, fontStyle: "italic" },
   exampleVi: { fontSize: 14, color: colors.muted },
   deck: { fontSize: 14, fontWeight: "600", color: colors.accent },
   actions: { flexDirection: "row", gap: 10 },

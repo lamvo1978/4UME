@@ -1,4 +1,4 @@
-import { ActionIcon, Autocomplete, Button, Group, Radio, Stack, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
+import { ActionIcon, Autocomplete, Button, Checkbox, Group, Radio, Stack, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import type { GrammarBank, GrammarExercise } from "../api";
 import { Select } from "../components/AppSelect";
@@ -54,6 +54,13 @@ function TypeFields({ exercise: ex, onChange }: Props) {
   switch (ex.type) {
     case "mcq": {
       const options = ex.options ?? [];
+      const toggleAlso = (opt: string, on: boolean) => {
+        const extra = new Set(ex.acceptedAnswers ?? []);
+        if (on) extra.add(opt);
+        else extra.delete(opt);
+        if (ex.answer) extra.delete(ex.answer);
+        set({ acceptedAnswers: [...extra] });
+      };
       return (
         <>
           <Textarea label="Câu hỏi" required autosize minRows={1} placeholder="Look! The baby ___." value={ex.prompt ?? ""} onChange={(e) => set({ prompt: e.currentTarget.value })} />
@@ -61,24 +68,51 @@ function TypeFields({ exercise: ex, onChange }: Props) {
             <Text fz="sm" fw={600} mb={4}>
               Lựa chọn{" "}
               <Text span c="dimmed" fz="xs" fw={400}>
-                (chấm tròn = đáp án đúng)
+                (chấm tròn = đáp án chính; tick “Cũng đúng” khi nhiều lựa chọn đều hợp lệ)
               </Text>
             </Text>
-            <Radio.Group value={ex.answer && options.includes(ex.answer) ? String(options.indexOf(ex.answer)) : ""} onChange={(v) => set({ answer: options[Number(v)] })}>
+            <Radio.Group
+              value={ex.answer && options.includes(ex.answer) ? String(options.indexOf(ex.answer)) : ""}
+              onChange={(v) => {
+                const answer = options[Number(v)];
+                set({ answer, acceptedAnswers: (ex.acceptedAnswers ?? []).filter((a) => a !== answer) });
+              }}
+            >
               <Stack gap={6}>
                 {options.map((o, i) => (
-                  <Group key={i} gap={8} wrap="nowrap">
-                    <Radio value={String(i)} aria-label={`Đáp án ${i + 1}`} />
-                    <TextInput
-                      style={{ flex: 1 }}
-                      value={o}
-                      placeholder={`Lựa chọn ${i + 1}`}
-                      onChange={(e) => {
-                        const v = e.currentTarget.value;
-                        set({ options: options.map((x, j) => (j === i ? v : x)), answer: ex.answer === o ? v : ex.answer });
-                      }}
-                    />
-                    <ActionIcon variant="subtle" color="red" disabled={options.length <= 2} onClick={() => set({ options: options.filter((_, j) => j !== i), answer: ex.answer === o ? "" : ex.answer })} aria-label="Xoá lựa chọn">
+                  <Group key={i} gap={8} wrap="nowrap" align="flex-start">
+                    <Radio mt={8} value={String(i)} aria-label={`Đáp án chính ${i + 1}`} />
+                    <Stack gap={4} style={{ flex: 1 }}>
+                      <TextInput
+                        value={o}
+                        placeholder={`Lựa chọn ${i + 1}`}
+                        onChange={(e) => {
+                          const v = e.currentTarget.value;
+                          set({
+                            options: options.map((x, j) => (j === i ? v : x)),
+                            answer: ex.answer === o ? v : ex.answer,
+                            acceptedAnswers: (ex.acceptedAnswers ?? []).map((a) => (a === o ? v : a)).filter((a) => a && a !== ex.answer),
+                          });
+                        }}
+                      />
+                      {o.trim() && o !== ex.answer ? (
+                        <Checkbox size="xs" label="Cũng đúng" checked={(ex.acceptedAnswers ?? []).includes(o)} onChange={(e) => toggleAlso(o, e.currentTarget.checked)} />
+                      ) : null}
+                    </Stack>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      mt={4}
+                      disabled={options.length <= 2}
+                      onClick={() =>
+                        set({
+                          options: options.filter((_, j) => j !== i),
+                          answer: ex.answer === o ? "" : ex.answer,
+                          acceptedAnswers: (ex.acceptedAnswers ?? []).filter((a) => a !== o),
+                        })
+                      }
+                      aria-label="Xoá lựa chọn"
+                    >
                       <IconX size={16} />
                     </ActionIcon>
                   </Group>

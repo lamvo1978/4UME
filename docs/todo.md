@@ -40,7 +40,7 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 - [x] **Kiểm tra nhanh bằng giọng của máy** khi hết lượt chấm Azure (22/10): nút trong khung *Tự so sánh*, máy nghe ra đúng từ hay không (không chấm từng âm). Có công tắc admin *Cài đặt → Kiểm tra giọng đọc*, **mặc định tắt** vì làm người học ít lý do lên Premium.
 - [x] **AdMob** (22/10, đã gộp `main`): quảng cáo đổi lượt chấm + banner Trang chủ, UMP và ATT — xem [ads.md](ads.md). App ID và ad unit thật trong `mobile/app.json` / `mobile/eas.json`; bản dev vẫn dùng ad thử nghiệm của Google. Còn bước làm tay trên AdMob console và bật công tắc admin sau TestFlight — mục *AdMob — việc làm tay*.
 - [x] **Video celebration** (26/10): màn xong bài / chuỗi / quà luyện câu (`expo-video`, `mobile/assets/celebration/`).
-- [ ] **Golive iOS App Store**: TestFlight **1.0.0 (21)** OK; sau PR **Premium / đóng băng / mở rộng đàm thoại (core)** build iOS mới (**22+**) rồi gắn build + **Submit for Review** ([release-ios.md](release-ios.md)).
+- [ ] **Golive iOS App Store**: TestFlight **1.0.0 (21)** OK; build iOS mới (**22+**, gồm Tìm từ + `expo-blur`, ngữ pháp B2, MCQ nhiều đáp án) sau merge PR 28/10 → gắn build + **Submit for Review** ([release-ios.md](release-ios.md)).
 - [x] **Premium Phase 2 (core, chưa IAP)** (28/10): đóng băng chuỗi (admin + app), quota đàm thoại buổi/lượt, gói **mở rộng đàm thoại** (entitlement + admin + màn Premium), migrations `StreakFreezeGrantMonth`, `ConversationAddonQuota` — xem [streak-freeze.md](streak-freeze.md), [premium-iap-roadmap.md](premium-iap-roadmap.md) mục 2–4.
 - [ ] **Mua Premium + mở rộng trong app** (IAP) — Phase 2 mục 5–7, [premium-iap-roadmap.md](premium-iap-roadmap.md).
 
@@ -59,8 +59,9 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 
 ## 5. Nội dung
 
-- [ ] Thêm bài nghe (có prompt mẫu: [listening-prompt.md](listening-prompt.md)), bài ngữ pháp.
-- [ ] **Ngữ pháp (13/10)**: dùng *AI soạn thêm câu* trong admin để mỗi bài có kho **luyện thêm** khoảng 30 câu (có dạng *điền đoạn văn*), và soạn bộ câu **kiểm tra đầu vào** khoảng 20 câu mỗi cấp A1–B1 (tối thiểu 4 câu / cấp thì app mới hỏi) — trước khi build bản nộp store. Xem [grammar-lesson-schema.md](grammar-lesson-schema.md#ngữ-pháp-trong-kiểm-tra-đầu-vào).
+- [ ] Thêm bài nghe (có prompt mẫu: [listening-prompt.md](listening-prompt.md)).
+- [x] **Ngữ pháp B2** (28/10): 10 bài mới (`backend/data/grammar/47`–`56`), tổng **56 bài** A1–B2 — xem [grammar-audit.md](grammar-audit.md).
+- [ ] **Ngữ pháp — luyện thêm & kiểm tra đầu vào**: *AI soạn thêm câu* (~30 câu/bài `practice`); kiểm tra đầu vào ~20 câu/cấp (**B2**: file mẫu `backend/data/placement-grammar-b2-import.json` → admin *Nhập JSON*). Tối thiểu 4 câu/cấp đang bật thì app mới hỏi ngữ pháp cấp đó. Xem [grammar-lesson-schema.md](grammar-lesson-schema.md#ngữ-pháp-trong-kiểm-tra-đầu-vào).
 - [ ] Duyệt ảnh tự gán cho từ vựng.
 
 ## 6. Tính năng Phase 1 (đã chốt 11/10)

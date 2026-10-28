@@ -470,6 +470,7 @@ export type GrammarExercise = {
   sentence?: string;
   options?: string[];
   answer?: string;
+  acceptedAnswers?: string[];
   answers?: string[];
   distractors?: string[];
   correction?: string;
@@ -720,6 +721,8 @@ export type PlacementGrammarInput = {
   prompt: string;
   options: string[];
   answer: string;
+  /** Other options that also count as correct in the app. */
+  acceptedAnswers?: string[];
   explanationVi: string | null;
   lessonSlug: string | null;
   published: boolean;

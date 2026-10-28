@@ -1,0 +1,41 @@
+{
+  "slug": "inversion-emphasis",
+  "version": 1,
+  "titleVi": "Đảo ngữ nhấn mạnh",
+  "titleEn": "Inversion for emphasis",
+  "level": "B2",
+  "order": 53,
+  "summaryVi": "Sau phủ định đứng đầu câu (Never, Rarely, Not only…): đảo trợ động từ / to be lên trước chủ ngữ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Never / Rarely / Seldom + trợ động từ + S + V", "example": { "en": "Never have I seen such a view.", "vi": "Tôi chưa bao giờ thấy cảnh đẹp như vậy." } },
+        { "textVi": "Not only + trợ động từ + S + V, but … also …", "example": { "en": "Not only did she win, but she also broke the record.", "vi": "Cô ấy không những thắng mà còn phá kỷ lục." } },
+        { "textVi": "Only after / when / if … + đảo ngữ", "example": { "en": "Only then did I understand the problem.", "vi": "Chỉ lúc đó tôi mới hiểu vấn đề." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Never I have been so surprised.", "right": "Never have I been so surprised.", "noteVi": "Sau Never phải đảo: have I." },
+        { "wrong": "Not only she sang, but she also danced.", "right": "Not only did she sing, but she also danced.", "noteVi": "Not only did she..." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "inv-01", "type": "mcq", "prompt": "Never ___ such a difficult exam.", "options": ["I have taken", "have I taken", "I had taken"], "answer": "have I taken", "explanationVi": "Never have I..." },
+    { "id": "inv-02", "type": "mcq", "prompt": "Rarely ___ on time.", "options": ["the bus is", "is the bus", "does the bus"], "answer": "is the bus", "explanationVi": "Rarely is the bus..." },
+    { "id": "inv-03", "type": "fill", "prompt": "Not only ___ (she / forget) the keys, but she also lost her phone.", "answers": ["did she forget"], "explanationVi": "Not only did she forget..." },
+    { "id": "inv-04", "type": "order", "promptVi": "Hiếm khi tôi thấy anh ấy tức giận.", "answer": "Rarely do I see him angry.", "distractors": ["I"], "explanationVi": "Rarely do I..." },
+    { "id": "inv-05", "type": "transform", "instructionVi": "Viết với Never (đảo ngữ)", "source": "I have never tasted better coffee.", "answer": "Never have I tasted better coffee.", "distractors": ["I"], "explanationVi": "Never have I..." },
+    { "id": "inv-06", "type": "error", "sentence": "Seldom [we have] met such kindness.", "correction": "have we", "explanationVi": "Seldom have we..." },
+    { "id": "inv-07", "type": "mcq", "prompt": "Only after the meeting ___ the truth.", "options": ["I learned", "did I learn", "I did learn"], "answer": "did I learn", "explanationVi": "Only after ... did I learn." },
+    { "id": "inv-08", "type": "fill", "prompt": "Little ___ (he / know) that everyone was waiting.", "answers": ["did he know"], "explanationVi": "Little did he know..." },
+    { "id": "inv-09", "type": "transform", "instructionVi": "Viết Not only... but also", "source": "She speaks French. She also speaks German.", "answer": "Not only does she speak French, but she also speaks German.", "distractors": ["is"], "explanationVi": "Not only does she..." },
+    { "id": "inv-10", "type": "order", "promptVi": "Không bao giờ tôi quên ngày đó.", "answer": "Never will I forget that day.", "distractors": ["I"], "explanationVi": "Never will I forget..." },
+    { "id": "inv-11", "type": "error", "sentence": "Not only [she finished] early, but she also helped others.", "correction": "did she finish", "explanationVi": "Not only did she finish..." },
+    { "id": "inv-12", "type": "mcq", "prompt": "Hardly ___ when the phone rang.", "options": ["had I sat down", "I had sat down", "I sat down"], "answer": "had I sat down", "explanationVi": "Hardly had I sat down when..." }
+  ]
+}

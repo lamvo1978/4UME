@@ -1,0 +1,41 @@
+{
+  "slug": "reduced-relatives",
+  "version": 1,
+  "titleVi": "Mệnh đề quan hệ rút gọn",
+  "titleEn": "Reduced relative clauses",
+  "level": "B2",
+  "order": 55,
+  "summaryVi": "Bỏ who/which/that + to be: the man (who is) standing …; danh từ + V-ing / V3 thay cho mệnh đề quan hệ.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "Chủ động: danh từ + V-ing (= who/which + is/are + V-ing).", "example": { "en": "The woman talking to Tom is my boss.", "vi": "Người phụ nữ đang nói chuyện với Tom là sếp tôi." } },
+        { "textVi": "Bị động: danh từ + V3 (= who/which + is/are + V3).", "example": { "en": "The documents sent yesterday are confidential.", "vi": "Tài liệu gửi hôm qua là mật." } },
+        { "textVi": "Chỉ rút gọn khi đại từ quan hệ làm chủ ngữ của mệnh đề.", "example": { "en": "The book (that) I bought is interesting. → không rút thành *The book bought I…", "vi": "Tân ngữ trong mệnh đề thì không rút kiểu này." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "The people lived there were friendly.", "right": "The people living there were friendly.", "noteVi": "Thiếu V-ing: people living there." },
+        { "wrong": "The letter sending today is urgent.", "right": "The letter sent today is urgent.", "noteVi": "Thư bị gửi → sent (V3)." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "rr-01", "type": "mcq", "prompt": "The students ___ for the exam look nervous.", "options": ["preparing", "prepared", "prepare"], "answer": "preparing", "explanationVi": "Chủ động: students preparing." },
+    { "id": "rr-02", "type": "mcq", "prompt": "The bridge ___ last year connects two districts.", "options": ["building", "built", "builds"], "answer": "built", "explanationVi": "Bị động: bridge built." },
+    { "id": "rr-03", "type": "fill", "prompt": "Anyone ___ (want) more information should email us.", "answers": ["wanting"], "explanationVi": "Anyone wanting..." },
+    { "id": "rr-04", "type": "transform", "instructionVi": "Rút gọn mệnh đề quan hệ", "source": "The man who is waiting outside is my uncle.", "answer": "The man waiting outside is my uncle.", "distractors": ["waited"], "explanationVi": "who is waiting → waiting." },
+    { "id": "rr-05", "type": "transform", "instructionVi": "Rút gọn (bị động)", "source": "The emails which were deleted cannot be recovered.", "answer": "The emails deleted cannot be recovered.", "distractors": ["deleting"], "explanationVi": "which were deleted → deleted." },
+    { "id": "rr-06", "type": "order", "promptVi": "Các sản phẩm bán chạy nhất nằm ở kệ đầu.", "answer": "The best-selling products are on the front shelf.", "distractors": ["sell"], "explanationVi": "best-selling = reduced relative." },
+    { "id": "rr-07", "type": "error", "sentence": "The girl [dance] on stage is my cousin.", "correction": "dancing", "explanationVi": "The girl dancing on stage." },
+    { "id": "rr-08", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["The issues discussing are complex.", "The issues discussed are complex.", "The issues discuss are complex."], "answer": "The issues discussed are complex.", "explanationVi": "issues discussed (bị thảo luận)." },
+    { "id": "rr-09", "type": "fill", "prompt": "The path ___ (lead) to the beach is steep.", "answers": ["leading"], "explanationVi": "path leading to..." },
+    { "id": "rr-10", "type": "transform", "instructionVi": "Mở rộng thành mệnh đề đầy đủ", "source": "The tourists injured were taken to hospital.", "answer": "The tourists who were injured were taken to hospital.", "distractors": ["which"], "explanationVi": "who were injured." },
+    { "id": "rr-11", "type": "order", "promptVi": "Ngôi nhà nhìn ra biển thuộc về gia đình tôi.", "answer": "The house overlooking the sea belongs to my family.", "distractors": ["look"], "explanationVi": "house overlooking..." },
+    { "id": "rr-12", "type": "error", "sentence": "The rules [announcing] yesterday are now in force.", "correction": "announced", "explanationVi": "rules announced (bị công bố)." }
+  ]
+}
