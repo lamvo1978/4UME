@@ -199,7 +199,7 @@ Hộp thư góp ý / báo lỗi từ app (trang `/feedback`, chi tiết `/feedba
 |---|---|
 | Tổng quan | `GET /api/admin/overview` |
 | Bộ từ | `GET/POST /api/admin/decks`, `PUT/DELETE /api/admin/decks/{id}`, `PUT /api/admin/decks/order` |
-| Từ vựng | `GET /api/admin/words?q=&deckId=&level=&pos=&published=&missing=image\|has-image\|image-review\|example\|ipa`, `GET/PUT/DELETE /api/admin/words/{id}`, `POST /api/admin/words`, `POST /api/admin/words/import` (xem trước + xác nhận), `GET /api/admin/words/export` |
+| Từ vựng | `GET /api/admin/words?q=&deckId=&level=&pos=&published=&missing=image\|has-image\|image-review\|example\|ipa\|example-audio\|example-audio-ready`, …; mỗi từ có `exampleAudioState` / `exampleAudioUrl` (giọng Azure câu ví dụ — xem [word-example-audio.md](word-example-audio.md)) |
 | Hình ảnh | `POST /api/admin/media` (multipart), `GET /api/admin/media`, `DELETE /api/admin/media/{id}` |
 | Ảnh Pexels / Pixabay | `GET /api/admin/stock-images?q=&page=`, `POST /api/admin/stock-images/import` (`{source, id}` → ảnh trong thư viện), `PUT /api/admin/words/{id}/image` (`{source, id}`, gán + duyệt), `POST /api/admin/words/{id}/image/approve`, `DELETE /api/admin/words/{id}/image`, `POST /api/admin/words/auto-images` (`{level, deckId, pos, after, batch}` → một lượt tự gán) |
 | Ngữ pháp | `GET/POST /api/admin/grammar`, `GET/PUT/DELETE /api/admin/grammar/{slug}`, `POST /api/admin/grammar/validate`, `PUT /api/admin/grammar/order`, `GET /api/admin/grammar/export`, `POST /api/admin/grammar/import` (xem trước + xác nhận) |

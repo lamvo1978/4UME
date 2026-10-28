@@ -381,7 +381,11 @@ export type AdminWord = {
   /** Picked automatically and not approved yet; the app hides it. */
   imagePending: boolean;
   imageCredit: ImageCredit | null;
+  /** na = no example; none = needs Azure job; ready = app plays mp3; stale = example text changed. */
+  exampleAudioState: WordExampleAudioState;
+  exampleAudioUrl: string | null;
 };
+export type WordExampleAudioState = "na" | "none" | "ready" | "stale";
 export type ImageCredit = { source: string; author: string | null; authorUrl: string | null; sourceUrl: string | null };
 export type StockImage = {
   source: string;

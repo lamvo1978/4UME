@@ -6,7 +6,7 @@ Câu ví dụ trong học từ / ôn từ trước đây dùng **TTS của đi�
 
 | Thành phần | Việc |
 |------------|------|
-| **Admin** | Job tạo MP3 (Azure), bấm chạy thủ công, giới hạn % quota tháng |
+| **Admin** | Job tạo MP3 (Azure), bấm chạy thủ công, giới hạn % quota tháng; lưới **Từ vựng** hiển thị trạng thái giọng câu ví dụ |
 | **Backend** | Lưu file dưới `media/word-examples/`, trả `exampleAudioUrl` khi khớp nội dung câu |
 | **Mobile** | Nút nghe / tự đọc sau đúng: phát recording nếu có, không thì giọng máy |
 
@@ -37,3 +37,18 @@ Câu ví dụ trong học từ / ôn từ trước đây dùng **TTS của đi�
 ## Câu ví dụ sửa trong admin
 
 Khi đổi nội dung `example`, recording cũ coi là **stale** (`exampleAudioText` ≠ `example`); app fallback giọng máy cho đến khi chạy job lại. Xóa hẳn example thì xóa file audio.
+
+## Lưới Từ vựng (`/words`)
+
+Cột **Giọng ví dụ** (và badge trên mobile):
+
+| Hiển thị | Ý nghĩa |
+|----------|---------|
+| **Azure** (teal) + nút phát | Có mp3 khớp câu example hiện tại |
+| **Chưa giọng** (xám) | Có example, chưa job / chưa tới lượt |
+| **Giọng cũ** (cam) | Example đã sửa sau khi tạo giọng — chạy job lại |
+| **—** | Không có câu ví dụ |
+
+Bộ lọc **Hình ảnh / bổ sung**: *Ví dụ đã có giọng Azure* · *Ví dụ chưa có giọng Azure*.
+
+API list: `GET /api/admin/words` trả thêm `exampleAudioState` (`na` \| `none` \| `ready` \| `stale`) và `exampleAudioUrl` (khi `ready`).
