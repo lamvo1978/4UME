@@ -181,6 +181,8 @@ public partial class AdminContentService(
             "image-review" => words.Where(w => w.ImagePending),
             "example" => words.Where(w => w.Example == "" || w.ExampleVi == ""),
             "ipa" => words.Where(w => w.Ipa == ""),
+            "example-audio" => words.Where(w => w.Example != "" && (w.ExampleAudioUrl == null || w.ExampleAudioText != w.Example)),
+            "example-audio-ready" => words.Where(w => w.Example != "" && w.ExampleAudioUrl != null && w.ExampleAudioText == w.Example),
             _ => words,
         };
     }
@@ -256,7 +258,12 @@ public partial class AdminContentService(
             w.ImagePending,
             db.MediaFiles.Where(m => m.Url == w.ImageUrl && m.Source != null)
                 .Select(m => new ImageCreditDto(m.Source!, m.Author, m.AuthorUrl, m.SourceUrl))
-                .FirstOrDefault()));
+                .FirstOrDefault(),
+            w.Example == "" ? WordExampleAudioStates.Na
+                : w.ExampleAudioUrl != null && w.ExampleAudioText == w.Example ? WordExampleAudioStates.Ready
+                : w.ExampleAudioUrl != null ? WordExampleAudioStates.Stale
+                : WordExampleAudioStates.None,
+            w.Example != "" && w.ExampleAudioUrl != null && w.ExampleAudioText == w.Example ? w.ExampleAudioUrl : null));
 
     /// <summary>
     /// Validates and copies the editable fields. The id is fixed once created (progress references it),

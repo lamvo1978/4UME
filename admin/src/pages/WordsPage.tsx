@@ -16,13 +16,23 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
-import { IconChevronDown, IconDownload, IconFileSpreadsheet, IconPhotoOff, IconPlus, IconSearch, IconUpload } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconDownload,
+  IconFileSpreadsheet,
+  IconPhotoOff,
+  IconPlayerPlay,
+  IconPlus,
+  IconSearch,
+  IconUpload,
+} from "@tabler/icons-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, mediaSrc, type AdminWord, type WordFilters } from "../api";
+import { api, mediaSrc, type AdminWord, type WordExampleAudioState, type WordFilters } from "../api";
 import { Select } from "../components/AppSelect";
 import { notifyError, notifySaved, posLabel } from "../lib";
 import { ExampleAudioCard } from "../vocabulary/ExampleAudioCard";
@@ -34,8 +44,20 @@ const MISSING = [
   { value: "image", label: "Chưa có hình" },
   { value: "image-review", label: "Ảnh chưa duyệt" },
   { value: "example", label: "Thiếu câu ví dụ" },
+  { value: "example-audio-ready", label: "Ví dụ đã có giọng Azure" },
+  { value: "example-audio", label: "Ví dụ chưa có giọng Azure" },
   { value: "ipa", label: "Thiếu phiên âm" },
 ];
+
+const EXAMPLE_AUDIO: Record<
+  WordExampleAudioState,
+  { label: string; color: string; tooltip: string }
+> = {
+  na: { label: "—", color: "gray", tooltip: "Không có câu ví dụ" },
+  none: { label: "Chưa giọng", color: "gray", tooltip: "Có câu ví dụ, chưa có giọng Azure (app đọc bằng điện thoại)" },
+  ready: { label: "Azure", color: "teal", tooltip: "Câu ví dụ đã có giọng Azure" },
+  stale: { label: "Giọng cũ", color: "orange", tooltip: "Câu ví dụ đã sửa — chạy lại job tạo giọng" },
+};
 const VISIBILITY = [
   { value: "true", label: "Đang hiện" },
   { value: "false", label: "Đã ẩn" },
@@ -204,6 +226,7 @@ export function WordsPage() {
                 <Table.Th>Nghĩa</Table.Th>
                 <Table.Th>Bộ</Table.Th>
                 <Table.Th w={70}>Cấp</Table.Th>
+                <Table.Th w={100}>Giọng ví dụ</Table.Th>
                 <Table.Th w={110}>Trạng thái</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -229,6 +252,9 @@ export function WordsPage() {
                   </Table.Td>
                   <Table.Td>
                     <Badge variant="light">{w.level}</Badge>
+                  </Table.Td>
+                  <Table.Td onClick={(e) => e.stopPropagation()}>
+                    <ExampleAudioCell word={w} />
                   </Table.Td>
                   <Table.Td>
                     <StatusBadges word={w} />
@@ -258,7 +284,10 @@ export function WordsPage() {
                     {w.deckTitleVi}
                   </Text>
                 </div>
-                <StatusBadges word={w} />
+                <Stack gap={6} align="flex-end" onClick={(e) => e.stopPropagation()}>
+                  <ExampleAudioCell word={w} compact />
+                  <StatusBadges word={w} />
+                </Stack>
               </Group>
             </Card>
           ))}
@@ -287,6 +316,42 @@ function Thumb({ url }: { url: string | null }) {
     <div style={{ width: 44, height: 44, borderRadius: 6, background: "#F1F5F3", display: "grid", placeItems: "center" }}>
       <IconPhotoOff size={18} color="#B9C9C2" />
     </div>
+  );
+}
+
+function ExampleAudioCell({ word, compact }: { word: AdminWord; compact?: boolean }) {
+  const meta = EXAMPLE_AUDIO[word.exampleAudioState];
+  if (word.exampleAudioState === "na") {
+    return compact ? null : (
+      <Text fz="xs" c="dimmed">
+        —
+      </Text>
+    );
+  }
+  return (
+    <Group gap={6} wrap="nowrap" justify={compact ? "flex-end" : "flex-start"}>
+      <Tooltip label={meta.tooltip}>
+        <Badge color={meta.color} variant="light" size="sm">
+          {meta.label}
+        </Badge>
+      </Tooltip>
+      {word.exampleAudioUrl ? (
+        <Tooltip label="Nghe thử câu ví dụ">
+          <ActionIcon
+            variant="light"
+            color="teal"
+            size="sm"
+            aria-label="Nghe câu ví dụ"
+            onClick={() => {
+              const a = new Audio(mediaSrc(word.exampleAudioUrl!));
+              a.play().catch(() => undefined);
+            }}
+          >
+            <IconPlayerPlay size={14} />
+          </ActionIcon>
+        </Tooltip>
+      ) : null}
+    </Group>
   );
 }
 

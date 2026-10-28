@@ -30,7 +30,7 @@ public record SaveDeckRequest(string? Id, string TitleVi, string Icon, bool Publ
 
 public record ReorderRequest(IReadOnlyList<string> Ids);
 
-/// <param name="Missing">"image", "has-image", "image-review" (auto-picked, not approved), "example" or "ipa".</param>
+/// <param name="Missing">"image", "has-image", "image-review" (auto-picked, not approved), "example", "ipa", "example-audio" (has example, no current Azure recording), "example-audio-ready".</param>
 /// <param name="Published">null = all, true = visible only, false = hidden only.</param>
 public record AdminWordQuery(
     string? Q,
@@ -62,7 +62,21 @@ public record AdminWordDto(
     DateTimeOffset? EditedAt,
     int Learners,
     bool ImagePending,
-    ImageCreditDto? ImageCredit);
+    ImageCreditDto? ImageCredit,
+    string ExampleAudioState,
+    string? ExampleAudioUrl);
+
+public static class WordExampleAudioStates
+{
+    /// <summary>No example sentence on the card.</summary>
+    public const string Na = "na";
+    /// <summary>Has example but no Azure mp3 yet (app uses device TTS).</summary>
+    public const string None = "none";
+    /// <summary>Example matches <c>ExampleAudioText</c>; app plays the recording.</summary>
+    public const string Ready = "ready";
+    /// <summary>Example was edited after the mp3 was made; run the example-audio job again.</summary>
+    public const string Stale = "stale";
+}
 
 public record ImageCreditDto(string Source, string? Author, string? AuthorUrl, string? SourceUrl);
 
