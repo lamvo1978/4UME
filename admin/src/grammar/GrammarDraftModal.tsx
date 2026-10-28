@@ -85,10 +85,24 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
     }
   }
 
+  function dropDraftItems(keep: (item: GrammarDraft["items"][number]) => boolean) {
+    setPicked(new Set());
+    setDraft((d) => {
+      if (!d) return null;
+      const items = d.items.filter(keep);
+      if (items.length === 0) {
+        onClose();
+        return null;
+      }
+      return { ...d, items };
+    });
+  }
+
   function addPublished() {
-    if (!draft) return;
-    onAdd(bank, draft.items.filter((i) => picked.has(i.exercise.id)).map((i) => draftItemToExercise(i, true)));
-    onClose();
+    if (!draft || picked.size === 0) return;
+    const savedIds = new Set(picked);
+    onAdd(bank, draft.items.filter((i) => savedIds.has(i.exercise.id)).map((i) => draftItemToExercise(i, true)));
+    dropDraftItems((i) => !savedIds.has(i.exercise.id));
   }
 
   function addHiddenDrafts() {
@@ -96,7 +110,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
     const hidden = draft.items.filter((i) => i.warning && i.problems.length === 0).map((i) => draftItemToExercise(i, false));
     if (hidden.length === 0) return;
     onAdd(bank, hidden);
-    onClose();
+    dropDraftItems((i) => !(i.warning && i.problems.length === 0));
   }
 
   const notConfigured = status.data && !status.data.configured;
@@ -119,7 +133,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
               {doubtful} câu bị AI nghi có vấn đề nên chưa được chọn. Có thể{" "}
-              <b>Thêm {hiddenSaveCount} câu nghi vấn (ẩn)</b> — câu ẩn không vào app cho đến khi bật *Dùng trong app* trên từng câu và lưu bài.
+              <b>Thêm {hiddenSaveCount} câu nghi vấn (ẩn)</b> — có thể thêm từng nhóm; form chỉ đóng khi hết câu. Nhớ *Lưu bài* sau khi thêm vào bài.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">
