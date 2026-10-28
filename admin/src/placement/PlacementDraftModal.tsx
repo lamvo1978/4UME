@@ -83,13 +83,27 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     }
   }
 
+  function dropDraftItems(keep: (item: PlacementGrammarDraft["items"][number], index: number) => boolean) {
+    setPicked(new Set());
+    setDraft((d) => {
+      if (!d) return null;
+      const items = d.items.filter(keep);
+      if (items.length === 0) {
+        onClose();
+        return null;
+      }
+      return { ...d, items };
+    });
+  }
+
   async function addPublished() {
-    if (!draft) return;
+    if (!draft || picked.size === 0) return;
     setSaving(true);
     setError("");
     try {
-      await onAdd(draft.items.filter((_, i) => picked.has(i)).map((item) => draftItemToInput(item, true)));
-      onClose();
+      const savedIndices = new Set(picked);
+      await onAdd(draft.items.filter((_, i) => savedIndices.has(i)).map((item) => draftItemToInput(item, true)));
+      dropDraftItems((_, i) => !savedIndices.has(i));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -105,7 +119,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     setError("");
     try {
       await onAdd(hidden);
-      onClose();
+      dropDraftItems((item) => !(item.warning && item.problems.length === 0));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -133,7 +147,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
               {doubtful} câu bị AI nghi có vấn đề nên chưa được chọn. Có thể{" "}
-              <b>Lưu {hiddenSaveCount} câu nghi vấn (ẩn)</b> — câu lưu ẩn không vào app cho đến khi bạn bật công tắc *Đang dùng* trên danh sách.
+              <b>Lưu {hiddenSaveCount} câu nghi vấn (ẩn)</b> — có thể lưu từng nhóm; form chỉ đóng khi hết câu. Câu ẩn bật *Đang dùng* trên danh sách khi duyệt xong.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">
