@@ -43,6 +43,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, type GrammarBank, type GrammarExercise, type GrammarLesson } from "../api";
 import { ExerciseEditor } from "../grammar/ExerciseEditor";
+import { PlacementReviewHints } from "../placement/PlacementReviewHints";
 import { ExercisePreview } from "../grammar/ExercisePreview";
 import { GrammarDraftModal } from "../grammar/GrammarDraftModal";
 import {
@@ -394,7 +395,11 @@ export function GrammarEditPage() {
             radius="lg"
             shadow="xs"
             withBorder={open || !!exProblems}
-            style={{ borderColor: exProblems ? "#F08C00" : open ? "#0F6B5C" : undefined, overflow: "hidden" }}
+            style={{
+              borderColor: exProblems ? "#F08C00" : open ? "#0F6B5C" : undefined,
+              overflow: "hidden",
+              opacity: ex.published === false ? 0.65 : 1,
+            }}
           >
             <UnstyledButton w="100%" p="sm" onClick={() => setSelected(open ? null : ex.id)}>
               <Group gap="sm" wrap="nowrap">
@@ -407,9 +412,10 @@ export function GrammarEditPage() {
                   </Text>
                   <Text fz="xs" c="dimmed" truncate>
                     {ex.id} · {displayAnswer(ex) || "—"}
+                    {ex.published === false ? " · ẩn" : ""}
                   </Text>
                 </div>
-                {exProblems ? <IconAlertTriangle size={18} color="#F08C00" /> : null}
+                {exProblems || ex.reviewHintVi ? <IconAlertTriangle size={18} color="#F08C00" /> : null}
               </Group>
             </UnstyledButton>
             {open ? (
@@ -419,6 +425,7 @@ export function GrammarEditPage() {
                     {exProblems.join(" ")}
                   </Text>
                 ) : null}
+                <PlacementReviewHints reviewHintVi={ex.reviewHintVi} reviewSuggestedAcceptedAnswers={ex.reviewSuggestedAcceptedAnswers} />
                 <ExerciseEditor exercise={ex} bank={bank} onChange={(next) => setExercise(ex.id, next)} />
                 <Group justify="space-between">
                   <Group gap={4}>

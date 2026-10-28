@@ -151,6 +151,9 @@ const cleanExercise = (e: GrammarExercise): GrammarExercise => ({
   distractors: e.distractors ? list(e.distractors) : undefined,
   answers: e.answers ? list(e.answers) : undefined,
   blanks: e.blanks ? e.blanks.map(list) : undefined,
+  reviewSuggestedAcceptedAnswers: e.reviewSuggestedAcceptedAnswers?.length ? list(e.reviewSuggestedAcceptedAnswers) : undefined,
+  reviewHintVi: e.reviewHintVi?.trim() || undefined,
+  published: e.published === false ? false : undefined,
 });
 
 export function move<T>(list: T[], index: number, delta: number): T[] {

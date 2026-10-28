@@ -1,6 +1,6 @@
 import { Center, Loader } from "@mantine/core";
 import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { AdminLayout } from "./layout/AdminLayout";
 import { DecksPage } from "./pages/DecksPage";
@@ -35,8 +35,21 @@ import { UsersPage } from "./pages/UsersPage";
 /** Pulls in the Excel/CSV libraries, so it is loaded only when opened. */
 const WordImportPage = lazy(() => import("./pages/WordImportPage").then((m) => ({ default: m.WordImportPage })));
 
+const PlacementDraftDevPreview = import.meta.env.DEV
+  ? lazy(() => import("./pages/PlacementDraftDevPreview").then((m) => ({ default: m.PlacementDraftDevPreview })))
+  : null;
+
 export function App() {
   const { ready, admin } = useAuth();
+  const location = useLocation();
+
+  if (import.meta.env.DEV && location.pathname === "/dev/placement-draft" && PlacementDraftDevPreview) {
+    return (
+      <Suspense fallback={<Center mih="100dvh"><Loader /></Center>}>
+        <PlacementDraftDevPreview />
+      </Suspense>
+    );
+  }
 
   if (!ready) {
     return (

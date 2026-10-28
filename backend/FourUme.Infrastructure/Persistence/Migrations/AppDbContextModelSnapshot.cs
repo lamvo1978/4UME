@@ -1140,6 +1140,14 @@ namespace FourUme.Infrastructure.Persistence.Migrations
                     b.Property<bool>("Published")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ReviewHintVi")
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.PrimitiveCollection<List<string>>("ReviewSuggestedAcceptedAnswers")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 

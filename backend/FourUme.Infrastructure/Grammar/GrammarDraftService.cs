@@ -89,6 +89,9 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
         - filling every gap with its answer gives a correct sentence (no doubled words like "Are you are ready");
         - the Vietnamese (promptVi, instructionVi, explanationVi) is correct and matches.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
+        When ok is false because other mcq options are also correct but missing from acceptedAnswers,
+        you MUST set "alsoCorrectOptions" to every such option (exact strings from options; never include the main answer).
+        If you cannot name them, set ok to true instead. For other problems, use an empty alsoCorrectOptions array.
         """;
 
     public async Task<GrammarDraftDto> DraftAsync(GrammarDraftRequest request, CancellationToken ct = default)
@@ -142,7 +145,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
 
         AssignIds(drafted, existing, lesson.Slug);
 
-        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(lesson, drafted, request.Provider, ct);
+        var (warnings, suggestions, isChecked) = request.SkipCheck ? ([], [], false) : await CheckAsync(lesson, drafted, request.Provider, ct);
         try
         {
             await verbs.TagAsync(drafted, ct, request.Provider);
@@ -160,13 +163,14 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
             var prefix = $"Bài tập {e.Id}: ";
             problems = problems.Select(p => p.StartsWith(prefix) ? p[prefix.Length..] : p).ToList();
             problems.AddRange(DraftProblems(e));
-            return new GrammarDraftItemDto(e, problems, warnings.GetValueOrDefault(i));
+            return new GrammarDraftItemDto(e, problems, warnings.GetValueOrDefault(i), suggestions.GetValueOrDefault(i) ?? []);
         }).ToList();
         return new GrammarDraftDto(items, isChecked, reply.Model);
     }
 
     /// <summary>Second pass; a failure here only means the admin gets no warnings, the draft is still returned.</summary>
-    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(GrammarLessonDocument lesson, List<GrammarExercise> drafted, string? provider, CancellationToken ct)
+    private async Task<(Dictionary<int, string> Warnings, Dictionary<int, List<string>> Suggestions, bool Checked)> CheckAsync(
+        GrammarLessonDocument lesson, List<GrammarExercise> drafted, string? provider, CancellationToken ct)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Lesson: {lesson.TitleEn} / {lesson.TitleVi} (level {lesson.Level}).");
@@ -177,20 +181,24 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
         {
             var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
             var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
-            return (results
-                .Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count)
-                .GroupBy(r => r.Index)
-                .ToDictionary(g => g.Key, g => string.IsNullOrWhiteSpace(g.First().ProblemVi) ? "AI nghi câu này có vấn đề." : g.First().ProblemVi!.Trim()), true);
+            var flagged = results.Where(r => !r.Ok && r.Index >= 0 && r.Index < drafted.Count).GroupBy(r => r.Index);
+            var suggestions = flagged.ToDictionary(g => g.Key, g => McqDraftCheck.ForExercise(drafted[g.Key], g.First().AlsoCorrectOptions));
+            var warnings = flagged.ToDictionary(g => g.Key, g =>
+            {
+                var problem = string.IsNullOrWhiteSpace(g.First().ProblemVi) ? "AI nghi câu này có vấn đề." : g.First().ProblemVi!.Trim();
+                return McqDraftCheck.FormatWarning(problem, suggestions.GetValueOrDefault(g.Key) ?? []);
+            });
+            return (warnings, suggestions, true);
         }
         catch (Exception ex) when (ex is InvalidOperationException or JsonException or HttpRequestException or TaskCanceledException)
         {
             logger.LogWarning(ex, "Grammar draft check failed");
-            return ([], false);
+            return ([], [], false);
         }
 
         static object WithoutId(GrammarExercise e) => new
         {
-            e.Type, e.Prompt, e.PromptVi, e.InstructionVi, e.Source, e.Sentence, e.Options, e.Answer, e.Answers, e.Blanks, e.Distractors, e.Correction, e.ExplanationVi,
+            e.Type, e.Prompt, e.PromptVi, e.InstructionVi, e.Source, e.Sentence, e.Options, e.Answer, e.AcceptedAnswers, e.Answers, e.Blanks, e.Distractors, e.Correction, e.ExplanationVi,
         };
     }
 
@@ -366,6 +374,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
                         ["index"] = new JsonObject { ["type"] = "INTEGER" },
                         ["ok"] = new JsonObject { ["type"] = "BOOLEAN" },
                         ["problemVi"] = Str(),
+                        ["alsoCorrectOptions"] = new JsonObject { ["type"] = "ARRAY", ["items"] = Str() },
                     },
                     ["required"] = Names("index", "ok"),
                 },
@@ -388,6 +397,7 @@ public sealed partial class GrammarDraftService(AiClient ai, GrammarVerbTagger v
     {
         public int Index { get; set; }
         public bool Ok { get; set; }
+        public List<string>? AlsoCorrectOptions { get; set; }
         public string? ProblemVi { get; set; }
     }
 

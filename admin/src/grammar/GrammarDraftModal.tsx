@@ -6,6 +6,16 @@ import { api, type GrammarBank, type GrammarDraft, type GrammarDraftDifficulty, 
 import { BANKS, cleanLesson, displayAnswer, exerciseMeta, typesFor } from "./meta";
 import { SkipCheckSwitch, useSkipCheck } from "./SkipCheckSwitch";
 import { AiProviderSelect, useAiProvider } from "../components/AiProviderSelect";
+import { PlacementReviewHints, suggestedOptionSet } from "../placement/PlacementReviewHints";
+
+function draftItemToExercise(item: GrammarDraft["items"][number], published: boolean): GrammarExercise {
+  return {
+    ...item.exercise,
+    published,
+    reviewHintVi: item.warning,
+    reviewSuggestedAcceptedAnswers: item.suggestedAcceptedAnswers ?? [],
+  };
+}
 
 const COUNTS = ["1", "5", "10", "15", "20"];
 const DIFFICULTIES: { value: GrammarDraftDifficulty; label: string }[] = [
@@ -75,15 +85,23 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
     }
   }
 
-  function add() {
+  function addPublished() {
     if (!draft) return;
-    onAdd(bank, draft.items.filter((i) => picked.has(i.exercise.id)).map((i) => i.exercise));
+    onAdd(bank, draft.items.filter((i) => picked.has(i.exercise.id)).map((i) => draftItemToExercise(i, true)));
+    onClose();
+  }
+
+  function addHiddenDrafts() {
+    if (!draft) return;
+    const hidden = draft.items.filter((i) => i.warning && i.problems.length === 0).map((i) => draftItemToExercise(i, false));
+    if (hidden.length === 0) return;
+    onAdd(bank, hidden);
     onClose();
   }
 
   const notConfigured = status.data && !status.data.configured;
   const doubtful = draft?.items.filter((i) => i.warning || i.problems.length > 0).length ?? 0;
-  const bankLabel = BANKS.find((b) => b.value === bank)!.label;
+  const hiddenSaveCount = draft?.items.filter((i) => i.warning && i.problems.length === 0).length ?? 0;
 
   return (
     <Modal opened={opened} onClose={busy ? () => {} : onClose} title="AI soạn bài tập" size="xl" radius="lg">
@@ -100,7 +118,8 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
-              {doubtful} câu bị AI tự kiểm tra nghi có vấn đề nên chưa được chọn. Đọc ghi chú màu cam, sửa sau khi thêm nếu vẫn muốn giữ.
+              {doubtful} câu bị AI nghi có vấn đề nên chưa được chọn. Có thể{" "}
+              <b>Thêm {hiddenSaveCount} câu nghi vấn (ẩn)</b> — câu ẩn không vào app cho đến khi bật *Dùng trong app* trên từng câu và lưu bài.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">
@@ -108,9 +127,10 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
             </Text>
           )}
           <Stack gap="xs">
-            {draft.items.map(({ exercise: ex, problems, warning }) => {
+            {draft.items.map(({ exercise: ex, problems, warning, suggestedAcceptedAnswers }) => {
               const meta = exerciseMeta(ex.type);
               const on = picked.has(ex.id);
+              const suggested = suggestedOptionSet(suggestedAcceptedAnswers);
               return (
                 <Paper key={ex.id} withBorder radius="md" p="sm" style={{ borderColor: warning || problems.length ? "#F08C00" : undefined }}>
                   <Group align="flex-start" wrap="nowrap" gap="sm">
@@ -140,10 +160,24 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
                         {ex.type === "transform" ? `${ex.instructionVi}: ${ex.source}` : ex.prompt || ex.promptVi || ex.sentence}
                       </Text>
                       {ex.type === "mcq" ? (
-                        <Text fz="xs" c="dimmed">
-                          Lựa chọn: {ex.options?.join(" · ")}
-                          {(ex.acceptedAnswers?.length ?? 0) > 0 ? ` · cũng đúng: ${ex.acceptedAnswers!.join(", ")}` : ""}
-                        </Text>
+                        <Group gap={6}>
+                          {ex.options?.map((o) => {
+                            const also = (ex.acceptedAnswers ?? []).includes(o);
+                            const primary = o === ex.answer;
+                            const hint = suggested.has(o);
+                            return (
+                              <Badge
+                                key={o}
+                                variant={primary || also ? "filled" : hint ? "light" : "outline"}
+                                color={primary ? "teal" : also ? "blue" : hint ? "orange" : "gray"}
+                                tt="none"
+                              >
+                                {o}
+                                {hint && !also && !primary ? " ?" : ""}
+                              </Badge>
+                            );
+                          })}
+                        </Group>
                       ) : null}
                       <Text fz="sm" c="teal.8">
                         → {displayAnswer(ex)}
@@ -153,9 +187,11 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
                         {ex.explanationVi}
                       </Text>
                       {warning ? (
-                        <Text fz="xs" c="orange.8">
-                          AI kiểm tra: {warning}
-                        </Text>
+                        <PlacementReviewHints
+                          prefix="AI kiểm tra"
+                          reviewHintVi={warning}
+                          reviewSuggestedAcceptedAnswers={suggestedAcceptedAnswers}
+                        />
                       ) : null}
                       {problems.length ? (
                         <Text fz="xs" c="red.7">
@@ -172,9 +208,16 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
             <Button variant="default" leftSection={<IconArrowLeft size={16} />} onClick={() => setDraft(null)}>
               Soạn lại
             </Button>
-            <Button onClick={add} disabled={picked.size === 0}>
-              Thêm {picked.size} câu vào "{bankLabel}"
-            </Button>
+            <Group gap="sm">
+              {hiddenSaveCount > 0 ? (
+                <Button variant="light" color="orange" onClick={addHiddenDrafts}>
+                  Thêm {hiddenSaveCount} câu nghi vấn (ẩn)
+                </Button>
+              ) : null}
+              <Button onClick={addPublished} disabled={picked.size === 0}>
+                Thêm {picked.size} câu (dùng ngay)
+              </Button>
+            </Group>
           </Group>
         </Stack>
       ) : (

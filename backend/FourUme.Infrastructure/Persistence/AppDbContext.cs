@@ -369,6 +369,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Prompt).HasMaxLength(400).IsRequired();
             e.Property(x => x.Answer).HasMaxLength(200).IsRequired();
             e.PrimitiveCollection<List<string>>("AcceptedAnswers").HasColumnType("text[]");
+            e.Property(x => x.ReviewHintVi).HasMaxLength(400);
+            e.PrimitiveCollection<List<string>>("ReviewSuggestedAcceptedAnswers").HasColumnType("text[]");
             e.Property(x => x.ExplanationVi).HasMaxLength(600).IsRequired();
             e.Property(x => x.LessonSlug).HasMaxLength(80);
             e.HasIndex(x => new { x.Level, x.Published });

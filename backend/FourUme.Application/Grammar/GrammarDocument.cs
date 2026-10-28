@@ -70,6 +70,12 @@ public sealed class GrammarExercise
     public string? Answer { get; set; }
     /// <summary>mcq: other correct options besides <see cref="Answer"/>.</summary>
     public List<string>? AcceptedAnswers { get; set; }
+    /// <summary>When false, kept in the lesson JSON but skipped by the app until the editor publishes it.</summary>
+    public bool? Published { get; set; }
+    /// <summary>Editor-only AI checker note (not shown to learners).</summary>
+    public string? ReviewHintVi { get; set; }
+    /// <summary>mcq: options the checker flagged as also correct (editor-only until ticked).</summary>
+    public List<string>? ReviewSuggestedAcceptedAnswers { get; set; }
     public List<string>? Answers { get; set; }
     public List<string>? Distractors { get; set; }
     public string? Correction { get; set; }

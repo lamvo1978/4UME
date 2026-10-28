@@ -44,6 +44,14 @@ Trường chung: `id` (duy nhất trong bài, ví dụ `ps-01`), `type`, `explan
 | `type` | Trường riêng | Cách làm trên app |
 |---|---|---|
 | `mcq` | `prompt`, `options: string[]`, `answer` (đáp án chính), `acceptedAnswers?` (các option khác cũng đúng) | Chọn 1 đáp án; app chấp nhận mọi option trong `answer` + `acceptedAnswers`. |
+
+Mọi câu trong `exercises` / `practice` có thể thêm (editor, không gửi app):
+
+| Trường | Ý nghĩa |
+|---|---|
+| `published` | `false` = giữ trong JSON nhưng app bỏ qua (sau AI soạn / duyệt). |
+| `reviewHintVi` | Ghi chú AI kiểm tra khi soạn nháp. |
+| `reviewSuggestedAcceptedAnswers` | mcq: option gợi ý thêm *Cũng đúng*. |
 | `fill` | `prompt` có `___`, `answers: string[]` (mọi đáp án chấp nhận) | Gõ từ còn thiếu. **Luôn gợi ý từ gốc trong ngoặc** nếu có thể có nhiều đáp án: `He ___ (speak) English.` |
 | `order` | `promptVi` (câu tiếng Việt), `answer` (câu đúng), `distractors?: string[]` | Chạm các mảnh từ để ghép câu. Mảnh = `answer` tách theo khoảng trắng (+ mảnh gây nhiễu). |
 | `transform` | `instructionVi`, `source`, `answer`, `distractors?` | Đổi câu (phủ định, nghi vấn, bị động…) bằng cách ghép mảnh như `order`. |
