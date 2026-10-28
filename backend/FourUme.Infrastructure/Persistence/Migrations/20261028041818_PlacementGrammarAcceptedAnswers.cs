@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,11 +10,12 @@ namespace FourUme.Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<List<string>>(
-                name: "AcceptedAnswers",
-                table: "PlacementGrammarQuestions",
-                type: "text[]",
-                nullable: false);
+            // Backfill existing rows with an empty array; NOT NULL without DEFAULT fails on Postgres.
+            migrationBuilder.Sql(
+                """
+                ALTER TABLE "PlacementGrammarQuestions"
+                ADD COLUMN "AcceptedAnswers" text[] NOT NULL DEFAULT '{}';
+                """);
         }
 
         /// <inheritdoc />
