@@ -36,7 +36,7 @@ const KNOWN_TYPES = new Set<string>(["mcq", "fill", "order", "transform", "error
 
 /** Drops exercise types this build can't render (added to the lesson schema later). */
 export function playable(pool: GrammarExercise[] | undefined) {
-  return (pool ?? []).filter((ex) => KNOWN_TYPES.has(ex.type));
+  return (pool ?? []).filter((ex) => KNOWN_TYPES.has(ex.type) && ex.published !== false);
 }
 
 /** Review/practice draw from the lesson's extra practice bank first, topped up from the lesson quiz. */

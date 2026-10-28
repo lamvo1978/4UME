@@ -51,7 +51,11 @@ public record GrammarDraftRequest(
     string? Provider = null);
 
 /// <param name="Warning">Set when the second AI pass doubts the answer; the admin should look closely before keeping it.</param>
-public record GrammarDraftItemDto(GrammarExercise Exercise, IReadOnlyList<string> Problems, string? Warning);
+public record GrammarDraftItemDto(
+    GrammarExercise Exercise,
+    IReadOnlyList<string> Problems,
+    string? Warning,
+    IReadOnlyList<string> SuggestedAcceptedAnswers);
 
 /// <param name="Checked">False when the checking pass failed (e.g. rate limit), so no item carries a warning.</param>
 /// <param name="Model">The AI model that wrote the draft.</param>

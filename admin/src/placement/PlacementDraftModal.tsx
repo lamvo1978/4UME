@@ -6,6 +6,16 @@ import { api, type AdminGrammarSummary, type PlacementGrammarDraft, type Placeme
 import { SkipCheckSwitch, useSkipCheck } from "../grammar/SkipCheckSwitch";
 import { AiProviderSelect, useAiProvider } from "../components/AiProviderSelect";
 import { PLACEMENT_LEVELS } from "./meta";
+import { PlacementReviewHints, suggestedOptionSet } from "./PlacementReviewHints";
+
+function draftItemToInput(item: PlacementGrammarDraft["items"][number], published: boolean): PlacementGrammarInput {
+  return {
+    ...item.question,
+    published,
+    reviewHintVi: item.warning,
+    reviewSuggestedAcceptedAnswers: item.suggestedAcceptedAnswers ?? [],
+  };
+}
 
 const COUNTS = ["1", "5", "10", "15", "20"];
 
@@ -15,11 +25,19 @@ type Props = {
   level: PlacementLevel;
   lessons: AdminGrammarSummary[];
   onAdd: (questions: PlacementGrammarInput[]) => Promise<void>;
+  /** Dev-only: skip AI and show this draft immediately. */
+  devPreviewDraft?: PlacementGrammarDraft | null;
 };
 
 /** The AI drafts placement questions from the level's grammar lessons; the admin ticks the ones to save. */
-export function PlacementDraftModal({ opened, onClose, level: initialLevel, lessons, onAdd }: Props) {
-  const status = useQuery({ queryKey: ["listening-draft-status"], queryFn: api.listeningDraftStatus, enabled: opened, staleTime: 60_000 });
+export function PlacementDraftModal({ opened, onClose, level: initialLevel, lessons, onAdd, devPreviewDraft }: Props) {
+  const preview = Boolean(devPreviewDraft);
+  const status = useQuery({
+    queryKey: ["listening-draft-status"],
+    queryFn: api.listeningDraftStatus,
+    enabled: opened && !preview,
+    staleTime: 60_000,
+  });
   const [level, setLevel] = useState<PlacementLevel>(initialLevel);
   const [count, setCount] = useState("10");
   const [lessonSlug, setLessonSlug] = useState<string | null>(null);
@@ -37,9 +55,15 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     if (!opened) return;
     setLevel(initialLevel);
     setLessonSlug(null);
-    setDraft(null);
     setError("");
-  }, [opened, initialLevel]);
+    if (devPreviewDraft) {
+      setDraft(devPreviewDraft);
+      setPicked(new Set(devPreviewDraft.items.flatMap((item, i) => (item.problems.length === 0 && !item.warning ? [i] : []))));
+      setSkipped(false);
+    } else {
+      setDraft(null);
+    }
+  }, [opened, initialLevel, devPreviewDraft]);
 
   const levelLessons = lessons.filter((l) => l.level === level);
   const titleOf = (slug: string | null) => lessons.find((l) => l.slug === slug)?.titleVi;
@@ -59,12 +83,28 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
     }
   }
 
-  async function add() {
+  async function addPublished() {
     if (!draft) return;
     setSaving(true);
     setError("");
     try {
-      await onAdd(draft.items.filter((_, i) => picked.has(i)).map((item) => item.question));
+      await onAdd(draft.items.filter((_, i) => picked.has(i)).map((item) => draftItemToInput(item, true)));
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function addHiddenDrafts() {
+    if (!draft) return;
+    const hidden = draft.items.filter((item) => item.warning && item.problems.length === 0).map((item) => draftItemToInput(item, false));
+    if (hidden.length === 0) return;
+    setSaving(true);
+    setError("");
+    try {
+      await onAdd(hidden);
       onClose();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -75,6 +115,7 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
 
   const notConfigured = status.data && !status.data.configured;
   const doubtful = draft?.items.filter((i) => i.warning || i.problems.length > 0).length ?? 0;
+  const hiddenSaveCount = draft?.items.filter((i) => i.warning && i.problems.length === 0).length ?? 0;
 
   return (
     <Modal opened={opened} onClose={busy || saving ? () => {} : onClose} title={`AI soạn câu kiểm tra ngữ pháp ${level}`} size="xl" radius="lg">
@@ -91,7 +132,8 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
             </Alert>
           ) : doubtful > 0 ? (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />}>
-              {doubtful} câu bị AI nghi có vấn đề nên chưa được chọn. Nếu vẫn muốn giữ, chọn rồi sửa lại sau khi lưu.
+              {doubtful} câu bị AI nghi có vấn đề nên chưa được chọn. Có thể{" "}
+              <b>Lưu {hiddenSaveCount} câu nghi vấn (ẩn)</b> — câu lưu ẩn không vào app cho đến khi bạn bật công tắc *Đang dùng* trên danh sách.
             </Alert>
           ) : (
             <Text size="sm" c="dimmed">
@@ -99,8 +141,9 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
             </Text>
           )}
           <Stack gap="xs">
-            {draft.items.map(({ question: q, problems, warning }, i) => {
+            {draft.items.map(({ question: q, problems, warning, suggestedAcceptedAnswers }, i) => {
               const on = picked.has(i);
+              const suggested = suggestedOptionSet(suggestedAcceptedAnswers);
               return (
                 <Paper key={i} withBorder radius="md" p="sm" style={{ borderColor: warning || problems.length ? "#F08C00" : undefined }}>
                   <Group align="flex-start" wrap="nowrap" gap="sm">
@@ -130,15 +173,17 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
                         {q.options.map((o) => {
                           const also = (q.acceptedAnswers ?? []).includes(o);
                           const primary = o === q.answer;
+                          const hint = suggested.has(o);
                           return (
                             <Badge
                               key={o}
-                              variant={primary || also ? "filled" : "outline"}
-                              color={primary ? "teal" : also ? "blue" : "gray"}
+                              variant={primary || also ? "filled" : hint ? "light" : "outline"}
+                              color={primary ? "teal" : also ? "blue" : hint ? "orange" : "gray"}
                               tt="none"
                             >
                               {o}
                               {also && !primary ? " ✓" : ""}
+                              {hint && !also && !primary ? " ?" : ""}
                             </Badge>
                           );
                         })}
@@ -149,9 +194,11 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
                         </Text>
                       ) : null}
                       {warning ? (
-                        <Text fz="xs" c="orange.8">
-                          AI kiểm tra: {warning}
-                        </Text>
+                        <PlacementReviewHints
+                          prefix="AI kiểm tra"
+                          reviewHintVi={warning}
+                          reviewSuggestedAcceptedAnswers={suggestedAcceptedAnswers}
+                        />
                       ) : null}
                       {problems.length ? (
                         <Text fz="xs" c="red.7">
@@ -169,9 +216,16 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
             <Button variant="default" leftSection={<IconArrowLeft size={16} />} onClick={() => setDraft(null)} disabled={saving}>
               Soạn lại
             </Button>
-            <Button onClick={add} disabled={picked.size === 0} loading={saving}>
-              Lưu {picked.size} câu
-            </Button>
+            <Group gap="sm">
+              {hiddenSaveCount > 0 ? (
+                <Button variant="light" color="orange" onClick={addHiddenDrafts} loading={saving}>
+                  Lưu {hiddenSaveCount} câu nghi vấn (ẩn)
+                </Button>
+              ) : null}
+              <Button onClick={addPublished} disabled={picked.size === 0} loading={saving}>
+                Lưu {picked.size} câu (dùng ngay)
+              </Button>
+            </Group>
           </Group>
         </Stack>
       ) : (

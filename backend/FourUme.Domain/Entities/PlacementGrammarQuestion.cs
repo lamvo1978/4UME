@@ -12,6 +12,10 @@ public class PlacementGrammarQuestion
     public string Answer { get; set; } = string.Empty;
     /// <summary>Other options that are also grammatically correct (e.g. will vs be going to).</summary>
     public List<string> AcceptedAnswers { get; set; } = [];
+    /// <summary>AI checker note for editors; not sent to the placement test in the app.</summary>
+    public string? ReviewHintVi { get; set; }
+    /// <summary>Options the AI checker flagged as also correct; editor-only until ticked as accepted.</summary>
+    public List<string> ReviewSuggestedAcceptedAnswers { get; set; } = [];
     public string ExplanationVi { get; set; } = string.Empty;
     /// <summary>Grammar lesson the question tests; a wrong answer suggests starting there.</summary>
     public string? LessonSlug { get; set; }

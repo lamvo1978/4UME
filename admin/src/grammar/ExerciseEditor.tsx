@@ -1,4 +1,5 @@
-import { ActionIcon, Autocomplete, Button, Checkbox, Group, Radio, Stack, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
+import { ActionIcon, Alert, Autocomplete, Button, Checkbox, Group, Radio, Stack, Switch, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
+import { PlacementReviewHints, suggestedOptionSet } from "../placement/PlacementReviewHints";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import type { GrammarBank, GrammarExercise } from "../api";
 import { Select } from "../components/AppSelect";
@@ -17,8 +18,26 @@ type Props = { exercise: GrammarExercise; onChange: (e: GrammarExercise) => void
 
 export function ExerciseEditor({ exercise: ex, onChange, bank = "exercises" }: Props & { bank?: GrammarBank }) {
   const set = (patch: Partial<GrammarExercise>) => onChange({ ...ex, ...patch });
+  const aiSuggested = suggestedOptionSet(ex.reviewSuggestedAcceptedAnswers);
+  const hasReviewHint = Boolean((ex.reviewHintVi ?? "").trim() || aiSuggested.size > 0);
   return (
     <Stack gap="sm">
+      {hasReviewHint ? (
+        <Alert color="orange" variant="light">
+          <Stack gap="xs">
+            <PlacementReviewHints reviewHintVi={ex.reviewHintVi} reviewSuggestedAcceptedAnswers={ex.reviewSuggestedAcceptedAnswers} />
+            <Button variant="subtle" size="compact-xs" onClick={() => set({ reviewHintVi: null, reviewSuggestedAcceptedAnswers: [] })}>
+              Xóa gợi ý AI (đã duyệt xong)
+            </Button>
+          </Stack>
+        </Alert>
+      ) : null}
+      <Switch
+        label="Dùng trong app"
+        description="Tắt để giữ câu trong bài nhưng chưa đưa vào quiz / luyện thêm"
+        checked={ex.published !== false}
+        onChange={(e) => set({ published: e.currentTarget.checked })}
+      />
       <Group grow gap="sm" align="flex-start">
         <Select
           label="Dạng bài"
@@ -54,6 +73,7 @@ function TypeFields({ exercise: ex, onChange }: Props) {
   switch (ex.type) {
     case "mcq": {
       const options = ex.options ?? [];
+      const aiSuggested = suggestedOptionSet(ex.reviewSuggestedAcceptedAnswers);
       const toggleAlso = (opt: string, on: boolean) => {
         const extra = new Set(ex.acceptedAnswers ?? []);
         if (on) extra.add(opt);
@@ -96,7 +116,12 @@ function TypeFields({ exercise: ex, onChange }: Props) {
                         }}
                       />
                       {o.trim() && o !== ex.answer ? (
-                        <Checkbox size="xs" label="Cũng đúng" checked={(ex.acceptedAnswers ?? []).includes(o)} onChange={(e) => toggleAlso(o, e.currentTarget.checked)} />
+                        <Checkbox
+                          size="xs"
+                          label={aiSuggested.has(o) ? "Cũng đúng (AI gợi ý ?)" : "Cũng đúng"}
+                          checked={(ex.acceptedAnswers ?? []).includes(o)}
+                          onChange={(e) => toggleAlso(o, e.currentTarget.checked)}
+                        />
                       ) : null}
                     </Stack>
                     <ActionIcon

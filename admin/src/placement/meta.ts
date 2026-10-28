@@ -16,4 +16,6 @@ export const emptyQuestion = (level: PlacementLevel): PlacementGrammarInput => (
   explanationVi: "",
   lessonSlug: null,
   published: true,
+  reviewHintVi: null,
+  reviewSuggestedAcceptedAnswers: [],
 });

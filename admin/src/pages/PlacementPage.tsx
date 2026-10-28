@@ -8,6 +8,7 @@ import { PlacementDraftModal } from "../placement/PlacementDraftModal";
 import { PlacementImportModal } from "../placement/PlacementImportModal";
 import { PlacementQuestionModal } from "../placement/PlacementQuestionModal";
 import { emptyQuestion, GOOD_PER_LEVEL, MIN_PER_LEVEL, PLACEMENT_LEVELS } from "../placement/meta";
+import { PlacementReviewHints, suggestedOptionSet } from "../placement/PlacementReviewHints";
 
 const KEY = ["placement-grammar"];
 
@@ -50,7 +51,8 @@ export function PlacementPage() {
 
   async function addDrafted(qs: PlacementGrammarInput[]) {
     const { created } = await api.createPlacementGrammarBatch(qs);
-    notifySaved(`Đã lưu ${created} câu`);
+    const allHidden = qs.length > 0 && qs.every((q) => !q.published);
+    notifySaved(allHidden ? `Đã lưu ${created} câu (ẩn — bật *Đang dùng* khi duyệt xong)` : `Đã lưu ${created} câu`);
     refresh();
   }
 
@@ -135,7 +137,9 @@ export function PlacementPage() {
       {questions.isLoading ? <Skeleton h={300} radius="lg" /> : null}
 
       <Stack gap={8}>
-        {list.map((q) => (
+        {list.map((q) => {
+          const aiSuggested = suggestedOptionSet(q.reviewSuggestedAcceptedAnswers);
+          return (
           <Paper key={q.id} p="sm" radius="lg" shadow="xs" style={{ opacity: q.published ? 1 : 0.6 }}>
             <Group wrap="nowrap" align="flex-start" gap="sm">
               <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
@@ -144,13 +148,21 @@ export function PlacementPage() {
                   {q.options.map((o) => {
                     const also = (q.acceptedAnswers ?? []).includes(o);
                     const primary = o === q.answer;
+                    const hint = aiSuggested.has(o);
                     return (
-                      <Badge key={o} variant={primary || also ? "filled" : "outline"} color={primary ? "teal" : also ? "blue" : "gray"} tt="none">
+                      <Badge
+                        key={o}
+                        variant={primary || also ? "filled" : hint ? "light" : "outline"}
+                        color={primary ? "teal" : also ? "blue" : hint ? "orange" : "gray"}
+                        tt="none"
+                      >
                         {o}
+                        {hint && !also && !primary ? " ?" : ""}
                       </Badge>
                     );
                   })}
                 </Group>
+                <PlacementReviewHints reviewHintVi={q.reviewHintVi} reviewSuggestedAcceptedAnswers={q.reviewSuggestedAcceptedAnswers} />
                 {q.lessonSlug ? (
                   <Text fz="xs" c="dimmed">
                     Bài: {titleOf(q.lessonSlug)}
@@ -176,7 +188,8 @@ export function PlacementPage() {
               </Group>
             </Group>
           </Paper>
-        ))}
+        );
+        })}
         {questions.isSuccess && list.length === 0 ? (
           <Text c="dimmed" ta="center" py="xl">
             Chưa có câu nào cho cấp {level}. Bấm <b>AI soạn</b> để có nháp nhanh.

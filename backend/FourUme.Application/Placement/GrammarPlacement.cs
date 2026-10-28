@@ -42,6 +42,8 @@ public record AdminPlacementGrammarDto(
     IReadOnlyList<string> Options,
     string Answer,
     IReadOnlyList<string> AcceptedAnswers,
+    string? ReviewHintVi,
+    IReadOnlyList<string> ReviewSuggestedAcceptedAnswers,
     string ExplanationVi,
     string? LessonSlug,
     bool Published,
@@ -55,14 +57,21 @@ public record SavePlacementGrammarRequest(
     string? ExplanationVi,
     string? LessonSlug,
     bool Published = true,
-    List<string>? AcceptedAnswers = null);
+    List<string>? AcceptedAnswers = null,
+    string? ReviewHintVi = null,
+    List<string>? ReviewSuggestedAcceptedAnswers = null);
 
 public record SavePlacementGrammarBatchRequest(List<SavePlacementGrammarRequest> Questions);
 
 /// <param name="LessonSlug">Only write about this lesson; otherwise spread over the level's lessons.</param>
 /// <param name="SkipCheck">Skip the AI check pass: one AI call instead of two, the admin reads answers carefully.</param>
 public record PlacementGrammarDraftRequest(string Level, int Count, string? LessonSlug, string? Notes, bool SkipCheck = false, string? Provider = null);
-public record PlacementGrammarDraftItemDto(SavePlacementGrammarRequest Question, IReadOnlyList<string> Problems, string? Warning);
+/// <param name="SuggestedAcceptedAnswers">Exact option strings the checker thinks should be ticked as also correct.</param>
+public record PlacementGrammarDraftItemDto(
+    SavePlacementGrammarRequest Question,
+    IReadOnlyList<string> Problems,
+    string? Warning,
+    IReadOnlyList<string> SuggestedAcceptedAnswers);
 /// <param name="Checked">False when the AI check pass failed, so missing warnings mean nothing.</param>
 /// <param name="Model">The AI model that wrote the draft.</param>
 public record PlacementGrammarDraftDto(IReadOnlyList<PlacementGrammarDraftItemDto> Items, bool Checked, string Model);
@@ -77,7 +86,9 @@ public record PlacementGrammarFileItem(
     string? ExplanationVi,
     string? LessonSlug,
     bool Published = true,
-    List<string>? AcceptedAnswers = null);
+    List<string>? AcceptedAnswers = null,
+    string? ReviewHintVi = null,
+    List<string>? ReviewSuggestedAcceptedAnswers = null);
 
 /// <param name="Commit">False only previews what would change.</param>
 public record ImportPlacementGrammarRequest(List<PlacementGrammarFileItem> Questions, bool Commit);

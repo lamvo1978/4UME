@@ -3,6 +3,7 @@ import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import type { AdminGrammarSummary, PlacementGrammarInput, PlacementLevel } from "../api";
 import { PLACEMENT_LEVELS } from "./meta";
+import { PlacementReviewHints, suggestedOptionSet } from "./PlacementReviewHints";
 
 type Props = {
   opened: boolean;
@@ -23,7 +24,12 @@ export function PlacementQuestionModal({ opened, onClose, initial, title, lesson
 
   useEffect(() => {
     if (!opened) return;
-    setQ({ ...initial, acceptedAnswers: initial.acceptedAnswers ?? [], options: initial.options.length ? initial.options : ["", "", ""] });
+    setQ({
+      ...initial,
+      acceptedAnswers: initial.acceptedAnswers ?? [],
+      reviewSuggestedAcceptedAnswers: initial.reviewSuggestedAcceptedAnswers ?? [],
+      options: initial.options.length ? initial.options : ["", "", ""],
+    });
     setError("");
   }, [opened, initial]);
 
@@ -59,10 +65,26 @@ export function PlacementQuestionModal({ opened, onClose, initial, title, lesson
   }
 
   const levelLessons = lessons.filter((l) => l.level === q.level);
+  const aiSuggested = suggestedOptionSet(q.reviewSuggestedAcceptedAnswers);
+  const hasReviewHint = Boolean((q.reviewHintVi ?? "").trim() || aiSuggested.size > 0);
 
   return (
     <Modal opened={opened} onClose={busy ? () => {} : onClose} title={title} size="lg" radius="lg">
       <Stack>
+        {hasReviewHint ? (
+          <Alert color="orange" variant="light">
+            <Stack gap="xs">
+              <PlacementReviewHints reviewHintVi={q.reviewHintVi} reviewSuggestedAcceptedAnswers={q.reviewSuggestedAcceptedAnswers} />
+              <Button
+                variant="subtle"
+                size="compact-xs"
+                onClick={() => set({ reviewHintVi: null, reviewSuggestedAcceptedAnswers: [] })}
+              >
+                Xóa gợi ý AI (đã duyệt xong)
+              </Button>
+            </Stack>
+          </Alert>
+        ) : null}
         <Group grow>
           <Select
             label="Cấp độ"
@@ -111,7 +133,7 @@ export function PlacementQuestionModal({ opened, onClose, initial, title, lesson
                   {o.trim() && o !== q.answer ? (
                     <Checkbox
                       size="xs"
-                      label="Cũng đúng"
+                      label={aiSuggested.has(o) ? "Cũng đúng (AI gợi ý ?)" : "Cũng đúng"}
                       checked={(q.acceptedAnswers ?? []).includes(o)}
                       onChange={(e) => toggleAlso(o, e.currentTarget.checked)}
                     />

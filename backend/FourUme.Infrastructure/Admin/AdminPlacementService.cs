@@ -78,7 +78,7 @@ public sealed partial class AdminPlacementService(
     {
         var rows = await db.PlacementGrammarQuestions.AsNoTracking().OrderBy(q => q.CreatedAt).ToListAsync(ct);
         return rows.OrderBy(q => PlacementRules.Rank(q.Level))
-            .Select(q => new PlacementGrammarFileItem(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published, q.AcceptedAnswers))
+            .Select(q => new PlacementGrammarFileItem(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published, q.AcceptedAnswers, q.ReviewHintVi, q.ReviewSuggestedAcceptedAnswers))
             .ToList();
     }
 
@@ -96,7 +96,9 @@ public sealed partial class AdminPlacementService(
         for (var i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            var clean = Normalize(new SavePlacementGrammarRequest(item.Level, item.Prompt, item.Options, item.Answer, item.ExplanationVi, item.LessonSlug, item.Published, item.AcceptedAnswers));
+            var clean = Normalize(new SavePlacementGrammarRequest(
+                item.Level, item.Prompt, item.Options, item.Answer, item.ExplanationVi, item.LessonSlug, item.Published, item.AcceptedAnswers,
+                item.ReviewHintVi, item.ReviewSuggestedAcceptedAnswers));
             var problems = GrammarPlacementRules.Validate(clean);
             if (clean.LessonSlug is { } slug && !lessons.Contains(slug)) problems.Add($"Không có bài ngữ pháp \"{slug}\".");
             PlacementGrammarQuestion? current = null;
@@ -166,6 +168,8 @@ public sealed partial class AdminPlacementService(
         q.Options = clean.Options;
         q.Answer = clean.Answer;
         q.AcceptedAnswers = clean.AcceptedAnswers ?? [];
+        q.ReviewHintVi = Clean(clean.ReviewHintVi);
+        q.ReviewSuggestedAcceptedAnswers = NormalizeReviewSuggestions(clean, options: clean.Options);
         q.ExplanationVi = clean.ExplanationVi ?? "";
         q.LessonSlug = clean.LessonSlug;
         q.Published = clean.Published;
@@ -175,7 +179,7 @@ public sealed partial class AdminPlacementService(
     {
         var options = (r.Options ?? []).Select(o => Clean(o) ?? "").ToList();
         var answer = Clean(r.Answer) ?? "";
-        return new(
+        var normalized = new SavePlacementGrammarRequest(
             (r.Level ?? "").Trim().ToUpperInvariant(),
             Clean(r.Prompt) ?? "",
             options,
@@ -183,17 +187,35 @@ public sealed partial class AdminPlacementService(
             Clean(r.ExplanationVi),
             Clean(r.LessonSlug),
             r.Published,
-            McqAnswers.NormalizeAlso(options, answer, r.AcceptedAnswers));
+            McqAnswers.NormalizeAlso(options, answer, r.AcceptedAnswers),
+            Clean(r.ReviewHintVi),
+            r.ReviewSuggestedAcceptedAnswers);
+        return normalized with
+        {
+            ReviewSuggestedAcceptedAnswers = NormalizeReviewSuggestions(normalized, options),
+        };
+    }
+
+    private static List<string> NormalizeReviewSuggestions(SavePlacementGrammarRequest q, List<string> options)
+    {
+        var raw = q.ReviewSuggestedAcceptedAnswers ?? [];
+        if (raw.Count == 0) return [];
+        return raw
+            .Select(o => options.FirstOrDefault(opt => string.Equals(opt, o, StringComparison.OrdinalIgnoreCase)))
+            .Where(o => o is { Length: > 0 })
+            .Where(o => !string.Equals(o, q.Answer, StringComparison.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList()!;
     }
 
     private static AdminPlacementGrammarDto ToDto(PlacementGrammarQuestion q) =>
-        new(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published, q.UpdatedAt);
+        new(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ReviewHintVi, q.ReviewSuggestedAcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published, q.UpdatedAt);
 
     private static object Snapshot(PlacementGrammarQuestion q) =>
-        new { q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published };
+        new { q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ReviewHintVi, q.ReviewSuggestedAcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published };
 
     private static object SnapshotOf(SavePlacementGrammarRequest r) =>
-        new { r.Level, r.Prompt, r.Options, r.Answer, r.AcceptedAnswers, ExplanationVi = r.ExplanationVi ?? "", r.LessonSlug, r.Published };
+        new { r.Level, r.Prompt, r.Options, r.Answer, r.AcceptedAnswers, r.ReviewHintVi, r.ReviewSuggestedAcceptedAnswers, ExplanationVi = r.ExplanationVi ?? "", r.LessonSlug, r.Published };
 
     private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : WhiteSpace().Replace(s.Trim(), " ");
 
@@ -217,6 +239,9 @@ public sealed partial class AdminPlacementService(
         For each question decide whether it is usable: the answer is correct and natural, any other correct option is listed in acceptedAnswers,
         no unlisted option is also correct, the question tests the grammar point of its lesson, and the level is right.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
+        When ok is false because one or more other options in "options" are also grammatically correct but missing from acceptedAnswers,
+        you MUST set "alsoCorrectOptions" to every such option (exact strings from "options"; never include the main "answer").
+        If you cannot name them, set ok to true instead. For other kinds of problems, use an empty alsoCorrectOptions array.
         """;
 
     public async Task<PlacementGrammarDraftDto> DraftGrammarAsync(PlacementGrammarDraftRequest request, CancellationToken ct = default)
@@ -274,17 +299,18 @@ public sealed partial class AdminPlacementService(
             .ToList();
         if (questions.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
 
-        var (warnings, isChecked) = request.SkipCheck ? ([], false) : await CheckAsync(level, questions, request.Provider, ct);
+        var (warnings, suggestions, isChecked) = request.SkipCheck ? ([], [], false) : await CheckAsync(level, questions, request.Provider, ct);
         var items = questions.Select((q, i) =>
         {
             var problems = GrammarPlacementRules.Validate(q);
             if (q.LessonSlug is null) problems.Add("Chưa gắn với bài ngữ pháp nào.");
-            return new PlacementGrammarDraftItemDto(q, problems, warnings.GetValueOrDefault(i));
+            return new PlacementGrammarDraftItemDto(q, problems, warnings.GetValueOrDefault(i), suggestions.GetValueOrDefault(i) ?? []);
         }).ToList();
         return new PlacementGrammarDraftDto(items, isChecked, reply.Model);
     }
 
-    private async Task<(Dictionary<int, string> Warnings, bool Checked)> CheckAsync(string level, List<SavePlacementGrammarRequest> questions, string? provider, CancellationToken ct)
+    private async Task<(Dictionary<int, string> Warnings, Dictionary<int, List<string>> Suggestions, bool Checked)> CheckAsync(
+        string level, List<SavePlacementGrammarRequest> questions, string? provider, CancellationToken ct)
     {
         var prompt = new StringBuilder();
         prompt.AppendLine($"Level: {level}. Questions (JSON, check each one by its index):");
@@ -294,15 +320,23 @@ public sealed partial class AdminPlacementService(
         {
             var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
             var results = JsonSerializer.Deserialize<CheckReply>(reply.Text, GrammarJson.Options)?.Results ?? [];
-            return (results
-                .Where(r => !r.Ok && r.Index >= 0 && r.Index < questions.Count)
-                .GroupBy(r => r.Index)
-                .ToDictionary(g => g.Key, g => string.IsNullOrWhiteSpace(g.First().ProblemVi) ? "AI nghi câu này có vấn đề." : g.First().ProblemVi!.Trim()), true);
+            var flagged = results.Where(r => !r.Ok && r.Index >= 0 && r.Index < questions.Count).GroupBy(r => r.Index);
+            var suggestions = flagged.ToDictionary(g => g.Key, g =>
+            {
+                var q = questions[g.Key];
+                return McqDraftCheck.NormalizeAlsoSuggestions(q.Options, q.Answer, q.AcceptedAnswers, g.First().AlsoCorrectOptions);
+            });
+            var warnings = flagged.ToDictionary(g => g.Key, g =>
+            {
+                var problem = string.IsNullOrWhiteSpace(g.First().ProblemVi) ? "AI nghi câu này có vấn đề." : g.First().ProblemVi!.Trim();
+                return McqDraftCheck.FormatWarning(problem, suggestions.GetValueOrDefault(g.Key) ?? []);
+            });
+            return (warnings, suggestions, true);
         }
         catch (Exception ex) when (ex is InvalidOperationException or JsonException or HttpRequestException or TaskCanceledException)
         {
             logger.LogWarning(ex, "Placement draft check failed");
-            return ([], false);
+            return ([], [], false);
         }
     }
 
@@ -349,6 +383,7 @@ public sealed partial class AdminPlacementService(
                         ["index"] = new JsonObject { ["type"] = "INTEGER" },
                         ["ok"] = new JsonObject { ["type"] = "BOOLEAN" },
                         ["problemVi"] = Str(),
+                        ["alsoCorrectOptions"] = new JsonObject { ["type"] = "ARRAY", ["items"] = Str() },
                     },
                     ["required"] = Names("index", "ok"),
                 },
@@ -382,6 +417,7 @@ public sealed partial class AdminPlacementService(
         public int Index { get; set; }
         public bool Ok { get; set; }
         public string? ProblemVi { get; set; }
+        public List<string>? AlsoCorrectOptions { get; set; }
     }
 
     [GeneratedRegex(@"\s+")]

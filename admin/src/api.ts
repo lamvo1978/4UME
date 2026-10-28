@@ -477,6 +477,10 @@ export type GrammarExercise = {
   /** cloze: accepted answers for each ___ in `prompt`, in order. */
   blanks?: string[][];
   explanationVi: string;
+  /** When false, app skips until editor turns it on (default true). */
+  published?: boolean;
+  reviewHintVi?: string | null;
+  reviewSuggestedAcceptedAnswers?: string[];
   /** Tense of each verb phrase, tagged by AI; missing until tagged, dropped when the question text changes. */
   verbs?: { phrase: string; tenseVi: string }[];
 };
@@ -509,7 +513,12 @@ export type GrammarDraftRequest = {
   /** Empty or missing: Groq, then Gemini. */
   provider?: string;
 };
-export type GrammarDraftItem = { exercise: GrammarExercise; problems: string[]; warning: string | null };
+export type GrammarDraftItem = {
+  exercise: GrammarExercise;
+  problems: string[];
+  warning: string | null;
+  suggestedAcceptedAnswers: string[];
+};
 export type GrammarDraft = { items: GrammarDraftItem[]; checked: boolean; model: string };
 export type AdminGrammarSummary = {
   slug: string;
@@ -726,11 +735,19 @@ export type PlacementGrammarInput = {
   explanationVi: string | null;
   lessonSlug: string | null;
   published: boolean;
+  /** Editor-only: AI checker note (not sent to the app test). */
+  reviewHintVi?: string | null;
+  reviewSuggestedAcceptedAnswers?: string[];
 };
 export type PlacementGrammarQuestion = PlacementGrammarInput & { id: string; explanationVi: string; updatedAt: string };
 export type PlacementGrammarDraftRequest = { level: PlacementLevel; count: number; lessonSlug?: string; notes?: string; skipCheck?: boolean; provider?: string };
 export type PlacementGrammarDraft = {
-  items: { question: PlacementGrammarInput; problems: string[]; warning: string | null }[];
+  items: {
+    question: PlacementGrammarInput;
+    problems: string[];
+    warning: string | null;
+    suggestedAcceptedAnswers: string[];
+  }[];
   checked: boolean;
   model: string;
 };

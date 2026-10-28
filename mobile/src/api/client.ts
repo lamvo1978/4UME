@@ -330,7 +330,13 @@ export type GrammarSection =
 
 /** A verb phrase of the answered question and its tense, e.g. "were preparing" · "quá khứ tiếp diễn". */
 export type VerbNote = { phrase: string; tenseVi: string };
-type ExerciseBase = { id: string; explanationVi: string; verbs?: VerbNote[] };
+type ExerciseBase = {
+  id: string;
+  explanationVi: string;
+  /** When false, hidden from quiz/practice until published in admin. */
+  published?: boolean;
+  verbs?: VerbNote[];
+};
 
 export type GrammarExercise =
   | (ExerciseBase & { type: "mcq"; prompt: string; options: string[]; answer: string; acceptedAnswers?: string[] })
