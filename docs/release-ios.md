@@ -1,6 +1,6 @@
 # Phát hành iOS (TestFlight → App Store)
 
-Checklist thực hiện sau khi gộp AdMob, celebration và **Premium / đóng băng / mở rộng đàm thoại (core)** trên `main` (cập nhật 28/10/2026).
+Checklist thực hiện sau khi gộp **Premium core**, **Tìm từ / expo-blur**, **ngữ pháp B2**, **MCQ nhiều đáp án** trên `main` (cập nhật 28/10/2026).
 
 **EAS Build vs EAS Update (OTA), hotfix sau khi lên store, quota:** xem [mobile-eas-update.md](mobile-eas-update.md).
 
@@ -8,8 +8,8 @@ Checklist thực hiện sau khi gộp AdMob, celebration và **Premium / đóng 
 
 | Bước | Việc | Trạng thái |
 |------|------|------------|
-| 1 | Deploy API trên VPS (migrations + Premium core) | ⏳ Sau merge PR: `git pull` + `docker compose up -d --build api` |
-| 2 | Build + TestFlight production | ✅ **1.0.0 (21)** (AdMob + celebration); ⏳ **build 22+** sau merge PR này |
+| 1 | Deploy API trên VPS (migrations Premium + `AcceptedAnswers` + seed B2) | ⏳ Sau merge: `git pull` + `docker compose up -d --build api` |
+| 2 | Build + TestFlight production | ✅ **1.0.0 (21)**; ⏳ **build 22+** (`expo-blur`, Tìm từ, grammar client) — **bắt buộc build**, không OTA |
 | 3 | TestFlight: admin bật banner + rewarded; SSV, celebration | ✅ |
 | 4 | Admin trước nộp: Premium, tắt bảng giá, AdMob copy | ✅ |
 | 5 | AdMob console: SSV (iOS + Android Rewarded), UMP EU + US | ✅ |

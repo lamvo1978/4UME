@@ -1,0 +1,34 @@
+{
+  "slug": "passive-reporting",
+  "version": 1,
+  "titleVi": "Bị động tường thuật",
+  "titleEn": "Reporting passives",
+  "level": "B2",
+  "order": 54,
+  "summaryVi": "It is said / believed / reported + that … hoặc S + is said to + V — truyền thông / đồn đại không nêu nguồn cụ thể.",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "formula",
+      "rows": [
+        { "kind": "affirmative", "pattern": "It + is/was + said/reported/believed + that + clause", "example": { "en": "It is said that the temple is over 500 years old.", "vi": "Người ta nói ngôi chùa hơn 500 tuổi." } },
+        { "kind": "affirmative", "pattern": "S + is/was + said/reported + to + V / to have + V3", "example": { "en": "He is believed to have left the country.", "vi": "Người ta tin là anh ấy đã rời nước." } }
+      ]
+    },
+    { "type": "tip", "textVi": "Dùng khi không cần (hoặc không biết) ai nói — thường thấy trên báo, tin tức." }
+  ],
+  "exercises": [
+    { "id": "rp-01", "type": "mcq", "prompt": "It ___ that the company will lay off staff.", "options": ["is reported", "reports", "is reporting"], "answer": "is reported", "explanationVi": "It is reported that..." },
+    { "id": "rp-02", "type": "mcq", "prompt": "The artist ___ to be living abroad.", "options": ["is said", "says", "is saying"], "answer": "is said", "explanationVi": "is said to be living." },
+    { "id": "rp-03", "type": "fill", "prompt": "It is believed ___ the two leaders will meet soon.", "answers": ["that"], "explanationVi": "It is believed that..." },
+    { "id": "rp-04", "type": "transform", "instructionVi": "Viết dạng It is said that", "source": "People say the food here is excellent.", "answer": "It is said that the food here is excellent.", "distractors": ["is"], "explanationVi": "It is said that..." },
+    { "id": "rp-05", "type": "transform", "instructionVi": "Viết dạng S is believed to", "source": "People believe she wrote the novel in 1998.", "answer": "She is believed to have written the novel in 1998.", "distractors": ["that"], "explanationVi": "is believed to have written." },
+    { "id": "rp-06", "type": "order", "promptVi": "Người ta đồn rằng giá nhà sẽ tăng.", "answer": "It is rumoured that house prices will rise.", "distractors": ["rumours"], "explanationVi": "It is rumoured that..." },
+    { "id": "rp-07", "type": "error", "sentence": "It [is say] that he resigned.", "correction": "is said", "explanationVi": "It is said that..." },
+    { "id": "rp-08", "type": "mcq", "prompt": "The suspect ___ to have escaped through the window.", "options": ["is thought", "thinks", "is thinking"], "answer": "is thought", "explanationVi": "is thought to have escaped." },
+    { "id": "rp-09", "type": "fill", "prompt": "It was reported ___ several people were injured.", "answers": ["that"], "explanationVi": "It was reported that..." },
+    { "id": "rp-10", "type": "transform", "instructionVi": "Viết reporting passive", "source": "People reported that traffic was heavy.", "answer": "It was reported that traffic was heavy.", "distractors": ["is"], "explanationVi": "It was reported that..." },
+    { "id": "rp-11", "type": "order", "promptVi": "Anh ấy được cho là đã thắng cuộc thi.", "answer": "He is said to have won the competition.", "distractors": ["that"], "explanationVi": "is said to have won." },
+    { "id": "rp-12", "type": "error", "sentence": "She [is believed that she knows] the answer.", "correction": "is believed to know", "explanationVi": "She is believed to know the answer." }
+  ]
+}

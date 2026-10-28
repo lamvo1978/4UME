@@ -78,7 +78,7 @@ public sealed partial class AdminPlacementService(
     {
         var rows = await db.PlacementGrammarQuestions.AsNoTracking().OrderBy(q => q.CreatedAt).ToListAsync(ct);
         return rows.OrderBy(q => PlacementRules.Rank(q.Level))
-            .Select(q => new PlacementGrammarFileItem(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published))
+            .Select(q => new PlacementGrammarFileItem(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published, q.AcceptedAnswers))
             .ToList();
     }
 
@@ -96,7 +96,7 @@ public sealed partial class AdminPlacementService(
         for (var i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            var clean = Normalize(new SavePlacementGrammarRequest(item.Level, item.Prompt, item.Options, item.Answer, item.ExplanationVi, item.LessonSlug, item.Published));
+            var clean = Normalize(new SavePlacementGrammarRequest(item.Level, item.Prompt, item.Options, item.Answer, item.ExplanationVi, item.LessonSlug, item.Published, item.AcceptedAnswers));
             var problems = GrammarPlacementRules.Validate(clean);
             if (clean.LessonSlug is { } slug && !lessons.Contains(slug)) problems.Add($"Không có bài ngữ pháp \"{slug}\".");
             PlacementGrammarQuestion? current = null;
@@ -165,28 +165,35 @@ public sealed partial class AdminPlacementService(
         q.Prompt = clean.Prompt;
         q.Options = clean.Options;
         q.Answer = clean.Answer;
+        q.AcceptedAnswers = clean.AcceptedAnswers ?? [];
         q.ExplanationVi = clean.ExplanationVi ?? "";
         q.LessonSlug = clean.LessonSlug;
         q.Published = clean.Published;
     }
 
-    private static SavePlacementGrammarRequest Normalize(SavePlacementGrammarRequest r) => new(
-        (r.Level ?? "").Trim().ToUpperInvariant(),
-        Clean(r.Prompt) ?? "",
-        (r.Options ?? []).Select(o => Clean(o) ?? "").ToList(),
-        Clean(r.Answer) ?? "",
-        Clean(r.ExplanationVi),
-        Clean(r.LessonSlug),
-        r.Published);
+    private static SavePlacementGrammarRequest Normalize(SavePlacementGrammarRequest r)
+    {
+        var options = (r.Options ?? []).Select(o => Clean(o) ?? "").ToList();
+        var answer = Clean(r.Answer) ?? "";
+        return new(
+            (r.Level ?? "").Trim().ToUpperInvariant(),
+            Clean(r.Prompt) ?? "",
+            options,
+            answer,
+            Clean(r.ExplanationVi),
+            Clean(r.LessonSlug),
+            r.Published,
+            McqAnswers.NormalizeAlso(options, answer, r.AcceptedAnswers));
+    }
 
     private static AdminPlacementGrammarDto ToDto(PlacementGrammarQuestion q) =>
-        new(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published, q.UpdatedAt);
+        new(q.Id, q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published, q.UpdatedAt);
 
     private static object Snapshot(PlacementGrammarQuestion q) =>
-        new { q.Level, q.Prompt, q.Options, q.Answer, q.ExplanationVi, q.LessonSlug, q.Published };
+        new { q.Level, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, q.ExplanationVi, q.LessonSlug, q.Published };
 
     private static object SnapshotOf(SavePlacementGrammarRequest r) =>
-        new { r.Level, r.Prompt, r.Options, r.Answer, ExplanationVi = r.ExplanationVi ?? "", r.LessonSlug, r.Published };
+        new { r.Level, r.Prompt, r.Options, r.Answer, r.AcceptedAnswers, ExplanationVi = r.ExplanationVi ?? "", r.LessonSlug, r.Published };
 
     private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : WhiteSpace().Replace(s.Trim(), " ");
 
@@ -196,8 +203,9 @@ public sealed partial class AdminPlacementService(
 
         Rules:
         - "prompt": one natural English sentence with ___ for the gap (preferred), or the instruction "Chọn câu đúng." when the options are whole sentences.
-        - "options": 3 or 4 distinct options; "answer": exactly one of them. Distractors are typical mistakes Vietnamese learners make with that point.
-        - Exactly one option may be correct; vocabulary must stay within the given CEFR level.
+        - "options": 3 or 4 distinct options; "answer": the best / lesson-default correct option.
+        - "acceptedAnswers": optional list of OTHER options that are also grammatically correct (e.g. will and be going to when the lesson covers both). Omit or [] when only one option works.
+        - Distractors are typical mistakes Vietnamese learners make with that point; vocabulary must stay within the given CEFR level.
         - Everyday situations, friendly content suitable for all ages; no brands, politics or celebrities.
         - "lessonSlug": the slug of the lesson the question tests, taken from the given list.
         - "explanationVi": one short Vietnamese sentence explaining the rule (for the editor, not shown in the test).
@@ -206,8 +214,8 @@ public sealed partial class AdminPlacementService(
 
     private const string CheckInstructions = """
         You are a strict English teacher checking multiple-choice grammar questions for a placement test for Vietnamese learners.
-        For each question decide whether it is usable: the answer is correct and natural, no other option is also correct,
-        the question tests the grammar point of its lesson, and the level is right.
+        For each question decide whether it is usable: the answer is correct and natural, any other correct option is listed in acceptedAnswers,
+        no unlisted option is also correct, the question tests the grammar point of its lesson, and the level is right.
         Reply "ok": true when it is fine. Otherwise "ok": false and "problemVi": one short Vietnamese sentence saying what is wrong.
         """;
 
@@ -261,7 +269,7 @@ public sealed partial class AdminPlacementService(
         var questions = drafted
             .Select(d => Normalize(new SavePlacementGrammarRequest(
                 level, d.Prompt ?? "", d.Options ?? [], d.Answer ?? "", d.ExplanationVi,
-                d.LessonSlug is { } s && slugs.Contains(s) ? s : null)))
+                d.LessonSlug is { } s && slugs.Contains(s) ? s : null, true, d.AcceptedAnswers)))
             .Take(count)
             .ToList();
         if (questions.Count == 0) throw new InvalidOperationException("AI không soạn được câu nào, hãy thử lại.");
@@ -281,7 +289,7 @@ public sealed partial class AdminPlacementService(
         var prompt = new StringBuilder();
         prompt.AppendLine($"Level: {level}. Questions (JSON, check each one by its index):");
         prompt.AppendLine(JsonSerializer.Serialize(
-            questions.Select((q, i) => new { index = i, q.Prompt, q.Options, q.Answer, lesson = q.LessonSlug }), GrammarJson.Options));
+            questions.Select((q, i) => new { index = i, q.Prompt, q.Options, q.Answer, q.AcceptedAnswers, lesson = q.LessonSlug }), GrammarJson.Options));
         try
         {
             var reply = await ai.GenerateJsonAsync(CheckInstructions, prompt.ToString(), CheckSchema(), 0, ct, provider);
@@ -314,6 +322,7 @@ public sealed partial class AdminPlacementService(
                         ["prompt"] = Str(),
                         ["options"] = new JsonObject { ["type"] = "ARRAY", ["items"] = Str() },
                         ["answer"] = Str(),
+                        ["acceptedAnswers"] = new JsonObject { ["type"] = "ARRAY", ["items"] = Str() },
                         ["lessonSlug"] = Str(),
                         ["explanationVi"] = Str(),
                     },
@@ -358,6 +367,7 @@ public sealed partial class AdminPlacementService(
         public string? Prompt { get; set; }
         public List<string>? Options { get; set; }
         public string? Answer { get; set; }
+        public List<string>? AcceptedAnswers { get; set; }
         public string? LessonSlug { get; set; }
         public string? ExplanationVi { get; set; }
     }

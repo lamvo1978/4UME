@@ -127,11 +127,21 @@ export function PlacementDraftModal({ opened, onClose, level: initialLevel, less
                         {q.prompt}
                       </Text>
                       <Group gap={6}>
-                        {q.options.map((o) => (
-                          <Badge key={o} variant={o === q.answer ? "filled" : "outline"} color={o === q.answer ? "teal" : "gray"} tt="none">
-                            {o}
-                          </Badge>
-                        ))}
+                        {q.options.map((o) => {
+                          const also = (q.acceptedAnswers ?? []).includes(o);
+                          const primary = o === q.answer;
+                          return (
+                            <Badge
+                              key={o}
+                              variant={primary || also ? "filled" : "outline"}
+                              color={primary ? "teal" : also ? "blue" : "gray"}
+                              tt="none"
+                            >
+                              {o}
+                              {also && !primary ? " ✓" : ""}
+                            </Badge>
+                          );
+                        })}
                       </Group>
                       {q.explanationVi ? (
                         <Text fz="xs" c="dimmed">

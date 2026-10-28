@@ -1,6 +1,6 @@
 # Rà soát ngữ pháp A1–B1 (10/2026)
 
-> Trạng thái: **bước 1–2 đã xong** (08/10/2026) — đã sửa mọi lỗi nặng, lỗi vừa và phần lớn lỗi nhẹ ở mục 3; bài 18 chuyển A2; 23 bài lên `version` 2 (bài 10 giữ nguyên). Bước 3 cũng đã xong: thêm 22 bài, tổng **46 bài** (A1: 15, A2: 17, B1: 14), đánh số lại `order` và tên file theo lộ trình. Thay đổi so với mục 2: "can — khả năng" (đã có ở bài modal A2) đổi thành **was / were**; "đại từ sở hữu" (đã có ở bài 02) đổi thành **đại từ phản thân và bất định**. Còn lại: bước 4 (giáo viên duyệt).
+> Trạng thái: **bước 1–3 đã xong** (08–10/2026) — tổng **56 bài** (A1: 15, A2: 17, B1: 14, **B2: 10**). B2 thêm 28/10/2026: điều kiện hỗn hợp, future perfect/continuous, modal quá khứ, causative, mệnh đề phân từ, cleft, đảo ngữ, bị động tường thuật, MQ rút gọn, liên từ trang trọng (`47`–`56`). Mỗi bài B2 có 12 câu quiz; kho `practice` có thể bổ sung sau bằng AI trong admin. Còn lại: bước 4 (giáo viên duyệt), thêm câu kiểm tra đầu vào B2 (file mẫu `backend/data/placement-grammar-b2-import.json`).
 
 ## Khung đối chiếu
 

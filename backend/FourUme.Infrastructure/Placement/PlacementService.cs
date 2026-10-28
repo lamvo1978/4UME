@@ -1,5 +1,6 @@
 using FourUme.Application.Abstractions;
 using FourUme.Application.Auth;
+using FourUme.Application.Grammar;
 using FourUme.Application.Placement;
 using FourUme.Application.Review;
 using FourUme.Domain.Entities;
@@ -51,7 +52,11 @@ public class PlacementService(IAppDbContext db, IAuthService auth) : IPlacementS
                     .Select(q =>
                     {
                         var options = q.Options.OrderBy(_ => Random.Shared.Next()).ToList();
-                        return new PlacementGrammarQuestionDto(q.Id, q.Prompt, options, options.IndexOf(q.Answer), q.LessonSlug);
+                        var accepted = McqAnswers.Accepted(options, q.Answer, q.AcceptedAnswers);
+                        var indices = options.Select((o, i) => accepted.Contains(o) ? i : -1).Where(i => i >= 0).ToList();
+                        var primary = options.FindIndex(o => string.Equals(o, q.Answer, StringComparison.OrdinalIgnoreCase));
+                        if (primary < 0) primary = indices.FirstOrDefault();
+                        return new PlacementGrammarQuestionDto(q.Id, q.Prompt, options, primary, indices, q.LessonSlug);
                     })
                     .ToList()))
             .ToList();

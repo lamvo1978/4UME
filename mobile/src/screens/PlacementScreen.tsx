@@ -140,7 +140,8 @@ export function PlacementScreen({ navigation }: Props) {
     const q = grammarLevels[grammarState.levelIndex].questions[grammarState.questionIndex];
     setPicked(choice);
     timer.current = setTimeout(() => {
-      const correct = choice === q.answer;
+      const accepted = q.acceptedAnswers?.length ? q.acceptedAnswers : [q.answer];
+      const correct = choice !== "skip" && accepted.includes(choice);
       if (!correct && q.lessonSlug) missedSlugs.current.push(q.lessonSlug);
       const next = answerPlacement(grammarState, grammarLevels, correct, GRAMMAR_RULES);
       setGrammarState(next);
@@ -260,7 +261,14 @@ export function PlacementScreen({ navigation }: Props) {
           <Text style={styles.instruction}>Ngữ pháp · Chọn đáp án đúng</Text>
           <Text style={styles.sentence}>{q.prompt.replace(/_{3,}/g, "_____")}</Text>
         </View>
-        <Options keyPrefix={q.id} options={q.options} answer={q.answer} picked={picked} onPick={answerGrammar} />
+        <Options
+          keyPrefix={q.id}
+          options={q.options}
+          answer={q.answer}
+          acceptedAnswers={q.acceptedAnswers?.length ? q.acceptedAnswers : [q.answer]}
+          picked={picked}
+          onPick={answerGrammar}
+        />
         <Text style={styles.tally}>
           Cấp {level.level}: đúng {score.correct} · sai {score.wrong}
         </Text>
@@ -304,20 +312,23 @@ function Options({
   keyPrefix,
   options,
   answer,
+  acceptedAnswers,
   picked,
   onPick,
 }: {
   keyPrefix: string;
   options: string[];
   answer: number;
+  acceptedAnswers?: number[];
   picked: number | "skip" | null;
   onPick: (choice: number | "skip") => void;
 }) {
+  const accepted = acceptedAnswers?.length ? acceptedAnswers : [answer];
   const revealed = picked !== null;
   return (
     <View style={styles.options}>
       {options.map((opt, i) => {
-        const isAnswer = i === answer;
+        const isAnswer = accepted.includes(i);
         const isPicked = picked === i;
         return (
           <Pressable

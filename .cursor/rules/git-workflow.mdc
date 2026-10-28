@@ -1,0 +1,14 @@
+---
+description: Tạo nhánh git trước khi sửa code
+alwaysApply: true
+---
+
+# Git workflow
+
+Trước khi chỉnh sửa file trong repo (trừ khi user yêu cầu làm trực tiếp trên `main`):
+
+1. Kiểm tra `git branch --show-current` — nếu đang ở `main`/`master`, tạo nhánh feature trước: `git checkout -b feature/<mô-tả-ngắn>`.
+2. Chỉ sau đó mới edit code, commit (khi user yêu cầu), hoặc mở PR.
+3. Nếu đã code trên `main` mà chưa commit: `git checkout -b feature/...` — thay đổi chưa stage vẫn theo sang nhánh mới.
+
+Không push hay merge trừ khi user yêu cầu.

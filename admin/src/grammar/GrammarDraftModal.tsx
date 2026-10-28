@@ -142,6 +142,7 @@ export function GrammarDraftModal({ opened, onClose, lesson, bank: initialBank, 
                       {ex.type === "mcq" ? (
                         <Text fz="xs" c="dimmed">
                           Lựa chọn: {ex.options?.join(" · ")}
+                          {(ex.acceptedAnswers?.length ?? 0) > 0 ? ` · cũng đúng: ${ex.acceptedAnswers!.join(", ")}` : ""}
                         </Text>
                       ) : null}
                       <Text fz="sm" c="teal.8">

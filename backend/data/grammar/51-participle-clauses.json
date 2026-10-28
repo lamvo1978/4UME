@@ -1,0 +1,41 @@
+{
+  "slug": "participle-clauses",
+  "version": 1,
+  "titleVi": "Mệnh đề phân từ",
+  "titleEn": "Participle clauses",
+  "level": "B2",
+  "order": 51,
+  "summaryVi": "Rút gọn mệnh đề bằng V-ing (chủ động, cùng lúc) hoặc V3 / having + V3 (bị động / xong trước).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "usage",
+      "items": [
+        { "textVi": "V-ing: hai hành động cùng chủ ngữ, thường cùng lúc hoặc liên tiếp.", "example": { "en": "Walking down the street, I saw an old friend.", "vi": "Đi bộ trên phố, tôi gặp một người bạn cũ." } },
+        { "textVi": "V3 / being + V3: bị động.", "example": { "en": "Built in 1990, the bridge is still strong.", "vi": "Được xây năm 1990, cây cầu vẫn chắc." } },
+        { "textVi": "Having + V3: hành động xảy ra trước.", "example": { "en": "Having finished the report, she went home.", "vi": "Làm xong báo cáo, cô ấy về nhà." } }
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "Walking down the street, the rain started.", "right": "Walking down the street, I noticed it was raining.", "noteVi": "Chủ ngữ của V-ing phải là chủ ngữ câu chính." },
+        { "wrong": "Finish the work, he left.", "right": "Having finished the work, he left.", "noteVi": "Hành động xong trước → Having + V3." }
+      ]
+    }
+  ],
+  "exercises": [
+    { "id": "pt-01", "type": "mcq", "prompt": "___ tired, she went to bed early.", "options": ["Feeling", "Felt", "Having feel"], "answer": "Feeling", "explanationVi": "Feeling tired = Because she felt tired." },
+    { "id": "pt-02", "type": "mcq", "prompt": "___ in London, the museum is easy to find.", "options": ["Locating", "Located", "Locate"], "answer": "Located", "explanationVi": "Bị động: Located in London." },
+    { "id": "pt-03", "type": "fill", "prompt": "___ (walk) home, I listened to a podcast.", "answers": ["Walking"], "explanationVi": "Walking home, I..." },
+    { "id": "pt-04", "type": "fill", "prompt": "___ (complete) the course, he applied for a promotion.", "answers": ["Having completed"], "explanationVi": "Xong trước → Having + V3." },
+    { "id": "pt-05", "type": "order", "promptVi": "Không hiểu câu hỏi, cô ấy nhờ giáo viên giải thích.", "answer": "Not understanding the question, she asked the teacher to explain.", "distractors": ["Not"], "explanationVi": "Not understanding..." },
+    { "id": "pt-06", "type": "transform", "instructionVi": "Rút gọn bằng V-ing", "source": "Because I was running late, I skipped breakfast.", "answer": "Running late, I skipped breakfast.", "distractors": ["Having"], "explanationVi": "Running late, I..." },
+    { "id": "pt-07", "type": "error", "sentence": "[Written] in haste, the letter had several mistakes.", "correction": "Written", "explanationVi": "Written = bị viết (đúng dạng V3)." },
+    { "id": "pt-08", "type": "mcq", "prompt": "Chọn câu đúng.", "options": ["Seen from the hill, the city looks beautiful.", "Seeing from the hill, the city looks beautiful.", "See from the hill, the city looks beautiful."], "answer": "Seen from the hill, the city looks beautiful.", "explanationVi": "Thành phố được nhìn → Seen." },
+    { "id": "pt-09", "type": "fill", "prompt": "___ (not / want) to disturb anyone, they spoke quietly.", "answers": ["Not wanting"], "explanationVi": "Not wanting to disturb..." },
+    { "id": "pt-10", "type": "transform", "instructionVi": "Rút gọn bằng Having + V3", "source": "After she had read the email, she called him.", "answer": "Having read the email, she called him.", "distractors": ["Reading"], "explanationVi": "Having read..." },
+    { "id": "pt-11", "type": "order", "promptVi": "Được thiết kế bởi một kiến trúc sư nổi tiếng, tòa nhà thu hút du khách.", "answer": "Designed by a famous architect, the building attracts tourists.", "distractors": ["Designing"], "explanationVi": "Designed by..." },
+    { "id": "pt-12", "type": "error", "sentence": "[Walk] into the room, I noticed the lights had gone out.", "correction": "Walking", "explanationVi": "Mệnh đề phân từ chủ động: Walking into the room." }
+  ]
+}

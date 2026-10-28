@@ -6,6 +6,7 @@ import {
   clozeGapCorrect,
   displayAnswer,
   isCorrect,
+  mcqAccepted,
   parseErrorSentence,
   QuizItem,
   QuizResult,
@@ -125,7 +126,8 @@ export function GrammarQuiz({ items, onFinish }: { items: QuizItem[]; onFinish: 
       {ex.type === "mcq" ? (
         <View style={styles.options}>
           {ex.options.map((opt) => {
-            const isAnswer = opt === ex.answer;
+            const accepted = mcqAccepted(ex);
+            const isAnswer = accepted.has(opt);
             const isPicked = feedback?.given === opt;
             return (
               <Pressable

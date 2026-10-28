@@ -1,0 +1,46 @@
+{
+  "slug": "modals-past",
+  "version": 1,
+  "titleVi": "Modal quá khứ: suy đoán và hối tiếc",
+  "titleEn": "Modals in the past",
+  "level": "B2",
+  "order": 49,
+  "summaryVi": "must / might / can't + have + V3 (suy đoán về quá khứ); should / could + have + V3 (lẽ ra / có thể đã…).",
+  "quizSize": 8,
+  "sections": [
+    {
+      "type": "table",
+      "title": "Modal + have + V3",
+      "headers": ["Modal", "Ý nghĩa", "Ví dụ"],
+      "cells": [
+        ["must have", "chắc chắn đã (suy đoán)", "She must have left early."],
+        ["might / may have", "có thể đã", "He might have forgotten."],
+        ["can't have", "không thể đã", "They can't have finished already."],
+        ["should have", "lẽ ra nên (nhưng không)", "You should have told me."],
+        ["could have", "có thể đã (khả năng)", "We could have taken a taxi."]
+      ]
+    },
+    {
+      "type": "mistakes",
+      "items": [
+        { "wrong": "He must had left.", "right": "He must have left.", "noteVi": "Sau modal luôn have + V3 (không had)." },
+        { "wrong": "You should told me.", "right": "You should have told me.", "noteVi": "should have + V3." }
+      ]
+    },
+    { "type": "tip", "textVi": "must have = chắc là đã; can't have = chắc là không thể đã; should have = tiếc vì lẽ ra nên làm khác." }
+  ],
+  "exercises": [
+    { "id": "mp-01", "type": "mcq", "prompt": "The lights are off. They ___ home.", "options": ["must have gone", "must go", "must had gone"], "answer": "must have gone", "explanationVi": "Suy đoán quá khứ chắc chắn." },
+    { "id": "mp-02", "type": "mcq", "prompt": "I'm sorry — I ___ you about the change.", "options": ["should tell", "should have told", "should had told"], "answer": "should have told", "explanationVi": "Hối tiếc: lẽ ra nên nói." },
+    { "id": "mp-03", "type": "mcq", "prompt": "She ___ the exam — she studied so hard!", "options": ["can't have failed", "mustn't fail", "can't fail"], "answer": "can't have failed", "explanationVi": "Không thể đã trượt (suy đoán)." },
+    { "id": "mp-04", "type": "fill", "prompt": "He ___ (might / forget) to lock the door.", "answers": ["might have forgotten", "may have forgotten"], "explanationVi": "might have + V3." },
+    { "id": "mp-05", "type": "fill", "prompt": "We ___ (could / take) the earlier train.", "answers": ["could have taken"], "explanationVi": "could have = có thể đã (nhưng không)." },
+    { "id": "mp-06", "type": "order", "promptVi": "Chắc là cô ấy đã nhận được email rồi.", "answer": "She must have received the email.", "distractors": ["had"], "explanationVi": "must have + V3." },
+    { "id": "mp-07", "type": "transform", "instructionVi": "Viết câu hối tiếc", "source": "I didn't call you. (should)", "answer": "I should have called you.", "distractors": ["must"], "explanationVi": "should have + V3." },
+    { "id": "mp-08", "type": "error", "sentence": "They [must had] arrived by now.", "correction": "must have", "explanationVi": "must have arrived." },
+    { "id": "mp-09", "type": "mcq", "prompt": "The cake is gone. Someone ___ it.", "options": ["might eat", "might have eaten", "might had eaten"], "answer": "might have eaten", "explanationVi": "Suy đoán quá khứ." },
+    { "id": "mp-10", "type": "fill", "prompt": "You ___ (not / should / shout) at him like that.", "answers": ["shouldn't have shouted", "should not have shouted"], "explanationVi": "shouldn't have + V3." },
+    { "id": "mp-11", "type": "order", "promptVi": "Anh ấy không thể đã lái xe — anh ấy không có bằng.", "answer": "He can't have driven the car.", "distractors": ["must"], "explanationVi": "can't have + V3." },
+    { "id": "mp-12", "type": "transform", "instructionVi": "Viết suy đoán (might)", "source": "Perhaps she missed the bus.", "answer": "She might have missed the bus.", "distractors": ["must"], "explanationVi": "might have missed." }
+  ]
+}
