@@ -702,8 +702,18 @@ app.MapGet("/api/conversation/status", async (ClaimsPrincipal principal, IConver
     }
 }).RequireAuthorization();
 
-app.MapGet("/api/conversation/scenarios", async (IConversationService conversation, CancellationToken ct) =>
-    Results.Ok(await conversation.GetScenariosAsync(ct))).RequireAuthorization();
+app.MapGet("/api/conversation/scenarios", async (IConversationService conversation, ILogger<Program> log, CancellationToken ct) =>
+{
+    try
+    {
+        return Results.Ok(await conversation.GetScenariosAsync(ct));
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "GET /api/conversation/scenarios failed");
+        return Results.Json(new { error = "Không tải được danh sách tình huống. Hãy thử lại sau ít phút." }, statusCode: 503);
+    }
+}).RequireAuthorization();
 
 app.MapPost("/api/conversation", async (StartConversationRequest request, ClaimsPrincipal principal, IConversationService conversation, CancellationToken ct) =>
 {

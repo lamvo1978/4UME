@@ -12,6 +12,7 @@ public static class ConversationSchemaHeal
         await db.Database.ExecuteSqlRawAsync("""
             ALTER TABLE "Conversations" ADD COLUMN IF NOT EXISTS "SessionKind" character varying(16);
             ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS "ConversationAddonUntil" timestamp with time zone;
+            ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS "StreakFreezeGrantMonth" integer;
             """, ct);
         logger.LogInformation("Conversation schema heal applied (SessionKind, ConversationAddonUntil).");
     }

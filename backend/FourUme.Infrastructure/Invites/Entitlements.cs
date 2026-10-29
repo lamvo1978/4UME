@@ -9,7 +9,14 @@ public static class Entitlements
 {
     public static async Task<AccessDto> GetAsync(IAppDbContext db, Guid userId, CancellationToken ct)
     {
-        await PremiumHold.SyncAsync(db, userId, ct);
+        try
+        {
+            await PremiumHold.SyncAsync(db, userId, ct);
+        }
+        catch
+        {
+            // Status reads must not fail when partner-code sync hits a lock or transient DB error.
+        }
         var now = DateTimeOffset.UtcNow;
         var user = await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => new { u.PremiumUntil, u.ConversationAddonUntil }).FirstOrDefaultAsync(ct);
         var until = user?.PremiumUntil;
