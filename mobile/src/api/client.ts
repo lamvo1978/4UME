@@ -4,10 +4,17 @@ import { Platform } from "react-native";
 
 const TOKEN_KEY = "fourume.token";
 
-/** Android emulator uses 10.0.2.2; iOS simulator / web use localhost. */
+/** Same host as `mobile/eas.json` production build env. */
+export const PRODUCTION_API_URL = "https://api.4ume.io.vn";
+
+const DEV_API_BASE = Platform.OS === "android" ? "http://10.0.2.2:5088" : "http://127.0.0.1:5088";
+
+/**
+ * `eas update --environment production` does not inject `eas.json` build env — only EAS Environment vars.
+ * If `EXPO_PUBLIC_API_URL` is missing in the OTA bundle, release builds must not fall back to localhost.
+ */
 export const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL ??
-  (Platform.OS === "android" ? "http://10.0.2.2:5088" : "http://127.0.0.1:5088");
+  process.env.EXPO_PUBLIC_API_URL ?? (__DEV__ ? DEV_API_BASE : PRODUCTION_API_URL);
 
 /** Images uploaded in the admin are stored as "/media/…" paths on the API host. */
 export function mediaUrl(url: string | null): string | null {

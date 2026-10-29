@@ -16,7 +16,9 @@ Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập 
 cd mobile
 # Đổi tên tạm .env.local để không nhúng API LAN vào bundle production
 mv .env.local .env.local.off 2>/dev/null || true
-CI=1 npx eas-cli@latest update --branch production --environment production -p ios --message "Mô tả ngắn"
+# BẮT BUỘC: --environment production trên EAS thường KHÔNG có EXPO_PUBLIC_API_URL (chỉ có trong eas.json lúc *build*).
+# Thiếu biến này → OTA trỏ 127.0.0.1 → toàn app “mất mạng”. Code release đã fallback api.4ume.io.vn; vẫn nên set rõ:
+EXPO_PUBLIC_API_URL=https://api.4ume.io.vn CI=1 npx eas-cli@latest update --branch production --environment production -p ios --message "Mô tả ngắn"
 mv .env.local.off .env.local 2>/dev/null || true
 ```
 
