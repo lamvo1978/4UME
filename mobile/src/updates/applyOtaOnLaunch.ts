@@ -1,11 +1,12 @@
 import * as Updates from "expo-updates";
 import { InteractionManager } from "react-native";
 
-const OTA_CHECK_DELAY_MS = 2500;
+const OTA_CHECK_DELAY_MS = 4000;
 
 /**
- * Pull EAS Update after the first screen has had time to mount (auth + profile fetch).
- * Immediate reload on launch was interrupting API calls and left Hồ sơ with an empty stats block.
+ * Download EAS Update in the background after the app has loaded.
+ * Does not call reloadAsync — native ON_LOAD applies the bundle on the next cold start,
+ * avoiding aborted API calls and false "no network" banners mid-session.
  */
 export function applyOtaOnLaunch(): () => void {
   if (__DEV__ || !Updates.isEnabled) return () => {};
@@ -20,12 +21,9 @@ export function applyOtaOnLaunch(): () => void {
         try {
           const result = await Updates.checkForUpdateAsync();
           if (cancelled || !result.isAvailable) return;
-
           await Updates.fetchUpdateAsync();
-          if (cancelled) return;
-          await Updates.reloadAsync();
         } catch {
-          // Keep running the embedded bundle if the update server is unreachable.
+          // Embedded bundle keeps running.
         }
       })();
     }, OTA_CHECK_DELAY_MS);

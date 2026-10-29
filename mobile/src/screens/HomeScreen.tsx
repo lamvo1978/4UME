@@ -45,7 +45,9 @@ export function HomeScreen() {
         })
         .catch((e) => {
           setReview(null);
-          setOffline(e instanceof NetworkError);
+          // Timeouts/aborts during OTA reload were misread as "no internet"; VPS can be fine.
+          setOffline(false);
+          if (__DEV__ && e instanceof NetworkError) console.warn("reviewSummary:", e.message);
         });
       const checkUnread = () => api.feedbackUnread().then(setUnread).catch(() => undefined);
       checkUnread();
