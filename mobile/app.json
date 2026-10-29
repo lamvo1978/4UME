@@ -111,7 +111,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/7562124a-994f-4661-aba3-3cee57af0c30",
-      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
     }
   }

@@ -83,7 +83,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Hệ thống",
     icon: IconAdjustments,
     items: [
-      { to: "/premium", label: "Quyền lợi Premium", icon: IconSparkles },
+      { to: "/premium", label: "Premium & mở rộng AI", icon: IconSparkles },
       { to: "/about", label: "Giới thiệu app", icon: IconInfoCircle },
       { to: "/history", label: "Lịch sử", icon: IconHistory },
       { to: "/settings", label: "Cài đặt", icon: IconSettings },

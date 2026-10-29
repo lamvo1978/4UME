@@ -1,6 +1,86 @@
 # Mobile: EAS Build, TestFlight và EAS Update (OTA)
 
-Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật 28/10/2026.
+Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập nhật **29/10/2026**.
+
+## Chốt: dùng **EAS Update** hay **build lại**?
+
+**Quy tắc một dòng:** Feature / fix **chỉ JS–TS–UI–asset trong repo** → merge `main` → **`eas update`**. Mọi thứ **đụng native** hoặc **bản store chưa từng có OTA đúng chuẩn** → **`eas build` + submit**.
+
+### Luồng chuẩn (sau khi đã có bản TestFlight “OTA-ready”)
+
+1. **Merge PR lên `main`** (mobile + admin + API nếu có).
+2. **Deploy API/admin** trên VPS nếu backend đổi (`docker compose up -d --build api`, build admin static).
+3. **Mobile hotfix (mặc định):**
+
+```bash
+cd mobile
+# Đổi tên tạm .env.local để không nhúng API LAN vào bundle production
+mv .env.local .env.local.off 2>/dev/null || true
+CI=1 npx eas-cli@latest update --branch production --environment production -p ios --message "Mô tả ngắn"
+mv .env.local.off .env.local 2>/dev/null || true
+```
+
+4. Tester **tắt hẳn app → mở lại** (thường **2 lần** khi `fallbackToCacheTimeout: 0`: lần 1 tải bundle, lần 2 chạy bundle mới). Wi‑Fi bật.
+
+**Không** build `.ipa` mới cho từng hotfix UI/logic nếu bước trên đủ.
+
+### Khi **bắt buộc** `eas build` + TestFlight / Store
+
+| Tình huống | Vì sao OTA không đủ |
+|------------|---------------------|
+| Lần đầu bật / sửa **`expo-updates`**, channel, `runtimeVersion` trong native | Cấu hình nằm trong **.ipa** |
+| Đổi `app.json`: **`checkAutomatically`**, plugin native, quyền, SDK | Prebuild / Info.plist |
+| Thêm / gỡ **native module** (AdMob, speech, video, blur, …) | Binary khác → cần runtime mới hoặc build mới |
+| Tăng **`expo.version`** với policy `runtimeVersion: appVersion` | OTA cũ không khớp runtime |
+| Muốn **chắc chắn** ship feature lớn **không phụ thuộc OTA** (demo golive, deadline) | JS embed trong build — vẫn hợp lệ, nhưng **không thay** cho OTA sau này |
+
+**Build 27 (list từ ôn lại):** feature embed trong `.ipa` lúc `eas build --local` — **đúng** khi chưa tin OTA hoặc chưa merge `main`. Các bản **sau** build OTA-ready: ưu tiên **`eas update`** cho sửa tương tự.
+
+### Cấu hình OTA trong repo (phải có trên `main` trước build production)
+
+| File | Giá trị |
+|------|---------|
+| `mobile/app.json` → `updates.checkAutomatically` | **`ON_LOAD`** (không dùng `ON_ERROR_RECOVERY` — gần như không bao giờ kéo update khi mở app bình thường) |
+| `mobile/App.tsx` | Gọi **`applyOtaOnLaunch()`** (`mobile/src/updates/applyOtaOnLaunch.ts`) — check + fetch + reload khi có bản mới |
+| `mobile/eas.json` profile `production` | `channel: production` |
+| `runtimeVersion` | `{ "policy": "appVersion" }` → hiện **1.0.0**; OTA và build store **cùng** version app mới nhận update |
+
+### Kiểm tra `.ipa` vừa build (local hoặc cloud)
+
+```bash
+unzip -p build-artifacts/build-*.ipa 'Payload/4UME.app/Expo.plist' | plutil -p -
+```
+
+Phải thấy: `EXUpdatesEnabled` = true, `expo-channel-name` = **production**, `EXUpdatesRuntimeVersion` = **1.0.0**, `EXUpdatesCheckOnLaunch` = **ALWAYS** (tương đương ON_LOAD).
+
+```bash
+unzip -l build-artifacts/build-*.ipa | grep main.jsbundle
+```
+
+Thiếu `main.jsbundle` → đừng submit TestFlight.
+
+### Cảnh báo CLI “No compatible builds found” (fingerprint)
+
+Khi `eas update`, Expo có thể báo **không có build khớp fingerprint** (hay gặp với **`eas build --local`**). Update vẫn **publish** lên branch `production`. Máy user vẫn **thường nhận** nếu channel + `runtimeVersion` khớp bản đang cài. Dùng **test OTA** (sửa một dòng copy → chỉ `eas update` → mở app 2 lần) thay vì build lại mỗi lần nghi ngờ.
+
+### Test OTA 5 phút (sau mỗi bản TestFlight OTA-ready)
+
+1. Sửa copy dễ thấy (vd. tiêu đề màn Hồ sơ) trên `main`.
+2. Chỉ chạy lệnh `eas update` ở trên — **không** build `.ipa`.
+3. Trên iPhone: tắt app → mở → đợi ~10s → tắt → mở lại.
+4. Thấy copy đổi → quy trình OTA ổn. Không đổi → kiểm tra channel trong `Expo.plist`, merge `main` đã có `ON_LOAD` + `applyOtaOnLaunch`, rồi mới cân nhắc build mới.
+
+### Lệnh update — lưu ý platform
+
+Mặc định `--platform all` **fail** vì AdMob không export web. Luôn:
+
+```bash
+-p ios
+# Android sau khi đã có bản Play có expo-updates:
+-p android
+```
+
+---
 
 ## Hai cách ship code mobile
 
@@ -18,9 +98,10 @@ Tài liệu tham chiếu nhanh cho app **4UME** (`mobile/`, Expo SDK 57). Cập 
 ## Trạng thái repo (quan trọng)
 
 - **`expo-updates` đã cấu hình** (`package.json`, `app.json` có `updates.url` + `runtimeVersion`, `eas.json` có `channel` preview/production).
-- **iOS:** TestFlight **1.0.0 (21)** (AdMob + celebration + OTA). Golive: gắn build trên Connect + Submit — xem [release-ios.md](release-ios.md#tiến-độ-golive-ios-cập-nhật-27102026); sau live → AdMob link store. Hotfix JS: `eas update --channel production`.
-- **Android:** chưa bản production có OTA trên Play — cần một lần build + upload (cloud hoặc `--local`) trước khi OTA Android có hiệu lực.
-- Bản store build **trước khi bật updates** → **không** nhận `eas update`.
+- **iOS:** TestFlight **1.0.0 (27+)** — build local `production` có `ON_LOAD` + JS embed tuỳ commit; hotfix sau merge `main`: **`eas update --branch production --environment production -p ios`**. Xem mục [Chốt](#chốt-dùng-eas-update-hay-build-lại) ở trên.
+- **Admin add-on đàm thoại:** cấp user ở chi tiết người dùng; badge **Mở rộng AI** trên app Hồ sơ (OTA hoặc build có code mới nhất).
+- **Android:** chưa bản production có OTA trên Play — cần một lần build + upload trước khi OTA Android có hiệu lực.
+- Bản store **trước khi bật updates** hoặc **`ON_ERROR_RECOVERY` only** → coi như **không OTA**; cần build mới từ `main` hiện tại.
 
 Chi tiết TestFlight lần đầu: [release-ios.md](release-ios.md).
 

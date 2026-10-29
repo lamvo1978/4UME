@@ -45,6 +45,9 @@ public class AdminUserService(
             UserFilters.Inactive => users.Where(u => !u.StudyDays.Any(d => !d.Frozen && d.Date >= inactiveFrom)),
             UserFilters.Premium => users.Where(u => u.PremiumUntil > now
                 || db.PartnerCodes.Any(c => c.UsedById == u.Id && c.RevokedAt == null && (c.ExpiresAt == null || c.ExpiresAt > now))),
+            UserFilters.ConversationAddon => users.Where(u => u.ConversationAddonUntil > now
+                && (u.PremiumUntil > now
+                    || db.PartnerCodes.Any(c => c.UsedById == u.Id && c.RevokedAt == null && (c.ExpiresAt == null || c.ExpiresAt > now)))),
             _ => users,
         };
 

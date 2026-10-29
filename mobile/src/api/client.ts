@@ -203,6 +203,16 @@ export type Me = {
 export const FEATURE_IELTS = "ielts";
 export const hasFeature = (me: Me | null | undefined, key: string) => !!me?.features?.includes(key);
 
+/** Conversation add-on is active only while Premium (or partner) and the add-on end date is in the future. */
+export function activeConversationAddon(
+  source: { premium?: boolean; conversationAddon?: boolean; conversationAddonUntil?: string | null } | null | undefined
+): boolean {
+  if (!source?.premium) return false;
+  if (source.conversationAddon) return true;
+  const until = source.conversationAddonUntil;
+  return !!until && new Date(until) > new Date();
+}
+
 export type Invitee = {
   displayName: string;
   joinedAt: string;
