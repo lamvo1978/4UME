@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using FourUme.Application.Abstractions;
 using FourUme.Application.Activity;
 using FourUme.Application.Conversations;
+using FourUme.Application.Invites;
 using FourUme.Domain.Entities;
 using FourUme.Infrastructure.Ai;
 using FourUme.Infrastructure.Invites;
