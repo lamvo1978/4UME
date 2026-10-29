@@ -1,6 +1,6 @@
 import { Avatar, Badge, Group, Text, Tooltip } from "@mantine/core";
-import { IconCrown, IconFlame, IconLock, IconShieldCheck } from "@tabler/icons-react";
-import { isPremium, type AdminUser } from "../api";
+import { IconCrown, IconFlame, IconLock, IconMessageChatbot, IconShieldCheck } from "@tabler/icons-react";
+import { isConversationAddon, isPremium, type AdminUser } from "../api";
 
 const COLORS = ["teal", "blue", "grape", "orange", "cyan", "pink", "indigo", "lime"];
 
@@ -34,9 +34,14 @@ export function Streak({ value }: { value: number }) {
 }
 
 /** Role, Premium and lock state; plain learners show nothing. */
-export function UserBadges({ user }: { user: Pick<AdminUser, "role" | "lockedAt" | "premiumUntil" | "partnerName"> }) {
+export function UserBadges({
+  user,
+}: {
+  user: Pick<AdminUser, "role" | "lockedAt" | "premiumUntil" | "partnerName" | "conversationAddonUntil">;
+}) {
   const premium = isPremium(user);
-  if (user.role !== "admin" && !user.lockedAt && !premium) return null;
+  const addon = isConversationAddon(user);
+  if (user.role !== "admin" && !user.lockedAt && !premium && !addon) return null;
   return (
     <Group gap={4} wrap="nowrap">
       {user.role === "admin" ? (
@@ -48,6 +53,13 @@ export function UserBadges({ user }: { user: Pick<AdminUser, "role" | "lockedAt"
         <Tooltip label={user.partnerName ? `Học viên ${user.partnerName}` : "Premium có thời hạn"} disabled={!user.partnerName}>
           <Badge color="yellow" variant="light" size="sm" leftSection={<IconCrown size={12} />}>
             {user.partnerName ? "Premium · đối tác" : "Premium"}
+          </Badge>
+        </Tooltip>
+      ) : null}
+      {addon ? (
+        <Tooltip label={`Mở rộng đàm thoại AI đến ${new Date(user.conversationAddonUntil!).toLocaleDateString("vi-VN")}`}>
+          <Badge color="violet" variant="light" size="sm" leftSection={<IconMessageChatbot size={12} />}>
+            Mở rộng AI
           </Badge>
         </Tooltip>
       ) : null}

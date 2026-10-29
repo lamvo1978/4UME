@@ -3,7 +3,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, PronunciationStatus, Stats } from "../api/client";
+import { activeConversationAddon, api, PronunciationStatus, Stats } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
 import { NameSheet } from "../components/profile/AccountSheets";
@@ -32,6 +32,8 @@ export function ProfileScreen() {
   const name = me?.displayName ?? user?.displayName;
   const partner = plan ? (plan.premium ? plan.partnerName : null) : me?.partnerName;
   const premium = plan ? plan.premium : !!me?.premium;
+  const conversationAddon = activeConversationAddon(me);
+  const conversationAddonUntil = me?.conversationAddonUntil ?? null;
 
   const load = useCallback(async () => {
     try {
@@ -97,7 +99,9 @@ export function ProfileScreen() {
               <AccountBadge
                 partner={partner ?? null}
                 premium={premium}
-                premiumUntil={plan?.premiumUntil ?? null}
+                premiumUntil={plan?.premiumUntil ?? me?.premiumUntil ?? null}
+                conversationAddon={conversationAddon}
+                conversationAddonUntil={conversationAddonUntil}
                 onPress={() => navigation.navigate("Premium")}
               />
             ) : null}
@@ -107,7 +111,14 @@ export function ProfileScreen() {
           </Pressable>
         </View>
 
-        {plan && (plan.enabled || plan.premium) ? <PlanRow status={plan} onPress={() => navigation.navigate("Premium")} /> : null}
+        {plan && (plan.enabled || plan.premium) ? (
+          <PlanRow
+            status={plan}
+            conversationAddon={conversationAddon}
+            conversationAddonUntil={conversationAddonUntil}
+            onPress={() => navigation.navigate("Premium")}
+          />
+        ) : null}
         {adsOffered(plan) ? <AdRewardsRow status={plan} onPress={() => navigation.navigate("AdRewards")} /> : null}
         {stats ? (
           <WeeklyRow today={stats.streak.today} days={stats.streak.days} onPress={() => navigation.navigate("Weekly")} />
@@ -153,11 +164,15 @@ function AccountBadge({
   partner,
   premium,
   premiumUntil,
+  conversationAddon,
+  conversationAddonUntil,
   onPress,
 }: {
   partner: string | null;
   premium: boolean;
   premiumUntil: string | null;
+  conversationAddon: boolean;
+  conversationAddonUntil: string | null;
   onPress: () => void;
 }) {
   const [icon, label, tone] = partner
@@ -166,13 +181,31 @@ function AccountBadge({
       ? (["sparkles", premiumUntil ? `Premium · đến ${formatDayMonthYear(premiumUntil)}` : "Premium", styles.badgePremium] as const)
       : (["leaf-outline", "Tài khoản miễn phí", styles.badgeFree] as const);
   const light = !!partner;
+  const addonLabel = conversationAddonUntil
+    ? `Mở rộng AI · đến ${formatDayMonthYear(conversationAddonUntil)}`
+    : "Mở rộng đàm thoại AI";
   return (
-    <Pressable style={({ pressed }) => [styles.badge, tone, pressed && styles.pressed]} onPress={onPress} hitSlop={6}>
-      <Ionicons name={icon} size={12} color={light ? colors.white : colors.ink} />
-      <Text style={[styles.badgeText, light && styles.badgeTextLight]} numberOfLines={1}>
-        {label}
-      </Text>
-    </Pressable>
+    <View style={styles.badgeStack}>
+      <Pressable style={({ pressed }) => [styles.badge, tone, pressed && styles.pressed]} onPress={onPress} hitSlop={6}>
+        <Ionicons name={icon} size={12} color={light ? colors.white : colors.ink} />
+        <Text style={[styles.badgeText, light && styles.badgeTextLight]} numberOfLines={1}>
+          {label}
+        </Text>
+      </Pressable>
+      {conversationAddon ? (
+        <Pressable
+          style={({ pressed }) => [styles.badge, styles.badgeAddon, pressed && styles.pressed]}
+          onPress={onPress}
+          hitSlop={6}
+          accessibilityLabel={addonLabel}
+        >
+          <Ionicons name="chatbubbles" size={12} color={colors.ink} />
+          <Text style={styles.badgeText} numberOfLines={1}>
+            {addonLabel}
+          </Text>
+        </Pressable>
+      ) : null}
+    </View>
   );
 }
 
@@ -207,12 +240,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.bg,
   },
+  badgeStack: { alignSelf: "flex-start", gap: 6, marginTop: 6, maxWidth: "100%" },
   badge: {
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
     gap: 4,
-    marginTop: 6,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
@@ -220,6 +253,7 @@ const styles = StyleSheet.create({
   },
   badgeFree: { backgroundColor: colors.bgAlt },
   badgePremium: { backgroundColor: colors.gold },
+  badgeAddon: { backgroundColor: colors.iceSoft, borderWidth: 1, borderColor: "#B8D4EB" },
   badgePartner: { backgroundColor: colors.accent },
   badgeText: { fontSize: 12, fontWeight: "700", color: colors.ink, flexShrink: 1 },
   badgeTextLight: { color: colors.white },

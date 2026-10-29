@@ -11,6 +11,8 @@ public static class UserFilters
     /// <summary>No study in the last 14 days (or never).</summary>
     public const string Inactive = "inactive";
     public const string Premium = "premium";
+    /// <summary>Premium (or partner) plus active conversation add-on.</summary>
+    public const string ConversationAddon = "conversationAddon";
     public const int InactiveDays = 14;
 }
 

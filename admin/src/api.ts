@@ -74,7 +74,7 @@ export type Overview = {
   recentChanges: AuditEntry[];
 };
 
-export type UserFilter = "" | "admin" | "locked" | "active" | "inactive" | "premium";
+export type UserFilter = "" | "admin" | "locked" | "active" | "inactive" | "premium" | "conversationAddon";
 export type UserQuery = { q?: string; filter?: UserFilter; sort?: string; page?: number; pageSize?: number };
 export type AdminUser = {
   id: string;
@@ -345,6 +345,10 @@ export type FeedbackQuery = { status?: string; category?: string; q?: string; pa
 
 export const isPremium = (u: Pick<AdminUser, "premiumUntil" | "partnerName">) =>
   !!u.partnerName || (!!u.premiumUntil && new Date(u.premiumUntil) > new Date());
+
+/** Active conversation add-on (requires Premium or partner access). */
+export const isConversationAddon = (u: Pick<AdminUser, "premiumUntil" | "partnerName" | "conversationAddonUntil">) =>
+  isPremium(u) && !!u.conversationAddonUntil && new Date(u.conversationAddonUntil) > new Date();
 
 export type Paged<T> = { items: T[]; total: number; page: number; pageSize: number };
 

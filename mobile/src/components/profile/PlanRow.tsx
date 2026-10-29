@@ -5,21 +5,49 @@ import { colors, shadow, spacing } from "../../theme";
 import { formatDayMonthYear } from "../../utils/dates";
 
 /** One-line plan summary on the profile; the details live on the Premium screen. */
-export function PlanRow({ status, onPress }: { status: PronunciationStatus; onPress: () => void }) {
+export function PlanRow({
+  status,
+  conversationAddon = false,
+  conversationAddonUntil = null,
+  onPress,
+}: {
+  status: PronunciationStatus;
+  conversationAddon?: boolean;
+  conversationAddonUntil?: string | null;
+  onPress: () => void;
+}) {
   const partner = status.premium ? status.partnerName : null;
   const premium = status.premium && (!!partner || !!status.premiumUntil);
+  const addonLine =
+    conversationAddon && conversationAddonUntil
+      ? ` · Mở rộng AI đến ${formatDayMonthYear(conversationAddonUntil)}`
+      : conversationAddon
+        ? " · Mở rộng đàm thoại AI"
+        : "";
   return (
-    <Pressable style={({ pressed }) => [styles.row, premium && styles.rowPremium, pressed && styles.pressed]} onPress={onPress}>
-      <View style={[styles.icon, premium && styles.iconPremium]}>
-        <Ionicons name={premium ? "sparkles" : "leaf-outline"} size={18} color={premium ? colors.white : colors.accent} />
+    <Pressable
+      style={({ pressed }) => [
+        styles.row,
+        premium && styles.rowPremium,
+        conversationAddon && styles.rowAddon,
+        pressed && styles.pressed,
+      ]}
+      onPress={onPress}
+    >
+      <View style={[styles.icon, premium && styles.iconPremium, conversationAddon && styles.iconAddon]}>
+        <Ionicons
+          name={conversationAddon ? "chatbubbles" : premium ? "sparkles" : "leaf-outline"}
+          size={18}
+          color={premium || conversationAddon ? colors.white : colors.accent}
+        />
       </View>
       <View style={styles.text}>
         <Text style={styles.title}>{premium ? "Premium" : "Gói miễn phí"}</Text>
-        <Text style={styles.subtitle} numberOfLines={1}>
+        <Text style={styles.subtitle} numberOfLines={2}>
           {partner
             ? partnerLine(partner, status.partnerUntil, formatDayMonthYear)
             : premium
-              ? `Đến ${formatDayMonthYear(status.premiumUntil!)}`
+              ? `Đến ${formatDayMonthYear(status.premiumUntil!)}${addonLine}`
               : `${status.freeDailyLimit} lượt chấm phát âm chi tiết mỗi ngày`}
         </Text>
       </View>
@@ -42,6 +70,7 @@ const styles = StyleSheet.create({
     ...shadow.card,
   },
   rowPremium: { borderWidth: 1.5, borderColor: colors.gold },
+  rowAddon: { borderColor: colors.ice },
   icon: {
     width: 34,
     height: 34,
@@ -51,6 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   iconPremium: { backgroundColor: colors.gold },
+  iconAddon: { backgroundColor: colors.ice },
   text: { flex: 1 },
   title: { fontSize: 15, fontWeight: "700", color: colors.ink },
   subtitle: { marginTop: 1, fontSize: 12, color: colors.muted },

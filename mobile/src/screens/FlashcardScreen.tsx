@@ -1,7 +1,17 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { api, mediaUrl, Word } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { ErrorRetry } from "../components/ErrorRetry";
@@ -36,10 +46,15 @@ function buildSession(pending: Word[], size: number): Word[] {
 }
 
 export function FlashcardScreen({ route, navigation }: Props) {
-  const { deckId, level } = route.params;
+  const { deckId, level, titleVi } = route.params;
   const { me, refreshMe } = useAuth();
   const sessionSize = me?.settings.dailyGoal ?? DEFAULT_SESSION_SIZE;
   const [session, setSession] = useState<Word[]>([]);
+  /** All words in this deck/level filter; used when everything is already "Đã nhớ". */
+  const [scopeWords, setScopeWords] = useState<Word[]>([]);
+  const [resetting, setResetting] = useState(false);
+  const [pickingWords, setPickingWords] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [index, setIndex] = useState(0);
   const [deckTotal, setDeckTotal] = useState(0);
   const [deckKnownBefore, setDeckKnownBefore] = useState(0);
@@ -62,6 +77,7 @@ export function FlashcardScreen({ route, navigation }: Props) {
     try {
       const all = await api.deckWords(deckId);
       const words = level ? all.filter((w) => w.level === level) : all;
+      setScopeWords(words);
       const pending = words.filter((w) => w.status !== STATUS.Known);
       setSession(buildSession(pending, sessionSize));
       setDeckTotal(words.length);
@@ -98,6 +114,88 @@ export function FlashcardScreen({ route, navigation }: Props) {
     setFlipped((f) => !f);
   }
 
+  function beginKnownReview() {
+    if (scopeWords.length === 0) return;
+    stopSpeaking();
+    setSelectedIds(new Set());
+    setPickingWords(true);
+    setError("");
+  }
+
+  function toggleWordPick(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function setAllPicked(all: boolean) {
+    setSelectedIds(all ? new Set(scopeWords.map((w) => w.id)) : new Set());
+  }
+
+  function startFlashcardWithWords(words: Word[]) {
+    if (words.length === 0) return;
+    stopSpeaking();
+    setSession(words);
+    setDeckTotal(words.length);
+    setDeckKnownBefore(0);
+    setIndex(0);
+    setResult({ known: 0, later: 0 });
+    setKnownIds([]);
+    flip.setValue(0);
+    setFlipped(false);
+    setPickingWords(false);
+    setError("");
+  }
+
+  function startPickedFlashcard() {
+    startFlashcardWithWords(scopeWords.filter((w) => selectedIds.has(w.id)));
+  }
+
+  async function relearnSelected() {
+    const ids = [...selectedIds];
+    if (ids.length === 0) return;
+    setResetting(true);
+    setError("");
+    try {
+      for (const id of ids) {
+        await api.updateProgress(id, STATUS.New);
+      }
+      await refreshMe();
+      startFlashcardWithWords(
+        scopeWords.filter((w) => ids.includes(w.id)).map((w) => ({ ...w, status: STATUS.New })),
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Không đặt lại được tiến trình");
+    } finally {
+      setResetting(false);
+    }
+  }
+
+  async function relearnFromScratch() {
+    if (scopeWords.length === 0) return;
+    setResetting(true);
+    setError("");
+    try {
+      for (const w of scopeWords) {
+        await api.updateProgress(w.id, STATUS.New);
+      }
+      await refreshMe();
+      await loadSession();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Không đặt lại được tiến trình");
+    } finally {
+      setResetting(false);
+    }
+  }
+
+  const reviewTitle = level ? `${titleVi} · ${level}` : titleVi;
+  const scopeWordIds = scopeWords.map((w) => w.id);
+  const pickedCount = selectedIds.size;
+  const allPicked = scopeWords.length > 0 && pickedCount === scopeWords.length;
+
   async function rate(status: number) {
     if (!current) return;
     stopSpeaking();
@@ -130,6 +228,81 @@ export function FlashcardScreen({ route, navigation }: Props) {
     );
   }
 
+  if (pickingWords) {
+    return (
+      <Screen edges={["bottom", "left", "right"]} style={styles.pickRoot}>
+        <Text style={styles.pickTitle}>Chọn từ để học lại</Text>
+        <Text style={styles.pickSub}>
+          {level ? `${scopeWords.length} từ ${level} trong bộ` : `${scopeWords.length} từ trong bộ`} · đã chọn {pickedCount}
+        </Text>
+        <Pressable onPress={() => setAllPicked(!allPicked)} style={styles.pickToggle}>
+          <Text style={styles.pickToggleText}>{allPicked ? "Bỏ chọn tất cả" : "Chọn tất cả"}</Text>
+        </Pressable>
+        {error ? <Text style={styles.inlineError}>{error}</Text> : null}
+        <FlatList
+          data={scopeWords}
+          keyExtractor={(w) => w.id}
+          contentContainerStyle={styles.pickList}
+          renderItem={({ item }) => {
+            const on = selectedIds.has(item.id);
+            return (
+              <Pressable
+                onPress={() => toggleWordPick(item.id)}
+                style={({ pressed }) => [styles.pickRow, on && styles.pickRowOn, pressed && styles.pressed]}
+              >
+                <Ionicons
+                  name={on ? "checkbox" : "square-outline"}
+                  size={22}
+                  color={on ? colors.accent : colors.muted}
+                />
+                <View style={styles.pickBody}>
+                  <Text style={styles.pickWord}>{item.word}</Text>
+                  <Text style={styles.pickMeaning} numberOfLines={1}>
+                    {item.meaningVi}
+                  </Text>
+                </View>
+                {!level ? <Text style={styles.pickLevel}>{item.level}</Text> : null}
+              </Pressable>
+            );
+          }}
+        />
+        <View style={styles.pickActions}>
+          <ActionButton
+            label={pickedCount ? `Xem flashcard (${pickedCount})` : "Chọn ít nhất 1 từ"}
+            icon="eye-outline"
+            variant="primary"
+            onPress={() => pickedCount > 0 && startPickedFlashcard()}
+          />
+        </View>
+        <View style={[styles.pickActions, styles.doneActionsTight]}>
+          <ActionButton
+            label="Luyện tập"
+            icon="flash-outline"
+            variant="outline"
+            onPress={() => {
+              if (pickedCount === 0) return;
+              navigation.navigate("Review", {
+                mode: "practice",
+                wordIds: [...selectedIds],
+                title: reviewTitle,
+              });
+            }}
+          />
+          <ActionButton
+            label={resetting ? "Đang đặt lại…" : "Học lại đã chọn"}
+            icon="refresh-outline"
+            variant="outline"
+            onPress={() => void relearnSelected()}
+          />
+        </View>
+        <View style={[styles.pickActions, styles.doneActionsTight]}>
+          <ActionButton label="Quay lại" icon="arrow-back" variant="outline" onPress={() => setPickingWords(false)} />
+        </View>
+        {resetting ? <ActivityIndicator color={colors.accent} style={{ marginTop: spacing.sm }} /> : null}
+      </Screen>
+    );
+  }
+
   if (error && session.length === 0) {
     return (
       <View style={styles.center}>
@@ -145,10 +318,38 @@ export function FlashcardScreen({ route, navigation }: Props) {
           <Ionicons name="trophy-outline" size={40} color={colors.white} />
         </View>
         <Text style={styles.doneTitle}>{level ? `Bạn đã nhớ hết từ ${level}` : "Bạn đã nhớ hết bộ này"}</Text>
-        <Text style={styles.doneSub}>{deckTotal} từ đều đã được đánh dấu "Đã nhớ".</Text>
+        <Text style={styles.doneSub}>
+          {deckTotal} từ đều đã được đánh dấu "Đã nhớ". Bạn vẫn có thể xem lại hoặc học lại từ đầu.
+        </Text>
+        {error ? <Text style={styles.inlineError}>{error}</Text> : null}
         <View style={styles.doneActions}>
-          <ActionButton label="Xong" icon="checkmark" variant="primary" onPress={() => navigation.goBack()} />
+          <ActionButton label="Xem lại từ" icon="eye-outline" variant="primary" onPress={beginKnownReview} />
         </View>
+        <View style={[styles.doneActions, styles.doneActionsTight]}>
+          <ActionButton
+            label="Luyện tập"
+            icon="flash-outline"
+            variant="outline"
+            onPress={() =>
+              navigation.navigate("Review", {
+                mode: "practice",
+                deckId: level ? undefined : deckId,
+                wordIds: level ? scopeWordIds : undefined,
+                title: reviewTitle,
+              })
+            }
+          />
+          <ActionButton
+            label={resetting ? "Đang đặt lại…" : "Học lại từ đầu"}
+            icon="refresh-outline"
+            variant="outline"
+            onPress={() => void relearnFromScratch()}
+          />
+        </View>
+        <View style={[styles.doneActions, styles.doneActionsTight]}>
+          <ActionButton label="Xong" icon="checkmark" variant="outline" onPress={() => navigation.goBack()} />
+        </View>
+        {resetting ? <ActivityIndicator color={colors.accent} style={{ marginTop: spacing.md }} /> : null}
       </Screen>
     );
   }
@@ -217,8 +418,12 @@ export function FlashcardScreen({ route, navigation }: Props) {
         </Text>
       </View>
       <Text style={styles.remaining}>
-        {current.status === STATUS.Later ? "Từ bạn để học sau" : "Từ mới"} · {scope} đã nhớ {deckKnownBefore + result.known}/
-        {deckTotal}
+        {current.status === STATUS.Known
+          ? "Ôn lại"
+          : current.status === STATUS.Later
+            ? "Từ bạn để học sau"
+            : "Từ mới"}{" "}
+        · {scope} đã nhớ {deckKnownBefore + result.known}/{deckTotal}
       </Text>
 
       <Pressable style={styles.cardArea} onPress={toggleFlip}>
@@ -416,6 +621,30 @@ const styles = StyleSheet.create({
   doneSub: { marginTop: spacing.xs, color: colors.muted, fontSize: 15 },
   doneActions: { flexDirection: "row", gap: 10, marginTop: spacing.xl, alignSelf: "stretch" },
   doneActionsTight: { marginTop: 10 },
+  pickRoot: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md },
+  pickTitle: { fontSize: 20, fontWeight: "800", color: colors.ink },
+  pickSub: { marginTop: 4, color: colors.muted, fontSize: 14 },
+  pickToggle: { alignSelf: "flex-start", marginTop: spacing.sm, marginBottom: spacing.xs },
+  pickToggleText: { color: colors.accent, fontWeight: "700", fontSize: 14 },
+  pickList: { paddingBottom: spacing.sm },
+  pickRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+    marginBottom: 8,
+    ...shadow.card,
+    shadowOpacity: 0.04,
+  },
+  pickRowOn: { borderWidth: 1.5, borderColor: colors.accent, backgroundColor: colors.accentSoft },
+  pickBody: { flex: 1, gap: 2 },
+  pickWord: { fontSize: 17, fontWeight: "700", color: colors.ink },
+  pickMeaning: { fontSize: 14, color: colors.muted },
+  pickLevel: { fontSize: 12, fontWeight: "700", color: colors.accent },
+  pickActions: { flexDirection: "row", gap: 10, marginTop: spacing.md },
   summaryRow: { flexDirection: "row", gap: spacing.md, marginTop: spacing.lg, alignSelf: "stretch" },
   summaryStat: {
     flex: 1,

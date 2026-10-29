@@ -27,6 +27,7 @@ import {
   IconHistory,
   IconLock,
   IconLockOpen,
+  IconMessageChatbot,
   IconShieldCheck,
   IconShieldLock,
   IconShieldOff,
@@ -35,7 +36,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, isPremium, type AdminUserDetail, type AdminUserInvites, type PushResult } from "../api";
+import { api, isConversationAddon, isPremium, type AdminUserDetail, type AdminUserInvites, type PushResult } from "../api";
 import { HistoryDrawer } from "../history/HistoryDrawer";
 import { fullTime, notifyError, notifySaved, shortDate, studyAgo, timeAgo } from "../lib";
 import { isExpired } from "../partners/dates";
@@ -377,15 +378,15 @@ const PREMIUM_MONTHS = [
 /** Conversation add-on (requires Premium); granted by hand until IAP ships. */
 function ConversationAddonCard({ detail, onDone }: { detail: AdminUserDetail; onDone: (d: AdminUserDetail) => void }) {
   const u = detail.user;
-  const active = isPremium({ premiumUntil: u.premiumUntil }) || !!u.partnerName;
-  const addon = u.conversationAddonUntil ? new Date(u.conversationAddonUntil).getTime() > Date.now() : false;
+  const premiumActive = isPremium({ premiumUntil: u.premiumUntil, partnerName: u.partnerName });
+  const addonActive = isConversationAddon(u);
+  const addonScheduled =
+    !!u.conversationAddonUntil && new Date(u.conversationAddonUntil).getTime() > Date.now() && !premiumActive;
   const [mode, setMode] = useState<"extend" | "remove" | null>(null);
   const [months, setMonths] = useState("1");
   const [busy, setBusy] = useState(false);
 
-  if (!active) return null;
-
-  const from = addon ? new Date(u.conversationAddonUntil!) : new Date();
+  const from = addonActive || addonScheduled ? new Date(u.conversationAddonUntil!) : new Date();
   const until = new Date(from);
   until.setMonth(until.getMonth() + Number(months));
 
@@ -405,24 +406,47 @@ function ConversationAddonCard({ detail, onDone }: { detail: AdminUserDetail; on
   return (
     <Paper p="md" radius="lg" shadow="xs">
       <Group justify="space-between" wrap="wrap" gap="sm">
-        <div>
-          <Text fw={700}>{addon ? `Mở rộng đàm thoại đến ${shortDate(u.conversationAddonUntil!)}` : "Chưa có gói mở rộng đàm thoại"}</Text>
-          <Text fz="sm" c="dimmed">
-            Thêm buổi chat mỗi ngày khi user đã có Premium. Chỉ để test trước IAP.
-          </Text>
-        </div>
+        <Group gap="sm" wrap="nowrap" align="flex-start">
+          <IconMessageChatbot
+            size={22}
+            color={addonActive ? "var(--mantine-color-violet-7)" : "var(--mantine-color-gray-5)"}
+            style={{ flexShrink: 0, marginTop: 2 }}
+          />
+          <div>
+            <Text fw={700}>
+              {addonActive
+                ? `Mở rộng đàm thoại đến ${shortDate(u.conversationAddonUntil!)}`
+                : addonScheduled
+                  ? `Đã ghi hạn ${shortDate(u.conversationAddonUntil!)} · chờ Premium`
+                  : "Chưa có gói mở rộng đàm thoại"}
+            </Text>
+            <Text fz="sm" c="dimmed">
+              Thêm buổi đàm thoại AI mỗi ngày (chỉ có hiệu lực khi user đang Premium hoặc học viên đối tác). Bật tay trước IAP.
+            </Text>
+          </div>
+        </Group>
         <Group gap="sm">
-          {addon ? (
+          {addonActive || addonScheduled ? (
             <Button variant="default" color="red" onClick={() => setMode("remove")}>
               Tắt gói mở rộng
             </Button>
           ) : null}
-          <Button variant="light" onClick={() => setMode("extend")}>
-            {addon ? "Gia hạn" : "Bật gói mở rộng"}
+          <Button variant="light" color="violet" disabled={!premiumActive} onClick={() => setMode("extend")}>
+            {addonActive ? "Gia hạn" : "Bật gói mở rộng"}
           </Button>
         </Group>
       </Group>
-      <Modal opened={!!mode} onClose={() => setMode(null)} title={mode === "remove" ? "Tắt gói mở rộng?" : addon ? "Gia hạn gói mở rộng" : "Bật gói mở rộng"} centered>
+      {!premiumActive ? (
+        <Alert color="yellow" variant="light" mt="sm">
+          Bật <b>Premium</b> hoặc gán mã đối tác trước — gói mở rộng không chạy trên tài khoản miễn phí.
+        </Alert>
+      ) : null}
+      <Modal
+        opened={!!mode}
+        onClose={() => setMode(null)}
+        title={mode === "remove" ? "Tắt gói mở rộng?" : addonActive ? "Gia hạn gói mở rộng" : "Bật gói mở rộng"}
+        centered
+      >
         <Stack>
           {mode === "remove" ? (
             <Text fz="sm">User mất thêm buổi từ gói mở rộng ngay (buổi Premium hằng ngày vẫn giữ).</Text>

@@ -1,8 +1,10 @@
 import * as Sentry from "@sentry/react-native";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "./src/auth/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
+import { applyOtaOnLaunch } from "./src/updates/applyOtaOnLaunch";
 
 const sentryDsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
@@ -15,6 +17,10 @@ Sentry.init({
 });
 
 function App() {
+  useEffect(() => {
+    void applyOtaOnLaunch();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <AuthProvider>

@@ -129,9 +129,9 @@ export function PremiumPerksPage() {
     <Stack gap="md" maw={900} pb={desktop ? 0 : 80}>
       <Group justify="space-between" align="flex-start">
         <div>
-          <Title order={2}>Quyền lợi Premium</Title>
+          <Title order={2}>Premium & gói mở rộng đàm thoại</Title>
           <Text c="dimmed" fz="sm">
-            Danh sách trên màn <b>Premium</b> trong app.{" "}
+            Quyền lợi và bảng giá trên màn <b>Premium</b> trong app; cấp gói mở rộng cho từng user ở trang chi tiết người dùng.{" "}
             {query.data.updatedAt ? `Sửa lần cuối ${fullTime(query.data.updatedAt)}.` : "Đang dùng danh sách mặc định."}
           </Text>
         </div>
