@@ -47,8 +47,16 @@ public sealed partial class ConversationService(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             logger.LogError(ex, "Conversation status quota failed for {UserId}; applying schema heal and retrying once", userId);
-            await ConversationSchemaHeal.ApplyAsync((AppDbContext)db, logger, ct);
-            return await BuildStatusAsync(userId, config, ct);
+            try
+            {
+                await ConversationSchemaHeal.ApplyAsync((AppDbContext)db, logger, ct);
+                return await BuildStatusAsync(userId, config, ct);
+            }
+            catch (Exception retryEx) when (retryEx is not OperationCanceledException)
+            {
+                logger.LogError(retryEx, "Conversation status still failing for {UserId}; using legacy daily counters", userId);
+                return await BuildLegacyStatusAsync(userId, config, ct);
+            }
         }
     }
 
@@ -64,7 +72,7 @@ public sealed partial class ConversationService(
     public async Task<ConversationStartDto> StartAsync(Guid userId, StartConversationRequest request, CancellationToken ct = default)
     {
         var config = await LoadConfigAsync(db, ct);
-        var status = await BuildStatusAsync(userId, config, ct);
+        var status = await GetStatusAsync(userId, ct);
         EnsureOpen(status);
         if (status.NextSessionKind is null)
             throw new ConversationException(429, BlockedMessage(status));
@@ -110,7 +118,7 @@ public sealed partial class ConversationService(
         var conversation = await db.Conversations.Include(c => c.Scenario).FirstOrDefaultAsync(c => c.Id == conversationId && c.UserId == userId, ct)
                            ?? throw new ConversationException(404, "Không tìm thấy buổi đàm thoại.");
         if (conversation.EndedAt is not null) throw new ConversationException(400, "Buổi đàm thoại này đã kết thúc.");
-        var status = await BuildStatusAsync(userId, config, ct);
+        var status = await GetStatusAsync(userId, ct);
         EnsureOpen(status);
         if (status.Remaining <= 0) throw new ConversationException(429, "Bạn đã dùng hết lượt đàm thoại hôm nay.");
         var sessionLimit = ConversationQuota.SessionTurnLimit(config, conversation);
@@ -231,11 +239,22 @@ public sealed partial class ConversationService(
 
     private async Task<ConversationStatusDto> BuildStatusAsync(Guid userId, ConversationConfig config, CancellationToken ct)
     {
-        var access = await Entitlements.GetAsync(db, userId, ct);
+        var access = await GetAccessSafeAsync(userId, ct);
         var quota = await ConversationQuota.ComputeAsync(db, clock, userId, config, access, ct);
         var on = config.Enabled && ai.Configured;
         var remaining = on ? Math.Max(0, quota.TurnAllowanceToday - quota.TurnsUsedToday) : 0;
-        var azure = access.Premium && on && await voice.AvailableAsync(config, ct);
+        var azure = false;
+        if (access.Premium && on)
+        {
+            try
+            {
+                azure = await voice.AvailableAsync(config, ct);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Conversation Azure voice budget check failed");
+            }
+        }
         return new ConversationStatusDto(
             config.Enabled,
             ai.Configured,
@@ -259,6 +278,61 @@ public sealed partial class ConversationService(
             config.AddonSessionsPerDay,
             config.AddonTurnsPerSession,
             config.AddonDailyTurnCap);
+    }
+
+    /// <summary>Daily turn counters only — no session-bucket queries on Conversations (safe when quota SQL fails).</summary>
+    private async Task<ConversationStatusDto> BuildLegacyStatusAsync(Guid userId, ConversationConfig config, CancellationToken ct)
+    {
+        var access = await GetAccessSafeAsync(userId, ct);
+        var today = clock.Today;
+        var used = await db.ConversationTurns.CountAsync(t => t.UserId == userId && t.LocalDate == today && t.FromLearner, ct);
+        var premium = access.Premium;
+        var limit = premium ? config.PremiumDailyTurns : config.FreeDailyTurns;
+        var on = config.Enabled && ai.Configured;
+        var remaining = on ? Math.Max(0, limit - used) : 0;
+        string? nextKind = null;
+        string? blocked = null;
+        if (remaining > 0)
+            nextKind = premium ? ConversationSessionKinds.Premium : ConversationSessionKinds.First;
+        else
+            blocked = premium ? ConversationBlockedReasons.NoSessionsLeft : ConversationBlockedReasons.NeedPremium;
+
+        return new ConversationStatusDto(
+            config.Enabled,
+            ai.Configured,
+            premium,
+            limit,
+            used,
+            remaining,
+            config.FreeDailyTurns,
+            config.PremiumDailyTurns,
+            config.MaxTurnsPerSession,
+            ConversationVoices.Device,
+            remaining > 0 ? 1 : 0,
+            0,
+            config.MaxTurnsPerSession,
+            nextKind,
+            blocked,
+            access.ConversationAddon,
+            access.ConversationAddonUntil,
+            config.PremiumSessionsPerDay,
+            config.PremiumTurnsPerSession,
+            config.AddonSessionsPerDay,
+            config.AddonTurnsPerSession,
+            config.AddonDailyTurnCap);
+    }
+
+    private async Task<AccessDto> GetAccessSafeAsync(Guid userId, CancellationToken ct)
+    {
+        try
+        {
+            return await Entitlements.GetAsync(db, userId, ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Entitlements read failed for {UserId}; treating as free", userId);
+            return new AccessDto(false, null, null, []);
+        }
     }
 
     private static string BlockedMessage(ConversationStatusDto status) => status.BlockedReason switch
