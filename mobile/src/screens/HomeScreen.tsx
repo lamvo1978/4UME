@@ -4,7 +4,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ComponentProps, useCallback, useState } from "react";
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { api, Me, NetworkError, ReviewSummary } from "../api/client";
+import { api, Me, NetworkError, OFFLINE_MESSAGE, ReviewSummary } from "../api/client";
 import { HomeBanner } from "../components/ads/HomeBanner";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
@@ -33,6 +33,7 @@ export function HomeScreen() {
   const [review, setReview] = useState<ReviewSummary | null>(null);
   const [unread, setUnread] = useState(0);
   const [offline, setOffline] = useState(false);
+  const [loadIssue, setLoadIssue] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [pickingAvatar, setPickingAvatar] = useState(false);
   useFocusEffect(
@@ -42,12 +43,17 @@ export function HomeScreen() {
         .then((r) => {
           setReview(r);
           setOffline(false);
+          setLoadIssue(null);
         })
         .catch((e) => {
           setReview(null);
-          // Timeouts/aborts during OTA reload were misread as "no internet"; VPS can be fine.
-          setOffline(false);
-          if (__DEV__ && e instanceof NetworkError) console.warn("reviewSummary:", e.message);
+          if (e instanceof NetworkError) {
+            setOffline(true);
+            setLoadIssue(e.message || OFFLINE_MESSAGE);
+          } else {
+            setOffline(false);
+            setLoadIssue(null);
+          }
         });
       const checkUnread = () => api.feedbackUnread().then(setUnread).catch(() => undefined);
       checkUnread();
@@ -119,7 +125,11 @@ export function HomeScreen() {
             accessibilityRole="button"
           >
             <Ionicons name="cloud-offline-outline" size={20} color={colors.muted} />
-            <Text style={styles.offlineText}>Chưa có kết nối mạng, một số mục chưa tải được.</Text>
+            <Text style={styles.offlineText}>
+              {loadIssue === OFFLINE_MESSAGE
+                ? "Chưa có kết nối mạng, một số mục chưa tải được."
+                : loadIssue ?? "Chưa tải được một số mục. Kiểm tra mạng rồi thử lại."}
+            </Text>
             <Text style={styles.offlineRetry}>Thử lại</Text>
           </Pressable>
         ) : null}
