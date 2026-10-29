@@ -17,9 +17,7 @@ Sentry.init({
 });
 
 function App() {
-  useEffect(() => {
-    void applyOtaOnLaunch();
-  }, []);
+  useEffect(() => applyOtaOnLaunch(), []);
 
   return (
     <SafeAreaProvider>
