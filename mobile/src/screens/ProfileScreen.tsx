@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { activeConversationAddon, api, PronunciationStatus, Stats } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Avatar } from "../components/Avatar";
@@ -36,12 +36,14 @@ export function ProfileScreen() {
   const conversationAddonUntil = me?.conversationAddonUntil ?? null;
 
   const load = useCallback(async () => {
+    const [sResult, pResult] = await Promise.allSettled([api.stats(), api.pronunciationStatus()]);
+    if (sResult.status === "fulfilled") setStats(sResult.value);
+    if (pResult.status === "fulfilled") setPlan(pResult.value);
+    else setPlan(null);
     try {
-      const [s, p] = await Promise.all([api.stats(), api.pronunciationStatus().catch(() => null), refreshMe()]);
-      setStats(s);
-      setPlan(p);
+      await refreshMe();
     } catch {
-      // Keep showing the last stats; pull-to-refresh retries.
+      // Badges still use cached me; pull-to-refresh retries.
     }
   }, [refreshMe]);
 
@@ -144,7 +146,11 @@ export function ProfileScreen() {
             />
           </>
         ) : (
-          <View style={styles.placeholder} />
+          <View style={styles.placeholder}>
+            <ActivityIndicator color={colors.accent} />
+            <Text style={styles.placeholderText}>Đang tải thống kê…</Text>
+            <Text style={styles.placeholderHint}>Nếu trống lâu, kéo xuống để thử lại.</Text>
+          </View>
         )}
       </ScrollView>
 
@@ -265,7 +271,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  placeholder: { height: 320, borderRadius: 24, backgroundColor: colors.surface, opacity: 0.6 },
+  placeholder: {
+    minHeight: 200,
+    borderRadius: 24,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.sm,
+    padding: spacing.lg,
+  },
+  placeholderText: { fontSize: 14, fontWeight: "600", color: colors.ink },
+  placeholderHint: { fontSize: 12, color: colors.muted, textAlign: "center" },
   section: { marginTop: spacing.lg, marginBottom: spacing.sm },
   sectionTitle: { fontSize: 18, fontWeight: "700", color: colors.ink },
   sectionHint: { marginTop: 2, fontSize: 13, color: colors.muted },

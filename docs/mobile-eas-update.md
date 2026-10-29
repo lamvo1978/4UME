@@ -41,7 +41,7 @@ mv .env.local.off .env.local 2>/dev/null || true
 | File | Giá trị |
 |------|---------|
 | `mobile/app.json` → `updates.checkAutomatically` | **`ON_LOAD`** (không dùng `ON_ERROR_RECOVERY` — gần như không bao giờ kéo update khi mở app bình thường) |
-| `mobile/App.tsx` | Gọi **`applyOtaOnLaunch()`** (`mobile/src/updates/applyOtaOnLaunch.ts`) — check + fetch + reload khi có bản mới |
+| `mobile/App.tsx` | Gọi **`applyOtaOnLaunch()`** (`mobile/src/updates/applyOtaOnLaunch.ts`) — check + fetch + reload **sau ~2,5s** (tránh cắt API lúc mở Hồ sơ) |
 | `mobile/eas.json` profile `production` | `channel: production` |
 | `runtimeVersion` | `{ "policy": "appVersion" }` → hiện **1.0.0**; OTA và build store **cùng** version app mới nhận update |
 
