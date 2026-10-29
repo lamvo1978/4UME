@@ -1,5 +1,6 @@
 import { requireOptionalNativeModule } from "expo";
 import { Platform, TurboModuleRegistry } from "react-native";
+import { PRODUCTION_ADMOB_UNITS } from "./productionUnits";
 
 type Lib = typeof import("react-native-google-mobile-ads");
 
@@ -8,13 +9,17 @@ export const ads: Lib | null = TurboModuleRegistry.get("RNGoogleMobileAdsModule"
   ? require("react-native-google-mobile-ads")
   : null;
 
-/** Real ad units come from EAS env; dev builds and builds without them get Google's test units. */
+/** Real ad units from EAS env at build time; release OTA falls back to {@link PRODUCTION_ADMOB_UNITS}. */
 export function adUnitId(kind: "rewarded" | "banner"): string {
   if (!ads) return "";
-  const real =
+  const fromEnv =
     kind === "rewarded"
       ? Platform.select({ ios: process.env.EXPO_PUBLIC_ADMOB_REWARDED_IOS, android: process.env.EXPO_PUBLIC_ADMOB_REWARDED_ANDROID })
       : Platform.select({ ios: process.env.EXPO_PUBLIC_ADMOB_BANNER_IOS, android: process.env.EXPO_PUBLIC_ADMOB_BANNER_ANDROID });
+  const fallback = Platform.select(
+    kind === "rewarded" ? PRODUCTION_ADMOB_UNITS.rewarded : PRODUCTION_ADMOB_UNITS.banner
+  );
+  const real = fromEnv || (__DEV__ ? undefined : fallback);
   if (__DEV__ || !real) return kind === "rewarded" ? ads.TestIds.REWARDED : ads.TestIds.ADAPTIVE_BANNER;
   return real;
 }

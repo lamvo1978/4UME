@@ -17,8 +17,11 @@ cd mobile
 # Đổi tên tạm .env.local để không nhúng API LAN vào bundle production
 mv .env.local .env.local.off 2>/dev/null || true
 # BẮT BUỘC: --environment production trên EAS thường KHÔNG có EXPO_PUBLIC_API_URL (chỉ có trong eas.json lúc *build*).
-# Thiếu biến này → OTA trỏ 127.0.0.1 → toàn app “mất mạng”. Code release đã fallback api.4ume.io.vn; vẫn nên set rõ:
-EXPO_PUBLIC_API_URL=https://api.4ume.io.vn CI=1 npx eas-cli@latest update --branch production --environment production -p ios --message "Mô tả ngắn"
+# Thiếu EXPO_PUBLIC_* → OTA trỏ localhost / AdMob Test IDs (test mode, thưởng quảng cáo không cộng lượt). Release code có fallback API + ad units; vẫn nên set rõ:
+EXPO_PUBLIC_API_URL=https://api.4ume.io.vn \
+EXPO_PUBLIC_ADMOB_REWARDED_IOS=ca-app-pub-3892770660039931/3622306884 \
+EXPO_PUBLIC_ADMOB_BANNER_IOS=ca-app-pub-3892770660039931/1601728336 \
+CI=1 npx eas-cli@latest update --branch production --environment production -p ios --message "Mô tả ngắn"
 mv .env.local.off .env.local 2>/dev/null || true
 ```
 
