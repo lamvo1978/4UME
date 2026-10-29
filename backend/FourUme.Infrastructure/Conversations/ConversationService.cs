@@ -8,6 +8,7 @@ using FourUme.Application.Conversations;
 using FourUme.Domain.Entities;
 using FourUme.Infrastructure.Ai;
 using FourUme.Infrastructure.Invites;
+using FourUme.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static FourUme.Infrastructure.Ai.GeminiClient;
@@ -36,8 +37,20 @@ public sealed partial class ConversationService(
         return stored is null ? new ConversationConfig() : JsonSerializer.Deserialize<ConversationConfig>(stored, Json) ?? new ConversationConfig();
     }
 
-    public async Task<ConversationStatusDto> GetStatusAsync(Guid userId, CancellationToken ct = default) =>
-        await BuildStatusAsync(userId, await LoadConfigAsync(db, ct), ct);
+    public async Task<ConversationStatusDto> GetStatusAsync(Guid userId, CancellationToken ct = default)
+    {
+        var config = await LoadConfigAsync(db, ct);
+        try
+        {
+            return await BuildStatusAsync(userId, config, ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(ex, "Conversation status quota failed for {UserId}; applying schema heal and retrying once", userId);
+            await ConversationSchemaHeal.ApplyAsync((AppDbContext)db, logger, ct);
+            return await BuildStatusAsync(userId, config, ct);
+        }
+    }
 
     public async Task<IReadOnlyList<ConversationScenarioDto>> GetScenariosAsync(CancellationToken ct = default)
     {

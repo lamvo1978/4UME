@@ -20,7 +20,8 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
   const [level, setLevel] = useState<VocabLevel>(me?.settings.vocabLevel ?? "A1");
   const [status, setStatus] = useState<ConversationStatus | null>(null);
   const [scenarios, setScenarios] = useState<ConversationScenario[] | null>(null);
-  const [error, setError] = useState("");
+  const [statusError, setStatusError] = useState("");
+  const [scenariosError, setScenariosError] = useState("");
   const [attempt, setAttempt] = useState(0);
   /** Set while the AI consent box is open; holds where to go after "Đồng ý". */
   const [asking, setAsking] = useState<{ scenario: ConversationScenario | null } | null>(null);
@@ -33,26 +34,41 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      setError("");
-      Promise.all([api.conversationStatus(), api.conversationScenarios()])
-        .then(([s, list]) => {
-          if (!active) return;
-          setStatus(s);
-          setScenarios(list);
-        })
-        .catch((e) => active && setError(e instanceof Error ? e.message : "Không tải được phần đàm thoại"));
+      setStatusError("");
+      setScenariosError("");
+      void Promise.allSettled([api.conversationStatus(), api.conversationScenarios()]).then(([statusRes, scenariosRes]) => {
+        if (!active) return;
+        if (statusRes.status === "fulfilled") setStatus(statusRes.value);
+        else setStatusError(statusRes.reason instanceof Error ? statusRes.reason.message : "Không tải được lượt đàm thoại");
+        if (scenariosRes.status === "fulfilled") setScenarios(scenariosRes.value);
+        else setScenariosError(scenariosRes.reason instanceof Error ? scenariosRes.reason.message : "Không tải được tình huống");
+      });
       return () => {
         active = false;
       };
     }, [attempt])
   );
 
-  if (error) return <View style={styles.center}><ErrorRetry message={error} onRetry={() => setAttempt((n) => n + 1)} /></View>;
-  if (!status || !scenarios) return <View style={styles.center}><ActivityIndicator color={colors.accent} /></View>;
+  if (scenariosError && !scenarios) {
+    return (
+      <View style={styles.center}>
+        <ErrorRetry message={scenariosError} onRetry={() => setAttempt((n) => n + 1)} />
+      </View>
+    );
+  }
+  if (!scenarios) return <View style={styles.center}><ActivityIndicator color={colors.accent} /></View>;
+  if (statusError && !status) {
+    return (
+      <View style={styles.center}>
+        <ErrorRetry message={statusError} onRetry={() => setAttempt((n) => n + 1)} />
+      </View>
+    );
+  }
+  if (!status) return <View style={styles.center}><ActivityIndicator color={colors.accent} /></View>;
 
   const open = status.enabled && status.available;
   const canStart = !!status.nextSessionKind && status.remaining > 0;
-  const blocked = !open || !canStart;
+  const blocked = !open || !canStart || !!statusError;
   const list = scenarios.filter((s) => s.level === level);
   const countOf = (l: VocabLevel) => scenarios.filter((s) => s.level === l).length;
   const go = (scenario: ConversationScenario | null) =>
@@ -79,7 +95,13 @@ export function ConversationHubScreen({ navigation }: NativeStackScreenProps<Roo
         Nói chuyện bằng tiếng Anh với AI. Bấm micro để nói (hoặc gõ chữ), AI trả lời, sửa câu của bạn và gợi ý câu tiếp theo.
       </Text>
 
-      <QuotaNote status={status} onPremium={() => navigation.navigate("Premium")} />
+      {statusError ? (
+        <View style={styles.statusRetry}>
+          <ErrorRetry message={statusError} onRetry={() => setAttempt((n) => n + 1)} />
+        </View>
+      ) : (
+        <QuotaNote status={status} onPremium={() => navigation.navigate("Premium")} />
+      )}
       {!speechToTextAvailable ? (
         <View style={styles.note}>
           <Ionicons name="keypad-outline" size={18} color={colors.accent} />
@@ -217,6 +239,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg, padding: spacing.lg },
   content: { padding: spacing.lg, paddingTop: spacing.md, gap: spacing.sm, backgroundColor: colors.bg, flexGrow: 1 },
   intro: { fontSize: 14, color: colors.muted, lineHeight: 20 },
+  statusRetry: { alignSelf: "stretch" },
   label: { fontSize: 12, fontWeight: "800", color: colors.muted, textTransform: "uppercase", letterSpacing: 0.5, marginTop: spacing.sm },
   levels: { flexDirection: "row", gap: 8 },
   level: { flex: 1, alignItems: "center", paddingVertical: 10, borderRadius: 14, backgroundColor: colors.bgAlt },

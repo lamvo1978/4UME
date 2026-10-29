@@ -165,11 +165,6 @@ using (var scope = app.Services.CreateScope())
         try
         {
             await db.Database.MigrateAsync();
-            // Heal prod DBs where ConversationAddonQuota did not apply SessionKind (breaks GET /api/conversation/status).
-            await db.Database.ExecuteSqlRawAsync("""
-                ALTER TABLE "Conversations" ADD COLUMN IF NOT EXISTS "SessionKind" character varying(16);
-                ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS "ConversationAddonUntil" timestamp with time zone;
-                """);
             break;
         }
         catch (Exception ex) when (retries < 20)
@@ -178,6 +173,15 @@ using (var scope = app.Services.CreateScope())
             logger.LogWarning(ex, "Waiting for database... attempt {Attempt}", retries);
             await Task.Delay(1500);
         }
+    }
+
+    try
+    {
+        await ConversationSchemaHeal.ApplyAsync(db, logger);
+    }
+    catch (Exception ex)
+    {
+        logger.LogCritical(ex, "Conversation schema heal failed; GET /api/conversation/status may error until fixed.");
     }
 
     var vocabPath = builder.Configuration["Vocabulary:Path"];
