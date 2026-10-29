@@ -165,6 +165,11 @@ using (var scope = app.Services.CreateScope())
         try
         {
             await db.Database.MigrateAsync();
+            // Heal prod DBs where ConversationAddonQuota did not apply SessionKind (breaks GET /api/conversation/status).
+            await db.Database.ExecuteSqlRawAsync("""
+                ALTER TABLE "Conversations" ADD COLUMN IF NOT EXISTS "SessionKind" character varying(16);
+                ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS "ConversationAddonUntil" timestamp with time zone;
+                """);
             break;
         }
         catch (Exception ex) when (retries < 20)
@@ -678,11 +683,19 @@ app.MapPost("/api/listening/{slug}/dictation", async (string slug, ClaimsPrincip
 app.MapGet("/api/speech/word", async (string text, string voice, IWordAudioService words, CancellationToken ct) =>
     Results.Ok(await words.GetAsync(text, voice, ct))).RequireAuthorization();
 
-app.MapGet("/api/conversation/status", async (ClaimsPrincipal principal, IConversationService conversation, CancellationToken ct) =>
+app.MapGet("/api/conversation/status", async (ClaimsPrincipal principal, IConversationService conversation, ILogger<Program> log, CancellationToken ct) =>
 {
     var userId = GetUserId(principal);
     if (userId is null) return Results.Unauthorized();
-    return Results.Ok(await conversation.GetStatusAsync(userId.Value, ct));
+    try
+    {
+        return Results.Ok(await conversation.GetStatusAsync(userId.Value, ct));
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "GET /api/conversation/status failed for {UserId}", userId);
+        return Results.Json(new { error = "Không tải được trạng thái đàm thoại. Hãy thử lại sau ít phút." }, statusCode: 503);
+    }
 }).RequireAuthorization();
 
 app.MapGet("/api/conversation/scenarios", async (IConversationService conversation, CancellationToken ct) =>
