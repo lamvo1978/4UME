@@ -26,7 +26,7 @@ Checklist thực hiện sau khi gộp **Premium core**, **Tìm từ / expo-blur*
 |------|------------|
 | `npx tsc --noEmit` trong `mobile/` | OK |
 | App ID + ad unit thật | `mobile/app.json`, `mobile/eas.json` |
-| `app-ads.txt` trên web | `https://4ume.io.vn/app-ads.txt` |
+| `app-ads.txt` trên web | `https://4ume.io.vn/app-ads.txt` — xác minh trên AdMob: [ads.md § app-ads.txt](ads.md#app-adstxt-trên-admob) |
 | API AdMob SSV | `GET https://api.4ume.io.vn/api/ads/admob-reward` (403 khi không có chữ ký — endpoint sống) |
 
 ## 1. Deploy API (nếu chưa pull bản AdMob trên VPS)
