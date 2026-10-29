@@ -20,7 +20,7 @@ CI=1 npx eas-cli@latest update --branch production --environment production -p i
 mv .env.local.off .env.local 2>/dev/null || true
 ```
 
-4. Tester **tắt hẳn app → mở lại** (thường **2 lần** khi `fallbackToCacheTimeout: 0`: lần 1 tải bundle, lần 2 chạy bundle mới). Wi‑Fi bật.
+4. Tester **tắt hẳn app → mở lại** (lần 1 có thể chỉ **tải nền**; **lần mở sau** chạy bundle OTA mới). Wi‑Fi bật. Trong một phiên đang dùng app, **không** reload giữa chừng.
 
 **Không** build `.ipa` mới cho từng hotfix UI/logic nếu bước trên đủ.
 
@@ -41,7 +41,7 @@ mv .env.local.off .env.local 2>/dev/null || true
 | File | Giá trị |
 |------|---------|
 | `mobile/app.json` → `updates.checkAutomatically` | **`ON_LOAD`** (không dùng `ON_ERROR_RECOVERY` — gần như không bao giờ kéo update khi mở app bình thường) |
-| `mobile/App.tsx` | Gọi **`applyOtaOnLaunch()`** (`mobile/src/updates/applyOtaOnLaunch.ts`) — check + fetch + reload **sau ~2,5s** (tránh cắt API lúc mở Hồ sơ) |
+| `mobile/App.tsx` | Gọi **`applyOtaOnLaunch()`** — **tải** bundle mới nền sau ~4s; **không** `reloadAsync` giữa phiên (tránh cắt API / banner “mất mạng” giả). Bản OTA **áp dụng lần mở app sau** (cùng `ON_LOAD`) |
 | `mobile/eas.json` profile `production` | `channel: production` |
 | `runtimeVersion` | `{ "policy": "appVersion" }` → hiện **1.0.0**; OTA và build store **cùng** version app mới nhận update |
 
