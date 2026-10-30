@@ -1,4 +1,4 @@
-import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, SimpleGrid, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, Skeleton, Stack, Table, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconDownload, IconFileCode, IconHeart, IconPlus, IconSearch, IconSparkles, IconUpload } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -40,11 +40,14 @@ export function ListeningPage() {
   const all = lessons.data ?? [];
   const linesOf = (rows: typeof all) => rows.reduce((n, l) => n + l.lineCount, 0);
   const totalLines = linesOf(all);
-  const byLevel = LEVELS.map((l) => {
-    const rows = all.filter((x) => x.level === l);
-    const published = rows.filter((x) => x.published);
-    return { level: l, lessons: rows.length, lines: linesOf(rows), liveLines: linesOf(published) };
-  });
+  const countAt = (kindValue: string, levelValue: string) => {
+    const rows = all.filter((x) => (kindValue === "all" || x.kind === kindValue) && x.level === levelValue);
+    return { lessons: rows.length, lines: linesOf(rows), liveLines: linesOf(rows.filter((x) => x.published)) };
+  };
+  const statRows = [{ value: "all", label: "Mọi loại" }, ...KINDS].map((k) => ({
+    ...k,
+    cells: LEVELS.map((l) => ({ level: l, ...countAt(k.value, l) })),
+  }));
   const filtering = q.trim() !== "" || level !== "all" || kind !== "all";
   const list = all.filter(
     (l) =>
@@ -107,18 +110,37 @@ export function ListeningPage() {
 
       <SpeechStatusCard needAudio={needAudio} />
 
-      <SimpleGrid cols={{ base: 2, sm: 4 }}>
-        {byLevel.map((s) => (
-          <Paper key={s.level} p="sm" radius="lg" shadow="xs">
-            <Text fw={700}>
-              {s.level} · {s.lines} câu
-            </Text>
-            <Text fz="xs" c="dimmed">
-              {s.lessons} bài{s.liveLines === s.lines ? "" : ` · ${s.liveLines} câu đang hiện`}
-            </Text>
-          </Paper>
-        ))}
-      </SimpleGrid>
+      <Paper p="sm" radius="lg" shadow="xs" style={{ overflowX: "auto" }}>
+        <Table withRowBorders={false} verticalSpacing={6} horizontalSpacing="xs">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th />
+              {LEVELS.map((l) => (
+                <Table.Th key={l} ta="right">
+                  {l}
+                </Table.Th>
+              ))}
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {statRows.map((row) => (
+              <Table.Tr key={row.value}>
+                <Table.Td fw={row.value === "all" ? 700 : 500}>{row.label}</Table.Td>
+                {row.cells.map((cell) => (
+                  <Table.Td key={cell.level} ta="right">
+                    <Text fw={row.value === "all" ? 700 : 500} fz="sm">
+                      {cell.lines} câu
+                    </Text>
+                    <Text fz="xs" c="dimmed">
+                      {cell.lessons} bài{cell.liveLines === cell.lines ? "" : ` · ${cell.liveLines} đang hiện`}
+                    </Text>
+                  </Table.Td>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Paper>
 
       <Paper p="sm" radius="lg" shadow="xs">
         <Stack gap="sm">
