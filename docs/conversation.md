@@ -68,7 +68,7 @@ flowchart LR
 | Lượt tối đa mỗi buổi | 20 | 20 |
 | Giọng đọc | Giọng của máy | Giọng của máy, hoặc Azure nếu admin bật |
 
-- Màn **Premium** trong app có dòng quyền lợi *Đàm thoại với AI {ai} lượt/ngày* (mô tả nhắc gói miễn phí {aiFree} lượt/ngày). `{ai}` / `{aiFree}` được app thay bằng số lượt đang cài ở admin, giống `{n}` của chấm phát âm. Nếu admin đã lưu danh sách quyền lợi riêng thì thêm tay dòng này ở *Quyền lợi Premium*.
+- Màn **Premium** thay placeholder từ `GET /api/conversation/status` (không cần bản app mới): `{ai}` = **Premium · buổi/ngày × lượt/buổi**; `{aiFree}` = lượt **một buổi quà chuỗi** (hoặc buổi thử nếu tắt quà chuỗi). Hai ô *Lượt nói mỗi ngày (cũ)* trên admin **không** còn đi vào `{ai}` / `{aiFree}`. Nên viết quyền lợi bằng `{aiSession}` / `{aiTurns}` (buổi và lượt/buổi). Nếu admin đã lưu danh sách quyền lợi riêng thì sửa chữ ở *Quyền lợi Premium*.
 - **Một lượt = một câu người học gửi.** Câu mở đầu của AI và phần tổng kết không tính lượt.
 - "Ngày" theo giờ máy người học (header `X-Utc-Offset`), giống chuỗi ngày học và chấm phát âm.
 - Hết lượt: app hiện khung gợi ý Premium (chỉ giới thiệu, không hướng dẫn thanh toán ngoài app).
