@@ -42,8 +42,8 @@ export function ListeningPage() {
   const totalLines = linesOf(all);
   const inKind = all.filter((x) => kind === "all" || x.kind === kind);
   const levelCounts = [
-    { value: "all", label: `Tất cả · ${linesOf(inKind)}` },
-    ...LEVELS.map((l) => ({ value: l, label: `${l} · ${linesOf(inKind.filter((x) => x.level === l))}` })),
+    { value: "all", label: `Tất cả · ${inKind.length}` },
+    ...LEVELS.map((l) => ({ value: l, label: `${l} · ${inKind.filter((x) => x.level === l).length}` })),
   ];
   const filtering = q.trim() !== "" || level !== "all" || kind !== "all";
   const list = all.filter(
