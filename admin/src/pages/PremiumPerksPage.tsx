@@ -142,9 +142,9 @@ export function PremiumPerksPage() {
         {soonShown > 0
           ? `Đang hiện ${soonShown} quyền lợi "Sắp có". Trước khi mở bán Premium qua App Store / Google Play, hãy ẩn những dòng chưa làm: cửa hàng thường từ chối màn mua hứa tính năng chưa có.`
           : "Mọi quyền lợi đang hiện đều đã có thật."}{" "}
-        Trong tiêu đề và mô tả, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt); <b>{"{ai}"}</b> /{" "}
-        <b>{"{aiFree}"}</b> bằng số lượt đàm thoại AI mỗi ngày của Premium / gói miễn phí (trang Đàm thoại AI); <b>{"{aiSession}"}</b> /{" "}
-        <b>{"{aiTurns}"}</b> bằng số buổi và lượt/buổi đàm thoại Premium; <b>{"{w}"}</b> /{" "}
+        Trong tiêu đề và mô tả, <b>{"{n}"}</b> được thay bằng số lượt chấm Premium mỗi ngày (trang Cài đặt); <b>{"{ai}"}</b> bằng
+        buổi Premium × lượt/buổi (ví dụ 1×20 = 20); <b>{"{aiFree}"}</b> bằng lượt của một buổi quà chuỗi (hoặc buổi thử nếu tắt quà chuỗi) — không phải
+        trần mỗi ngày của gói miễn phí; <b>{"{aiSession}"}</b> / <b>{"{aiTurns}"}</b> bằng số buổi và lượt/buổi đàm thoại Premium; <b>{"{w}"}</b> /{" "}
         <b>{"{wFree}"}</b> bằng số bài chấm mỗi ngày của Premium / gói miễn phí (trang Luyện viết AI).
       </Alert>
 

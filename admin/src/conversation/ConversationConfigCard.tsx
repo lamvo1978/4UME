@@ -71,9 +71,12 @@ export function ConversationConfigCard() {
           </Text>
         )}
 
+        <Text fz="xs" c="dimmed">
+          Hai ô «cũ» chỉ giữ cho cấu hình đã lưu trước đây. App không dùng chúng cho quota hay màn Premium — số trên màn đó lấy từ buổi/lượt phía dưới.
+        </Text>
         <SimpleGrid cols={{ base: 1, sm: 3 }}>
-          <NumberInput label="Lượt nói mỗi ngày · miễn phí (cũ)" min={0} max={1000} value={draft.freeDailyTurns} onChange={(v) => set({ freeDailyTurns: num(v) })} />
-          <NumberInput label="Lượt nói mỗi ngày · Premium (cũ)" min={0} max={1000} value={draft.premiumDailyTurns} onChange={(v) => set({ premiumDailyTurns: num(v) })} />
+          <NumberInput label="Lượt nói mỗi ngày · miễn phí (cũ, không dùng)" min={0} max={1000} value={draft.freeDailyTurns} onChange={(v) => set({ freeDailyTurns: num(v) })} />
+          <NumberInput label="Lượt nói mỗi ngày · Premium (cũ, không dùng)" min={0} max={1000} value={draft.premiumDailyTurns} onChange={(v) => set({ premiumDailyTurns: num(v) })} />
           <NumberInput label="Trần kỹ thuật mỗi buổi" min={2} max={100} value={draft.maxTurnsPerSession} onChange={(v) => set({ maxTurnsPerSession: num(v) })} />
         </SimpleGrid>
 

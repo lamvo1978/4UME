@@ -9,7 +9,7 @@ public record ConversationConfig
     public const string SettingKey = "conversation";
 
     public bool Enabled { get; init; } = true;
-    /// <summary>Legacy daily cap shown in older clients; quota logic uses session fields below.</summary>
+    /// <summary>Stored for older admin JSON only. Quota and the Premium screen use the session fields below.</summary>
     public int FreeDailyTurns { get; init; } = 10;
     public int PremiumDailyTurns { get; init; } = 100;
     /// <summary>One-time free trial session (turns).</summary>
@@ -69,6 +69,17 @@ public static class ConversationRules
     /// <summary>Azure neural voices, about USD 15 per million characters on S0.</summary>
     public const double PaidUsdPerMillionChars = 15;
     public const string DefaultIcon = "chatbubbles-outline";
+
+    /// <summary>Premium turns per day for copy ({ai}): sessions × turns per session.</summary>
+    public static int PremiumTurnsPerDayForDisplay(ConversationConfig c) =>
+        c.PremiumSessionsPerDay * c.PremiumTurnsPerSession;
+
+    /// <summary>
+    /// Free-plan figure for copy ({aiFree}): turns in one streak-gift session, or the one-time trial when gifts are off.
+    /// Free learners do not get this many turns every calendar day.
+    /// </summary>
+    public static int FreeTurnsForDisplay(ConversationConfig c) =>
+        c.StreakGiftEveryDays > 0 ? c.StreakGiftSessionTurns : c.FreeFirstSessionTurns;
 
     public static IReadOnlyList<string> Validate(ConversationConfig c)
     {
