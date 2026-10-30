@@ -1,4 +1,4 @@
-import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, SimpleGrid, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconDownload, IconFileCode, IconHeart, IconPlus, IconSearch, IconSparkles, IconUpload } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -38,6 +38,13 @@ export function ListeningPage() {
   }
 
   const all = lessons.data ?? [];
+  const linesOf = (rows: typeof all) => rows.reduce((n, l) => n + l.lineCount, 0);
+  const totalLines = linesOf(all);
+  const byLevel = LEVELS.map((l) => {
+    const rows = all.filter((x) => x.level === l);
+    const published = rows.filter((x) => x.published);
+    return { level: l, lessons: rows.length, lines: linesOf(rows), liveLines: linesOf(published) };
+  });
   const filtering = q.trim() !== "" || level !== "all" || kind !== "all";
   const list = all.filter(
     (l) =>
@@ -68,7 +75,7 @@ export function ListeningPage() {
         <div>
           <Title order={2}>Bài nghe</Title>
           <Text c="dimmed" fz="sm">
-            {all.length} bài · hội thoại, câu chuyện, bản tin cho tab Nghe trong app
+            {all.length} bài · {totalLines} câu · hội thoại, câu chuyện, bản tin cho tab Nghe trong app
           </Text>
         </div>
         <Group gap="sm" wrap="nowrap">
@@ -99,6 +106,19 @@ export function ListeningPage() {
       <ListeningDraftModal opened={drafting} onClose={() => setDrafting(false)} />
 
       <SpeechStatusCard needAudio={needAudio} />
+
+      <SimpleGrid cols={{ base: 2, sm: 4 }}>
+        {byLevel.map((s) => (
+          <Paper key={s.level} p="sm" radius="lg" shadow="xs">
+            <Text fw={700}>
+              {s.level} · {s.lines} câu
+            </Text>
+            <Text fz="xs" c="dimmed">
+              {s.lessons} bài{s.liveLines === s.lines ? "" : ` · ${s.liveLines} câu đang hiện`}
+            </Text>
+          </Paper>
+        ))}
+      </SimpleGrid>
 
       <Paper p="sm" radius="lg" shadow="xs">
         <Stack gap="sm">
