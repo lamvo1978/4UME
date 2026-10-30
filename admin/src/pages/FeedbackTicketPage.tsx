@@ -18,10 +18,11 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowLeft, IconCheck, IconLock, IconLockOpen, IconPhoto, IconSend } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, mediaSrc, type AdminFeedbackTicket, type FeedbackMessage } from "../api";
 import { Select } from "../components/AppSelect";
+import { ReplyEmojiPicker } from "../feedback/ReplyEmojiPicker";
 import { categoryMeta, CLOSED_BY, FEEDBACK_POLL_MS, STATUSES } from "../feedback/meta";
 import { fullTime, notifyError, notifySaved } from "../lib";
 
@@ -45,8 +46,30 @@ export function FeedbackTicketPage() {
   });
   const settings = useQuery({ queryKey: ["feedback-settings"], queryFn: api.feedbackSettings });
   const [body, setBody] = useState("");
+  const replyBox = useRef<HTMLTextAreaElement>(null);
+  const caretAfterEmoji = useRef<number | null>(null);
   const [busy, setBusy] = useState<"reply" | "close" | "status" | null>(null);
   const [images, setImages] = useState<File[]>([]);
+
+  useEffect(() => {
+    const pos = caretAfterEmoji.current;
+    const el = replyBox.current;
+    if (pos == null || !el) return;
+    caretAfterEmoji.current = null;
+    el.focus();
+    el.setSelectionRange(pos, pos);
+  }, [body]);
+
+  function insertEmoji(emoji: string) {
+    const el = replyBox.current;
+    setBody((current) => {
+      const start = el?.selectionStart ?? current.length;
+      const end = el?.selectionEnd ?? current.length;
+      const next = (current.slice(0, start) + emoji + current.slice(end)).slice(0, MAX_BODY);
+      caretAfterEmoji.current = Math.min(start + emoji.length, next.length);
+      return next;
+    });
+  }
 
   function addImages(files: File[]) {
     const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
@@ -191,6 +214,7 @@ export function FeedbackTicketPage() {
               />
             ) : null}
             <Textarea
+              ref={replyBox}
               placeholder="Trả lời người dùng… (dán ảnh chụp màn hình bằng Cmd+V)"
               autosize
               minRows={4}
@@ -214,13 +238,16 @@ export function FeedbackTicketPage() {
               </Group>
             ) : null}
             <Group justify="space-between">
-              <FileButton onChange={addImages} accept="image/png,image/jpeg,image/webp,image/gif" multiple>
-                {(props) => (
-                  <Button {...props} variant="subtle" leftSection={<IconPhoto size={18} />} disabled={images.length >= MAX_IMAGES}>
-                    Thêm ảnh ({images.length}/{MAX_IMAGES})
-                  </Button>
-                )}
-              </FileButton>
+              <Group gap="xs">
+                <ReplyEmojiPicker onPick={insertEmoji} />
+                <FileButton onChange={addImages} accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+                  {(props) => (
+                    <Button {...props} variant="subtle" leftSection={<IconPhoto size={18} />} disabled={images.length >= MAX_IMAGES}>
+                      Thêm ảnh ({images.length}/{MAX_IMAGES})
+                    </Button>
+                  )}
+                </FileButton>
+              </Group>
               <Group gap="xs">
                 <Button
                   variant="default"
