@@ -51,7 +51,7 @@ Bản nháp mô tả, từ khoá, App Privacy, Data safety, ghi chú cho ngườ
 3. [x] Thêm 2 app trên AdMob → **App ID** đã gắn trong `mobile/app.json` (`~5672835286` iOS, `~3489525077` Android).
 4. [x] 4 ad unit trong `mobile/eas.json`. [x] Hai *Rewarded* bật **Server-side verification**, URL `https://api.4ume.io.vn/api/ads/admob-reward` (27/10).
 5. [x] *Privacy & messaging*: GDPR (Châu Âu) + US states — mỗi loại 1 đang hoạt động (27/10). [ ] *Blocking controls*: chặn hẹn hò, cờ bạc, rượu, đặt mức nội dung G.
-6. [x] `https://4ume.io.vn/app-ads.txt` đã lên mạng. [ ] Bấm *Check for updates* trên AdMob.
+6. [x] `https://4ume.io.vn/app-ads.txt` đã lên mạng (200, đúng `pub-3892770660039931`). [ ] AdMob **xác minh** file — xem [ads.md](ads.md#app-adstxt-trên-admob) (không còn nút *Check for updates* khi bảng trống; Google tự thu thập, có thể tới ~7 ngày sau khi app gửi request quảng cáo unit thật). [ ] App Store Connect: **Support URL** hoặc **Marketing URL** trỏ `https://4ume.io.vn` (cùng miền với `app-ads.txt`).
 7. [x] TestFlight **1.0.0 (21)**; admin bật quảng cáo; test máy thật OK (27/10).
 8. [x] App Store Connect: mô tả / App Privacy / Age Rating; admin Premium (27/10). Còn *Submit* sau khi gắn build 21.
 9. [ ] Sau khi app lên Google Play / App Store: vào AdMob → *Apps* → **Link to app store** cho từng app, để hết chế độ quảng cáo giới hạn.

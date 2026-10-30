@@ -40,6 +40,18 @@ Hai loại quảng cáo, chỉ cho tài khoản miễn phí, mục tiêu là có
 
 Danh sách đầy đủ ở [todo.md](todo.md#admob--việc-làm-tay): vào AdMob (tài khoản dùng chung với AdSense cho YouTube, `pub-3892770660039931`), thêm 2 app, tạo 4 ad unit (bật **Server-side verification** cho 2 rewarded, URL `https://api.4ume.io.vn/api/ads/admob-reward`), thông báo đồng ý GDPR, chặn nhóm quảng cáo không hợp (hẹn hò, cờ bạc, rượu…), `app-ads.txt`, build EAS, thử bằng quảng cáo thử nghiệm rồi mới bật công tắc.
 
+### app-ads.txt trên AdMob
+
+- **File trên web:** `https://4ume.io.vn/app-ads.txt` (nguồn trong repo: `site/app-ads.txt`). Nội dung: `google.com, pub-3892770660039931, DIRECT, f08c47fec0942fa0`.
+- **Trong console:** AdMob → *Ứng dụng* → mục **app-ads.txt** (hoặc *Tệp app-ads.txt*). Giao diện tiếng Việt thường hiện *Chưa thấy yêu cầu quảng cáo nào có tệp app-ads.txt* khi Google chưa ghép được **request quảng cáo unit thật** từ app với **miền** có file.
+- **Không có nút *Check for updates* ở trạng thái trống** (29/10/2026): tài liệu cũ của Google có thể ghi “bấm kiểm tra”; UI hiện tại chủ yếu **tự thu thập** — banner trên trang nói có thể **mất tới 7 ngày** sau khi đổi URL/miền. Khi đã có dòng trong bảng (URL miền, app, lần thu thập gần nhất), đôi khi mới có thao tác làm mới theo từng dòng; không cần bấm gì nếu bảng vẫn trống.
+- **Việc nên làm:**
+  1. Giữ file `app-ads.txt` trên `4ume.io.vn` (đã deploy).
+  2. **App Store Connect:** *Support URL* hoặc *Marketing URL* trỏ `https://4ume.io.vn` — AdMob thường lấy miền từ listing store (TestFlight chưa public vẫn nên khai sẵn trước review).
+  3. App **miễn phí**, admin bật quảng cáo, dùng **ad unit thật** (OTA/build có `EXPO_PUBLIC_ADMOB_*` hoặc fallback trong `mobile/src/ads/productionUnits.ts`) — kể cả khi load fail (*Chưa tải được quảng cáo*), SDK vẫn có thể gửi request; sau vài ngày trang app-ads.txt có thể có dòng `4ume.io.vn`.
+  4. **Link cửa hàng** trên AdMob (todo mục 9): sau khi app **lên App Store / Google Play**, *Apps* → **Link to app store** — giảm *limited ad serving*; TestFlight một mình thường fill thấp.
+- **Phân biệt với lỗi app:** *Chưa tải được quảng cáo* = AdMob chưa trả inventory (no fill / giới hạn phát), không đồng nghĩa file web sai. Ad unit **thử nghiệm** của Google vẫn fill để thử luồng; unit **thật** trên TestFlight có thể không có ad nhiều ngày dù code đúng.
+
 ## Câu chữ đã sửa (22/10)
 
 - Trang chủ `site/index.html` (*Lời hứa về quảng cáo*): banner nhỏ cuối Trang chủ cho tài khoản miễn phí, quảng cáo đổi lượt tự chọn, không quảng cáo tự bật toàn màn hình, Premium không có quảng cáo.
