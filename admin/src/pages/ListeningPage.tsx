@@ -1,4 +1,4 @@
-import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, SimpleGrid, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Alert, Badge, Button, Group, Menu, Paper, SegmentedControl, Skeleton, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconDownload, IconFileCode, IconHeart, IconPlus, IconSearch, IconSparkles, IconUpload } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -40,11 +40,11 @@ export function ListeningPage() {
   const all = lessons.data ?? [];
   const linesOf = (rows: typeof all) => rows.reduce((n, l) => n + l.lineCount, 0);
   const totalLines = linesOf(all);
-  const byLevel = LEVELS.map((l) => {
-    const rows = all.filter((x) => x.level === l);
-    const published = rows.filter((x) => x.published);
-    return { level: l, lessons: rows.length, lines: linesOf(rows), liveLines: linesOf(published) };
-  });
+  const inKind = all.filter((x) => kind === "all" || x.kind === kind);
+  const levelCounts = [
+    { value: "all", label: `Tất cả · ${linesOf(inKind)}` },
+    ...LEVELS.map((l) => ({ value: l, label: `${l} · ${linesOf(inKind.filter((x) => x.level === l))}` })),
+  ];
   const filtering = q.trim() !== "" || level !== "all" || kind !== "all";
   const list = all.filter(
     (l) =>
@@ -107,26 +107,11 @@ export function ListeningPage() {
 
       <SpeechStatusCard needAudio={needAudio} />
 
-      <SimpleGrid cols={{ base: 2, sm: 4 }}>
-        {byLevel.map((s) => (
-          <Paper key={s.level} p="sm" radius="lg" shadow="xs">
-            <Text fw={700}>
-              {s.level} · {s.lines} câu
-            </Text>
-            <Text fz="xs" c="dimmed">
-              {s.lessons} bài{s.liveLines === s.lines ? "" : ` · ${s.liveLines} câu đang hiện`}
-            </Text>
-          </Paper>
-        ))}
-      </SimpleGrid>
-
       <Paper p="sm" radius="lg" shadow="xs">
         <Stack gap="sm">
           <TextInput type="search" autoComplete="off" placeholder="Tìm bài, chủ đề…" leftSection={<IconSearch size={16} />} value={q} onChange={(e) => setQ(e.currentTarget.value)} />
-          <Group gap="sm" wrap="wrap">
-            <SegmentedControl value={kind} onChange={setKind} data={[{ value: "all", label: "Mọi loại" }, ...KINDS.map((k) => ({ value: k.value, label: k.label }))]} />
-            <SegmentedControl value={level} onChange={setLevel} data={[{ value: "all", label: "Tất cả" }, ...LEVELS.map((l) => ({ value: l, label: l }))]} />
-          </Group>
+          <SegmentedControl value={kind} onChange={setKind} data={[{ value: "all", label: "Mọi loại" }, ...KINDS.map((k) => ({ value: k.value, label: k.label }))]} />
+          <SegmentedControl fullWidth value={level} onChange={setLevel} data={levelCounts} />
         </Stack>
       </Paper>
 
